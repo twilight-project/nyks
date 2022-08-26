@@ -1,6 +1,10 @@
-# nyks
+# Nyks
  
-Bitcoin light client using BFT - testnet running [forkscanner](https://github.com/twilight-project/forkscanner) and [forkoracle](https://github.com/twilight-project/forkoracle-go).
+Due to asynchronous nature of Bitcoin, natural forking is commonplace though not as common as other POWs with faster block time. To follow the canonical chain with highest cumulative work, network participants follow the majority opinion of honest full nodes, not the miner, of they think bitcoin is. To be certain if a transaction is valid or subject to reorg, some organisations go extra mile, run multiple bitcoin nodes, check block validation rules, even check inflation rules to be really really sure etc.
+
+Validity gadget is a synchronous predictive validity layer on top of Nakamoto Consensus, where honest committee members dynamically vote on their view of the chain and propose a valid view of the chain tips, based on some validity heuristics. 
+
+Nyks is built over Tendermint BFT, where every validator runs a [forkscanner](https://github.com/twilight-project/forkscanner) and [forkoracle](https://github.com/twilight-project/forkoracle-go) instance. 
 
 # Local Setup
 To run a local setup, first clone and compile forkscanner and forkoracle and run them, respectively!
