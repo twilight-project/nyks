@@ -1,0 +1,25 @@
+accounts:
+  - name: alice
+    coins: ["100000000nyks"]
+  - name: bob
+    coins: ["100000000nyks"]
+validator:
+  name: alice
+  staked: "100000000nyks"
+client:
+  openapi:
+    path: "docs/static/openapi.yml"
+  vuex:
+    path: "vue/src/store"
+faucet:
+  name: bob
+  coins: ["100000nyks"]
+genesis:
+  chain_id: "nyks"
+init:
+  home: "$HOME/.nyks"
+genesis:
+  app_state:
+    staking:
+      params:
+        bond_denom: "nyks"
