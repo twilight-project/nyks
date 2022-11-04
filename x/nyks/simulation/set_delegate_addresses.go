@@ -19,7 +19,7 @@ func SimulateMsgSetDelegateAddresses(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgSetDelegateAddresses{
-			Creator: simAccount.Address.String(),
+			ValidatorAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the SetDelegateAddresses simulation

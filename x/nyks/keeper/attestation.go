@@ -27,7 +27,7 @@ func (k Keeper) Attest(
 		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
 	}
 
-	// Tries to get an attestation with the same btc block height and claim as the claim that was submitted.
+	// Tries to get an attestation with the same btc block height and the proposal.
 	hash, err := proposal.ProposalHash()
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "unable to compute claim hash")

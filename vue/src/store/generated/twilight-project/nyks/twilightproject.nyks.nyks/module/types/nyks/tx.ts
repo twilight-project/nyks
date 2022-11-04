@@ -5,7 +5,6 @@ import * as Long from "long";
 export const protobufPackage = "twilightproject.nyks.nyks";
 
 export interface MsgSetDelegateAddresses {
-  creator: string;
   validatorAddress: string;
   orchestratorAddress: string;
   btcPublicKey: string;
@@ -16,7 +15,6 @@ export interface MsgSetDelegateAddressesResponse {
 }
 
 export interface MsgSeenBtcChainTip {
-  creator: string;
   height: number;
   hash: string;
   orchestratorAddress: string;
@@ -25,7 +23,6 @@ export interface MsgSeenBtcChainTip {
 export interface MsgSeenBtcChainTipResponse {}
 
 const baseMsgSetDelegateAddresses: object = {
-  creator: "",
   validatorAddress: "",
   orchestratorAddress: "",
   btcPublicKey: "",
@@ -36,9 +33,6 @@ export const MsgSetDelegateAddresses = {
     message: MsgSetDelegateAddresses,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.validatorAddress !== "") {
       writer.uint32(18).string(message.validatorAddress);
     }
@@ -60,9 +54,6 @@ export const MsgSetDelegateAddresses = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
         case 2:
           message.validatorAddress = reader.string();
           break;
@@ -84,11 +75,6 @@ export const MsgSetDelegateAddresses = {
     const message = {
       ...baseMsgSetDelegateAddresses,
     } as MsgSetDelegateAddresses;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (
       object.validatorAddress !== undefined &&
       object.validatorAddress !== null
@@ -115,7 +101,6 @@ export const MsgSetDelegateAddresses = {
 
   toJSON(message: MsgSetDelegateAddresses): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.validatorAddress !== undefined &&
       (obj.validatorAddress = message.validatorAddress);
     message.orchestratorAddress !== undefined &&
@@ -131,11 +116,6 @@ export const MsgSetDelegateAddresses = {
     const message = {
       ...baseMsgSetDelegateAddresses,
     } as MsgSetDelegateAddresses;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (
       object.validatorAddress !== undefined &&
       object.validatorAddress !== null
@@ -231,7 +211,6 @@ export const MsgSetDelegateAddressesResponse = {
 };
 
 const baseMsgSeenBtcChainTip: object = {
-  creator: "",
   height: 0,
   hash: "",
   orchestratorAddress: "",
@@ -242,9 +221,6 @@ export const MsgSeenBtcChainTip = {
     message: MsgSeenBtcChainTip,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.height !== 0) {
       writer.uint32(16).uint64(message.height);
     }
@@ -264,9 +240,6 @@ export const MsgSeenBtcChainTip = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
         case 2:
           message.height = longToNumber(reader.uint64() as Long);
           break;
@@ -286,11 +259,6 @@ export const MsgSeenBtcChainTip = {
 
   fromJSON(object: any): MsgSeenBtcChainTip {
     const message = { ...baseMsgSeenBtcChainTip } as MsgSeenBtcChainTip;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.height !== undefined && object.height !== null) {
       message.height = Number(object.height);
     } else {
@@ -314,7 +282,6 @@ export const MsgSeenBtcChainTip = {
 
   toJSON(message: MsgSeenBtcChainTip): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.height !== undefined && (obj.height = message.height);
     message.hash !== undefined && (obj.hash = message.hash);
     message.orchestratorAddress !== undefined &&
@@ -324,11 +291,6 @@ export const MsgSeenBtcChainTip = {
 
   fromPartial(object: DeepPartial<MsgSeenBtcChainTip>): MsgSeenBtcChainTip {
     const message = { ...baseMsgSeenBtcChainTip } as MsgSeenBtcChainTip;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.height !== undefined && object.height !== null) {
       message.height = object.height;
     } else {

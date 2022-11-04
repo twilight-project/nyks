@@ -17,13 +17,13 @@ func TestMsgSeenBtcChainTip_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSeenBtcChainTip{
-				Creator: "invalid_address",
+				OrchestratorAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSeenBtcChainTip{
-				Creator: sample.AccAddress(),
+				OrchestratorAddress: sample.AccAddress(),
 			},
 		},
 	}

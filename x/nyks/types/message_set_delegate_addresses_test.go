@@ -17,13 +17,13 @@ func TestMsgSetDelegateAddresses_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSetDelegateAddresses{
-				Creator: "invalid_address",
+				ValidatorAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSetDelegateAddresses{
-				Creator: sample.AccAddress(),
+				ValidatorAddress: sample.AccAddress(),
 			},
 		},
 	}

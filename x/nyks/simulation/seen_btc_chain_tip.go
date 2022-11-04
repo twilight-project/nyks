@@ -19,7 +19,7 @@ func SimulateMsgSeenBtcChainTip(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgSeenBtcChainTip{
-			Creator: simAccount.Address.String(),
+			OrchestratorAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the SeenBtcChainTip simulation
