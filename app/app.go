@@ -97,9 +97,9 @@ import (
 
 	"github.com/twilight-project/nyks/docs"
 
-	nyksmodule "github.com/twilight-project/nyks/x/nyks"
-	nyksmodulekeeper "github.com/twilight-project/nyks/x/nyks/keeper"
-	nyksmoduletypes "github.com/twilight-project/nyks/x/nyks/types"
+	nyksmodule "github.com/twilight-project/nyks/x/forks"
+	nyksmodulekeeper "github.com/twilight-project/nyks/x/forks/keeper"
+	nyksmoduletypes "github.com/twilight-project/nyks/x/forks/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 

@@ -13,8 +13,8 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
-	"github.com/twilight-project/nyks/x/nyks/keeper"
-	"github.com/twilight-project/nyks/x/nyks/types"
+	"github.com/twilight-project/nyks/x/forks/keeper"
+	"github.com/twilight-project/nyks/x/forks/types"
 )
 
 func nyksKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {

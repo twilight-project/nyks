@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
 
-option go_package = "github.com/twilight-project/nyks/x/nyks/types";
+option go_package = "github.com/twilight-project/nyks/x/forks/types";
 
 // proposalType is the cosmos type of an event from the counterpart chain that can
 // be handled
