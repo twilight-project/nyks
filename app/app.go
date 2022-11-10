@@ -97,6 +97,9 @@ import (
 
 	"github.com/twilight-project/nyks/docs"
 
+	bridgemodule "github.com/twilight-project/nyks/x/bridge"
+	bridgemodulekeeper "github.com/twilight-project/nyks/x/bridge/keeper"
+	bridgemoduletypes "github.com/twilight-project/nyks/x/bridge/types"
 	nyksmodule "github.com/twilight-project/nyks/x/forks"
 	nyksmodulekeeper "github.com/twilight-project/nyks/x/forks/keeper"
 	nyksmoduletypes "github.com/twilight-project/nyks/x/forks/types"
@@ -154,6 +157,7 @@ var (
 		vesting.AppModuleBasic{},
 		monitoringp.AppModuleBasic{},
 		nyksmodule.AppModuleBasic{},
+		bridgemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -226,6 +230,8 @@ type App struct {
 	ScopedMonitoringKeeper capabilitykeeper.ScopedKeeper
 
 	nyksKeeper nyksmodulekeeper.Keeper
+
+	BridgeKeeper bridgemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -263,6 +269,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		nyksmoduletypes.StoreKey,
+		bridgemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -385,6 +392,14 @@ func New(
 	)
 	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.BridgeKeeper = *bridgemodulekeeper.NewKeeper(
+		appCodec,
+		keys[bridgemoduletypes.StoreKey],
+		keys[bridgemoduletypes.MemStoreKey],
+		app.GetSubspace(bridgemoduletypes.ModuleName),
+	)
+	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -426,6 +441,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		nyksModule,
+		bridgeModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -453,6 +469,7 @@ func New(
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -476,6 +493,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -504,6 +522,7 @@ func New(
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -528,6 +547,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		nyksModule,
+		bridgeModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -718,6 +738,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
 	paramsKeeper.Subspace(nyksmoduletypes.ModuleName)
+	paramsKeeper.Subspace(bridgemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

@@ -4,13 +4,9 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgSeenBtcChainTip } from "./types/nyks/tx";
-import { MsgSetDelegateAddresses } from "./types/nyks/tx";
 
 
 const types = [
-  ["/twilightproject.nyks.nyks.MsgSeenBtcChainTip", MsgSeenBtcChainTip],
-  ["/twilightproject.nyks.nyks.MsgSetDelegateAddresses", MsgSetDelegateAddresses],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -43,8 +39,6 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgSeenBtcChainTip: (data: MsgSeenBtcChainTip): EncodeObject => ({ typeUrl: "/twilightproject.nyks.nyks.MsgSeenBtcChainTip", value: MsgSeenBtcChainTip.fromPartial( data ) }),
-    msgSetDelegateAddresses: (data: MsgSetDelegateAddresses): EncodeObject => ({ typeUrl: "/twilightproject.nyks.nyks.MsgSetDelegateAddresses", value: MsgSetDelegateAddresses.fromPartial( data ) }),
     
   };
 };
