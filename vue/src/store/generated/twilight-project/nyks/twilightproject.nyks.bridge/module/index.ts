@@ -4,9 +4,11 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgMsgConfirmBtcDeposit } from "./types/bridge/tx";
 
 
 const types = [
+  ["/twilightproject.nyks.bridge.MsgMsgConfirmBtcDeposit", MsgMsgConfirmBtcDeposit],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -39,6 +41,7 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgMsgConfirmBtcDeposit: (data: MsgMsgConfirmBtcDeposit): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgMsgConfirmBtcDeposit", value: MsgMsgConfirmBtcDeposit.fromPartial( data ) }),
     
   };
 };

@@ -49440,6 +49440,11 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgMsgConfirmBtcDepositResponse:
+    type: object
+    properties:
+      cosmosDepositAddress:
+        type: string
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.

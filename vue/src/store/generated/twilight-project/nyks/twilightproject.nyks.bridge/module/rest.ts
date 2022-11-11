@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface BridgeMsgMsgConfirmBtcDepositResponse {
+  cosmosDepositAddress?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
