@@ -9,11 +9,11 @@ const TypeMsgSetDelegateAddresses = "set_delegate_addresses"
 
 var _ sdk.Msg = &MsgSetDelegateAddresses{}
 
-func NewMsgSetDelegateAddresses(creator string, validatorAddress string, orchestratorAddress string, btcPublicKey string) *MsgSetDelegateAddresses {
+func NewMsgSetDelegateAddresses(creator string, validatorAddress string, btcOracleAddress string, btcPublicKey string) *MsgSetDelegateAddresses {
 	return &MsgSetDelegateAddresses{
-		ValidatorAddress:    validatorAddress,
-		OrchestratorAddress: orchestratorAddress,
-		BtcPublicKey:        btcPublicKey,
+		ValidatorAddress: validatorAddress,
+		BtcOracleAddress: btcOracleAddress,
+		BtcPublicKey:     btcPublicKey,
 	}
 }
 

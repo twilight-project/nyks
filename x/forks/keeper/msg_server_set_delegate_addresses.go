@@ -20,7 +20,7 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 
 	// check the following, all should be validated in validate basic
 	val, e1 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	orch, e2 := sdk.AccAddressFromBech32(msg.OrchestratorAddress)
+	orch, e2 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	btcPk, e3 := types.NewBtcPublicKey(msg.BtcPublicKey)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
@@ -52,7 +52,7 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 		if delegateKeys[i].BtcPublicKey == btcPk.BtcPublicKey {
 			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate BTC Public Key")
 		}
-		if delegateKeys[i].OrchestratorAddress == orch.String() {
+		if delegateKeys[i].BtcOracleAddress == orch.String() {
 			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Orchestrator Key")
 		}
 	}

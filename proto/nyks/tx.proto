@@ -14,7 +14,7 @@ service Msg {
 
 message MsgSetDelegateAddresses {
   string validatorAddress = 2;
-  string orchestratorAddress = 3;
+  string btcOracleAddress = 3;
   string btcPublicKey = 4;
 }
 
@@ -25,7 +25,7 @@ message MsgSetDelegateAddressesResponse {
 message MsgSeenBtcChainTip {
   uint64 height = 2;
   string hash = 3;
-  string orchestratorAddress = 4;
+  string btcOracleAddress = 4;
 }
 
 message MsgSeenBtcChainTipResponse {

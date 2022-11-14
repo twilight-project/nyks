@@ -28,7 +28,7 @@ func (msg MsgSeenBtcChainTip) GetProposarOrchestrator() sdk.AccAddress {
 		panic("MsgSeenBtcChainTip failed ValidateBasic! Should have been handled earlier")
 	}
 
-	val, err := sdk.AccAddressFromBech32(msg.OrchestratorAddress)
+	val, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		panic(err)
 	}

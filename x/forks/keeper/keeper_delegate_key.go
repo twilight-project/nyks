@@ -292,9 +292,9 @@ func (k Keeper) GetDelegateKeys(ctx sdk.Context) ([]types.MsgSetDelegateAddresse
 			panic("Can't find address")
 		}
 		result = append(result, types.MsgSetDelegateAddresses{
-			ValidatorAddress:    valAddr,
-			OrchestratorAddress: orch,
-			BtcPublicKey:        btcPk,
+			ValidatorAddress: valAddr,
+			BtcOracleAddress: orch,
+			BtcPublicKey:     btcPk,
 		})
 
 	}

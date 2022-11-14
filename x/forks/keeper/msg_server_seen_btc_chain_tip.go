@@ -59,7 +59,7 @@ func (k msgServer) claimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, m
 func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcChainTip) (*types.MsgSeenBtcChainTipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := k.checkOrchestratorValidatorInSet(ctx, msg.OrchestratorAddress)
+	err := k.checkOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
 	}

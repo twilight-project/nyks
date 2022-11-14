@@ -9,11 +9,11 @@ const TypeMsgSeenBtcChainTip = "seen_btc_chain_tip"
 
 var _ sdk.Msg = &MsgSeenBtcChainTip{}
 
-func NewMsgSeenBtcChainTip(creator string, height uint64, hash string, orchestratorAddress string) *MsgSeenBtcChainTip {
+func NewMsgSeenBtcChainTip(creator string, height uint64, hash string, btcOracleAddress string) *MsgSeenBtcChainTip {
 	return &MsgSeenBtcChainTip{
-		Height:              height,
-		Hash:                hash,
-		OrchestratorAddress: orchestratorAddress,
+		Height:           height,
+		Hash:             hash,
+		BtcOracleAddress: btcOracleAddress,
 	}
 }
 
@@ -26,7 +26,7 @@ func (msg *MsgSeenBtcChainTip) Type() string {
 }
 
 func (msg *MsgSeenBtcChainTip) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.OrchestratorAddress)
+	creator, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func (msg *MsgSeenBtcChainTip) GetSignBytes() []byte {
 }
 
 func (msg *MsgSeenBtcChainTip) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.OrchestratorAddress)
+	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
