@@ -1,5 +1,5 @@
 syntax = "proto3";
-package twilightproject.nyks.nyks;
+package twilightproject.nyks.forks;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";

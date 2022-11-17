@@ -10,12 +10,12 @@ export interface MsgMsgConfirmBtcDeposit {
   inputAddress: string;
   blockHeight: number;
   blockHash: string;
-  cosmosDepositAddress: string;
+  twilightDepositAddress: string;
   btcOracleAddress: string;
 }
 
 export interface MsgMsgConfirmBtcDepositResponse {
-  cosmosDepositAddress: string;
+  twilightDepositAddress: string;
 }
 
 const baseMsgMsgConfirmBtcDeposit: object = {
@@ -24,7 +24,7 @@ const baseMsgMsgConfirmBtcDeposit: object = {
   inputAddress: "",
   blockHeight: 0,
   blockHash: "",
-  cosmosDepositAddress: "",
+  twilightDepositAddress: "",
   btcOracleAddress: "",
 };
 
@@ -48,8 +48,8 @@ export const MsgMsgConfirmBtcDeposit = {
     if (message.blockHash !== "") {
       writer.uint32(42).string(message.blockHash);
     }
-    if (message.cosmosDepositAddress !== "") {
-      writer.uint32(50).string(message.cosmosDepositAddress);
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(50).string(message.twilightDepositAddress);
     }
     if (message.btcOracleAddress !== "") {
       writer.uint32(58).string(message.btcOracleAddress);
@@ -82,7 +82,7 @@ export const MsgMsgConfirmBtcDeposit = {
           message.blockHash = reader.string();
           break;
         case 6:
-          message.cosmosDepositAddress = reader.string();
+          message.twilightDepositAddress = reader.string();
           break;
         case 7:
           message.btcOracleAddress = reader.string();
@@ -125,12 +125,12 @@ export const MsgMsgConfirmBtcDeposit = {
       message.blockHash = "";
     }
     if (
-      object.cosmosDepositAddress !== undefined &&
-      object.cosmosDepositAddress !== null
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
     ) {
-      message.cosmosDepositAddress = String(object.cosmosDepositAddress);
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
     } else {
-      message.cosmosDepositAddress = "";
+      message.twilightDepositAddress = "";
     }
     if (
       object.btcOracleAddress !== undefined &&
@@ -154,8 +154,8 @@ export const MsgMsgConfirmBtcDeposit = {
     message.blockHeight !== undefined &&
       (obj.blockHeight = message.blockHeight);
     message.blockHash !== undefined && (obj.blockHash = message.blockHash);
-    message.cosmosDepositAddress !== undefined &&
-      (obj.cosmosDepositAddress = message.cosmosDepositAddress);
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
     message.btcOracleAddress !== undefined &&
       (obj.btcOracleAddress = message.btcOracleAddress);
     return obj;
@@ -193,12 +193,12 @@ export const MsgMsgConfirmBtcDeposit = {
       message.blockHash = "";
     }
     if (
-      object.cosmosDepositAddress !== undefined &&
-      object.cosmosDepositAddress !== null
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
     ) {
-      message.cosmosDepositAddress = object.cosmosDepositAddress;
+      message.twilightDepositAddress = object.twilightDepositAddress;
     } else {
-      message.cosmosDepositAddress = "";
+      message.twilightDepositAddress = "";
     }
     if (
       object.btcOracleAddress !== undefined &&
@@ -213,7 +213,7 @@ export const MsgMsgConfirmBtcDeposit = {
 };
 
 const baseMsgMsgConfirmBtcDepositResponse: object = {
-  cosmosDepositAddress: "",
+  twilightDepositAddress: "",
 };
 
 export const MsgMsgConfirmBtcDepositResponse = {
@@ -221,8 +221,8 @@ export const MsgMsgConfirmBtcDepositResponse = {
     message: MsgMsgConfirmBtcDepositResponse,
     writer: Writer = Writer.create()
   ): Writer {
-    if (message.cosmosDepositAddress !== "") {
-      writer.uint32(10).string(message.cosmosDepositAddress);
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(10).string(message.twilightDepositAddress);
     }
     return writer;
   },
@@ -240,7 +240,7 @@ export const MsgMsgConfirmBtcDepositResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.cosmosDepositAddress = reader.string();
+          message.twilightDepositAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -255,20 +255,20 @@ export const MsgMsgConfirmBtcDepositResponse = {
       ...baseMsgMsgConfirmBtcDepositResponse,
     } as MsgMsgConfirmBtcDepositResponse;
     if (
-      object.cosmosDepositAddress !== undefined &&
-      object.cosmosDepositAddress !== null
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
     ) {
-      message.cosmosDepositAddress = String(object.cosmosDepositAddress);
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
     } else {
-      message.cosmosDepositAddress = "";
+      message.twilightDepositAddress = "";
     }
     return message;
   },
 
   toJSON(message: MsgMsgConfirmBtcDepositResponse): unknown {
     const obj: any = {};
-    message.cosmosDepositAddress !== undefined &&
-      (obj.cosmosDepositAddress = message.cosmosDepositAddress);
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
     return obj;
   },
 
@@ -279,12 +279,12 @@ export const MsgMsgConfirmBtcDepositResponse = {
       ...baseMsgMsgConfirmBtcDepositResponse,
     } as MsgMsgConfirmBtcDepositResponse;
     if (
-      object.cosmosDepositAddress !== undefined &&
-      object.cosmosDepositAddress !== null
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
     ) {
-      message.cosmosDepositAddress = object.cosmosDepositAddress;
+      message.twilightDepositAddress = object.twilightDepositAddress;
     } else {
-      message.cosmosDepositAddress = "";
+      message.twilightDepositAddress = "";
     }
     return message;
   },

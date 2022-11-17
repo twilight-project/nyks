@@ -10,7 +10,7 @@
  */
 
 export interface BridgeMsgMsgConfirmBtcDepositResponse {
-  cosmosDepositAddress?: string;
+  twilightDepositAddress?: string;
 }
 
 /**

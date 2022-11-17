@@ -6,6 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/twilight-project/nyks/x/forks/types"
 )
 
@@ -20,7 +21,7 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 
 	// check the following, all should be validated in validate basic
 	val, e1 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	orch, e2 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	oracle, e2 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	btcPk, e3 := types.NewBtcPublicKey(msg.BtcPublicKey)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
@@ -31,17 +32,17 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 	}
 
 	// check that the validator does not have an existing key
-	// _, foundExistingOrchestratorKey := k.GetOrchestratorValidator(ctx, orch)
-	// pk, foundExistingBtcPublicKey := k.GetBtcPublicKeyByValidator(ctx, val)
-	// if pk != nil {
-	// 	ctx.Logger().Error(pk.BtcPublicKey)
-	// }
+	_, foundExistingOracleKey := k.GetOrchestratorValidator(ctx, oracle)
+	pk, foundExistingBtcPublicKey := k.GetBtcPublicKeyByValidator(ctx, val)
+	if pk != nil {
+		ctx.Logger().Error(pk.BtcPublicKey)
+	}
 	// ensure that the validator exists
-	// if k.Keeper.StakingKeeper.Validator(ctx, val) == nil {
-	// 	return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, val.String())
-	// } else if foundExistingOrchestratorKey || foundExistingBtcPublicKey {
-	// 	return nil, sdkerrors.Wrap(types.ErrResetDelegateKeys, val.String())
-	// }
+	if k.Keeper.StakingKeeper.Validator(ctx, val) == nil {
+		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, val.String())
+	} else if foundExistingOracleKey || foundExistingBtcPublicKey {
+		return nil, sdkerrors.Wrap(types.ErrResetDelegateKeys, val.String())
+	}
 
 	// check that neither key is a duplicate
 	delegateKeys, keyErr := k.GetDelegateKeys(ctx)
@@ -52,20 +53,20 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 		if delegateKeys[i].BtcPublicKey == btcPk.BtcPublicKey {
 			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate BTC Public Key")
 		}
-		if delegateKeys[i].BtcOracleAddress == orch.String() {
-			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Orchestrator Key")
+		if delegateKeys[i].BtcOracleAddress == oracle.String() {
+			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate BtcOracle Key")
 		}
 	}
 
 	// set the orchestrator address
-	k.SetOrchestratorValidator(ctx, val, orch)
+	k.SetOrchestratorValidator(ctx, val, oracle)
 	// set the ethereum address
 	k.SetBtcPublicKeyForValidator(ctx, val, *btcPk)
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventSetDelegateAddresses{
 			Message: msg.Type(),
-			Address: orch.String(),
+			Address: oracle.String(),
 		},
 	)
 

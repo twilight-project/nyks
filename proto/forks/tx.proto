@@ -1,5 +1,5 @@
 syntax = "proto3";
-package twilightproject.nyks.nyks;
+package twilightproject.nyks.forks;
 
 // this line is used by starport scaffolding # proto/tx/import
 

@@ -1,8 +1,8 @@
 syntax = "proto3";
-package twilightproject.nyks.nyks;
+package twilightproject.nyks.forks;
 
 import "gogoproto/gogo.proto";
-import "nyks/params.proto";
+import "forks/params.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/twilight-project/nyks/x/forks/types";

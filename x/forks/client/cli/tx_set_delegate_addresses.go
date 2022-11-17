@@ -28,7 +28,6 @@ func CmdSetDelegateAddresses() *cobra.Command {
 			}
 
 			msg := types.NewMsgSetDelegateAddresses(
-				clientCtx.GetFromAddress().String(),
 				argValidatorAddress,
 				argOrchestratorAddress,
 				argBtcPublicKey,

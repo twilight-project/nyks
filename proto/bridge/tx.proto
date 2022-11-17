@@ -17,12 +17,12 @@ message MsgMsgConfirmBtcDeposit {
   string inputAddress = 3;
   uint64 blockHeight = 4;
   string blockHash = 5;
-  string cosmosDepositAddress = 6;
+  string twilightDepositAddress = 6;
   string btcOracleAddress = 7;
 }
 
 message MsgMsgConfirmBtcDepositResponse {
-  string cosmosDepositAddress = 1;
+  string twilightDepositAddress = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

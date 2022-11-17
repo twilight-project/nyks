@@ -9,7 +9,7 @@ const TypeMsgSetDelegateAddresses = "set_delegate_addresses"
 
 var _ sdk.Msg = &MsgSetDelegateAddresses{}
 
-func NewMsgSetDelegateAddresses(creator string, validatorAddress string, btcOracleAddress string, btcPublicKey string) *MsgSetDelegateAddresses {
+func NewMsgSetDelegateAddresses(validatorAddress string, btcOracleAddress string, btcPublicKey string) *MsgSetDelegateAddresses {
 	return &MsgSetDelegateAddresses{
 		ValidatorAddress: validatorAddress,
 		BtcOracleAddress: btcOracleAddress,
@@ -26,11 +26,11 @@ func (msg *MsgSetDelegateAddresses) Type() string {
 }
 
 func (msg *MsgSetDelegateAddresses) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
+	acc, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{acc}
 }
 
 func (msg *MsgSetDelegateAddresses) GetSignBytes() []byte {
@@ -39,9 +39,9 @@ func (msg *MsgSetDelegateAddresses) GetSignBytes() []byte {
 }
 
 func (msg *MsgSetDelegateAddresses) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
+	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid BtcOracleAddress address (%s)", err)
 	}
 	return nil
 }

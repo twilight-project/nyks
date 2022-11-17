@@ -28394,7 +28394,7 @@ paths:
   /twilight-project/nyks/nyks/attestations:
     get:
       summary: Queries a list of Attestations items.
-      operationId: TwilightprojectNyksNyksGetAttestations
+      operationId: TwilightprojectNyksForksGetAttestations
       responses:
         '200':
           description: A successful response.
@@ -28836,7 +28836,7 @@ paths:
   /twilightproject/nyks/nyks/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: TwilightprojectNyksNyksParams
+      operationId: TwilightprojectNyksForksParams
       responses:
         '200':
           description: A successful response.
@@ -49443,7 +49443,7 @@ definitions:
   twilightproject.nyks.bridge.MsgMsgConfirmBtcDepositResponse:
     type: object
     properties:
-      cosmosDepositAddress:
+      twilightDepositAddress:
         type: string
   twilightproject.nyks.bridge.Params:
     type: object
@@ -49455,7 +49455,7 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  twilightproject.nyks.nyks.Attestation:
+  twilightproject.nyks.forks.Attestation:
     type: object
     properties:
       observed:
@@ -49649,18 +49649,18 @@ definitions:
       Observed indicates that >67% of validators have attested to the event,
 
       and that the event should be executed by the state machine
-  twilightproject.nyks.nyks.MsgSeenBtcChainTipResponse:
+  twilightproject.nyks.forks.MsgSeenBtcChainTipResponse:
     type: object
-  twilightproject.nyks.nyks.MsgSetDelegateAddressesResponse:
+  twilightproject.nyks.forks.MsgSetDelegateAddressesResponse:
     type: object
     properties:
       id:
         type: string
         format: uint64
-  twilightproject.nyks.nyks.Params:
+  twilightproject.nyks.forks.Params:
     type: object
     description: Params defines the parameters for the module.
-  twilightproject.nyks.nyks.QueryAttestationsResponse:
+  twilightproject.nyks.forks.QueryAttestationsResponse:
     type: object
     properties:
       attestations:
@@ -49870,7 +49870,7 @@ definitions:
             event,
 
             and that the event should be executed by the state machine
-  twilightproject.nyks.nyks.QueryParamsResponse:
+  twilightproject.nyks.forks.QueryParamsResponse:
     type: object
     properties:
       params:

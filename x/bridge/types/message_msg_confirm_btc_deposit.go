@@ -9,15 +9,15 @@ const TypeMsgMsgConfirmBtcDeposit = "msg_confirm_btc_deposit"
 
 var _ sdk.Msg = &MsgMsgConfirmBtcDeposit{}
 
-func NewMsgMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inputAddress string, blockHeight uint64, blockHash string, cosmosDepositAddress string, btcOracleAddress string) *MsgMsgConfirmBtcDeposit {
+func NewMsgMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inputAddress string, blockHeight uint64, blockHash string, twilightDepositAddress string, btcOracleAddress string) *MsgMsgConfirmBtcDeposit {
 	return &MsgMsgConfirmBtcDeposit{
-		DepositAddress:       depositAddress,
-		DepositAmount:        depositAmount,
-		InputAddress:         inputAddress,
-		BlockHeight:          blockHeight,
-		BlockHash:            blockHash,
-		CosmosDepositAddress: cosmosDepositAddress,
-		BtcOracleAddress:     btcOracleAddress,
+		DepositAddress:         depositAddress,
+		DepositAmount:          depositAmount,
+		InputAddress:           inputAddress,
+		BlockHeight:            blockHeight,
+		BlockHash:              blockHash,
+		TwilightDepositAddress: twilightDepositAddress,
+		BtcOracleAddress:       btcOracleAddress,
 	}
 }
 
