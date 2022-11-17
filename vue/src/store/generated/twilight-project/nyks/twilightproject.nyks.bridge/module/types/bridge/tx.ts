@@ -18,6 +18,15 @@ export interface MsgMsgConfirmBtcDepositResponse {
   twilightDepositAddress: string;
 }
 
+export interface MsgRegisterDepositAddress {
+  depositAddress: string;
+  depositAmount: number;
+  addressScript: string;
+  twilightDepositAddress: string;
+}
+
+export interface MsgRegisterDepositAddressResponse {}
+
 const baseMsgMsgConfirmBtcDeposit: object = {
   depositAddress: "",
   depositAmount: 0,
@@ -290,12 +299,202 @@ export const MsgMsgConfirmBtcDepositResponse = {
   },
 };
 
+const baseMsgRegisterDepositAddress: object = {
+  depositAddress: "",
+  depositAmount: 0,
+  addressScript: "",
+  twilightDepositAddress: "",
+};
+
+export const MsgRegisterDepositAddress = {
+  encode(
+    message: MsgRegisterDepositAddress,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.depositAddress !== "") {
+      writer.uint32(10).string(message.depositAddress);
+    }
+    if (message.depositAmount !== 0) {
+      writer.uint32(16).uint64(message.depositAmount);
+    }
+    if (message.addressScript !== "") {
+      writer.uint32(26).string(message.addressScript);
+    }
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(34).string(message.twilightDepositAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterDepositAddress {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterDepositAddress,
+    } as MsgRegisterDepositAddress;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.depositAddress = reader.string();
+          break;
+        case 2:
+          message.depositAmount = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.addressScript = reader.string();
+          break;
+        case 4:
+          message.twilightDepositAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterDepositAddress {
+    const message = {
+      ...baseMsgRegisterDepositAddress,
+    } as MsgRegisterDepositAddress;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = String(object.depositAddress);
+    } else {
+      message.depositAddress = "";
+    }
+    if (object.depositAmount !== undefined && object.depositAmount !== null) {
+      message.depositAmount = Number(object.depositAmount);
+    } else {
+      message.depositAmount = 0;
+    }
+    if (object.addressScript !== undefined && object.addressScript !== null) {
+      message.addressScript = String(object.addressScript);
+    } else {
+      message.addressScript = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgRegisterDepositAddress): unknown {
+    const obj: any = {};
+    message.depositAddress !== undefined &&
+      (obj.depositAddress = message.depositAddress);
+    message.depositAmount !== undefined &&
+      (obj.depositAmount = message.depositAmount);
+    message.addressScript !== undefined &&
+      (obj.addressScript = message.addressScript);
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRegisterDepositAddress>
+  ): MsgRegisterDepositAddress {
+    const message = {
+      ...baseMsgRegisterDepositAddress,
+    } as MsgRegisterDepositAddress;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = object.depositAddress;
+    } else {
+      message.depositAddress = "";
+    }
+    if (object.depositAmount !== undefined && object.depositAmount !== null) {
+      message.depositAmount = object.depositAmount;
+    } else {
+      message.depositAmount = 0;
+    }
+    if (object.addressScript !== undefined && object.addressScript !== null) {
+      message.addressScript = object.addressScript;
+    } else {
+      message.addressScript = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = object.twilightDepositAddress;
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgRegisterDepositAddressResponse: object = {};
+
+export const MsgRegisterDepositAddressResponse = {
+  encode(
+    _: MsgRegisterDepositAddressResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterDepositAddressResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterDepositAddressResponse,
+    } as MsgRegisterDepositAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRegisterDepositAddressResponse {
+    const message = {
+      ...baseMsgRegisterDepositAddressResponse,
+    } as MsgRegisterDepositAddressResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRegisterDepositAddressResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRegisterDepositAddressResponse>
+  ): MsgRegisterDepositAddressResponse {
+    const message = {
+      ...baseMsgRegisterDepositAddressResponse,
+    } as MsgRegisterDepositAddressResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   MsgConfirmBtcDeposit(
     request: MsgMsgConfirmBtcDeposit
   ): Promise<MsgMsgConfirmBtcDepositResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  RegisterDepositAddress(
+    request: MsgRegisterDepositAddress
+  ): Promise<MsgRegisterDepositAddressResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -314,6 +513,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgMsgConfirmBtcDepositResponse.decode(new Reader(data))
+    );
+  }
+
+  RegisterDepositAddress(
+    request: MsgRegisterDepositAddress
+  ): Promise<MsgRegisterDepositAddressResponse> {
+    const data = MsgRegisterDepositAddress.encode(request).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.bridge.Msg",
+      "RegisterDepositAddress",
+      data
+    );
+    return promise.then((data) =>
+      MsgRegisterDepositAddressResponse.decode(new Reader(data))
     );
   }
 }

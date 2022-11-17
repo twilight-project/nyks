@@ -12,37 +12,29 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdMsgConfirmBtcDeposit() *cobra.Command {
+func CmdRegisterDepositAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "msg-confirm-btc-deposit [deposit-address] [deposit-amount] [input-address] [block-height] [block-hash] [cosmos-deposit-address] [btc-oracle-address]",
-		Short: "Broadcast message MsgConfirmBtcDeposit",
-		Args:  cobra.ExactArgs(7),
+		Use:   "register-deposit-address [deposit-address] [deposit-amount] [address-script] [twilight-deposit-address]",
+		Short: "Broadcast message registerDepositAddress",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDepositAddress := args[0]
 			argDepositAmount, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
 			}
-			argInputAddress := args[2]
-			argBlockHeight, err := strconv.ParseUint(args[3], 10, 64)
-			if err != nil {
-				return err
-			}
-			argBlockHash := args[4]
-			argTwilightDepositAddress := args[5]
+			argAddressScript := args[2]
+			//argTwilightDepositAddress := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgMsgConfirmBtcDeposit(
+			msg := types.NewMsgRegisterDepositAddress(
 				argDepositAddress,
 				argDepositAmount,
-				argInputAddress,
-				argBlockHeight,
-				argBlockHash,
-				argTwilightDepositAddress,
+				argAddressScript,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

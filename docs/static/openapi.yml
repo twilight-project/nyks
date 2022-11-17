@@ -49445,6 +49445,8 @@ definitions:
     properties:
       twilightDepositAddress:
         type: string
+  twilightproject.nyks.bridge.MsgRegisterDepositAddressResponse:
+    type: object
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.

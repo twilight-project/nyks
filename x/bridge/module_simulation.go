@@ -28,6 +28,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgMsgConfirmBtcDeposit int = 100
 
+	opWeightMsgRegisterDepositAddress = "op_weight_msg_register_deposit_address"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgRegisterDepositAddress int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -71,6 +75,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgMsgConfirmBtcDeposit,
 		bridgesimulation.SimulateMsgMsgConfirmBtcDeposit(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgRegisterDepositAddress int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterDepositAddress, &weightMsgRegisterDepositAddress, nil,
+		func(_ *rand.Rand) {
+			weightMsgRegisterDepositAddress = defaultWeightMsgRegisterDepositAddress
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgRegisterDepositAddress,
+		bridgesimulation.SimulateMsgRegisterDepositAddress(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

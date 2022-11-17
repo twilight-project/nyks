@@ -150,6 +150,21 @@ export default {
 				}
 			}
 		},
+		async sendMsgRegisterDepositAddress({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgRegisterDepositAddress(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterDepositAddress:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgRegisterDepositAddress:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
 		async MsgMsgConfirmBtcDeposit({ rootGetters }, { value }) {
 			try {
@@ -161,6 +176,19 @@ export default {
 					throw new Error('TxClient:MsgMsgConfirmBtcDeposit:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgMsgConfirmBtcDeposit:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgRegisterDepositAddress({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgRegisterDepositAddress(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterDepositAddress:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgRegisterDepositAddress:Create Could not create message: ' + e.message)
 				}
 			}
 		},
