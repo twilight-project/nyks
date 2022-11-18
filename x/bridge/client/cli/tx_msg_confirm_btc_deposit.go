@@ -36,7 +36,7 @@ func CmdMsgConfirmBtcDeposit() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgMsgConfirmBtcDeposit(
+			msg := types.NewMsgConfirmBtcDeposit(
 				argDepositAddress,
 				argDepositAmount,
 				argInputAddress,

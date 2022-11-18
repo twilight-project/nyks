@@ -7,11 +7,11 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func (k msgServer) MsgConfirmBtcDeposit(goCtx context.Context, msg *types.MsgMsgConfirmBtcDeposit) (*types.MsgMsgConfirmBtcDepositResponse, error) {
+func (k msgServer) ConfirmBtcDeposit(goCtx context.Context, msg *types.MsgConfirmBtcDeposit) (*types.MsgConfirmBtcDepositResponse, error) {
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	_ = ctx
 
-	return &types.MsgMsgConfirmBtcDepositResponse{}, nil
+	return &types.MsgConfirmBtcDepositResponse{}, nil
 }

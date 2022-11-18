@@ -24,9 +24,9 @@ var (
 )
 
 const (
-	opWeightMsgMsgConfirmBtcDeposit = "op_weight_msg_msg_confirm_btc_deposit"
+	opWeightMsgConfirmBtcDeposit = "op_weight_msg_msg_confirm_btc_deposit"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgMsgConfirmBtcDeposit int = 100
+	defaultWeightMsgConfirmBtcDeposit int = 100
 
 	opWeightMsgRegisterDepositAddress = "op_weight_msg_register_deposit_address"
 	// TODO: Determine the simulation weight value
@@ -66,15 +66,15 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgMsgConfirmBtcDeposit int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgMsgConfirmBtcDeposit, &weightMsgMsgConfirmBtcDeposit, nil,
+	var weightMsgConfirmBtcDeposit int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgConfirmBtcDeposit, &weightMsgConfirmBtcDeposit, nil,
 		func(_ *rand.Rand) {
-			weightMsgMsgConfirmBtcDeposit = defaultWeightMsgMsgConfirmBtcDeposit
+			weightMsgConfirmBtcDeposit = defaultWeightMsgConfirmBtcDeposit
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgMsgConfirmBtcDeposit,
-		bridgesimulation.SimulateMsgMsgConfirmBtcDeposit(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgConfirmBtcDeposit,
+		bridgesimulation.SimulateMsgConfirmBtcDeposit(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgRegisterDepositAddress int

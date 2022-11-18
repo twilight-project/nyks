@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-export interface BridgeMsgMsgConfirmBtcDepositResponse {
+export interface BridgeMsgConfirmBtcDepositResponse {
   twilightDepositAddress?: string;
 }
 

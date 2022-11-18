@@ -8,21 +8,21 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgMsgConfirmBtcDeposit_ValidateBasic(t *testing.T) {
+func TestMsgConfirmBtcDeposit_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgMsgConfirmBtcDeposit
+		msg  MsgConfirmBtcDeposit
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgMsgConfirmBtcDeposit{
+			msg: MsgConfirmBtcDeposit{
 				BtcOracleAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgMsgConfirmBtcDeposit{
+			msg: MsgConfirmBtcDeposit{
 				BtcOracleAddress: sample.AccAddress(),
 			},
 		},

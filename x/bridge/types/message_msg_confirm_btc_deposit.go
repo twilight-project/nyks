@@ -5,12 +5,12 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgMsgConfirmBtcDeposit = "msg_confirm_btc_deposit"
+const TypeMsgConfirmBtcDeposit = "confirm_btc_deposit"
 
-var _ sdk.Msg = &MsgMsgConfirmBtcDeposit{}
+var _ sdk.Msg = &MsgConfirmBtcDeposit{}
 
-func NewMsgMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inputAddress string, blockHeight uint64, blockHash string, twilightDepositAddress string, btcOracleAddress string) *MsgMsgConfirmBtcDeposit {
-	return &MsgMsgConfirmBtcDeposit{
+func NewMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inputAddress string, blockHeight uint64, blockHash string, twilightDepositAddress string, btcOracleAddress string) *MsgConfirmBtcDeposit {
+	return &MsgConfirmBtcDeposit{
 		DepositAddress:         depositAddress,
 		DepositAmount:          depositAmount,
 		InputAddress:           inputAddress,
@@ -21,15 +21,15 @@ func NewMsgMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inp
 	}
 }
 
-func (msg *MsgMsgConfirmBtcDeposit) Route() string {
+func (msg *MsgConfirmBtcDeposit) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgMsgConfirmBtcDeposit) Type() string {
-	return TypeMsgMsgConfirmBtcDeposit
+func (msg *MsgConfirmBtcDeposit) Type() string {
+	return TypeMsgConfirmBtcDeposit
 }
 
-func (msg *MsgMsgConfirmBtcDeposit) GetSigners() []sdk.AccAddress {
+func (msg *MsgConfirmBtcDeposit) GetSigners() []sdk.AccAddress {
 	btcOracleAddress, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		panic(err)
@@ -37,12 +37,12 @@ func (msg *MsgMsgConfirmBtcDeposit) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{btcOracleAddress}
 }
 
-func (msg *MsgMsgConfirmBtcDeposit) GetSignBytes() []byte {
+func (msg *MsgConfirmBtcDeposit) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgMsgConfirmBtcDeposit) ValidateBasic() error {
+func (msg *MsgConfirmBtcDeposit) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

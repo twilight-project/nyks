@@ -17,8 +17,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgMsgConfirmBtcDeposit:
-			res, err := msgServer.MsgConfirmBtcDeposit(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgConfirmBtcDeposit:
+			res, err := msgServer.ConfirmBtcDeposit(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgRegisterBtcDepositAddress:
 			res, err := msgServer.RegisterDepositAddress(sdk.WrapSDKContext(ctx), msg)

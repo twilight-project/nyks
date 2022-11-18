@@ -5,7 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgRegisterDepositAddress = "register_deposit_address"
+const TypeMsgRegisterBtcDepositAddress = "register_btc_deposit_address"
 
 var _ sdk.Msg = &MsgRegisterBtcDepositAddress{}
 
@@ -23,7 +23,7 @@ func (msg *MsgRegisterBtcDepositAddress) Route() string {
 }
 
 func (msg *MsgRegisterBtcDepositAddress) Type() string {
-	return TypeMsgRegisterDepositAddress
+	return TypeMsgRegisterBtcDepositAddress
 }
 
 func (msg *MsgRegisterBtcDepositAddress) GetSigners() []sdk.AccAddress {

@@ -7,12 +7,12 @@ option go_package = "github.com/twilight-project/nyks/x/bridge/types";
 
 // Msg defines the Msg service.
 service Msg {
-      rpc MsgConfirmBtcDeposit(MsgMsgConfirmBtcDeposit) returns (MsgMsgConfirmBtcDepositResponse);
+      rpc ConfirmBtcDeposit(MsgConfirmBtcDeposit) returns (MsgConfirmBtcDepositResponse);
   rpc RegisterDepositAddress(MsgRegisterBtcDepositAddress) returns (MsgRegisterDepositAddressResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
-message MsgMsgConfirmBtcDeposit {
+message MsgConfirmBtcDeposit {
   string depositAddress = 1;
   uint64 depositAmount = 2;
   string inputAddress = 3;
@@ -22,7 +22,7 @@ message MsgMsgConfirmBtcDeposit {
   string btcOracleAddress = 7;
 }
 
-message MsgMsgConfirmBtcDepositResponse {
+message MsgConfirmBtcDepositResponse {
   string twilightDepositAddress = 1;
 }
 
