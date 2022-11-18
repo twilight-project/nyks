@@ -11,18 +11,18 @@ import (
 func TestMsgRegisterDepositAddress_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgRegisterDepositAddress
+		msg  MsgRegisterBtcDepositAddress
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgRegisterDepositAddress{
+			msg: MsgRegisterBtcDepositAddress{
 				TwilightDepositAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgRegisterDepositAddress{
+			msg: MsgRegisterBtcDepositAddress{
 				TwilightDepositAddress: sample.AccAddress(),
 			},
 		},

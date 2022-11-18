@@ -7,7 +7,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func (k msgServer) RegisterDepositAddress(goCtx context.Context, msg *types.MsgRegisterDepositAddress) (*types.MsgRegisterDepositAddressResponse, error) {
+func (k msgServer) RegisterDepositAddress(goCtx context.Context, msg *types.MsgRegisterBtcDepositAddress) (*types.MsgRegisterDepositAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO: Handling the message

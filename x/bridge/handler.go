@@ -20,7 +20,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgMsgConfirmBtcDeposit:
 			res, err := msgServer.MsgConfirmBtcDeposit(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRegisterDepositAddress:
+		case *types.MsgRegisterBtcDepositAddress:
 			res, err := msgServer.RegisterDepositAddress(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1

@@ -7,10 +7,10 @@ import (
 
 const TypeMsgRegisterDepositAddress = "register_deposit_address"
 
-var _ sdk.Msg = &MsgRegisterDepositAddress{}
+var _ sdk.Msg = &MsgRegisterBtcDepositAddress{}
 
-func NewMsgRegisterDepositAddress(depositAddress string, depositAmount uint64, addressScript string, twilightDepositAddress string) *MsgRegisterDepositAddress {
-	return &MsgRegisterDepositAddress{
+func NewMsgRegisterDepositAddress(depositAddress string, depositAmount uint64, addressScript string, twilightDepositAddress string) *MsgRegisterBtcDepositAddress {
+	return &MsgRegisterBtcDepositAddress{
 		DepositAddress:         depositAddress,
 		DepositAmount:          depositAmount,
 		AddressScript:          addressScript,
@@ -18,15 +18,15 @@ func NewMsgRegisterDepositAddress(depositAddress string, depositAmount uint64, a
 	}
 }
 
-func (msg *MsgRegisterDepositAddress) Route() string {
+func (msg *MsgRegisterBtcDepositAddress) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgRegisterDepositAddress) Type() string {
+func (msg *MsgRegisterBtcDepositAddress) Type() string {
 	return TypeMsgRegisterDepositAddress
 }
 
-func (msg *MsgRegisterDepositAddress) GetSigners() []sdk.AccAddress {
+func (msg *MsgRegisterBtcDepositAddress) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
 	if err != nil {
 		panic(err)
@@ -34,12 +34,12 @@ func (msg *MsgRegisterDepositAddress) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgRegisterDepositAddress) GetSignBytes() []byte {
+func (msg *MsgRegisterBtcDepositAddress) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgRegisterDepositAddress) ValidateBasic() error {
+func (msg *MsgRegisterBtcDepositAddress) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

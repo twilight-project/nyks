@@ -163,25 +163,25 @@ func (m *MsgMsgConfirmBtcDepositResponse) GetTwilightDepositAddress() string {
 	return ""
 }
 
-type MsgRegisterDepositAddress struct {
+type MsgRegisterBtcDepositAddress struct {
 	DepositAddress         string `protobuf:"bytes,1,opt,name=depositAddress,proto3" json:"depositAddress,omitempty"`
 	DepositAmount          uint64 `protobuf:"varint,2,opt,name=depositAmount,proto3" json:"depositAmount,omitempty"`
 	AddressScript          string `protobuf:"bytes,3,opt,name=addressScript,proto3" json:"addressScript,omitempty"`
 	TwilightDepositAddress string `protobuf:"bytes,4,opt,name=twilightDepositAddress,proto3" json:"twilightDepositAddress,omitempty"`
 }
 
-func (m *MsgRegisterDepositAddress) Reset()         { *m = MsgRegisterDepositAddress{} }
-func (m *MsgRegisterDepositAddress) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterDepositAddress) ProtoMessage()    {}
-func (*MsgRegisterDepositAddress) Descriptor() ([]byte, []int) {
+func (m *MsgRegisterBtcDepositAddress) Reset()         { *m = MsgRegisterBtcDepositAddress{} }
+func (m *MsgRegisterBtcDepositAddress) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterBtcDepositAddress) ProtoMessage()    {}
+func (*MsgRegisterBtcDepositAddress) Descriptor() ([]byte, []int) {
 	return fileDescriptor_41dc2e30e6049cae, []int{2}
 }
-func (m *MsgRegisterDepositAddress) XXX_Unmarshal(b []byte) error {
+func (m *MsgRegisterBtcDepositAddress) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRegisterDepositAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRegisterBtcDepositAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRegisterDepositAddress.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRegisterBtcDepositAddress.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -191,40 +191,40 @@ func (m *MsgRegisterDepositAddress) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgRegisterDepositAddress) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterDepositAddress.Merge(m, src)
+func (m *MsgRegisterBtcDepositAddress) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterBtcDepositAddress.Merge(m, src)
 }
-func (m *MsgRegisterDepositAddress) XXX_Size() int {
+func (m *MsgRegisterBtcDepositAddress) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRegisterDepositAddress) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterDepositAddress.DiscardUnknown(m)
+func (m *MsgRegisterBtcDepositAddress) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterBtcDepositAddress.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRegisterDepositAddress proto.InternalMessageInfo
+var xxx_messageInfo_MsgRegisterBtcDepositAddress proto.InternalMessageInfo
 
-func (m *MsgRegisterDepositAddress) GetDepositAddress() string {
+func (m *MsgRegisterBtcDepositAddress) GetDepositAddress() string {
 	if m != nil {
 		return m.DepositAddress
 	}
 	return ""
 }
 
-func (m *MsgRegisterDepositAddress) GetDepositAmount() uint64 {
+func (m *MsgRegisterBtcDepositAddress) GetDepositAmount() uint64 {
 	if m != nil {
 		return m.DepositAmount
 	}
 	return 0
 }
 
-func (m *MsgRegisterDepositAddress) GetAddressScript() string {
+func (m *MsgRegisterBtcDepositAddress) GetAddressScript() string {
 	if m != nil {
 		return m.AddressScript
 	}
 	return ""
 }
 
-func (m *MsgRegisterDepositAddress) GetTwilightDepositAddress() string {
+func (m *MsgRegisterBtcDepositAddress) GetTwilightDepositAddress() string {
 	if m != nil {
 		return m.TwilightDepositAddress
 	}
@@ -270,14 +270,14 @@ var xxx_messageInfo_MsgRegisterDepositAddressResponse proto.InternalMessageInfo
 func init() {
 	proto.RegisterType((*MsgMsgConfirmBtcDeposit)(nil), "twilightproject.nyks.bridge.MsgMsgConfirmBtcDeposit")
 	proto.RegisterType((*MsgMsgConfirmBtcDepositResponse)(nil), "twilightproject.nyks.bridge.MsgMsgConfirmBtcDepositResponse")
-	proto.RegisterType((*MsgRegisterDepositAddress)(nil), "twilightproject.nyks.bridge.MsgRegisterDepositAddress")
+	proto.RegisterType((*MsgRegisterBtcDepositAddress)(nil), "twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress")
 	proto.RegisterType((*MsgRegisterDepositAddressResponse)(nil), "twilightproject.nyks.bridge.MsgRegisterDepositAddressResponse")
 }
 
 func init() { proto.RegisterFile("bridge/tx.proto", fileDescriptor_41dc2e30e6049cae) }
 
 var fileDescriptor_41dc2e30e6049cae = []byte{
-	// 407 bytes of a gzipped FileDescriptorProto
+	// 413 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x2a, 0xca, 0x4c,
 	0x49, 0x4f, 0xd5, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0x2e, 0x29, 0xcf,
 	0xcc, 0xc9, 0x4c, 0xcf, 0x28, 0x29, 0x28, 0xca, 0xcf, 0x4a, 0x4d, 0x2e, 0xd1, 0xcb, 0xab, 0xcc,
@@ -292,18 +292,18 @@ var fileDescriptor_41dc2e30e6049cae = []byte{
 	0x06, 0xf3, 0xac, 0x0b, 0xaa, 0xcb, 0xd9, 0xc0, 0x4a, 0x71, 0xc8, 0x0a, 0x69, 0x71, 0x09, 0x24,
 	0x95, 0x24, 0xfb, 0x17, 0x25, 0x26, 0xe7, 0xa4, 0xc2, 0x74, 0xb0, 0x83, 0x75, 0x60, 0x88, 0x2b,
 	0x45, 0x72, 0xc9, 0xe3, 0x08, 0xb0, 0xa0, 0xd4, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x3c, 0xce,
-	0x60, 0xc4, 0xe7, 0x0c, 0xa5, 0xe3, 0x8c, 0x5c, 0x92, 0xbe, 0xc5, 0xe9, 0x41, 0xa9, 0xe9, 0x99,
-	0xc5, 0x25, 0xa9, 0x45, 0x68, 0x8e, 0xa4, 0x6e, 0x74, 0xa8, 0x70, 0xf1, 0x26, 0x42, 0x34, 0x04,
-	0x27, 0x17, 0x65, 0x16, 0x94, 0x40, 0xe3, 0x03, 0x55, 0x10, 0x8f, 0x4f, 0x58, 0xf0, 0xfa, 0x44,
-	0x99, 0x4b, 0x11, 0xa7, 0x47, 0x60, 0xc1, 0x64, 0xb4, 0x94, 0x89, 0x8b, 0xd9, 0xb7, 0x38, 0x5d,
-	0xa8, 0x8b, 0x91, 0x4b, 0x04, 0x6b, 0x02, 0x34, 0xd1, 0xc3, 0x93, 0x74, 0xf5, 0x70, 0xc4, 0x82,
-	0x94, 0x0d, 0x39, 0xba, 0xe0, 0x71, 0x37, 0x81, 0x91, 0x4b, 0x0c, 0x47, 0x04, 0x98, 0x11, 0x32,
-	0x18, 0xbb, 0x3e, 0x29, 0x3b, 0xf2, 0xf4, 0xc1, 0x9c, 0xe4, 0xe4, 0x79, 0xe2, 0x91, 0x1c, 0xe3,
-	0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c,
-	0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xfa, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9,
-	0xb9, 0xfa, 0x30, 0x3b, 0x74, 0xa1, 0x96, 0xe8, 0x83, 0x2c, 0xd1, 0xaf, 0xd0, 0x87, 0x15, 0x07,
-	0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x22, 0xc1, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x1d,
-	0x70, 0x08, 0x7b, 0x25, 0x04, 0x00, 0x00,
+	0x60, 0xc4, 0xe7, 0x0c, 0xa5, 0x53, 0x8c, 0x5c, 0x32, 0xbe, 0xc5, 0xe9, 0x41, 0xa9, 0xe9, 0x99,
+	0xc5, 0x25, 0xa9, 0x45, 0x08, 0x93, 0x61, 0xee, 0xa4, 0x6e, 0x8c, 0xa8, 0x70, 0xf1, 0x26, 0x42,
+	0x34, 0x04, 0x27, 0x17, 0x65, 0x16, 0x94, 0x40, 0xa3, 0x04, 0x55, 0x10, 0x8f, 0x67, 0x58, 0xf0,
+	0x7a, 0x46, 0x99, 0x4b, 0x11, 0xc9, 0x2f, 0xa8, 0x92, 0xb0, 0x90, 0x32, 0x5a, 0xc1, 0xc4, 0xc5,
+	0xec, 0x5b, 0x9c, 0x2e, 0xd4, 0xc5, 0xc8, 0x25, 0x82, 0x35, 0x0d, 0x9a, 0xe8, 0xe1, 0x49, 0xbd,
+	0x7a, 0x38, 0x22, 0x42, 0xca, 0x86, 0x1c, 0x5d, 0xf0, 0xe8, 0x9b, 0xcc, 0xc8, 0x25, 0x86, 0xdd,
+	0xdd, 0x42, 0x96, 0x84, 0x0c, 0xc6, 0x19, 0x77, 0x52, 0x76, 0xc4, 0x6a, 0xc5, 0x1e, 0x54, 0x4e,
+	0x9e, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7,
+	0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9f, 0x9e, 0x59, 0x92,
+	0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0xb3, 0x43, 0x17, 0x6a, 0x89, 0x3e, 0xc8, 0x12,
+	0xfd, 0x0a, 0x7d, 0x58, 0xa1, 0x50, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x2e, 0x18, 0x8c, 0x01,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0x83, 0x75, 0xd0, 0xba, 0x2b, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -319,7 +319,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	MsgConfirmBtcDeposit(ctx context.Context, in *MsgMsgConfirmBtcDeposit, opts ...grpc.CallOption) (*MsgMsgConfirmBtcDepositResponse, error)
-	RegisterDepositAddress(ctx context.Context, in *MsgRegisterDepositAddress, opts ...grpc.CallOption) (*MsgRegisterDepositAddressResponse, error)
+	RegisterDepositAddress(ctx context.Context, in *MsgRegisterBtcDepositAddress, opts ...grpc.CallOption) (*MsgRegisterDepositAddressResponse, error)
 }
 
 type msgClient struct {
@@ -339,7 +339,7 @@ func (c *msgClient) MsgConfirmBtcDeposit(ctx context.Context, in *MsgMsgConfirmB
 	return out, nil
 }
 
-func (c *msgClient) RegisterDepositAddress(ctx context.Context, in *MsgRegisterDepositAddress, opts ...grpc.CallOption) (*MsgRegisterDepositAddressResponse, error) {
+func (c *msgClient) RegisterDepositAddress(ctx context.Context, in *MsgRegisterBtcDepositAddress, opts ...grpc.CallOption) (*MsgRegisterDepositAddressResponse, error) {
 	out := new(MsgRegisterDepositAddressResponse)
 	err := c.cc.Invoke(ctx, "/twilightproject.nyks.bridge.Msg/RegisterDepositAddress", in, out, opts...)
 	if err != nil {
@@ -351,7 +351,7 @@ func (c *msgClient) RegisterDepositAddress(ctx context.Context, in *MsgRegisterD
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	MsgConfirmBtcDeposit(context.Context, *MsgMsgConfirmBtcDeposit) (*MsgMsgConfirmBtcDepositResponse, error)
-	RegisterDepositAddress(context.Context, *MsgRegisterDepositAddress) (*MsgRegisterDepositAddressResponse, error)
+	RegisterDepositAddress(context.Context, *MsgRegisterBtcDepositAddress) (*MsgRegisterDepositAddressResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -361,7 +361,7 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) MsgConfirmBtcDeposit(ctx context.Context, req *MsgMsgConfirmBtcDeposit) (*MsgMsgConfirmBtcDepositResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MsgConfirmBtcDeposit not implemented")
 }
-func (*UnimplementedMsgServer) RegisterDepositAddress(ctx context.Context, req *MsgRegisterDepositAddress) (*MsgRegisterDepositAddressResponse, error) {
+func (*UnimplementedMsgServer) RegisterDepositAddress(ctx context.Context, req *MsgRegisterBtcDepositAddress) (*MsgRegisterDepositAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterDepositAddress not implemented")
 }
 
@@ -388,7 +388,7 @@ func _Msg_MsgConfirmBtcDeposit_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _Msg_RegisterDepositAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterDepositAddress)
+	in := new(MsgRegisterBtcDepositAddress)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -400,7 +400,7 @@ func _Msg_RegisterDepositAddress_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/twilightproject.nyks.bridge.Msg/RegisterDepositAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterDepositAddress(ctx, req.(*MsgRegisterDepositAddress))
+		return srv.(MsgServer).RegisterDepositAddress(ctx, req.(*MsgRegisterBtcDepositAddress))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -520,7 +520,7 @@ func (m *MsgMsgConfirmBtcDepositResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRegisterDepositAddress) Marshal() (dAtA []byte, err error) {
+func (m *MsgRegisterBtcDepositAddress) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -530,12 +530,12 @@ func (m *MsgRegisterDepositAddress) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRegisterDepositAddress) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRegisterBtcDepositAddress) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRegisterDepositAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRegisterBtcDepositAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -651,7 +651,7 @@ func (m *MsgMsgConfirmBtcDepositResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgRegisterDepositAddress) Size() (n int) {
+func (m *MsgRegisterBtcDepositAddress) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1020,7 +1020,7 @@ func (m *MsgMsgConfirmBtcDepositResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRegisterDepositAddress) Unmarshal(dAtA []byte) error {
+func (m *MsgRegisterBtcDepositAddress) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1043,10 +1043,10 @@ func (m *MsgRegisterDepositAddress) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterDepositAddress: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRegisterBtcDepositAddress: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterDepositAddress: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRegisterBtcDepositAddress: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
