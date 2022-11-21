@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	fmt "fmt"
 
+	btcec "github.com/btcsuite/btcd/btcec"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -41,17 +42,26 @@ func NewBtcPublicKey(PublicKey string) (*BtcPublicKey, error) {
 }
 
 // Validates the input string as an Btc PublicKey
-// PublicKeyes must not be empty, have 42 character length, start with 0x and have 40 remaining characters in [0-9a-fA-F]
+// PublicKeyes must not be empty, have 64 character length, start with 0x and have 40 remaining characters in [0-9a-fA-F]
 func ValidateBtcPublicKey(PublicKey string) error {
 	if PublicKey == "" {
 		return fmt.Errorf("empty")
 	}
 	if len(PublicKey) != BtcPublicKeyLen {
-		return fmt.Errorf("PublicKey(%s) of the wrong length exp(%d) actual(%d)", PublicKey, BtcPublicKeyLen, len(PublicKey))
+		return fmt.Errorf("PublicKey (%s) of the wrong length exp(%d) actual(%d)", PublicKey, BtcPublicKeyLen, len(PublicKey))
 	}
-	// if !regexp.MustCompile("^0x[0-9a-fA-F]{64}$").MatchString(PublicKey) {
-	// 	return fmt.Errorf("PublicKey(%s) doesn't pass regex", PublicKey)
-	// }
+
+	// validate the public key first
+	// checks for compressed key length, valid prefix and the public key point is a valid curve point
+	pkBytes, err := hex.DecodeString(PublicKey)
+	if err != nil {
+		return fmt.Errorf("PublicKey(%s) is not encoded properly", PublicKey)
+	}
+
+	pk, err := btcec.ParsePubKey(pkBytes, btcec.S256())
+	if err != nil {
+		return fmt.Errorf("PublicKey(%s) doesn't pass btcec.ParsePubKey check", pk)
+	}
 
 	return nil
 }

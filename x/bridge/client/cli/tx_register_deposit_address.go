@@ -31,7 +31,7 @@ func CmdRegisterDepositAddress() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgRegisterDepositAddress(
+			msg := types.NewMsgRegisterBtcDepositAddress(
 				argDepositAddress,
 				argDepositAmount,
 				argAddressScript,

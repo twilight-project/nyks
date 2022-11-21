@@ -8,7 +8,7 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgRegisterDepositAddress_ValidateBasic(t *testing.T) {
+func TestMsgRegisterBtcDepositAddress_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
 		msg  MsgRegisterBtcDepositAddress

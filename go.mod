@@ -3,6 +3,7 @@ module github.com/twilight-project/nyks
 go 1.16
 
 require (
+	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/cosmos/cosmos-sdk v0.45.3
 	github.com/cosmos/ibc-go/v2 v2.0.3
 	github.com/gogo/protobuf v1.3.3

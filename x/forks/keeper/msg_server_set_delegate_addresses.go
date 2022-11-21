@@ -61,8 +61,10 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 	// set the orchestrator address
 	k.SetOrchestratorValidator(ctx, val, oracle)
 	// set the ethereum address
-	k.SetBtcPublicKeyForValidator(ctx, val, *btcPk)
-
+	_, errSetting := k.SetBtcPublicKeyForValidator(ctx, val, *btcPk)
+	if err != nil {
+		return nil, errSetting
+	}
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventSetDelegateAddresses{
 			Message: msg.Type(),

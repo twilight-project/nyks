@@ -9,7 +9,7 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgConfirmBtcDeposit{}, "bridge/MsgConfirmBtcDeposit", nil)
-	cdc.RegisterConcrete(&MsgRegisterBtcDepositAddress{}, "bridge/RegisterDepositAddress", nil)
+	cdc.RegisterConcrete(&MsgRegisterBtcDepositAddress{}, "bridge/RegisterBtcDepositAddress", nil)
 	// this line is used by starport scaffolding # 2
 }
 

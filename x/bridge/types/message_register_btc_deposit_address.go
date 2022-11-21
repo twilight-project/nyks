@@ -9,7 +9,7 @@ const TypeMsgRegisterBtcDepositAddress = "register_btc_deposit_address"
 
 var _ sdk.Msg = &MsgRegisterBtcDepositAddress{}
 
-func NewMsgRegisterDepositAddress(depositAddress string, depositAmount uint64, addressScript string, twilightDepositAddress string) *MsgRegisterBtcDepositAddress {
+func NewMsgRegisterBtcDepositAddress(depositAddress string, depositAmount uint64, addressScript string, twilightDepositAddress string) *MsgRegisterBtcDepositAddress {
 	return &MsgRegisterBtcDepositAddress{
 		DepositAddress:         depositAddress,
 		DepositAmount:          depositAmount,

@@ -25,7 +25,7 @@ export interface MsgRegisterBtcDepositAddress {
   twilightDepositAddress: string;
 }
 
-export interface MsgRegisterDepositAddressResponse {}
+export interface MsgRegisterBtcDepositAddressResponse {}
 
 const baseMsgConfirmBtcDeposit: object = {
   depositAddress: "",
@@ -424,11 +424,11 @@ export const MsgRegisterBtcDepositAddress = {
   },
 };
 
-const baseMsgRegisterDepositAddressResponse: object = {};
+const baseMsgRegisterBtcDepositAddressResponse: object = {};
 
-export const MsgRegisterDepositAddressResponse = {
+export const MsgRegisterBtcDepositAddressResponse = {
   encode(
-    _: MsgRegisterDepositAddressResponse,
+    _: MsgRegisterBtcDepositAddressResponse,
     writer: Writer = Writer.create()
   ): Writer {
     return writer;
@@ -437,12 +437,12 @@ export const MsgRegisterDepositAddressResponse = {
   decode(
     input: Reader | Uint8Array,
     length?: number
-  ): MsgRegisterDepositAddressResponse {
+  ): MsgRegisterBtcDepositAddressResponse {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRegisterDepositAddressResponse,
-    } as MsgRegisterDepositAddressResponse;
+      ...baseMsgRegisterBtcDepositAddressResponse,
+    } as MsgRegisterBtcDepositAddressResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -454,24 +454,24 @@ export const MsgRegisterDepositAddressResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterDepositAddressResponse {
+  fromJSON(_: any): MsgRegisterBtcDepositAddressResponse {
     const message = {
-      ...baseMsgRegisterDepositAddressResponse,
-    } as MsgRegisterDepositAddressResponse;
+      ...baseMsgRegisterBtcDepositAddressResponse,
+    } as MsgRegisterBtcDepositAddressResponse;
     return message;
   },
 
-  toJSON(_: MsgRegisterDepositAddressResponse): unknown {
+  toJSON(_: MsgRegisterBtcDepositAddressResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRegisterDepositAddressResponse>
-  ): MsgRegisterDepositAddressResponse {
+    _: DeepPartial<MsgRegisterBtcDepositAddressResponse>
+  ): MsgRegisterBtcDepositAddressResponse {
     const message = {
-      ...baseMsgRegisterDepositAddressResponse,
-    } as MsgRegisterDepositAddressResponse;
+      ...baseMsgRegisterBtcDepositAddressResponse,
+    } as MsgRegisterBtcDepositAddressResponse;
     return message;
   },
 };
@@ -482,9 +482,9 @@ export interface Msg {
     request: MsgConfirmBtcDeposit
   ): Promise<MsgConfirmBtcDepositResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  RegisterDepositAddress(
+  RegisterBtcDepositAddress(
     request: MsgRegisterBtcDepositAddress
-  ): Promise<MsgRegisterDepositAddressResponse>;
+  ): Promise<MsgRegisterBtcDepositAddressResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -506,17 +506,17 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  RegisterDepositAddress(
+  RegisterBtcDepositAddress(
     request: MsgRegisterBtcDepositAddress
-  ): Promise<MsgRegisterDepositAddressResponse> {
+  ): Promise<MsgRegisterBtcDepositAddressResponse> {
     const data = MsgRegisterBtcDepositAddress.encode(request).finish();
     const promise = this.rpc.request(
       "twilightproject.nyks.bridge.Msg",
-      "RegisterDepositAddress",
+      "RegisterBtcDepositAddress",
       data
     );
     return promise.then((data) =>
-      MsgRegisterDepositAddressResponse.decode(new Reader(data))
+      MsgRegisterBtcDepositAddressResponse.decode(new Reader(data))
     );
   }
 }

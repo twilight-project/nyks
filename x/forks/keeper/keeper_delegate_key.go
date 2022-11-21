@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/hex"
 	"sort"
 	"time"
 
@@ -116,13 +117,20 @@ func (k Keeper) GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (
 // /////////////////////////////
 
 // SetBtcPublicKeyForValidator sets the btc public key for a given validator
-func (k Keeper) SetBtcPublicKeyForValidator(ctx sdk.Context, validator sdk.ValAddress, btcPk types.BtcPublicKey) {
+func (k Keeper) SetBtcPublicKeyForValidator(ctx sdk.Context, validator sdk.ValAddress, btcPk types.BtcPublicKey) ([]byte, error) {
 	if err := sdk.VerifyAddressFormat(validator); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
+
+	btcPkBytes, err := hex.DecodeString(btcPk.GetBtcPublicKey())
+	if err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidBtcPublicKey, "invalid btc public key hex encoding (%s)", btcPk.GetBtcPublicKey())
+	}
 	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetBtcPublicKeyByValidatorKey(validator)), []byte(btcPk.GetBtcPublicKey()))
+	store.Set([]byte(types.GetBtcPublicKeyByValidatorKey(validator)), btcPkBytes)
 	store.Set([]byte(types.GetValidatorByBtcPublicKeyKey(btcPk)), []byte(validator))
+
+	return btcPkBytes, nil
 }
 
 // GetBtcAddressByValidator returns the btc address for a given validator
@@ -138,7 +146,7 @@ func (k Keeper) GetBtcPublicKeyByValidator(ctx sdk.Context, validator sdk.ValAdd
 		return nil, false
 	}
 
-	pk, err := types.NewBtcPublicKey(string(btcPk))
+	pk, err := types.NewBtcPublicKey(hex.EncodeToString(btcPk))
 	if err != nil {
 		ctx.Logger().Error("newbtcpk was not found")
 		return nil, false

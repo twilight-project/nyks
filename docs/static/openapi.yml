@@ -49445,7 +49445,7 @@ definitions:
     properties:
       twilightDepositAddress:
         type: string
-  twilightproject.nyks.bridge.MsgRegisterDepositAddressResponse:
+  twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
   twilightproject.nyks.bridge.Params:
     type: object

@@ -13,7 +13,7 @@ export interface BridgeMsgConfirmBtcDepositResponse {
   twilightDepositAddress?: string;
 }
 
-export type BridgeMsgRegisterDepositAddressResponse = object;
+export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
 /**
  * Params defines the parameters for the module.
