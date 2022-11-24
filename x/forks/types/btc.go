@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	BtcPublicKeyLen = 64
+	BtcPublicKeyLen = 66
 )
 
 // Regular BtcPublicKey

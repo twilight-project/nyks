@@ -256,7 +256,7 @@ func (k Keeper) GetDelegateKeys(ctx sdk.Context) ([]types.MsgSetDelegateAddresse
 		// of the actual key
 		key := iter.Key()[len(types.BtcPublicKeyByValidatorKey):]
 		value := iter.Value()
-		btcPk, err := types.NewBtcPublicKey(string(value))
+		btcPk, err := types.NewBtcPublicKey(hex.EncodeToString(value))
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "found invalid btcPk %v under key %v", string(value), key)
 		}
@@ -272,36 +272,36 @@ func (k Keeper) GetDelegateKeys(ctx sdk.Context) ([]types.MsgSetDelegateAddresse
 	iter = store.Iterator(prefixRange(prefix))
 	defer iter.Close()
 
-	orchAddresses := make(map[string]string)
+	btcOracleAddresses := make(map[string]string)
 
 	for ; iter.Valid(); iter.Next() {
 		key := iter.Key()[len(types.KeyOrchestratorAddress):]
 		value := iter.Value()
 		orchAddress := sdk.AccAddress(key)
 		if err := sdk.VerifyAddressFormat(orchAddress); err != nil {
-			return nil, sdkerrors.Wrapf(err, "invalid orchAddress in key %v", orchAddresses)
+			return nil, sdkerrors.Wrapf(err, "invalid btcOracleAddress in key %v", btcOracleAddresses)
 		}
 		valAddress := sdk.ValAddress(value)
 		if err := sdk.VerifyAddressFormat(valAddress); err != nil {
-			return nil, sdkerrors.Wrapf(err, "invalid val address stored for orchestrator %s", valAddress.String())
+			return nil, sdkerrors.Wrapf(err, "invalid val address stored for btcOracle %s", valAddress.String())
 		}
 
-		orchAddresses[valAddress.String()] = orchAddress.String()
+		btcOracleAddresses[valAddress.String()] = orchAddress.String()
 	}
 
 	var result []types.MsgSetDelegateAddresses
 
 	for valAddr, btcPk := range btcPublicKeys {
-		orch, ok := orchAddresses[valAddr]
+		oracle, ok := btcOracleAddresses[valAddr]
 		if !ok {
 			// this should never happen unless the store
 			// is somehow inconsistent
-			ctx.Logger().Error("Inconsistent database, can't find orchestrator address")
+			ctx.Logger().Error("Inconsistent database, can't find btcOracle address")
 			panic("Can't find address")
 		}
 		result = append(result, types.MsgSetDelegateAddresses{
 			ValidatorAddress: valAddr,
-			BtcOracleAddress: orch,
+			BtcOracleAddress: oracle,
 			BtcPublicKey:     btcPk,
 		})
 

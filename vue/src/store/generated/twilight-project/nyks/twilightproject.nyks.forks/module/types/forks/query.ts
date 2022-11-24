@@ -39,6 +39,15 @@ export interface QueryAttestationsResponse {
   attestations: Attestation[];
 }
 
+export interface QueryDelegateKeysByBtcOracleAddressRequest {
+  btcOracleAddress: string;
+}
+
+export interface QueryDelegateKeysByBtcOracleAddressResponse {
+  validatorAddress: string;
+  btcPublicKey: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -342,6 +351,181 @@ export const QueryAttestationsResponse = {
   },
 };
 
+const baseQueryDelegateKeysByBtcOracleAddressRequest: object = {
+  btcOracleAddress: "",
+};
+
+export const QueryDelegateKeysByBtcOracleAddressRequest = {
+  encode(
+    message: QueryDelegateKeysByBtcOracleAddressRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.btcOracleAddress !== "") {
+      writer.uint32(10).string(message.btcOracleAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryDelegateKeysByBtcOracleAddressRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressRequest,
+    } as QueryDelegateKeysByBtcOracleAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.btcOracleAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDelegateKeysByBtcOracleAddressRequest {
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressRequest,
+    } as QueryDelegateKeysByBtcOracleAddressRequest;
+    if (
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
+    ) {
+      message.btcOracleAddress = String(object.btcOracleAddress);
+    } else {
+      message.btcOracleAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryDelegateKeysByBtcOracleAddressRequest): unknown {
+    const obj: any = {};
+    message.btcOracleAddress !== undefined &&
+      (obj.btcOracleAddress = message.btcOracleAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryDelegateKeysByBtcOracleAddressRequest>
+  ): QueryDelegateKeysByBtcOracleAddressRequest {
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressRequest,
+    } as QueryDelegateKeysByBtcOracleAddressRequest;
+    if (
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
+    ) {
+      message.btcOracleAddress = object.btcOracleAddress;
+    } else {
+      message.btcOracleAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryDelegateKeysByBtcOracleAddressResponse: object = {
+  validatorAddress: "",
+  btcPublicKey: "",
+};
+
+export const QueryDelegateKeysByBtcOracleAddressResponse = {
+  encode(
+    message: QueryDelegateKeysByBtcOracleAddressResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.validatorAddress !== "") {
+      writer.uint32(10).string(message.validatorAddress);
+    }
+    if (message.btcPublicKey !== "") {
+      writer.uint32(18).string(message.btcPublicKey);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryDelegateKeysByBtcOracleAddressResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressResponse,
+    } as QueryDelegateKeysByBtcOracleAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.validatorAddress = reader.string();
+          break;
+        case 2:
+          message.btcPublicKey = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDelegateKeysByBtcOracleAddressResponse {
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressResponse,
+    } as QueryDelegateKeysByBtcOracleAddressResponse;
+    if (
+      object.validatorAddress !== undefined &&
+      object.validatorAddress !== null
+    ) {
+      message.validatorAddress = String(object.validatorAddress);
+    } else {
+      message.validatorAddress = "";
+    }
+    if (object.btcPublicKey !== undefined && object.btcPublicKey !== null) {
+      message.btcPublicKey = String(object.btcPublicKey);
+    } else {
+      message.btcPublicKey = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryDelegateKeysByBtcOracleAddressResponse): unknown {
+    const obj: any = {};
+    message.validatorAddress !== undefined &&
+      (obj.validatorAddress = message.validatorAddress);
+    message.btcPublicKey !== undefined &&
+      (obj.btcPublicKey = message.btcPublicKey);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryDelegateKeysByBtcOracleAddressResponse>
+  ): QueryDelegateKeysByBtcOracleAddressResponse {
+    const message = {
+      ...baseQueryDelegateKeysByBtcOracleAddressResponse,
+    } as QueryDelegateKeysByBtcOracleAddressResponse;
+    if (
+      object.validatorAddress !== undefined &&
+      object.validatorAddress !== null
+    ) {
+      message.validatorAddress = object.validatorAddress;
+    } else {
+      message.validatorAddress = "";
+    }
+    if (object.btcPublicKey !== undefined && object.btcPublicKey !== null) {
+      message.btcPublicKey = object.btcPublicKey;
+    } else {
+      message.btcPublicKey = "";
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -350,6 +534,10 @@ export interface Query {
   GetAttestations(
     request: QueryAttestationsRequest
   ): Promise<QueryAttestationsResponse>;
+  /** Queries a list of DelegateKeysByBtcOracleAddress items. */
+  DelegateKeysByBtcOracleAddress(
+    request: QueryDelegateKeysByBtcOracleAddressRequest
+  ): Promise<QueryDelegateKeysByBtcOracleAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -378,6 +566,22 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAttestationsResponse.decode(new Reader(data))
+    );
+  }
+
+  DelegateKeysByBtcOracleAddress(
+    request: QueryDelegateKeysByBtcOracleAddressRequest
+  ): Promise<QueryDelegateKeysByBtcOracleAddressResponse> {
+    const data = QueryDelegateKeysByBtcOracleAddressRequest.encode(
+      request
+    ).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.forks.Query",
+      "DelegateKeysByBtcOracleAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryDelegateKeysByBtcOracleAddressResponse.decode(new Reader(data))
     );
   }
 }

@@ -47,6 +47,7 @@ const getDefaultState = () => {
 	return {
 				Params: {},
 				GetAttestations: {},
+				DelegateKeysByBtcOracleAddress: {},
 				
 				_Structure: {
 						Attestation: getStructure(Attestation.fromPartial({})),
@@ -93,6 +94,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.GetAttestations[JSON.stringify(params)] ?? {}
+		},
+				getDelegateKeysByBtcOracleAddress: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.DelegateKeysByBtcOracleAddress[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -171,6 +178,28 @@ export default {
 				return getters['getGetAttestations']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryGetAttestations API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryDelegateKeysByBtcOracleAddress({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryDelegateKeysByBtcOracleAddress( key.btcOracleAddress)).data
+				
+					
+				commit('QUERY', { query: 'DelegateKeysByBtcOracleAddress', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryDelegateKeysByBtcOracleAddress', payload: { options: { all }, params: {...key},query }})
+				return getters['getDelegateKeysByBtcOracleAddress']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryDelegateKeysByBtcOracleAddress API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

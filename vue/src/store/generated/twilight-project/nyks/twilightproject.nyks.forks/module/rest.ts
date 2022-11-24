@@ -126,6 +126,11 @@ export interface ForksQueryAttestationsResponse {
   attestations?: ForksAttestation[];
 }
 
+export interface ForksQueryDelegateKeysByBtcOracleAddressResponse {
+  validatorAddress?: string;
+  btcPublicKey?: string;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -454,6 +459,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDelegateKeysByBtcOracleAddress
+   * @summary Queries a list of DelegateKeysByBtcOracleAddress items.
+   * @request GET:/twilight-project/nyks/forks/delegate_keys_by_btc_oracle_address/{btcOracleAddress}
+   */
+  queryDelegateKeysByBtcOracleAddress = (btcOracleAddress: string, params: RequestParams = {}) =>
+    this.request<ForksQueryDelegateKeysByBtcOracleAddressResponse, RpcStatus>({
+      path: `/twilight-project/nyks/forks/delegate_keys_by_btc_oracle_address/${btcOracleAddress}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
