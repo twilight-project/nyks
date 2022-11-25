@@ -20,8 +20,6 @@ export interface MsgConfirmBtcDepositResponse {
 
 export interface MsgRegisterBtcDepositAddress {
   depositAddress: string;
-  depositAmount: number;
-  addressScript: string;
   twilightDepositAddress: string;
 }
 
@@ -291,8 +289,6 @@ export const MsgConfirmBtcDepositResponse = {
 
 const baseMsgRegisterBtcDepositAddress: object = {
   depositAddress: "",
-  depositAmount: 0,
-  addressScript: "",
   twilightDepositAddress: "",
 };
 
@@ -304,14 +300,8 @@ export const MsgRegisterBtcDepositAddress = {
     if (message.depositAddress !== "") {
       writer.uint32(10).string(message.depositAddress);
     }
-    if (message.depositAmount !== 0) {
-      writer.uint32(16).uint64(message.depositAmount);
-    }
-    if (message.addressScript !== "") {
-      writer.uint32(26).string(message.addressScript);
-    }
     if (message.twilightDepositAddress !== "") {
-      writer.uint32(34).string(message.twilightDepositAddress);
+      writer.uint32(18).string(message.twilightDepositAddress);
     }
     return writer;
   },
@@ -332,12 +322,6 @@ export const MsgRegisterBtcDepositAddress = {
           message.depositAddress = reader.string();
           break;
         case 2:
-          message.depositAmount = longToNumber(reader.uint64() as Long);
-          break;
-        case 3:
-          message.addressScript = reader.string();
-          break;
-        case 4:
           message.twilightDepositAddress = reader.string();
           break;
         default:
@@ -357,16 +341,6 @@ export const MsgRegisterBtcDepositAddress = {
     } else {
       message.depositAddress = "";
     }
-    if (object.depositAmount !== undefined && object.depositAmount !== null) {
-      message.depositAmount = Number(object.depositAmount);
-    } else {
-      message.depositAmount = 0;
-    }
-    if (object.addressScript !== undefined && object.addressScript !== null) {
-      message.addressScript = String(object.addressScript);
-    } else {
-      message.addressScript = "";
-    }
     if (
       object.twilightDepositAddress !== undefined &&
       object.twilightDepositAddress !== null
@@ -382,10 +356,6 @@ export const MsgRegisterBtcDepositAddress = {
     const obj: any = {};
     message.depositAddress !== undefined &&
       (obj.depositAddress = message.depositAddress);
-    message.depositAmount !== undefined &&
-      (obj.depositAmount = message.depositAmount);
-    message.addressScript !== undefined &&
-      (obj.addressScript = message.addressScript);
     message.twilightDepositAddress !== undefined &&
       (obj.twilightDepositAddress = message.twilightDepositAddress);
     return obj;
@@ -401,16 +371,6 @@ export const MsgRegisterBtcDepositAddress = {
       message.depositAddress = object.depositAddress;
     } else {
       message.depositAddress = "";
-    }
-    if (object.depositAmount !== undefined && object.depositAmount !== null) {
-      message.depositAmount = object.depositAmount;
-    } else {
-      message.depositAmount = 0;
-    }
-    if (object.addressScript !== undefined && object.addressScript !== null) {
-      message.addressScript = object.addressScript;
-    } else {
-      message.addressScript = "";
     }
     if (
       object.twilightDepositAddress !== undefined &&

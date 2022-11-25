@@ -133,7 +133,7 @@ func (k Keeper) SetBtcPublicKeyForValidator(ctx sdk.Context, validator sdk.ValAd
 	return btcPkBytes, nil
 }
 
-// GetBtcAddressByValidator returns the btc address for a given validator
+// GetBtcAddressByValidator returns the btc public key for a given validator
 func (k Keeper) GetBtcPublicKeyByValidator(ctx sdk.Context, validator sdk.ValAddress) (btcPublicKey *types.BtcPublicKey, found bool) {
 	if err := sdk.VerifyAddressFormat(validator); err != nil {
 		ctx.Logger().Error("invalid validator address")

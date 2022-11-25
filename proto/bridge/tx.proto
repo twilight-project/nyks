@@ -28,9 +28,7 @@ message MsgConfirmBtcDepositResponse {
 
 message MsgRegisterBtcDepositAddress {
   string depositAddress = 1;
-  uint64 depositAmount = 2;
-  string addressScript = 3;
-  string twilightDepositAddress = 4;
+  string twilightDepositAddress = 2;
 }
 
 message MsgRegisterBtcDepositAddressResponse {
