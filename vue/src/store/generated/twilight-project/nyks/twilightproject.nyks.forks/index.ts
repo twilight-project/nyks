@@ -48,6 +48,7 @@ const getDefaultState = () => {
 				Params: {},
 				GetAttestations: {},
 				DelegateKeysByBtcOracleAddress: {},
+				DelegateKeysAll: {},
 				
 				_Structure: {
 						Attestation: getStructure(Attestation.fromPartial({})),
@@ -100,6 +101,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.DelegateKeysByBtcOracleAddress[JSON.stringify(params)] ?? {}
+		},
+				getDelegateKeysAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.DelegateKeysAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -205,21 +212,28 @@ export default {
 		},
 		
 		
-		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = [], memo = '' }) {
+		
+		
+		 		
+		
+		
+		async QueryDelegateKeysAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
 			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgSeenBtcChainTip(value)
-				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
-	gas: "200000" }, memo})
-				return result
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryDelegateKeysAll()).data
+				
+					
+				commit('QUERY', { query: 'DelegateKeysAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryDelegateKeysAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getDelegateKeysAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
-				}
+				throw new Error('QueryClient:QueryDelegateKeysAll API Node Unavailable. Could not perform query: ' + e.message)
+				
 			}
 		},
+		
+		
 		async sendMsgSetDelegateAddresses({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -235,20 +249,22 @@ export default {
 				}
 			}
 		},
-		
-		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
 				const msg = await txClient.msgSeenBtcChainTip(value)
-				return msg
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgSetDelegateAddresses({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -259,6 +275,19 @@ export default {
 					throw new Error('TxClient:MsgSetDelegateAddresses:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgSetDelegateAddresses:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSeenBtcChainTip(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
 				}
 			}
 		},

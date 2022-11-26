@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "forks/params.proto";
+import "forks/tx.proto";
 import "forks/attestation.proto";
 // this line is used by starport scaffolding # 1
 
@@ -24,6 +25,11 @@ service Query {
 // Queries a list of DelegateKeysByBtcOracleAddress items.
 	rpc DelegateKeysByBtcOracleAddress(QueryDelegateKeysByBtcOracleAddressRequest) returns (QueryDelegateKeysByBtcOracleAddressResponse) {
 		option (google.api.http).get = "/twilight-project/nyks/forks/delegate_keys_by_btc_oracle_address/{btcOracleAddress}";
+	}
+
+// Queries a list of DelegateKeysAll items.
+	rpc DelegateKeysAll(QueryDelegateKeysAllRequest) returns (QueryDelegateKeysAllResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/forks/delegate_keys_all";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -65,6 +71,13 @@ message QueryDelegateKeysByBtcOracleAddressRequest {
 message QueryDelegateKeysByBtcOracleAddressResponse {
   string validatorAddress = 1;
   string btcPublicKey = 2;
+}
+
+message QueryDelegateKeysAllRequest {
+}
+
+message QueryDelegateKeysAllResponse {
+  repeated MsgSetDelegateAddresses addresses = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3

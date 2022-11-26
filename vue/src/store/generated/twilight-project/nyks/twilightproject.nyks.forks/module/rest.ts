@@ -112,6 +112,12 @@ export interface ForksAttestation {
 
 export type ForksMsgSeenBtcChainTipResponse = object;
 
+export interface ForksMsgSetDelegateAddresses {
+  validatorAddress?: string;
+  btcOracleAddress?: string;
+  btcPublicKey?: string;
+}
+
 export interface ForksMsgSetDelegateAddressesResponse {
   /** @format uint64 */
   id?: string;
@@ -124,6 +130,10 @@ export type ForksParams = object;
 
 export interface ForksQueryAttestationsResponse {
   attestations?: ForksAttestation[];
+}
+
+export interface ForksQueryDelegateKeysAllResponse {
+  addresses?: ForksMsgSetDelegateAddresses[];
 }
 
 export interface ForksQueryDelegateKeysByBtcOracleAddressResponse {
@@ -459,6 +469,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDelegateKeysAll
+   * @summary Queries a list of DelegateKeysAll items.
+   * @request GET:/twilight-project/nyks/forks/delegate_keys_all
+   */
+  queryDelegateKeysAll = (params: RequestParams = {}) =>
+    this.request<ForksQueryDelegateKeysAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/forks/delegate_keys_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

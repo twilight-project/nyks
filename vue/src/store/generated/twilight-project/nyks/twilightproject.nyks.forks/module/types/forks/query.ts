@@ -3,6 +3,7 @@ import { Reader, util, configure, Writer } from "protobufjs/minimal";
 import * as Long from "long";
 import { Params } from "../forks/params";
 import { Attestation } from "../forks/attestation";
+import { MsgSetDelegateAddresses } from "../forks/tx";
 
 export const protobufPackage = "twilightproject.nyks.forks";
 
@@ -46,6 +47,12 @@ export interface QueryDelegateKeysByBtcOracleAddressRequest {
 export interface QueryDelegateKeysByBtcOracleAddressResponse {
   validatorAddress: string;
   btcPublicKey: string;
+}
+
+export interface QueryDelegateKeysAllRequest {}
+
+export interface QueryDelegateKeysAllResponse {
+  addresses: MsgSetDelegateAddresses[];
 }
 
 const baseQueryParamsRequest: object = {};
@@ -526,6 +533,138 @@ export const QueryDelegateKeysByBtcOracleAddressResponse = {
   },
 };
 
+const baseQueryDelegateKeysAllRequest: object = {};
+
+export const QueryDelegateKeysAllRequest = {
+  encode(
+    _: QueryDelegateKeysAllRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryDelegateKeysAllRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDelegateKeysAllRequest,
+    } as QueryDelegateKeysAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryDelegateKeysAllRequest {
+    const message = {
+      ...baseQueryDelegateKeysAllRequest,
+    } as QueryDelegateKeysAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryDelegateKeysAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryDelegateKeysAllRequest>
+  ): QueryDelegateKeysAllRequest {
+    const message = {
+      ...baseQueryDelegateKeysAllRequest,
+    } as QueryDelegateKeysAllRequest;
+    return message;
+  },
+};
+
+const baseQueryDelegateKeysAllResponse: object = {};
+
+export const QueryDelegateKeysAllResponse = {
+  encode(
+    message: QueryDelegateKeysAllResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.addresses) {
+      MsgSetDelegateAddresses.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryDelegateKeysAllResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDelegateKeysAllResponse,
+    } as QueryDelegateKeysAllResponse;
+    message.addresses = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.addresses.push(
+            MsgSetDelegateAddresses.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDelegateKeysAllResponse {
+    const message = {
+      ...baseQueryDelegateKeysAllResponse,
+    } as QueryDelegateKeysAllResponse;
+    message.addresses = [];
+    if (object.addresses !== undefined && object.addresses !== null) {
+      for (const e of object.addresses) {
+        message.addresses.push(MsgSetDelegateAddresses.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryDelegateKeysAllResponse): unknown {
+    const obj: any = {};
+    if (message.addresses) {
+      obj.addresses = message.addresses.map((e) =>
+        e ? MsgSetDelegateAddresses.toJSON(e) : undefined
+      );
+    } else {
+      obj.addresses = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryDelegateKeysAllResponse>
+  ): QueryDelegateKeysAllResponse {
+    const message = {
+      ...baseQueryDelegateKeysAllResponse,
+    } as QueryDelegateKeysAllResponse;
+    message.addresses = [];
+    if (object.addresses !== undefined && object.addresses !== null) {
+      for (const e of object.addresses) {
+        message.addresses.push(MsgSetDelegateAddresses.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -538,6 +677,10 @@ export interface Query {
   DelegateKeysByBtcOracleAddress(
     request: QueryDelegateKeysByBtcOracleAddressRequest
   ): Promise<QueryDelegateKeysByBtcOracleAddressResponse>;
+  /** Queries a list of DelegateKeysAll items. */
+  DelegateKeysAll(
+    request: QueryDelegateKeysAllRequest
+  ): Promise<QueryDelegateKeysAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -582,6 +725,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryDelegateKeysByBtcOracleAddressResponse.decode(new Reader(data))
+    );
+  }
+
+  DelegateKeysAll(
+    request: QueryDelegateKeysAllRequest
+  ): Promise<QueryDelegateKeysAllResponse> {
+    const data = QueryDelegateKeysAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.forks.Query",
+      "DelegateKeysAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryDelegateKeysAllResponse.decode(new Reader(data))
     );
   }
 }
