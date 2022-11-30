@@ -9,7 +9,7 @@ const TypeMsgSeenBtcChainTip = "seen_btc_chain_tip"
 
 var _ sdk.Msg = &MsgSeenBtcChainTip{}
 
-func NewMsgSeenBtcChainTip(creator string, height uint64, hash string, btcOracleAddress string) *MsgSeenBtcChainTip {
+func NewMsgSeenBtcChainTip(height uint64, hash string, btcOracleAddress string) *MsgSeenBtcChainTip {
 	return &MsgSeenBtcChainTip{
 		Height:           height,
 		Hash:             hash,

@@ -142,13 +142,13 @@ func (k Keeper) GetBtcPublicKeyByValidator(ctx sdk.Context, validator sdk.ValAdd
 	store := ctx.KVStore(k.storeKey)
 	btcPk := store.Get([]byte(types.GetBtcPublicKeyByValidatorKey(validator)))
 	if btcPk == nil {
-		ctx.Logger().Error("btcpk was not found")
+		ctx.Logger().Error("btcpk bytes was not found")
 		return nil, false
 	}
 
 	pk, err := types.NewBtcPublicKey(hex.EncodeToString(btcPk))
 	if err != nil {
-		ctx.Logger().Error("newbtcpk was not found")
+		ctx.Logger().Error("btcpk could not be converted")
 		return nil, false
 	}
 	return pk, true

@@ -31,7 +31,6 @@ func CmdSeenBtcChainTip() *cobra.Command {
 			}
 
 			msg := types.NewMsgSeenBtcChainTip(
-				clientCtx.GetFromAddress().String(),
 				argHeight,
 				argHash,
 				argOrchestratorAddress,

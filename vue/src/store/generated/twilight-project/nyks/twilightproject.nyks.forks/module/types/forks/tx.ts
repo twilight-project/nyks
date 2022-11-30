@@ -222,13 +222,13 @@ export const MsgSeenBtcChainTip = {
     writer: Writer = Writer.create()
   ): Writer {
     if (message.height !== 0) {
-      writer.uint32(16).uint64(message.height);
+      writer.uint32(8).uint64(message.height);
     }
     if (message.hash !== "") {
-      writer.uint32(26).string(message.hash);
+      writer.uint32(18).string(message.hash);
     }
     if (message.btcOracleAddress !== "") {
-      writer.uint32(34).string(message.btcOracleAddress);
+      writer.uint32(26).string(message.btcOracleAddress);
     }
     return writer;
   },
@@ -240,13 +240,13 @@ export const MsgSeenBtcChainTip = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
+        case 1:
           message.height = longToNumber(reader.uint64() as Long);
           break;
-        case 3:
+        case 2:
           message.hash = reader.string();
           break;
-        case 4:
+        case 3:
           message.btcOracleAddress = reader.string();
           break;
         default:

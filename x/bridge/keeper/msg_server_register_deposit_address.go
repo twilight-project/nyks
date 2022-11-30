@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
@@ -15,18 +17,44 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, err
 	}
 
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// // check the following, all should be validated in validate basic
-	// btcPk, e1 := types.NewBtcAddress(msg.DepositAddress)
-	// twilightAddress, e2 := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
-	// if e1 != nil {
-	// 	return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
-	// } else if e2 != nil {
-	// 	return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
-	// } else if e3 != nil {
-	// 	return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
-	// }
+	// check the following, all should be validated in validate basic
+	btcAddr, e1 := types.NewBtcAddress(msg.DepositAddress)
+	twilightAddress, e2 := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
+	if e1 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
+	} else if e2 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
+	}
+
+	_, foundExistingBtcAddress := k.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
+
+	if foundExistingBtcAddress {
+		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, btcAddr.BtcAddress)
+	}
+
+	// check that if we already have this btc key already registered against any twilight address
+	delegateKeys, keyErr := k.GetBtcDepositKeys(ctx)
+	if keyErr != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, keyErr.Error())
+	}
+	for i := range delegateKeys {
+		if delegateKeys[i].DepositAddress == btcAddr.BtcAddress {
+			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate BTC Address")
+		}
+	}
+
+	_, errSetting := k.SetBtcAddressForTwilightAddress(ctx, twilightAddress, *btcAddr)
+	if errSetting != nil {
+		return nil, errSetting
+	}
+	ctx.EventManager().EmitTypedEvent(
+		&types.EventRegisterBtcDepositAddress{
+			Message:        msg.Type(),
+			DepositAddress: btcAddr.GetBtcAddress(),
+		},
+	)
 
 	return &types.MsgRegisterBtcDepositAddressResponse{}, nil
 }

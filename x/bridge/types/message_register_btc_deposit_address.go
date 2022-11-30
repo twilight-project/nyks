@@ -40,7 +40,7 @@ func (msg *MsgRegisterBtcDepositAddress) GetSignBytes() []byte {
 func (msg *MsgRegisterBtcDepositAddress) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid twilight deposit address (%s)", err)
 	}
 	return nil
 }

@@ -1,9 +1,10 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
+import { EventRegisterBtcDepositAddress } from "./module/types/bridge/events"
 import { Params } from "./module/types/bridge/params"
 
 
-export { Params };
+export { EventRegisterBtcDepositAddress, Params };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -44,6 +45,7 @@ const getDefaultState = () => {
 				Params: {},
 				
 				_Structure: {
+						EventRegisterBtcDepositAddress: getStructure(EventRegisterBtcDepositAddress.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						
 		},

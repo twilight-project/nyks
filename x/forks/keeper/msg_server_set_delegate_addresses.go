@@ -40,7 +40,7 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 	// ensure that the validator exists
 	if k.Keeper.StakingKeeper.Validator(ctx, val) == nil {
 		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, val.String())
-	} else if foundExistingOracleKey || foundExistingBtcPublicKey {
+	} else if foundExistingOracleKey && foundExistingBtcPublicKey {
 		return nil, sdkerrors.Wrap(types.ErrResetDelegateKeys, val.String())
 	}
 
@@ -62,7 +62,7 @@ func (k msgServer) SetDelegateAddresses(goCtx context.Context, msg *types.MsgSet
 	k.SetOrchestratorValidator(ctx, val, oracle)
 	// set the ethereum address
 	_, errSetting := k.SetBtcPublicKeyForValidator(ctx, val, *btcPk)
-	if err != nil {
+	if errSetting != nil {
 		return nil, errSetting
 	}
 	ctx.EventManager().EmitTypedEvent(
