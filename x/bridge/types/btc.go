@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	BtcAddressMinLen = 27
-	BtcAddressMaxLen = 32
+	BtcAddressMinLen = 26
+	BtcAddressMaxLen = 62
 )
 
 // Regular BtcAddress

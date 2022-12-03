@@ -113,35 +113,132 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+type QueryRegisteredBtcDepositAddressesRequest struct {
+}
+
+func (m *QueryRegisteredBtcDepositAddressesRequest) Reset() {
+	*m = QueryRegisteredBtcDepositAddressesRequest{}
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryRegisteredBtcDepositAddressesRequest) ProtoMessage() {}
+func (*QueryRegisteredBtcDepositAddressesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{2}
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredBtcDepositAddressesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressesRequest.Merge(m, src)
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredBtcDepositAddressesRequest proto.InternalMessageInfo
+
+type QueryRegisteredBtcDepositAddressesResponse struct {
+	Addresses []MsgRegisterBtcDepositAddress `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses"`
+}
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) Reset() {
+	*m = QueryRegisteredBtcDepositAddressesResponse{}
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryRegisteredBtcDepositAddressesResponse) ProtoMessage() {}
+func (*QueryRegisteredBtcDepositAddressesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{3}
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredBtcDepositAddressesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressesResponse.Merge(m, src)
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredBtcDepositAddressesResponse proto.InternalMessageInfo
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) GetAddresses() []MsgRegisterBtcDepositAddress {
+	if m != nil {
+		return m.Addresses
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "twilightproject.nyks.bridge.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "twilightproject.nyks.bridge.QueryParamsResponse")
+	proto.RegisterType((*QueryRegisteredBtcDepositAddressesRequest)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesRequest")
+	proto.RegisterType((*QueryRegisteredBtcDepositAddressesResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesResponse")
 }
 
 func init() { proto.RegisterFile("bridge/query.proto", fileDescriptor_09fd90c905cb448b) }
 
 var fileDescriptor_09fd90c905cb448b = []byte{
-	// 308 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x90, 0xb1, 0x4e, 0x42, 0x31,
-	0x14, 0x86, 0x6f, 0x8d, 0x32, 0x5c, 0xb7, 0xc2, 0x60, 0xd0, 0x54, 0x83, 0xc6, 0x18, 0xa3, 0x3d,
-	0x82, 0x4f, 0x20, 0x9b, 0x9b, 0x32, 0x19, 0xb7, 0x5e, 0x6c, 0x4a, 0x15, 0x7a, 0xca, 0x6d, 0x51,
-	0x59, 0x7d, 0x02, 0x13, 0x27, 0x67, 0x5f, 0x86, 0x91, 0xc4, 0xc5, 0xc9, 0x18, 0xf0, 0x41, 0x0c,
-	0xb7, 0x65, 0x20, 0x46, 0xe2, 0xd6, 0x9c, 0xfe, 0xdf, 0xd7, 0xbf, 0x27, 0xa5, 0x59, 0xae, 0x6f,
-	0x94, 0x84, 0xfe, 0x40, 0xe6, 0x43, 0x6e, 0x73, 0xf4, 0x48, 0x37, 0xfd, 0x83, 0xee, 0x6a, 0xd5,
-	0xf1, 0x36, 0xc7, 0x5b, 0xd9, 0xf6, 0xdc, 0x0c, 0xef, 0x1c, 0x0f, 0xc1, 0x6a, 0x45, 0xa1, 0xc2,
-	0x22, 0x07, 0xb3, 0x53, 0x40, 0xaa, 0x5b, 0x0a, 0x51, 0x75, 0x25, 0x08, 0xab, 0x41, 0x18, 0x83,
-	0x5e, 0x78, 0x8d, 0xc6, 0xc5, 0xdb, 0xc3, 0x36, 0xba, 0x1e, 0x3a, 0xc8, 0x84, 0x8b, 0x2f, 0xc1,
-	0x7d, 0x3d, 0x93, 0x5e, 0xd4, 0xc1, 0x0a, 0xa5, 0x4d, 0x11, 0x8e, 0xd9, 0x72, 0x2c, 0x64, 0x45,
-	0x2e, 0x7a, 0x51, 0x50, 0xab, 0xa4, 0xf4, 0x72, 0x86, 0x5d, 0x14, 0xc3, 0x96, 0xec, 0x0f, 0xa4,
-	0xf3, 0xb5, 0xab, 0xb4, 0xbc, 0x30, 0x75, 0x16, 0x8d, 0x93, 0xf4, 0x2c, 0x2d, 0x05, 0x78, 0x83,
-	0xec, 0x90, 0x83, 0xf5, 0xc6, 0x2e, 0x5f, 0xf2, 0x1f, 0x1e, 0xe0, 0xe6, 0xea, 0xe8, 0x73, 0x3b,
-	0x69, 0x45, 0xb0, 0xf1, 0x46, 0xd2, 0xb5, 0x42, 0x4d, 0x5f, 0x49, 0x5a, 0x0a, 0x11, 0x0a, 0x4b,
-	0x3d, 0xbf, 0xfb, 0x55, 0x4f, 0xfe, 0x0f, 0x84, 0xea, 0xb5, 0xa3, 0xa7, 0xf7, 0xef, 0x97, 0x95,
-	0x7d, 0xba, 0x07, 0x73, 0xf2, 0x38, 0xa2, 0x30, 0x43, 0x61, 0x61, 0x37, 0xcd, 0xf3, 0xd1, 0x84,
-	0x91, 0xf1, 0x84, 0x91, 0xaf, 0x09, 0x23, 0xcf, 0x53, 0x96, 0x8c, 0xa7, 0x2c, 0xf9, 0x98, 0xb2,
-	0xe4, 0x1a, 0x94, 0xf6, 0x9d, 0x41, 0xc6, 0xdb, 0xd8, 0xfb, 0xc3, 0xf4, 0x38, 0x77, 0xf9, 0xa1,
-	0x95, 0x2e, 0x2b, 0x15, 0x7b, 0x3e, 0xfd, 0x09, 0x00, 0x00, 0xff, 0xff, 0x88, 0xb8, 0x28, 0xd9,
-	0x0f, 0x02, 0x00, 0x00,
+	// 431 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0xc1, 0xcb, 0x12, 0x41,
+	0x1c, 0xdd, 0xc9, 0x12, 0x1a, 0x0f, 0xc1, 0xe8, 0x41, 0xb6, 0xda, 0x64, 0x8b, 0x30, 0xab, 0x9d,
+	0xb4, 0x53, 0x97, 0x48, 0x09, 0xa3, 0x43, 0x50, 0x9e, 0x22, 0x08, 0x99, 0xdd, 0x1d, 0xc6, 0x29,
+	0xdd, 0x19, 0x67, 0xc6, 0xd2, 0x6b, 0xd7, 0x2e, 0x41, 0xa7, 0x2e, 0xfd, 0x3d, 0x1e, 0x85, 0x2e,
+	0x9d, 0x22, 0xb4, 0x3f, 0xa2, 0xe3, 0x87, 0xbb, 0xb3, 0x7e, 0x88, 0x7c, 0xfb, 0x09, 0xdf, 0x6d,
+	0x79, 0xfb, 0xde, 0xfb, 0xbd, 0xf7, 0xfb, 0x31, 0x10, 0x85, 0x8a, 0xc7, 0x8c, 0xe2, 0xe9, 0x8c,
+	0xaa, 0x45, 0x20, 0x95, 0x30, 0x02, 0x5d, 0x37, 0x9f, 0xf9, 0x98, 0xb3, 0x91, 0x91, 0x4a, 0x7c,
+	0xa0, 0x91, 0x09, 0x92, 0xc5, 0x47, 0x1d, 0x64, 0x44, 0xb7, 0xc6, 0x04, 0x13, 0x29, 0x0f, 0x6f,
+	0xbf, 0x32, 0x89, 0x7b, 0x83, 0x09, 0xc1, 0xc6, 0x14, 0x13, 0xc9, 0x31, 0x49, 0x12, 0x61, 0x88,
+	0xe1, 0x22, 0xd1, 0xf6, 0x6f, 0x2b, 0x12, 0x7a, 0x22, 0x34, 0x0e, 0x89, 0xb6, 0x93, 0xf0, 0xa7,
+	0x76, 0x48, 0x0d, 0x69, 0x63, 0x49, 0x18, 0x4f, 0x52, 0xb2, 0xe5, 0x5e, 0xb3, 0x81, 0xcc, 0xdc,
+	0x02, 0x55, 0x0b, 0x48, 0xa2, 0xc8, 0xc4, 0x3a, 0xfa, 0x35, 0x88, 0xde, 0x6c, 0x7d, 0x5e, 0xa7,
+	0xe0, 0x80, 0x4e, 0x67, 0x54, 0x1b, 0xff, 0x2d, 0xac, 0xee, 0xa1, 0x5a, 0x8a, 0x44, 0x53, 0xd4,
+	0x85, 0xe5, 0x4c, 0x5c, 0x07, 0x0d, 0xd0, 0xac, 0x74, 0x6e, 0x07, 0x05, 0x05, 0x83, 0x4c, 0xdc,
+	0xbb, 0xbc, 0xfc, 0x73, 0xcb, 0x19, 0x58, 0xa1, 0x7f, 0x1f, 0xde, 0x4b, 0x9d, 0x07, 0x94, 0x71,
+	0x6d, 0xa8, 0xa2, 0x71, 0xcf, 0x44, 0xcf, 0xa9, 0x14, 0x9a, 0x9b, 0x6e, 0x1c, 0x2b, 0xaa, 0x35,
+	0xdd, 0xc5, 0xf8, 0x0a, 0x60, 0xeb, 0x18, 0xb6, 0x8d, 0xf7, 0x1e, 0x5e, 0x25, 0x39, 0x58, 0x07,
+	0x8d, 0x52, 0xb3, 0xd2, 0x79, 0x52, 0x98, 0xf0, 0x95, 0x66, 0xb9, 0xf3, 0x81, 0xaf, 0xcd, 0x7d,
+	0xea, 0xd8, 0xf9, 0x59, 0x82, 0x57, 0xd2, 0x34, 0xe8, 0x07, 0x80, 0xe5, 0xac, 0x1d, 0xc2, 0x85,
+	0x03, 0x0e, 0x57, 0xeb, 0x3e, 0x3a, 0x5e, 0x90, 0xd5, 0xf2, 0x1f, 0x7c, 0xf9, 0xf5, 0xef, 0xfb,
+	0xa5, 0xbb, 0xe8, 0x0e, 0xce, 0x95, 0x0f, 0xad, 0x14, 0x6f, 0xa5, 0x78, 0xef, 0xac, 0xe8, 0x3f,
+	0x80, 0x37, 0x0b, 0xd7, 0x85, 0xfa, 0xe7, 0x27, 0x38, 0xe6, 0x3a, 0xee, 0x8b, 0x0b, 0xfb, 0xd8,
+	0x82, 0xfd, 0xb4, 0xe0, 0x33, 0xf4, 0xb4, 0xb8, 0xa0, 0xda, 0x99, 0x0d, 0x43, 0x13, 0x0d, 0xe3,
+	0xcc, 0x6e, 0xb8, 0x3b, 0x50, 0xef, 0xe5, 0x72, 0xed, 0x81, 0xd5, 0xda, 0x03, 0x7f, 0xd7, 0x1e,
+	0xf8, 0xb6, 0xf1, 0x9c, 0xd5, 0xc6, 0x73, 0x7e, 0x6f, 0x3c, 0xe7, 0x1d, 0x66, 0xdc, 0x8c, 0x66,
+	0x61, 0x10, 0x89, 0xc9, 0x19, 0x33, 0xe6, 0xf9, 0x14, 0xb3, 0x90, 0x54, 0x87, 0xe5, 0xf4, 0x75,
+	0x3c, 0x3e, 0x09, 0x00, 0x00, 0xff, 0xff, 0x91, 0x86, 0x04, 0x74, 0xd6, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -158,6 +255,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries a list of RegisteredBtcDepositAddresses items.
+	RegisteredBtcDepositAddresses(ctx context.Context, in *QueryRegisteredBtcDepositAddressesRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressesResponse, error)
 }
 
 type queryClient struct {
@@ -177,10 +276,21 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) RegisteredBtcDepositAddresses(ctx context.Context, in *QueryRegisteredBtcDepositAddressesRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressesResponse, error) {
+	out := new(QueryRegisteredBtcDepositAddressesResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.bridge.Query/RegisteredBtcDepositAddresses", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries a list of RegisteredBtcDepositAddresses items.
+	RegisteredBtcDepositAddresses(context.Context, *QueryRegisteredBtcDepositAddressesRequest) (*QueryRegisteredBtcDepositAddressesResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -189,6 +299,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) RegisteredBtcDepositAddresses(ctx context.Context, req *QueryRegisteredBtcDepositAddressesRequest) (*QueryRegisteredBtcDepositAddressesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisteredBtcDepositAddresses not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -213,6 +326,24 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RegisteredBtcDepositAddresses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisteredBtcDepositAddressesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RegisteredBtcDepositAddresses(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.bridge.Query/RegisteredBtcDepositAddresses",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RegisteredBtcDepositAddresses(ctx, req.(*QueryRegisteredBtcDepositAddressesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "twilightproject.nyks.bridge.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -220,6 +351,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "RegisteredBtcDepositAddresses",
+			Handler:    _Query_RegisteredBtcDepositAddresses_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -282,6 +417,66 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryRegisteredBtcDepositAddressesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredBtcDepositAddressesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Addresses) > 0 {
+		for iNdEx := len(m.Addresses) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Addresses[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -310,6 +505,30 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryRegisteredBtcDepositAddressesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryRegisteredBtcDepositAddressesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Addresses) > 0 {
+		for _, e := range m.Addresses {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -428,6 +647,140 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredBtcDepositAddressesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredBtcDepositAddressesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Addresses", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Addresses = append(m.Addresses, MsgRegisterBtcDepositAddress{})
+			if err := m.Addresses[len(m.Addresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

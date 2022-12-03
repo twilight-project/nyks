@@ -28,10 +28,10 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
-	_, foundExistingBtcAddress := k.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
+	address, foundExistingBtcAddress := k.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
 
 	if foundExistingBtcAddress {
-		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, btcAddr.BtcAddress)
+		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcAddress)
 	}
 
 	// check that if we already have this btc key already registered against any twilight address

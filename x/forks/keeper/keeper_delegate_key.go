@@ -142,7 +142,7 @@ func (k Keeper) GetBtcPublicKeyByValidator(ctx sdk.Context, validator sdk.ValAdd
 	store := ctx.KVStore(k.storeKey)
 	btcPk := store.Get([]byte(types.GetBtcPublicKeyByValidatorKey(validator)))
 	if btcPk == nil {
-		ctx.Logger().Error("btcpk bytes was not found")
+		ctx.Logger().Error("btcpk bytes were not found")
 		return nil, false
 	}
 
