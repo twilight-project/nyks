@@ -96,6 +96,22 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 	return result, nil
 }
 
+// SetReserveAddressForJudge sets the btc address for a given twilight address
+func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript) ([]byte, error) {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	// Validation checks for BtcScript are missing
+
+	btcScriptBytes := []byte(reserveScript.BtcScript)
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(judgeAddress)), btcScriptBytes)
+
+	return btcScriptBytes, nil
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////

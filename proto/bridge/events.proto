@@ -9,3 +9,8 @@ message EventRegisterBtcDepositAddress {
     string message = 1;
     string depositAddress = 2;
 }
+
+message EventRegisterReserveScript {
+    string message        = 1;
+    string reserveScript = 2;
+}

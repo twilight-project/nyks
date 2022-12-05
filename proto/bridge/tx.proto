@@ -9,6 +9,7 @@ option go_package = "github.com/twilight-project/nyks/x/bridge/types";
 service Msg {
       rpc ConfirmBtcDeposit(MsgConfirmBtcDeposit) returns (MsgConfirmBtcDepositResponse);
   rpc RegisterBtcDepositAddress(MsgRegisterBtcDepositAddress) returns (MsgRegisterBtcDepositAddressResponse);
+  rpc RegisterReserveAddress(MsgRegisterReserveAddress) returns (MsgRegisterReserveAddressResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -32,6 +33,15 @@ message MsgRegisterBtcDepositAddress {
 }
 
 message MsgRegisterBtcDepositAddressResponse {
+}
+
+message MsgRegisterReserveAddress {
+  string reserveScript = 1;
+  string judgeAddress = 2;
+}
+
+message MsgRegisterReserveAddressResponse {
+  string reserveScript = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

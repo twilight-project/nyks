@@ -16,17 +16,22 @@ type BtcAddress struct {
 	BtcAddress string
 }
 
+// Regular BtcScript
+type BtcScript struct {
+	BtcScript string
+}
+
 // Returns the contained PublicKey as a string
 func (ea BtcAddress) GetBtcAddress() string {
 	return ea.BtcAddress
 }
 
-// Sets the contained PublicKey, performing validation before updating the value
-func (ea BtcAddress) SetBtcAddress(PublicKey string) error {
-	if err := ValidateBtcAddress(PublicKey); err != nil {
+// Sets the contained Address, performing validation before updating the value
+func (ea BtcAddress) SetBtcAddress(Address string) error {
+	if err := ValidateBtcAddress(Address); err != nil {
 		return err
 	}
-	ea.BtcAddress = PublicKey
+	ea.BtcAddress = Address
 	return nil
 }
 
@@ -53,4 +58,22 @@ func ValidateBtcAddress(Address string) error {
 	// }
 
 	return nil
+}
+
+// Returns the contained PublicKey as a string
+func (ea BtcScript) GetBtcReserveScript() string {
+	return ea.BtcScript
+}
+
+// Sets the contained Address, performing validation before updating the value
+func (ea BtcScript) SetBtcReserveScript(Script string) error {
+	ea.BtcScript = Script
+	return nil
+}
+
+// Creates a new BtcScript from a string,
+// SHOULD perform validation and returning any validation errors
+func NewBtcScript(Address string) (*BtcScript, error) {
+	script := BtcScript{Address}
+	return &script, nil
 }

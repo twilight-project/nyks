@@ -234,21 +234,6 @@ export default {
 		},
 		
 		
-		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = [], memo = '' }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgSeenBtcChainTip(value)
-				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
-	gas: "200000" }, memo})
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgSetDelegateAddresses({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -264,20 +249,22 @@ export default {
 				}
 			}
 		},
-		
-		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
 				const msg = await txClient.msgSeenBtcChainTip(value)
-				return msg
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgSetDelegateAddresses({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -288,6 +275,19 @@ export default {
 					throw new Error('TxClient:MsgSetDelegateAddresses:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgSetDelegateAddresses:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSeenBtcChainTip(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
 				}
 			}
 		},

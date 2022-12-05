@@ -25,6 +25,15 @@ export interface MsgRegisterBtcDepositAddress {
 
 export interface MsgRegisterBtcDepositAddressResponse {}
 
+export interface MsgRegisterReserveAddress {
+  reserveScript: string;
+  judgeAddress: string;
+}
+
+export interface MsgRegisterReserveAddressResponse {
+  reserveScript: string;
+}
+
 const baseMsgConfirmBtcDeposit: object = {
   depositAddress: "",
   depositAmount: 0,
@@ -436,15 +445,179 @@ export const MsgRegisterBtcDepositAddressResponse = {
   },
 };
 
+const baseMsgRegisterReserveAddress: object = {
+  reserveScript: "",
+  judgeAddress: "",
+};
+
+export const MsgRegisterReserveAddress = {
+  encode(
+    message: MsgRegisterReserveAddress,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.reserveScript !== "") {
+      writer.uint32(10).string(message.reserveScript);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterReserveAddress {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterReserveAddress,
+    } as MsgRegisterReserveAddress;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveScript = reader.string();
+          break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterReserveAddress {
+    const message = {
+      ...baseMsgRegisterReserveAddress,
+    } as MsgRegisterReserveAddress;
+    if (object.reserveScript !== undefined && object.reserveScript !== null) {
+      message.reserveScript = String(object.reserveScript);
+    } else {
+      message.reserveScript = "";
+    }
+    if (object.judgeAddress !== undefined && object.judgeAddress !== null) {
+      message.judgeAddress = String(object.judgeAddress);
+    } else {
+      message.judgeAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgRegisterReserveAddress): unknown {
+    const obj: any = {};
+    message.reserveScript !== undefined &&
+      (obj.reserveScript = message.reserveScript);
+    message.judgeAddress !== undefined &&
+      (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRegisterReserveAddress>
+  ): MsgRegisterReserveAddress {
+    const message = {
+      ...baseMsgRegisterReserveAddress,
+    } as MsgRegisterReserveAddress;
+    if (object.reserveScript !== undefined && object.reserveScript !== null) {
+      message.reserveScript = object.reserveScript;
+    } else {
+      message.reserveScript = "";
+    }
+    if (object.judgeAddress !== undefined && object.judgeAddress !== null) {
+      message.judgeAddress = object.judgeAddress;
+    } else {
+      message.judgeAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgRegisterReserveAddressResponse: object = { reserveScript: "" };
+
+export const MsgRegisterReserveAddressResponse = {
+  encode(
+    message: MsgRegisterReserveAddressResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.reserveScript !== "") {
+      writer.uint32(10).string(message.reserveScript);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterReserveAddressResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterReserveAddressResponse,
+    } as MsgRegisterReserveAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveScript = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterReserveAddressResponse {
+    const message = {
+      ...baseMsgRegisterReserveAddressResponse,
+    } as MsgRegisterReserveAddressResponse;
+    if (object.reserveScript !== undefined && object.reserveScript !== null) {
+      message.reserveScript = String(object.reserveScript);
+    } else {
+      message.reserveScript = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgRegisterReserveAddressResponse): unknown {
+    const obj: any = {};
+    message.reserveScript !== undefined &&
+      (obj.reserveScript = message.reserveScript);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRegisterReserveAddressResponse>
+  ): MsgRegisterReserveAddressResponse {
+    const message = {
+      ...baseMsgRegisterReserveAddressResponse,
+    } as MsgRegisterReserveAddressResponse;
+    if (object.reserveScript !== undefined && object.reserveScript !== null) {
+      message.reserveScript = object.reserveScript;
+    } else {
+      message.reserveScript = "";
+    }
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   ConfirmBtcDeposit(
     request: MsgConfirmBtcDeposit
   ): Promise<MsgConfirmBtcDepositResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   RegisterBtcDepositAddress(
     request: MsgRegisterBtcDepositAddress
   ): Promise<MsgRegisterBtcDepositAddressResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  RegisterReserveAddress(
+    request: MsgRegisterReserveAddress
+  ): Promise<MsgRegisterReserveAddressResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -477,6 +650,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRegisterBtcDepositAddressResponse.decode(new Reader(data))
+    );
+  }
+
+  RegisterReserveAddress(
+    request: MsgRegisterReserveAddress
+  ): Promise<MsgRegisterReserveAddressResponse> {
+    const data = MsgRegisterReserveAddress.encode(request).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.bridge.Msg",
+      "RegisterReserveAddress",
+      data
+    );
+    return promise.then((data) =>
+      MsgRegisterReserveAddressResponse.decode(new Reader(data))
     );
   }
 }

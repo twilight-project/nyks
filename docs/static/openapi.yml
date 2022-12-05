@@ -49907,6 +49907,11 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
+  twilightproject.nyks.bridge.MsgRegisterReserveAddressResponse:
+    type: object
+    properties:
+      reserveScript:
+        type: string
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.

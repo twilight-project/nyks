@@ -20,6 +20,10 @@ export interface BridgeMsgRegisterBtcDepositAddress {
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
+export interface BridgeMsgRegisterReserveAddressResponse {
+  reserveScript?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
