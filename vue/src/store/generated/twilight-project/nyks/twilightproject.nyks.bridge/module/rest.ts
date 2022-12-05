@@ -20,6 +20,11 @@ export interface BridgeMsgRegisterBtcDepositAddress {
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
+export interface BridgeMsgRegisterReserveAddress {
+  reserveScript?: string;
+  judgeAddress?: string;
+}
+
 export interface BridgeMsgRegisterReserveAddressResponse {
   reserveScript?: string;
 }
@@ -39,6 +44,10 @@ export interface BridgeQueryParamsResponse {
 
 export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
   addresses?: BridgeMsgRegisterBtcDepositAddress[];
+}
+
+export interface BridgeQueryRegisteredReserveScriptsResponse {
+  scripts?: BridgeMsgRegisterReserveAddress[];
 }
 
 export interface ProtobufAny {
@@ -275,6 +284,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryRegisteredBtcDepositAddresses = (params: RequestParams = {}) =>
     this.request<BridgeQueryRegisteredBtcDepositAddressesResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/registered_btc_deposit_addresses`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryRegisteredReserveScripts
+   * @summary Queries a list of RegisteredReserveScripts items.
+   * @request GET:/twilight-project/nyks/bridge/registered_reserve_scripts
+   */
+  queryRegisteredReserveScripts = (params: RequestParams = {}) =>
+    this.request<BridgeQueryRegisteredReserveScriptsResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/registered_reserve_scripts`,
       method: "GET",
       format: "json",
       ...params,

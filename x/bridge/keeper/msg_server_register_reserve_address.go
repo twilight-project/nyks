@@ -39,5 +39,5 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		},
 	)
 
-	return &types.MsgRegisterReserveAddressResponse{}, nil
+	return &types.MsgRegisterReserveAddressResponse{ReserveScript: msg.ReserveScript}, nil
 }

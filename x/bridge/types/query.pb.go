@@ -201,44 +201,131 @@ func (m *QueryRegisteredBtcDepositAddressesResponse) GetAddresses() []MsgRegiste
 	return nil
 }
 
+type QueryRegisteredReserveScriptsRequest struct {
+}
+
+func (m *QueryRegisteredReserveScriptsRequest) Reset()         { *m = QueryRegisteredReserveScriptsRequest{} }
+func (m *QueryRegisteredReserveScriptsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredReserveScriptsRequest) ProtoMessage()    {}
+func (*QueryRegisteredReserveScriptsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{4}
+}
+func (m *QueryRegisteredReserveScriptsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredReserveScriptsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredReserveScriptsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredReserveScriptsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredReserveScriptsRequest.Merge(m, src)
+}
+func (m *QueryRegisteredReserveScriptsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredReserveScriptsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredReserveScriptsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredReserveScriptsRequest proto.InternalMessageInfo
+
+type QueryRegisteredReserveScriptsResponse struct {
+	Scripts []MsgRegisterReserveAddress `protobuf:"bytes,1,rep,name=scripts,proto3" json:"scripts"`
+}
+
+func (m *QueryRegisteredReserveScriptsResponse) Reset()         { *m = QueryRegisteredReserveScriptsResponse{} }
+func (m *QueryRegisteredReserveScriptsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredReserveScriptsResponse) ProtoMessage()    {}
+func (*QueryRegisteredReserveScriptsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{5}
+}
+func (m *QueryRegisteredReserveScriptsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredReserveScriptsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredReserveScriptsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredReserveScriptsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredReserveScriptsResponse.Merge(m, src)
+}
+func (m *QueryRegisteredReserveScriptsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredReserveScriptsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredReserveScriptsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredReserveScriptsResponse proto.InternalMessageInfo
+
+func (m *QueryRegisteredReserveScriptsResponse) GetScripts() []MsgRegisterReserveAddress {
+	if m != nil {
+		return m.Scripts
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "twilightproject.nyks.bridge.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "twilightproject.nyks.bridge.QueryParamsResponse")
 	proto.RegisterType((*QueryRegisteredBtcDepositAddressesRequest)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesRequest")
 	proto.RegisterType((*QueryRegisteredBtcDepositAddressesResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesResponse")
+	proto.RegisterType((*QueryRegisteredReserveScriptsRequest)(nil), "twilightproject.nyks.bridge.QueryRegisteredReserveScriptsRequest")
+	proto.RegisterType((*QueryRegisteredReserveScriptsResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredReserveScriptsResponse")
 }
 
 func init() { proto.RegisterFile("bridge/query.proto", fileDescriptor_09fd90c905cb448b) }
 
 var fileDescriptor_09fd90c905cb448b = []byte{
-	// 431 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0xc1, 0xcb, 0x12, 0x41,
-	0x1c, 0xdd, 0xc9, 0x12, 0x1a, 0x0f, 0xc1, 0xe8, 0x41, 0xb6, 0xda, 0x64, 0x8b, 0x30, 0xab, 0x9d,
-	0xb4, 0x53, 0x97, 0x48, 0x09, 0xa3, 0x43, 0x50, 0x9e, 0x22, 0x08, 0x99, 0xdd, 0x1d, 0xc6, 0x29,
-	0xdd, 0x19, 0x67, 0xc6, 0xd2, 0x6b, 0xd7, 0x2e, 0x41, 0xa7, 0x2e, 0xfd, 0x3d, 0x1e, 0x85, 0x2e,
-	0x9d, 0x22, 0xb4, 0x3f, 0xa2, 0xe3, 0x87, 0xbb, 0xb3, 0x7e, 0x88, 0x7c, 0xfb, 0x09, 0xdf, 0x6d,
-	0x79, 0xfb, 0xde, 0xfb, 0xbd, 0xf7, 0xfb, 0x31, 0x10, 0x85, 0x8a, 0xc7, 0x8c, 0xe2, 0xe9, 0x8c,
-	0xaa, 0x45, 0x20, 0x95, 0x30, 0x02, 0x5d, 0x37, 0x9f, 0xf9, 0x98, 0xb3, 0x91, 0x91, 0x4a, 0x7c,
-	0xa0, 0x91, 0x09, 0x92, 0xc5, 0x47, 0x1d, 0x64, 0x44, 0xb7, 0xc6, 0x04, 0x13, 0x29, 0x0f, 0x6f,
-	0xbf, 0x32, 0x89, 0x7b, 0x83, 0x09, 0xc1, 0xc6, 0x14, 0x13, 0xc9, 0x31, 0x49, 0x12, 0x61, 0x88,
-	0xe1, 0x22, 0xd1, 0xf6, 0x6f, 0x2b, 0x12, 0x7a, 0x22, 0x34, 0x0e, 0x89, 0xb6, 0x93, 0xf0, 0xa7,
-	0x76, 0x48, 0x0d, 0x69, 0x63, 0x49, 0x18, 0x4f, 0x52, 0xb2, 0xe5, 0x5e, 0xb3, 0x81, 0xcc, 0xdc,
-	0x02, 0x55, 0x0b, 0x48, 0xa2, 0xc8, 0xc4, 0x3a, 0xfa, 0x35, 0x88, 0xde, 0x6c, 0x7d, 0x5e, 0xa7,
-	0xe0, 0x80, 0x4e, 0x67, 0x54, 0x1b, 0xff, 0x2d, 0xac, 0xee, 0xa1, 0x5a, 0x8a, 0x44, 0x53, 0xd4,
-	0x85, 0xe5, 0x4c, 0x5c, 0x07, 0x0d, 0xd0, 0xac, 0x74, 0x6e, 0x07, 0x05, 0x05, 0x83, 0x4c, 0xdc,
-	0xbb, 0xbc, 0xfc, 0x73, 0xcb, 0x19, 0x58, 0xa1, 0x7f, 0x1f, 0xde, 0x4b, 0x9d, 0x07, 0x94, 0x71,
-	0x6d, 0xa8, 0xa2, 0x71, 0xcf, 0x44, 0xcf, 0xa9, 0x14, 0x9a, 0x9b, 0x6e, 0x1c, 0x2b, 0xaa, 0x35,
-	0xdd, 0xc5, 0xf8, 0x0a, 0x60, 0xeb, 0x18, 0xb6, 0x8d, 0xf7, 0x1e, 0x5e, 0x25, 0x39, 0x58, 0x07,
-	0x8d, 0x52, 0xb3, 0xd2, 0x79, 0x52, 0x98, 0xf0, 0x95, 0x66, 0xb9, 0xf3, 0x81, 0xaf, 0xcd, 0x7d,
-	0xea, 0xd8, 0xf9, 0x59, 0x82, 0x57, 0xd2, 0x34, 0xe8, 0x07, 0x80, 0xe5, 0xac, 0x1d, 0xc2, 0x85,
-	0x03, 0x0e, 0x57, 0xeb, 0x3e, 0x3a, 0x5e, 0x90, 0xd5, 0xf2, 0x1f, 0x7c, 0xf9, 0xf5, 0xef, 0xfb,
-	0xa5, 0xbb, 0xe8, 0x0e, 0xce, 0x95, 0x0f, 0xad, 0x14, 0x6f, 0xa5, 0x78, 0xef, 0xac, 0xe8, 0x3f,
-	0x80, 0x37, 0x0b, 0xd7, 0x85, 0xfa, 0xe7, 0x27, 0x38, 0xe6, 0x3a, 0xee, 0x8b, 0x0b, 0xfb, 0xd8,
-	0x82, 0xfd, 0xb4, 0xe0, 0x33, 0xf4, 0xb4, 0xb8, 0xa0, 0xda, 0x99, 0x0d, 0x43, 0x13, 0x0d, 0xe3,
-	0xcc, 0x6e, 0xb8, 0x3b, 0x50, 0xef, 0xe5, 0x72, 0xed, 0x81, 0xd5, 0xda, 0x03, 0x7f, 0xd7, 0x1e,
-	0xf8, 0xb6, 0xf1, 0x9c, 0xd5, 0xc6, 0x73, 0x7e, 0x6f, 0x3c, 0xe7, 0x1d, 0x66, 0xdc, 0x8c, 0x66,
-	0x61, 0x10, 0x89, 0xc9, 0x19, 0x33, 0xe6, 0xf9, 0x14, 0xb3, 0x90, 0x54, 0x87, 0xe5, 0xf4, 0x75,
-	0x3c, 0x3e, 0x09, 0x00, 0x00, 0xff, 0xff, 0x91, 0x86, 0x04, 0x74, 0xd6, 0x03, 0x00, 0x00,
+	// 508 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0xcf, 0x6b, 0x13, 0x41,
+	0x14, 0xc7, 0x33, 0x6a, 0x23, 0x4e, 0x0f, 0xc2, 0xb4, 0x87, 0xb0, 0xea, 0x5a, 0xd6, 0x5a, 0x6a,
+	0xd5, 0x1d, 0x1b, 0x41, 0xd4, 0x83, 0x34, 0x41, 0x2a, 0x1e, 0x04, 0x8d, 0x20, 0x22, 0x48, 0xd8,
+	0x1f, 0x8f, 0xe9, 0x68, 0xb3, 0x33, 0x9d, 0x99, 0xd4, 0xe6, 0x24, 0x88, 0x37, 0x2f, 0x82, 0x27,
+	0xff, 0xa3, 0x1e, 0x0b, 0x5e, 0x3c, 0x89, 0x24, 0xfe, 0x11, 0x1e, 0x25, 0x3b, 0xb3, 0x91, 0x58,
+	0xbb, 0xdd, 0x92, 0x5b, 0x78, 0x79, 0xdf, 0x4f, 0x3e, 0x5f, 0xe6, 0x11, 0x4c, 0x62, 0xc5, 0x53,
+	0x06, 0x74, 0xa7, 0x0f, 0x6a, 0x10, 0x4a, 0x25, 0x8c, 0x20, 0x17, 0xcc, 0x3b, 0xbe, 0xcd, 0xd9,
+	0x96, 0x91, 0x4a, 0xbc, 0x81, 0xc4, 0x84, 0xd9, 0xe0, 0xad, 0x0e, 0xed, 0xa2, 0xb7, 0xc8, 0x04,
+	0x13, 0xf9, 0x1e, 0x1d, 0x7f, 0xb2, 0x11, 0xef, 0x22, 0x13, 0x82, 0x6d, 0x03, 0x8d, 0x24, 0xa7,
+	0x51, 0x96, 0x09, 0x13, 0x19, 0x2e, 0x32, 0xed, 0xbe, 0x5d, 0x4b, 0x84, 0xee, 0x09, 0x4d, 0xe3,
+	0x48, 0xbb, 0x5f, 0xa2, 0xbb, 0xeb, 0x31, 0x98, 0x68, 0x9d, 0xca, 0x88, 0xf1, 0x2c, 0x5f, 0x76,
+	0xbb, 0xe7, 0x9d, 0x90, 0xd9, 0x73, 0x83, 0x05, 0x37, 0x90, 0x91, 0x8a, 0x7a, 0x8e, 0x18, 0x2c,
+	0x62, 0xf2, 0x6c, 0xcc, 0x79, 0x9a, 0x0f, 0x3b, 0xb0, 0xd3, 0x07, 0x6d, 0x82, 0x97, 0x78, 0x61,
+	0x6a, 0xaa, 0xa5, 0xc8, 0x34, 0x90, 0x16, 0xae, 0xdb, 0x70, 0x03, 0x2d, 0xa1, 0xd5, 0xf9, 0xe6,
+	0x95, 0xb0, 0xa4, 0x60, 0x68, 0xc3, 0xed, 0x33, 0xfb, 0x3f, 0x2e, 0xd7, 0x3a, 0x2e, 0x18, 0x5c,
+	0xc7, 0xd7, 0x72, 0x72, 0x07, 0x18, 0xd7, 0x06, 0x14, 0xa4, 0x6d, 0x93, 0x3c, 0x04, 0x29, 0x34,
+	0x37, 0xad, 0x34, 0x55, 0xa0, 0x35, 0x4c, 0x34, 0x3e, 0x21, 0xbc, 0x56, 0x65, 0xdb, 0xe9, 0xbd,
+	0xc6, 0xe7, 0xa2, 0x62, 0xd8, 0x40, 0x4b, 0xa7, 0x57, 0xe7, 0x9b, 0xf7, 0x4a, 0x0d, 0x9f, 0x68,
+	0x56, 0x90, 0x0f, 0x71, 0x9d, 0xf7, 0x5f, 0x62, 0xb0, 0x82, 0x97, 0xff, 0x91, 0xe9, 0x80, 0x06,
+	0xb5, 0x0b, 0xcf, 0x13, 0xc5, 0xa5, 0x99, 0x58, 0xbf, 0xc7, 0x57, 0x8f, 0xd9, 0x73, 0xbe, 0x2f,
+	0xf0, 0x59, 0x6d, 0x47, 0xce, 0xf6, 0x4e, 0x55, 0x5b, 0x07, 0x9c, 0x56, 0x2d, 0x60, 0xcd, 0x8f,
+	0x73, 0x78, 0x2e, 0x37, 0x20, 0x5f, 0x11, 0xae, 0xdb, 0x67, 0x20, 0xb4, 0x94, 0x7d, 0xf8, 0x06,
+	0xbc, 0x5b, 0xd5, 0x03, 0xb6, 0x4f, 0x70, 0xe3, 0xc3, 0xb7, 0x5f, 0x5f, 0x4e, 0xad, 0x90, 0x65,
+	0x5a, 0x24, 0x6f, 0xba, 0x28, 0x1d, 0x47, 0xe9, 0xd4, 0xfd, 0x91, 0xdf, 0x08, 0x5f, 0x2a, 0x7d,
+	0x57, 0xb2, 0x79, 0xbc, 0x41, 0x95, 0x33, 0xf2, 0x1e, 0xcd, 0xcc, 0x71, 0x05, 0x37, 0xf3, 0x82,
+	0x1b, 0xe4, 0x41, 0x79, 0x41, 0x35, 0x81, 0x75, 0x63, 0x93, 0x74, 0x53, 0x8b, 0xeb, 0x4e, 0x2e,
+	0x89, 0x8c, 0x10, 0x6e, 0x1c, 0x75, 0x1d, 0xa4, 0x75, 0x12, 0xdb, 0xff, 0x5e, 0xa0, 0xd7, 0x9e,
+	0x05, 0xe1, 0xba, 0x6e, 0xe4, 0x5d, 0xef, 0x93, 0xbb, 0x95, 0xbb, 0x2a, 0x0b, 0xea, 0xba, 0x33,
+	0x6c, 0x3f, 0xde, 0x1f, 0xfa, 0xe8, 0x60, 0xe8, 0xa3, 0x9f, 0x43, 0x1f, 0x7d, 0x1e, 0xf9, 0xb5,
+	0x83, 0x91, 0x5f, 0xfb, 0x3e, 0xf2, 0x6b, 0xaf, 0x28, 0xe3, 0x66, 0xab, 0x1f, 0x87, 0x89, 0xe8,
+	0x1d, 0x41, 0xdf, 0x2b, 0xf8, 0x66, 0x20, 0x41, 0xc7, 0xf5, 0xfc, 0xcf, 0xea, 0xf6, 0x9f, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x75, 0x95, 0x38, 0x3c, 0x65, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -257,6 +344,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of RegisteredBtcDepositAddresses items.
 	RegisteredBtcDepositAddresses(ctx context.Context, in *QueryRegisteredBtcDepositAddressesRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressesResponse, error)
+	// Queries a list of RegisteredReserveScripts items.
+	RegisteredReserveScripts(ctx context.Context, in *QueryRegisteredReserveScriptsRequest, opts ...grpc.CallOption) (*QueryRegisteredReserveScriptsResponse, error)
 }
 
 type queryClient struct {
@@ -285,12 +374,23 @@ func (c *queryClient) RegisteredBtcDepositAddresses(ctx context.Context, in *Que
 	return out, nil
 }
 
+func (c *queryClient) RegisteredReserveScripts(ctx context.Context, in *QueryRegisteredReserveScriptsRequest, opts ...grpc.CallOption) (*QueryRegisteredReserveScriptsResponse, error) {
+	out := new(QueryRegisteredReserveScriptsResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.bridge.Query/RegisteredReserveScripts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of RegisteredBtcDepositAddresses items.
 	RegisteredBtcDepositAddresses(context.Context, *QueryRegisteredBtcDepositAddressesRequest) (*QueryRegisteredBtcDepositAddressesResponse, error)
+	// Queries a list of RegisteredReserveScripts items.
+	RegisteredReserveScripts(context.Context, *QueryRegisteredReserveScriptsRequest) (*QueryRegisteredReserveScriptsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -302,6 +402,9 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 }
 func (*UnimplementedQueryServer) RegisteredBtcDepositAddresses(ctx context.Context, req *QueryRegisteredBtcDepositAddressesRequest) (*QueryRegisteredBtcDepositAddressesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisteredBtcDepositAddresses not implemented")
+}
+func (*UnimplementedQueryServer) RegisteredReserveScripts(ctx context.Context, req *QueryRegisteredReserveScriptsRequest) (*QueryRegisteredReserveScriptsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisteredReserveScripts not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -344,6 +447,24 @@ func _Query_RegisteredBtcDepositAddresses_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RegisteredReserveScripts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisteredReserveScriptsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RegisteredReserveScripts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.bridge.Query/RegisteredReserveScripts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RegisteredReserveScripts(ctx, req.(*QueryRegisteredReserveScriptsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "twilightproject.nyks.bridge.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -355,6 +476,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisteredBtcDepositAddresses",
 			Handler:    _Query_RegisteredBtcDepositAddresses_Handler,
+		},
+		{
+			MethodName: "RegisteredReserveScripts",
+			Handler:    _Query_RegisteredReserveScripts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -477,6 +602,66 @@ func (m *QueryRegisteredBtcDepositAddressesResponse) MarshalToSizedBuffer(dAtA [
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryRegisteredReserveScriptsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredReserveScriptsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredReserveScriptsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRegisteredReserveScriptsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredReserveScriptsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredReserveScriptsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Scripts) > 0 {
+		for iNdEx := len(m.Scripts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Scripts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -525,6 +710,30 @@ func (m *QueryRegisteredBtcDepositAddressesResponse) Size() (n int) {
 	_ = l
 	if len(m.Addresses) > 0 {
 		for _, e := range m.Addresses {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryRegisteredReserveScriptsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryRegisteredReserveScriptsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Scripts) > 0 {
+		for _, e := range m.Scripts {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -781,6 +990,140 @@ func (m *QueryRegisteredBtcDepositAddressesResponse) Unmarshal(dAtA []byte) erro
 			}
 			m.Addresses = append(m.Addresses, MsgRegisterBtcDepositAddress{})
 			if err := m.Addresses[len(m.Addresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredReserveScriptsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredReserveScriptsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredReserveScriptsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredReserveScriptsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredReserveScriptsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredReserveScriptsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Scripts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Scripts = append(m.Scripts, MsgRegisterReserveAddress{})
+			if err := m.Scripts[len(m.Scripts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

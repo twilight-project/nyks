@@ -1,7 +1,10 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { Params } from "../bridge/params";
-import { MsgRegisterBtcDepositAddress } from "../bridge/tx";
+import {
+  MsgRegisterBtcDepositAddress,
+  MsgRegisterReserveAddress,
+} from "../bridge/tx";
 
 export const protobufPackage = "twilightproject.nyks.bridge";
 
@@ -18,6 +21,12 @@ export interface QueryRegisteredBtcDepositAddressesRequest {}
 
 export interface QueryRegisteredBtcDepositAddressesResponse {
   addresses: MsgRegisterBtcDepositAddress[];
+}
+
+export interface QueryRegisteredReserveScriptsRequest {}
+
+export interface QueryRegisteredReserveScriptsResponse {
+  scripts: MsgRegisterReserveAddress[];
 }
 
 const baseQueryParamsRequest: object = {};
@@ -252,6 +261,138 @@ export const QueryRegisteredBtcDepositAddressesResponse = {
   },
 };
 
+const baseQueryRegisteredReserveScriptsRequest: object = {};
+
+export const QueryRegisteredReserveScriptsRequest = {
+  encode(
+    _: QueryRegisteredReserveScriptsRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredReserveScriptsRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredReserveScriptsRequest,
+    } as QueryRegisteredReserveScriptsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRegisteredReserveScriptsRequest {
+    const message = {
+      ...baseQueryRegisteredReserveScriptsRequest,
+    } as QueryRegisteredReserveScriptsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryRegisteredReserveScriptsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryRegisteredReserveScriptsRequest>
+  ): QueryRegisteredReserveScriptsRequest {
+    const message = {
+      ...baseQueryRegisteredReserveScriptsRequest,
+    } as QueryRegisteredReserveScriptsRequest;
+    return message;
+  },
+};
+
+const baseQueryRegisteredReserveScriptsResponse: object = {};
+
+export const QueryRegisteredReserveScriptsResponse = {
+  encode(
+    message: QueryRegisteredReserveScriptsResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.scripts) {
+      MsgRegisterReserveAddress.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredReserveScriptsResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredReserveScriptsResponse,
+    } as QueryRegisteredReserveScriptsResponse;
+    message.scripts = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.scripts.push(
+            MsgRegisterReserveAddress.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRegisteredReserveScriptsResponse {
+    const message = {
+      ...baseQueryRegisteredReserveScriptsResponse,
+    } as QueryRegisteredReserveScriptsResponse;
+    message.scripts = [];
+    if (object.scripts !== undefined && object.scripts !== null) {
+      for (const e of object.scripts) {
+        message.scripts.push(MsgRegisterReserveAddress.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryRegisteredReserveScriptsResponse): unknown {
+    const obj: any = {};
+    if (message.scripts) {
+      obj.scripts = message.scripts.map((e) =>
+        e ? MsgRegisterReserveAddress.toJSON(e) : undefined
+      );
+    } else {
+      obj.scripts = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRegisteredReserveScriptsResponse>
+  ): QueryRegisteredReserveScriptsResponse {
+    const message = {
+      ...baseQueryRegisteredReserveScriptsResponse,
+    } as QueryRegisteredReserveScriptsResponse;
+    message.scripts = [];
+    if (object.scripts !== undefined && object.scripts !== null) {
+      for (const e of object.scripts) {
+        message.scripts.push(MsgRegisterReserveAddress.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -260,6 +401,10 @@ export interface Query {
   RegisteredBtcDepositAddresses(
     request: QueryRegisteredBtcDepositAddressesRequest
   ): Promise<QueryRegisteredBtcDepositAddressesResponse>;
+  /** Queries a list of RegisteredReserveScripts items. */
+  RegisteredReserveScripts(
+    request: QueryRegisteredReserveScriptsRequest
+  ): Promise<QueryRegisteredReserveScriptsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -290,6 +435,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryRegisteredBtcDepositAddressesResponse.decode(new Reader(data))
+    );
+  }
+
+  RegisteredReserveScripts(
+    request: QueryRegisteredReserveScriptsRequest
+  ): Promise<QueryRegisteredReserveScriptsResponse> {
+    const data = QueryRegisteredReserveScriptsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.bridge.Query",
+      "RegisteredReserveScripts",
+      data
+    );
+    return promise.then((data) =>
+      QueryRegisteredReserveScriptsResponse.decode(new Reader(data))
     );
   }
 }

@@ -27,6 +27,9 @@ const (
 var (
 	// BtcAddressByTwilightAddressKey indexes btc address according to users twilight address
 	BtcAddressByTwilightAddressKey = forkstypes.HashString("BtcAddressByTwilightAddressKey")
+
+	// BtcReserveScriptKey indexes btc reserve script according to judge address
+	BtcReserveScriptKey = forkstypes.HashString("BtcReserveScriptKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -40,4 +43,13 @@ func GetBtcAddressByTwilightAddressKey(twilightAddress sdk.AccAddress) []byte {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 	return forkstypes.AppendBytes(BtcAddressByTwilightAddressKey, twilightAddress.Bytes())
+}
+
+// GetBtcReserveScriptKey returns the following key format
+// [HashString("GetBtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetBtcReserveScriptKey(judgeAddress sdk.AccAddress) []byte {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	return forkstypes.AppendBytes(BtcReserveScriptKey, judgeAddress.Bytes())
 }

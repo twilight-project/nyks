@@ -47,8 +47,8 @@ func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress 
 	return address, true
 }
 
-// GetBtcDepositKeys iterates both the BtcPublicKey and Orchestrator address indexes to produce
-// a vector of MsgSetOrchestratorAddress entires containing all the delgate keys for state
+// GetBtcDepositKeys iterates  the BtcDepositAddresses indexe to produce
+// a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
 // export / import.
 func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDepositAddress, error) {
 	store := ctx.KVStore(k.storeKey)
@@ -104,12 +104,61 @@ func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccA
 
 	// Validation checks for BtcScript are missing
 
-	btcScriptBytes := []byte(reserveScript.BtcScript)
+	btcScriptBytes := []byte(reserveScript.GetBtcReserveScript())
 
 	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(judgeAddress)), btcScriptBytes)
+	store.Set([]byte(types.GetBtcReserveScriptKey(judgeAddress)), btcScriptBytes)
 
 	return btcScriptBytes, nil
+}
+
+// GetBtcReserveKeys iterates both the BtcReserveKeys index to produce
+// a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
+// export / import.
+func (k Keeper) GetBtcReserveKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcReserveScriptKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	btcReserveScripts := make(map[string]string)
+
+	for ; iter.Valid(); iter.Next() {
+		// the 'key' contains both the prefix and the value, so we need
+		// to cut off the starting bytes, if you don't do this a valid
+		// cosmos key will be made out of BtcReserveScriptKey + the startin bytes
+		// of the actual key
+		key := iter.Key()[len(types.BtcReserveScriptKey):]
+		value := iter.Value()
+		reserveScript, err := types.NewBtcScript(string(value))
+		if err != nil {
+			return nil, sdkerrors.Wrapf(err, "found invalid btcAddress %v under key %v", string(value), key)
+		}
+		reserveAddress := sdk.AccAddress(key)
+		if err := sdk.VerifyAddressFormat(reserveAddress); err != nil {
+			return nil, sdkerrors.Wrapf(err, "invalid reserveAddress in key %v", reserveAddress)
+		}
+		btcReserveScripts[reserveAddress.String()] = reserveScript.GetBtcReserveScript()
+	}
+
+	var result []types.MsgRegisterReserveAddress
+
+	for judgeAddr, reserveScript := range btcReserveScripts {
+		result = append(result, types.MsgRegisterReserveAddress{
+			JudgeAddress:  judgeAddr,
+			ReserveScript: reserveScript,
+		})
+
+	}
+
+	// we iterated over a map, so now we have to sort to ensure the
+	// output here is deterministic, btc deposit address chosen for no particular
+	// reason
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].JudgeAddress < result[j].ReserveScript
+	})
+
+	return result, nil
 }
 
 /////////////////////////////

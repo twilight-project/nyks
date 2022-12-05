@@ -28430,6 +28430,45 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/registered_reserve_scripts:
+    get:
+      summary: Queries a list of RegisteredReserveScripts items.
+      operationId: TwilightprojectNyksBridgeRegisteredReserveScripts
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              scripts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveScript:
+                      type: string
+                    judgeAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/forks/delegate_keys_all:
     get:
       summary: Queries a list of DelegateKeysAll items.
@@ -49907,6 +49946,13 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
+  twilightproject.nyks.bridge.MsgRegisterReserveAddress:
+    type: object
+    properties:
+      reserveScript:
+        type: string
+      judgeAddress:
+        type: string
   twilightproject.nyks.bridge.MsgRegisterReserveAddressResponse:
     type: object
     properties:
@@ -49933,6 +49979,18 @@ definitions:
             depositAddress:
               type: string
             twilightDepositAddress:
+              type: string
+  twilightproject.nyks.bridge.QueryRegisteredReserveScriptsResponse:
+    type: object
+    properties:
+      scripts:
+        type: array
+        items:
+          type: object
+          properties:
+            reserveScript:
+              type: string
+            judgeAddress:
               type: string
   twilightproject.nyks.forks.Attestation:
     type: object
