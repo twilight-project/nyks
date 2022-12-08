@@ -5,6 +5,7 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	nykstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
@@ -16,6 +17,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgConfirmBtcDeposit{},
+	)
+	registry.RegisterInterface(
+		"BtcProposal",
+		(*nykstypes.BtcProposal)(nil),
 		&MsgConfirmBtcDeposit{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),

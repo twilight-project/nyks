@@ -65,8 +65,6 @@ func (k Keeper) Attest(
 func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 	proposal, err := k.UnpackAttestationProposal(att)
 	if err != nil {
-		ctx.Logger().Error("I am here under TryAttestation")
-		ctx.Logger().Error(err.Error())
 		panic("could not cast to proposal")
 	}
 	hash, err := proposal.ProposalHash()
