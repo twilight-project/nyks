@@ -1,21 +1,24 @@
 package types
 
 import (
+	fmt "fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/tendermint/tendermint/crypto/tmhash"
+	nykstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
 const TypeMsgConfirmBtcDeposit = "confirm_btc_deposit"
 
 var _ sdk.Msg = &MsgConfirmBtcDeposit{}
 
-func NewMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, inputAddress string, blockHeight uint64, blockHash string, twilightDepositAddress string, btcOracleAddress string) *MsgConfirmBtcDeposit {
+func NewMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, height uint64, hash string, twilightDepositAddress string, btcOracleAddress string) *MsgConfirmBtcDeposit {
 	return &MsgConfirmBtcDeposit{
 		DepositAddress:         depositAddress,
 		DepositAmount:          depositAmount,
-		InputAddress:           inputAddress,
-		BlockHeight:            blockHeight,
-		BlockHash:              blockHash,
+		Height:                 height,
+		Hash:                   hash,
 		TwilightDepositAddress: twilightDepositAddress,
 		BtcOracleAddress:       btcOracleAddress,
 	}
@@ -48,4 +51,28 @@ func (msg *MsgConfirmBtcDeposit) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
+}
+
+func (msg MsgConfirmBtcDeposit) GetProposarOrchestrator() sdk.AccAddress {
+	err := msg.ValidateBasic()
+	if err != nil {
+		panic("MsgSeenBtcChainTip failed ValidateBasic! Should have been handled earlier")
+	}
+
+	val, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	if err != nil {
+		panic(err)
+	}
+
+	return val
+}
+
+// GetType returns the claim type
+func (msg *MsgConfirmBtcDeposit) GetType() nykstypes.ProposalType {
+	return nykstypes.PROPOSAL_TYPE_BTC_DEPOSIT
+}
+
+func (msg *MsgConfirmBtcDeposit) ProposalHash() ([]byte, error) {
+	path := fmt.Sprintf("%d/%s/", msg.Height, msg.Hash)
+	return tmhash.Sum([]byte(path)), nil
 }

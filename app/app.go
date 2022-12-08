@@ -398,8 +398,9 @@ func New(
 		keys[bridgemoduletypes.MemStoreKey],
 		app.GetSubspace(bridgemoduletypes.ModuleName),
 		&stakingKeeper,
+		&app.nyksKeeper,
 	)
-	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper)
+	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper, app.nyksKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 

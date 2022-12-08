@@ -2,10 +2,8 @@ package keeper
 
 // import (
 // 	"errors"
-// 	"sort"
 
 // 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-// 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -18,7 +16,7 @@ package keeper
 // 	proposal types.BtcProposal,
 // 	anyProposal *codectypes.Any,
 // ) (*types.Attestation, error) {
-// 	val, found := k.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
+// 	val, found := k.NyksKeeper.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
 // 	if !found {
 // 		panic("Could not find ValAddr for delegate key, should be checked by now")
 // 	}

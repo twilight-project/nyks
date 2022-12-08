@@ -14,6 +14,7 @@ enum ProposalType {
   option (gogoproto.goproto_enum_prefix) = false;
 
   PROPOSAL_TYPE_BTC_CHAINTIP = 0;
+  PROPOSAL_TYPE_BTC_DEPOSIT = 1;
 }
 
 // Attestation is an aggregate of `proposals` that eventually becomes `observed` by

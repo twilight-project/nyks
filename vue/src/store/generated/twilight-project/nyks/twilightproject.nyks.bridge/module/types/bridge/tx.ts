@@ -7,9 +7,8 @@ export const protobufPackage = "twilightproject.nyks.bridge";
 export interface MsgConfirmBtcDeposit {
   depositAddress: string;
   depositAmount: number;
-  inputAddress: string;
-  blockHeight: number;
-  blockHash: string;
+  height: number;
+  hash: string;
   twilightDepositAddress: string;
   btcOracleAddress: string;
 }
@@ -37,9 +36,8 @@ export interface MsgRegisterReserveAddressResponse {
 const baseMsgConfirmBtcDeposit: object = {
   depositAddress: "",
   depositAmount: 0,
-  inputAddress: "",
-  blockHeight: 0,
-  blockHash: "",
+  height: 0,
+  hash: "",
   twilightDepositAddress: "",
   btcOracleAddress: "",
 };
@@ -55,20 +53,17 @@ export const MsgConfirmBtcDeposit = {
     if (message.depositAmount !== 0) {
       writer.uint32(16).uint64(message.depositAmount);
     }
-    if (message.inputAddress !== "") {
-      writer.uint32(26).string(message.inputAddress);
+    if (message.height !== 0) {
+      writer.uint32(24).uint64(message.height);
     }
-    if (message.blockHeight !== 0) {
-      writer.uint32(32).uint64(message.blockHeight);
-    }
-    if (message.blockHash !== "") {
-      writer.uint32(42).string(message.blockHash);
+    if (message.hash !== "") {
+      writer.uint32(34).string(message.hash);
     }
     if (message.twilightDepositAddress !== "") {
-      writer.uint32(50).string(message.twilightDepositAddress);
+      writer.uint32(42).string(message.twilightDepositAddress);
     }
     if (message.btcOracleAddress !== "") {
-      writer.uint32(58).string(message.btcOracleAddress);
+      writer.uint32(50).string(message.btcOracleAddress);
     }
     return writer;
   },
@@ -87,18 +82,15 @@ export const MsgConfirmBtcDeposit = {
           message.depositAmount = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.inputAddress = reader.string();
+          message.height = longToNumber(reader.uint64() as Long);
           break;
         case 4:
-          message.blockHeight = longToNumber(reader.uint64() as Long);
+          message.hash = reader.string();
           break;
         case 5:
-          message.blockHash = reader.string();
-          break;
-        case 6:
           message.twilightDepositAddress = reader.string();
           break;
-        case 7:
+        case 6:
           message.btcOracleAddress = reader.string();
           break;
         default:
@@ -121,20 +113,15 @@ export const MsgConfirmBtcDeposit = {
     } else {
       message.depositAmount = 0;
     }
-    if (object.inputAddress !== undefined && object.inputAddress !== null) {
-      message.inputAddress = String(object.inputAddress);
+    if (object.height !== undefined && object.height !== null) {
+      message.height = Number(object.height);
     } else {
-      message.inputAddress = "";
+      message.height = 0;
     }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Number(object.blockHeight);
+    if (object.hash !== undefined && object.hash !== null) {
+      message.hash = String(object.hash);
     } else {
-      message.blockHeight = 0;
-    }
-    if (object.blockHash !== undefined && object.blockHash !== null) {
-      message.blockHash = String(object.blockHash);
-    } else {
-      message.blockHash = "";
+      message.hash = "";
     }
     if (
       object.twilightDepositAddress !== undefined &&
@@ -161,11 +148,8 @@ export const MsgConfirmBtcDeposit = {
       (obj.depositAddress = message.depositAddress);
     message.depositAmount !== undefined &&
       (obj.depositAmount = message.depositAmount);
-    message.inputAddress !== undefined &&
-      (obj.inputAddress = message.inputAddress);
-    message.blockHeight !== undefined &&
-      (obj.blockHeight = message.blockHeight);
-    message.blockHash !== undefined && (obj.blockHash = message.blockHash);
+    message.height !== undefined && (obj.height = message.height);
+    message.hash !== undefined && (obj.hash = message.hash);
     message.twilightDepositAddress !== undefined &&
       (obj.twilightDepositAddress = message.twilightDepositAddress);
     message.btcOracleAddress !== undefined &&
@@ -185,20 +169,15 @@ export const MsgConfirmBtcDeposit = {
     } else {
       message.depositAmount = 0;
     }
-    if (object.inputAddress !== undefined && object.inputAddress !== null) {
-      message.inputAddress = object.inputAddress;
+    if (object.height !== undefined && object.height !== null) {
+      message.height = object.height;
     } else {
-      message.inputAddress = "";
+      message.height = 0;
     }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight;
+    if (object.hash !== undefined && object.hash !== null) {
+      message.hash = object.hash;
     } else {
-      message.blockHeight = 0;
-    }
-    if (object.blockHash !== undefined && object.blockHash !== null) {
-      message.blockHash = object.blockHash;
-    } else {
-      message.blockHash = "";
+      message.hash = "";
     }
     if (
       object.twilightDepositAddress !== undefined &&

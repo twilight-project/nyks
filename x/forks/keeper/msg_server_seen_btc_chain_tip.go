@@ -11,7 +11,7 @@ import (
 
 // checkOrchestratorValidatorInSet checks that the orchestrator refers to a validator that is
 // currently in the set
-func (k msgServer) checkOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) error {
+func (k Keeper) CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) error {
 	orchaddr, err := sdk.AccAddressFromBech32(orchestrator)
 	if err != nil {
 		return sdkerrors.Wrap(types.ErrInvalid, "acc address invalid")
@@ -32,7 +32,7 @@ func (k msgServer) checkOrchestratorValidatorInSet(ctx sdk.Context, orchestrator
 
 // claimHandlerCommon is an internal function that provides common code for processing claims once they are
 // translated from the message to the Ethereum claim interface
-func (k msgServer) claimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, msg types.BtcProposal) error {
+func (k Keeper) ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, msg types.BtcProposal) error {
 	// Add the claim to the store
 	_, err := k.Attest(ctx, msg, msgAny)
 	if err != nil {
@@ -59,7 +59,7 @@ func (k msgServer) claimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, m
 func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcChainTip) (*types.MsgSeenBtcChainTipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := k.checkOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	err := k.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
 	}
@@ -69,7 +69,7 @@ func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcC
 		return nil, sdkerrors.Wrap(err, "Could not check Any value")
 	}
 
-	err = k.claimHandlerCommon(ctx, any, msg)
+	err = k.ClaimHandlerCommon(ctx, any, msg)
 	if err != nil {
 		return nil, err
 	}

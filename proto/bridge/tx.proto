@@ -16,11 +16,10 @@ service Msg {
 message MsgConfirmBtcDeposit {
   string depositAddress = 1;
   uint64 depositAmount = 2;
-  string inputAddress = 3;
-  uint64 blockHeight = 4;
-  string blockHash = 5;
-  string twilightDepositAddress = 6;
-  string btcOracleAddress = 7;
+  uint64 height = 3;
+  string hash = 4;
+  string twilightDepositAddress = 5;
+  string btcOracleAddress = 6;
 }
 
 message MsgConfirmBtcDepositResponse {

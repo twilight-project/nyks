@@ -197,18 +197,18 @@ export default {
 		},
 		
 		
-		async sendMsgConfirmBtcDeposit({ rootGetters }, { value, fee = [], memo = '' }) {
+		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgConfirmBtcDeposit(value)
+				const msg = await txClient.msgRegisterBtcDepositAddress(value)
 				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
 	gas: "200000" }, memo})
 				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgConfirmBtcDeposit:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
 				}else{
-					throw new Error('TxClient:MsgConfirmBtcDeposit:Send Could not broadcast Tx: '+ e.message)
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -227,32 +227,32 @@ export default {
 				}
 			}
 		},
-		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = [], memo = '' }) {
+		async sendMsgConfirmBtcDeposit({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgRegisterBtcDepositAddress(value)
+				const msg = await txClient.msgConfirmBtcDeposit(value)
 				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
 	gas: "200000" }, memo})
 				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgConfirmBtcDeposit:Init Could not initialize signing client. Wallet is required.')
 				}else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
+					throw new Error('TxClient:MsgConfirmBtcDeposit:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
 		
-		async MsgConfirmBtcDeposit({ rootGetters }, { value }) {
+		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgConfirmBtcDeposit(value)
+				const msg = await txClient.msgRegisterBtcDepositAddress(value)
 				return msg
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgConfirmBtcDeposit:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
 				} else{
-					throw new Error('TxClient:MsgConfirmBtcDeposit:Create Could not create message: ' + e.message)
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
 				}
 			}
 		},
@@ -269,16 +269,16 @@ export default {
 				}
 			}
 		},
-		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
+		async MsgConfirmBtcDeposit({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgRegisterBtcDepositAddress(value)
+				const msg = await txClient.msgConfirmBtcDeposit(value)
 				return msg
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgConfirmBtcDeposit:Init Could not initialize signing client. Wallet is required.')
 				} else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
+					throw new Error('TxClient:MsgConfirmBtcDeposit:Create Could not create message: ' + e.message)
 				}
 			}
 		},

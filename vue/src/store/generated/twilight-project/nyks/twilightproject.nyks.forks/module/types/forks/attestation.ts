@@ -7,6 +7,7 @@ export const protobufPackage = "twilightproject.nyks.forks";
 
 export enum ProposalType {
   PROPOSAL_TYPE_BTC_CHAINTIP = 0,
+  PROPOSAL_TYPE_BTC_DEPOSIT = 1,
   UNRECOGNIZED = -1,
 }
 
@@ -15,6 +16,9 @@ export function proposalTypeFromJSON(object: any): ProposalType {
     case 0:
     case "PROPOSAL_TYPE_BTC_CHAINTIP":
       return ProposalType.PROPOSAL_TYPE_BTC_CHAINTIP;
+    case 1:
+    case "PROPOSAL_TYPE_BTC_DEPOSIT":
+      return ProposalType.PROPOSAL_TYPE_BTC_DEPOSIT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -26,6 +30,8 @@ export function proposalTypeToJSON(object: ProposalType): string {
   switch (object) {
     case ProposalType.PROPOSAL_TYPE_BTC_CHAINTIP:
       return "PROPOSAL_TYPE_BTC_CHAINTIP";
+    case ProposalType.PROPOSAL_TYPE_BTC_DEPOSIT:
+      return "PROPOSAL_TYPE_BTC_DEPOSIT";
     default:
       return "UNKNOWN";
   }

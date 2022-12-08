@@ -65,6 +65,8 @@ func (k Keeper) Attest(
 func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 	proposal, err := k.UnpackAttestationProposal(att)
 	if err != nil {
+		ctx.Logger().Error("I am here under TryAttestation")
+		ctx.Logger().Error(err.Error())
 		panic("could not cast to proposal")
 	}
 	hash, err := proposal.ProposalHash()
@@ -176,6 +178,8 @@ func (k Keeper) GetAttestationMapping(ctx sdk.Context) (attestationMapping map[u
 	k.IterateAttestations(ctx, false, func(_ []byte, att types.Attestation) bool {
 		proposal, err := k.UnpackAttestationProposal(&att)
 		if err != nil {
+			ctx.Logger().Error("I am here under GetAttestationMapping")
+			ctx.Logger().Error(err.Error())
 			panic("couldn't cast to proposal")
 		}
 

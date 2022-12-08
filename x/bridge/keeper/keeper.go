@@ -10,7 +10,11 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	nykskeeper "github.com/twilight-project/nyks/x/forks/keeper"
 )
+
+// Check that our expected keeper types are implemented
+var _ types.NyksKeeper = (*nykskeeper.Keeper)(nil)
 
 type (
 	Keeper struct {
@@ -21,6 +25,7 @@ type (
 
 		// NOTE: If you add anything to this struct, add a nil check to ValidateMembers below!
 		StakingKeeper *stakingkeeper.Keeper
+		NyksKeeper    *nykskeeper.Keeper
 	}
 )
 
@@ -30,6 +35,7 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
+	nyksKeeper *nykskeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -44,6 +50,7 @@ func NewKeeper(
 		paramstore: ps,
 
 		StakingKeeper: stakingKeeper,
+		NyksKeeper:    nyksKeeper,
 	}
 }
 
