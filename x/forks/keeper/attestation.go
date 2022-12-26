@@ -180,7 +180,7 @@ func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, prop
 		// The attestation will still be marked "Observed", allowing the oracle to progress properly
 		k.logger(ctx).Error("attestation failed",
 			"cause", err.Error(),
-			"claim type", proposal.GetType(),
+			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
 	} else {
