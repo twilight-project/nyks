@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/twilight-project/nyks/x/bridge/types"
@@ -26,6 +27,7 @@ type (
 		// NOTE: If you add anything to this struct, add a nil check to ValidateMembers below!
 		StakingKeeper *stakingkeeper.Keeper
 		NyksKeeper    *nykskeeper.Keeper
+		accountKeeper *authkeeper.AccountKeeper
 	}
 )
 
@@ -36,6 +38,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
 	nyksKeeper *nykskeeper.Keeper,
+	accKeeper *authkeeper.AccountKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -51,6 +54,7 @@ func NewKeeper(
 
 		StakingKeeper: stakingKeeper,
 		NyksKeeper:    nyksKeeper,
+		accountKeeper: accKeeper,
 	}
 }
 

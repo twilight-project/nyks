@@ -1,8 +1,8 @@
 accounts:
   - name: alice
-    coins: ["100000000nyks"]
+    coins: ["100000000nyks", "0btc"]
   - name: bob
-    coins: ["100000000nyks"]
+    coins: ["100000000nyks", "0btc"]
 validator:
   name: alice
   staked: "100000000nyks"
@@ -13,7 +13,7 @@ client:
     path: "vue/src/store"
 faucet:
   name: bob
-  coins: ["100000nyks"]
+  coins: ["100000nyks", "1btc"]
 genesis:
   chain_id: "nyks"
 init:
@@ -22,4 +22,7 @@ genesis:
   app_state:
     staking:
       params:
-        bond_denom: "nyks"
+        bond_denom: "nyks" 
+    mint:
+      params:
+        mint_denom: nyks    

@@ -7,6 +7,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/twilight-project/nyks/x/forks/types"
@@ -24,6 +26,12 @@ type (
 
 		// NOTE: If you add anything to this struct, add a nil check to ValidateMembers below!
 		StakingKeeper *stakingkeeper.Keeper
+		bankKeeper    *bankkeeper.BaseKeeper
+		accountKeeper *authkeeper.AccountKeeper
+
+		AttestationHandler interface {
+			Handle(sdk.Context, types.Attestation, types.BtcProposal) error
+		}
 	}
 )
 
@@ -40,6 +48,8 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
+	accKeeper *authkeeper.AccountKeeper,
+	bankKeeper *bankkeeper.BaseKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -52,8 +62,16 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		StakingKeeper: stakingKeeper,
+		StakingKeeper:      stakingKeeper,
+		accountKeeper:      accKeeper,
+		bankKeeper:         bankKeeper,
+		AttestationHandler: nil,
 	}
+	attestationHandler := AttestationHandler{keeper: &k}
+	attestationHandler.ValidateMembers()
+	k.AttestationHandler = attestationHandler
+
+	k.ValidateMembers()
 
 	return &k
 }

@@ -15,9 +15,7 @@ func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	ctx.Logger().Error(btcAddr.GetBtcAddress())
 	btcAddrBytes, _, err := base58.CheckDecode(btcAddr.GetBtcAddress())
-	ctx.Logger().Error(string(btcAddrBytes))
 	if err != nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalidBtcAddress, "invalid btc address hex encoding (%s) giving err (%s) ", btcAddr.GetBtcAddress(), err)
 	}
@@ -30,7 +28,6 @@ func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress
 // GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
 func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcPublicKey *types.BtcAddress, found bool) {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
-		ctx.Logger().Error("invalid validator address")
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 	store := ctx.KVStore(k.storeKey)
@@ -40,9 +37,7 @@ func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress 
 		return nil, false
 	}
 
-	ctx.Logger().Error(string(addrBytes))
 	address, err := types.NewBtcAddress(base58.CheckEncode(addrBytes, 0))
-	ctx.Logger().Error(address.BtcAddress)
 	if err != nil {
 		ctx.Logger().Error("btcpk could not be converted")
 		return nil, false

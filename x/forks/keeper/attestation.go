@@ -102,7 +102,7 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 				att.Observed = true
 				k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
 
-				//k.processAttestation(ctx, att, proposal)
+				k.processAttestation(ctx, att, proposal)
 
 				k.emitObservedEvent(ctx, att, proposal)
 
@@ -166,6 +166,27 @@ func (k Keeper) GetAttestation(ctx sdk.Context, height uint64, proposalHash []by
 
 // 	store.Delete(types.GetAttestationKey(claim.GetEventNonce(), hash))
 // }
+
+// processAttestation actually applies the attestation to the consensus state
+func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, proposal types.BtcProposal) {
+	hash, err := proposal.ProposalHash()
+	if err != nil {
+		panic(sdkerrors.Wrap(err, "unable to compute proposal hash"))
+	}
+	// then execute in a new Tx so that we can store state on failure
+	xCtx, commit := ctx.CacheContext()
+	if err := k.AttestationHandler.Handle(xCtx, *att, proposal); err != nil { // execute with a transient storage
+		// If the attestation fails, something has gone wrong and we can't recover it. Log and move on
+		// The attestation will still be marked "Observed", allowing the oracle to progress properly
+		k.logger(ctx).Error("attestation failed",
+			"cause", err.Error(),
+			"claim type", proposal.GetType(),
+			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+		)
+	} else {
+		commit() // persist transient storage
+	}
+}
 
 // GetAttestationMapping returns a mapping of eventnonce -> attestations at that nonce
 // it also returns a pre-sorted array of the keys, this assists callers of this function
