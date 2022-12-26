@@ -28,4 +28,8 @@ func (gs GenesisState) Validate() error {
 var (
 	// AttestationVotesPowerThreshold threshold of votes power to succeed
 	AttestationVotesPowerThreshold = sdk.NewInt(66)
+
+	// AttestationVoteCountThreshold threshold of votes count to succeed
+	// We use this for SeenBtcChainTip type proposal
+	AttestationVoteCountThreshold = 66.0
 )

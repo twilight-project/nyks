@@ -31,18 +31,10 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 
 	case *bridgetypes.MsgConfirmBtcDeposit:
 		return a.handleConfirmBtcDeposit(ctx, *proposal)
-	case *types.MsgSeenBtcChainTip:
-		return a.handleSeenBtcChainTip(ctx, *proposal)
 
 	default:
 		panic(fmt.Sprintf("Invalid event type for attestations %s", proposal.GetType()))
 	}
-}
-
-// handleSeenBtcChainTip handles the processing of a MsgSeenBtcChainTip
-// Currently, we do not have post-processing to the function is empty
-func (a AttestationHandler) handleSeenBtcChainTip(ctx sdk.Context, proposal types.MsgSeenBtcChainTip) error {
-	return nil
 }
 
 // handleConfirmBtcDeposit handles the processing of a MsgConfirmBtcDeposit

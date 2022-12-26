@@ -79,34 +79,64 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 		totalPower := k.StakingKeeper.GetLastTotalPower(ctx)
 		requiredPower := types.AttestationVotesPowerThreshold.Mul(totalPower).Quo(sdk.NewInt(100))
 		attestationPower := sdk.NewInt(0)
-		for _, validator := range att.Votes {
-			val, err := sdk.ValAddressFromBech32(validator)
-			if err != nil {
-				panic(err)
-			}
-			validatorPower := k.StakingKeeper.GetLastValidatorPower(ctx, val)
-			// Add it to the attestation power's sum
-			attestationPower = attestationPower.Add(sdk.NewInt(validatorPower))
-			// If the power of all the validators that have voted on the attestation is higher or equal to the threshold,
-			// process the attestation, set Observed to true, and break
-			if attestationPower.GTE(requiredPower) {
-				// lastBlockHeight := k.GetLastObservedBlockHeight(ctx)
-				// // this check is performed at the next level up so this should never panic
-				// // outside of programmer error.
-				// if proposal.GetBlockHeight() > lastBlockHeight {
-				// 	panic("attempting to apply events to state out of order")
-				// }
-				// k.setLastObservedEventNonce(ctx, claim.GetEventNonce())
-				// k.SetLastObservedEthereumBlockHeight(ctx, claim.GetBlockHeight())
 
+		proposalType := proposal.GetType()
+		ctx.Logger().Error("proposalType", "proposalType", proposalType)
+		if proposalType == 1 { // BtcDeposit Porposal
+			validatorSet := k.StakingKeeper.GetAllValidators(ctx)
+			// Count the number of active validators
+			activeValidatorCount := 0
+			for _, validator := range validatorSet {
+				if validator.GetBondedTokens().IsPositive() {
+					activeValidatorCount++
+				}
+			}
+
+			receivedVotes := len(att.Votes)
+
+			// Calculate the number of votes needed to reach the target percentage
+			votesNeeded := int(float64(activeValidatorCount) * (types.AttestationVoteCountThreshold / 100.0))
+
+			// Check if you have received at least the number of votes needed
+			if receivedVotes >= votesNeeded {
+				// You have reached the target percentage of votes!
 				att.Observed = true
 				k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
 
 				k.processAttestation(ctx, att, proposal)
 
 				k.emitObservedEvent(ctx, att, proposal)
+			}
+		} else if proposalType == 0 { // SeenChainTip Proposal
 
-				break
+			for _, validator := range att.Votes {
+				val, err := sdk.ValAddressFromBech32(validator)
+				if err != nil {
+					panic(err)
+				}
+				validatorPower := k.StakingKeeper.GetLastValidatorPower(ctx, val)
+
+				// Add it to the attestation power's sum
+				attestationPower = attestationPower.Add(sdk.NewInt(validatorPower))
+				// If the power of all the validators that have voted on the attestation is higher or equal to the threshold,
+				// process the attestation, set Observed to true, and break
+				if attestationPower.GTE(requiredPower) {
+					// lastBlockHeight := k.GetLastObservedBlockHeight(ctx)
+					// // this check is performed at the next level up so this should never panic
+					// // outside of programmer error.
+					// if proposal.GetBlockHeight() > lastBlockHeight {
+					// 	panic("attempting to apply events to state out of order")
+					// }
+					// k.setLastObservedEventNonce(ctx, claim.GetEventNonce())
+					// k.SetLastObservedEthereumBlockHeight(ctx, claim.GetBlockHeight())
+
+					att.Observed = true
+					k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
+
+					k.emitObservedEvent(ctx, att, proposal)
+
+					break
+				}
 			}
 		}
 	}
