@@ -42,6 +42,11 @@ export interface BridgeQueryParamsResponse {
   params?: BridgeParams;
 }
 
+export interface BridgeQueryRegisteredBtcDepositAddressResponse {
+  depositAddress?: string;
+  twilightDepositAddress?: string;
+}
+
 export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
   addresses?: BridgeMsgRegisterBtcDepositAddress[];
 }
@@ -268,6 +273,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<BridgeQueryParamsResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryRegisteredBtcDepositAddress
+   * @summary Queries a list of RegisteredBtcDepositAddress items.
+   * @request GET:/twilight-project/nyks/bridge/registered_btc_deposit_address/{depositAddress}
+   */
+  queryRegisteredBtcDepositAddress = (depositAddress: string, params: RequestParams = {}) =>
+    this.request<BridgeQueryRegisteredBtcDepositAddressResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/registered_btc_deposit_address/${depositAddress}`,
       method: "GET",
       format: "json",
       ...params,

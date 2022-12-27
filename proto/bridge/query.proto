@@ -26,6 +26,11 @@ service Query {
 		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_reserve_scripts";
 	}
 
+// Queries a list of RegisteredBtcDepositAddress items.
+	rpc RegisteredBtcDepositAddress(QueryRegisteredBtcDepositAddressRequest) returns (QueryRegisteredBtcDepositAddressResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_address/{depositAddress}";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -50,6 +55,15 @@ message QueryRegisteredReserveScriptsRequest {
 
 message QueryRegisteredReserveScriptsResponse {
   repeated MsgRegisterReserveAddress scripts = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRegisteredBtcDepositAddressRequest {
+  string depositAddress = 1;
+}
+
+message QueryRegisteredBtcDepositAddressResponse {
+  string depositAddress = 1;
+  string twilightDepositAddress = 2;
 }
 
 // this line is used by starport scaffolding # 3

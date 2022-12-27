@@ -281,6 +281,106 @@ func (m *QueryRegisteredReserveScriptsResponse) GetScripts() []MsgRegisterReserv
 	return nil
 }
 
+type QueryRegisteredBtcDepositAddressRequest struct {
+	DepositAddress string `protobuf:"bytes,1,opt,name=depositAddress,proto3" json:"depositAddress,omitempty"`
+}
+
+func (m *QueryRegisteredBtcDepositAddressRequest) Reset() {
+	*m = QueryRegisteredBtcDepositAddressRequest{}
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredBtcDepositAddressRequest) ProtoMessage()    {}
+func (*QueryRegisteredBtcDepositAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{6}
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredBtcDepositAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressRequest.Merge(m, src)
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredBtcDepositAddressRequest proto.InternalMessageInfo
+
+func (m *QueryRegisteredBtcDepositAddressRequest) GetDepositAddress() string {
+	if m != nil {
+		return m.DepositAddress
+	}
+	return ""
+}
+
+type QueryRegisteredBtcDepositAddressResponse struct {
+	DepositAddress         string `protobuf:"bytes,1,opt,name=depositAddress,proto3" json:"depositAddress,omitempty"`
+	TwilightDepositAddress string `protobuf:"bytes,2,opt,name=twilightDepositAddress,proto3" json:"twilightDepositAddress,omitempty"`
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) Reset() {
+	*m = QueryRegisteredBtcDepositAddressResponse{}
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredBtcDepositAddressResponse) ProtoMessage()    {}
+func (*QueryRegisteredBtcDepositAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_09fd90c905cb448b, []int{7}
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredBtcDepositAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressResponse.Merge(m, src)
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredBtcDepositAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredBtcDepositAddressResponse proto.InternalMessageInfo
+
+func (m *QueryRegisteredBtcDepositAddressResponse) GetDepositAddress() string {
+	if m != nil {
+		return m.DepositAddress
+	}
+	return ""
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) GetTwilightDepositAddress() string {
+	if m != nil {
+		return m.TwilightDepositAddress
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "twilightproject.nyks.bridge.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "twilightproject.nyks.bridge.QueryParamsResponse")
@@ -288,44 +388,51 @@ func init() {
 	proto.RegisterType((*QueryRegisteredBtcDepositAddressesResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesResponse")
 	proto.RegisterType((*QueryRegisteredReserveScriptsRequest)(nil), "twilightproject.nyks.bridge.QueryRegisteredReserveScriptsRequest")
 	proto.RegisterType((*QueryRegisteredReserveScriptsResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredReserveScriptsResponse")
+	proto.RegisterType((*QueryRegisteredBtcDepositAddressRequest)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressRequest")
+	proto.RegisterType((*QueryRegisteredBtcDepositAddressResponse)(nil), "twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressResponse")
 }
 
 func init() { proto.RegisterFile("bridge/query.proto", fileDescriptor_09fd90c905cb448b) }
 
 var fileDescriptor_09fd90c905cb448b = []byte{
-	// 508 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0xcf, 0x6b, 0x13, 0x41,
-	0x14, 0xc7, 0x33, 0x6a, 0x23, 0x4e, 0x0f, 0xc2, 0xb4, 0x87, 0xb0, 0xea, 0x5a, 0xd6, 0x5a, 0x6a,
-	0xd5, 0x1d, 0x1b, 0x41, 0xd4, 0x83, 0x34, 0x41, 0x2a, 0x1e, 0x04, 0x8d, 0x20, 0x22, 0x48, 0xd8,
-	0x1f, 0x8f, 0xe9, 0x68, 0xb3, 0x33, 0x9d, 0x99, 0xd4, 0xe6, 0x24, 0x88, 0x37, 0x2f, 0x82, 0x27,
-	0xff, 0xa3, 0x1e, 0x0b, 0x5e, 0x3c, 0x89, 0x24, 0xfe, 0x11, 0x1e, 0x25, 0x3b, 0xb3, 0x91, 0x58,
-	0xbb, 0xdd, 0x92, 0x5b, 0x78, 0x79, 0xdf, 0x4f, 0x3e, 0x5f, 0xe6, 0x11, 0x4c, 0x62, 0xc5, 0x53,
-	0x06, 0x74, 0xa7, 0x0f, 0x6a, 0x10, 0x4a, 0x25, 0x8c, 0x20, 0x17, 0xcc, 0x3b, 0xbe, 0xcd, 0xd9,
-	0x96, 0x91, 0x4a, 0xbc, 0x81, 0xc4, 0x84, 0xd9, 0xe0, 0xad, 0x0e, 0xed, 0xa2, 0xb7, 0xc8, 0x04,
-	0x13, 0xf9, 0x1e, 0x1d, 0x7f, 0xb2, 0x11, 0xef, 0x22, 0x13, 0x82, 0x6d, 0x03, 0x8d, 0x24, 0xa7,
-	0x51, 0x96, 0x09, 0x13, 0x19, 0x2e, 0x32, 0xed, 0xbe, 0x5d, 0x4b, 0x84, 0xee, 0x09, 0x4d, 0xe3,
-	0x48, 0xbb, 0x5f, 0xa2, 0xbb, 0xeb, 0x31, 0x98, 0x68, 0x9d, 0xca, 0x88, 0xf1, 0x2c, 0x5f, 0x76,
-	0xbb, 0xe7, 0x9d, 0x90, 0xd9, 0x73, 0x83, 0x05, 0x37, 0x90, 0x91, 0x8a, 0x7a, 0x8e, 0x18, 0x2c,
-	0x62, 0xf2, 0x6c, 0xcc, 0x79, 0x9a, 0x0f, 0x3b, 0xb0, 0xd3, 0x07, 0x6d, 0x82, 0x97, 0x78, 0x61,
-	0x6a, 0xaa, 0xa5, 0xc8, 0x34, 0x90, 0x16, 0xae, 0xdb, 0x70, 0x03, 0x2d, 0xa1, 0xd5, 0xf9, 0xe6,
-	0x95, 0xb0, 0xa4, 0x60, 0x68, 0xc3, 0xed, 0x33, 0xfb, 0x3f, 0x2e, 0xd7, 0x3a, 0x2e, 0x18, 0x5c,
-	0xc7, 0xd7, 0x72, 0x72, 0x07, 0x18, 0xd7, 0x06, 0x14, 0xa4, 0x6d, 0x93, 0x3c, 0x04, 0x29, 0x34,
-	0x37, 0xad, 0x34, 0x55, 0xa0, 0x35, 0x4c, 0x34, 0x3e, 0x21, 0xbc, 0x56, 0x65, 0xdb, 0xe9, 0xbd,
-	0xc6, 0xe7, 0xa2, 0x62, 0xd8, 0x40, 0x4b, 0xa7, 0x57, 0xe7, 0x9b, 0xf7, 0x4a, 0x0d, 0x9f, 0x68,
-	0x56, 0x90, 0x0f, 0x71, 0x9d, 0xf7, 0x5f, 0x62, 0xb0, 0x82, 0x97, 0xff, 0x91, 0xe9, 0x80, 0x06,
-	0xb5, 0x0b, 0xcf, 0x13, 0xc5, 0xa5, 0x99, 0x58, 0xbf, 0xc7, 0x57, 0x8f, 0xd9, 0x73, 0xbe, 0x2f,
-	0xf0, 0x59, 0x6d, 0x47, 0xce, 0xf6, 0x4e, 0x55, 0x5b, 0x07, 0x9c, 0x56, 0x2d, 0x60, 0xcd, 0x8f,
-	0x73, 0x78, 0x2e, 0x37, 0x20, 0x5f, 0x11, 0xae, 0xdb, 0x67, 0x20, 0xb4, 0x94, 0x7d, 0xf8, 0x06,
-	0xbc, 0x5b, 0xd5, 0x03, 0xb6, 0x4f, 0x70, 0xe3, 0xc3, 0xb7, 0x5f, 0x5f, 0x4e, 0xad, 0x90, 0x65,
-	0x5a, 0x24, 0x6f, 0xba, 0x28, 0x1d, 0x47, 0xe9, 0xd4, 0xfd, 0x91, 0xdf, 0x08, 0x5f, 0x2a, 0x7d,
-	0x57, 0xb2, 0x79, 0xbc, 0x41, 0x95, 0x33, 0xf2, 0x1e, 0xcd, 0xcc, 0x71, 0x05, 0x37, 0xf3, 0x82,
-	0x1b, 0xe4, 0x41, 0x79, 0x41, 0x35, 0x81, 0x75, 0x63, 0x93, 0x74, 0x53, 0x8b, 0xeb, 0x4e, 0x2e,
-	0x89, 0x8c, 0x10, 0x6e, 0x1c, 0x75, 0x1d, 0xa4, 0x75, 0x12, 0xdb, 0xff, 0x5e, 0xa0, 0xd7, 0x9e,
-	0x05, 0xe1, 0xba, 0x6e, 0xe4, 0x5d, 0xef, 0x93, 0xbb, 0x95, 0xbb, 0x2a, 0x0b, 0xea, 0xba, 0x33,
-	0x6c, 0x3f, 0xde, 0x1f, 0xfa, 0xe8, 0x60, 0xe8, 0xa3, 0x9f, 0x43, 0x1f, 0x7d, 0x1e, 0xf9, 0xb5,
-	0x83, 0x91, 0x5f, 0xfb, 0x3e, 0xf2, 0x6b, 0xaf, 0x28, 0xe3, 0x66, 0xab, 0x1f, 0x87, 0x89, 0xe8,
-	0x1d, 0x41, 0xdf, 0x2b, 0xf8, 0x66, 0x20, 0x41, 0xc7, 0xf5, 0xfc, 0xcf, 0xea, 0xf6, 0x9f, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x75, 0x95, 0x38, 0x3c, 0x65, 0x05, 0x00, 0x00,
+	// 589 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x95, 0xc1, 0x6b, 0x13, 0x41,
+	0x14, 0xc6, 0x33, 0x51, 0x53, 0x3a, 0x05, 0x85, 0x69, 0x91, 0x90, 0xea, 0x5a, 0xd6, 0x1a, 0x63,
+	0xd5, 0x1d, 0x1b, 0xa1, 0xa8, 0x07, 0x69, 0x42, 0xad, 0x78, 0x28, 0xda, 0x88, 0x22, 0x82, 0x84,
+	0xdd, 0xcd, 0xb0, 0x5d, 0x6d, 0x76, 0xb6, 0x33, 0x93, 0xda, 0x20, 0x22, 0x7a, 0x12, 0xbd, 0x08,
+	0x9e, 0xfc, 0x8f, 0x7a, 0x2c, 0x78, 0xf1, 0x24, 0x92, 0xf8, 0x47, 0x78, 0x94, 0xcc, 0xbe, 0x8d,
+	0x6c, 0x6b, 0x36, 0x5b, 0x72, 0x5b, 0xde, 0xbc, 0xef, 0x37, 0xdf, 0x37, 0x33, 0x8f, 0xc5, 0xc4,
+	0x11, 0x7e, 0xcb, 0x63, 0x74, 0xa7, 0xc3, 0x44, 0xd7, 0x0a, 0x05, 0x57, 0x9c, 0xcc, 0xab, 0xd7,
+	0xfe, 0xb6, 0xef, 0x6d, 0xa9, 0x50, 0xf0, 0x97, 0xcc, 0x55, 0x56, 0xd0, 0x7d, 0x25, 0xad, 0xa8,
+	0xb1, 0x34, 0xe7, 0x71, 0x8f, 0xeb, 0x3e, 0x3a, 0xf8, 0x8a, 0x24, 0xa5, 0x73, 0x1e, 0xe7, 0xde,
+	0x36, 0xa3, 0x76, 0xe8, 0x53, 0x3b, 0x08, 0xb8, 0xb2, 0x95, 0xcf, 0x03, 0x09, 0xab, 0x4b, 0x2e,
+	0x97, 0x6d, 0x2e, 0xa9, 0x63, 0x4b, 0xd8, 0x89, 0xee, 0x2e, 0x3b, 0x4c, 0xd9, 0xcb, 0x34, 0xb4,
+	0x3d, 0x3f, 0xd0, 0xcd, 0xd0, 0x7b, 0x06, 0x0c, 0xa9, 0x3d, 0x28, 0xcc, 0x42, 0x21, 0xb4, 0x85,
+	0xdd, 0x06, 0xa2, 0x39, 0x87, 0xc9, 0xe6, 0x80, 0xf3, 0x48, 0x17, 0x1b, 0x6c, 0xa7, 0xc3, 0xa4,
+	0x32, 0x9f, 0xe1, 0xd9, 0x44, 0x55, 0x86, 0x3c, 0x90, 0x8c, 0xd4, 0x70, 0x21, 0x12, 0x17, 0xd1,
+	0x02, 0xaa, 0xcc, 0x54, 0x2f, 0x5a, 0x29, 0x01, 0xad, 0x48, 0x5c, 0x3f, 0xb9, 0xff, 0xf3, 0x42,
+	0xae, 0x01, 0x42, 0xf3, 0x2a, 0xbe, 0xa2, 0xc9, 0x0d, 0xe6, 0xf9, 0x52, 0x31, 0xc1, 0x5a, 0x75,
+	0xe5, 0xae, 0xb1, 0x90, 0x4b, 0x5f, 0xd5, 0x5a, 0x2d, 0xc1, 0xa4, 0x64, 0x43, 0x1b, 0x9f, 0x11,
+	0x5e, 0xca, 0xd2, 0x0d, 0xf6, 0x5e, 0xe0, 0x69, 0x3b, 0x2e, 0x16, 0xd1, 0xc2, 0x89, 0xca, 0x4c,
+	0xf5, 0x76, 0xaa, 0xc3, 0x0d, 0xe9, 0xc5, 0xe4, 0x23, 0x5c, 0xf0, 0xfd, 0x8f, 0x68, 0x96, 0xf1,
+	0xe2, 0x21, 0x33, 0x0d, 0x26, 0x99, 0xd8, 0x65, 0x8f, 0x5d, 0xe1, 0x87, 0x6a, 0xe8, 0xfa, 0x1d,
+	0xbe, 0x34, 0xa6, 0x0f, 0xfc, 0x3e, 0xc5, 0x53, 0x32, 0x2a, 0x81, 0xdb, 0x95, 0xac, 0x6e, 0x01,
+	0x98, 0xb4, 0x1a, 0xc3, 0xcc, 0x4d, 0x7c, 0x79, 0xdc, 0xa9, 0x81, 0x57, 0x52, 0xc6, 0xa7, 0x5b,
+	0x89, 0x05, 0x7d, 0xb3, 0xd3, 0x8d, 0x43, 0x55, 0xf3, 0x13, 0xc2, 0x95, 0xf1, 0x4c, 0xc8, 0x95,
+	0x11, 0x4a, 0x56, 0xf0, 0xd9, 0x38, 0x6f, 0x92, 0x54, 0xcc, 0xeb, 0xfe, 0x11, 0xab, 0xd5, 0x8f,
+	0x53, 0xf8, 0x94, 0x36, 0x43, 0xbe, 0x21, 0x5c, 0x88, 0x9e, 0x19, 0xa1, 0xa9, 0x67, 0x77, 0xf4,
+	0x8d, 0x97, 0x6e, 0x64, 0x17, 0x44, 0xb9, 0xcc, 0x6b, 0x1f, 0xbe, 0xff, 0xfe, 0x9a, 0x2f, 0x93,
+	0x45, 0x1a, 0x2b, 0xaf, 0x83, 0x94, 0x0e, 0xa4, 0x34, 0x31, 0x5f, 0xe4, 0x0f, 0xc2, 0xe7, 0x53,
+	0xdf, 0x2d, 0x59, 0x1f, 0xef, 0x20, 0xcb, 0x98, 0x94, 0xee, 0x4f, 0xcc, 0x81, 0x80, 0xeb, 0x3a,
+	0xe0, 0x2a, 0xb9, 0x9b, 0x1e, 0x50, 0x0c, 0x61, 0x4d, 0x47, 0xb9, 0x4d, 0xb8, 0xd5, 0xe6, 0x70,
+	0x52, 0x48, 0x1f, 0xe1, 0xe2, 0xa8, 0xd7, 0x4f, 0x6a, 0xc7, 0x71, 0xfb, 0xdf, 0x09, 0x2b, 0xd5,
+	0x27, 0x41, 0x40, 0xd6, 0x55, 0x9d, 0xf5, 0x0e, 0xb9, 0x95, 0x39, 0xab, 0x88, 0x40, 0x4d, 0x18,
+	0x33, 0xf2, 0x3e, 0x8f, 0xe7, 0x53, 0xce, 0x95, 0xac, 0x4d, 0x74, 0x2d, 0x71, 0xd6, 0x7b, 0x13,
+	0x52, 0x20, 0xee, 0x13, 0x1d, 0xf7, 0x21, 0xd9, 0x98, 0xe4, 0x6a, 0xe9, 0x9b, 0xe4, 0x04, 0xbf,
+	0xad, 0x3f, 0xd8, 0xef, 0x19, 0xe8, 0xa0, 0x67, 0xa0, 0x5f, 0x3d, 0x03, 0x7d, 0xe9, 0x1b, 0xb9,
+	0x83, 0xbe, 0x91, 0xfb, 0xd1, 0x37, 0x72, 0xcf, 0xa9, 0xe7, 0xab, 0xad, 0x8e, 0x63, 0xb9, 0xbc,
+	0x3d, 0x62, 0xcb, 0xbd, 0x78, 0x53, 0xd5, 0x0d, 0x99, 0x74, 0x0a, 0xfa, 0x87, 0x74, 0xf3, 0x6f,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0xc9, 0xf5, 0xce, 0x78, 0x49, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -346,6 +453,8 @@ type QueryClient interface {
 	RegisteredBtcDepositAddresses(ctx context.Context, in *QueryRegisteredBtcDepositAddressesRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressesResponse, error)
 	// Queries a list of RegisteredReserveScripts items.
 	RegisteredReserveScripts(ctx context.Context, in *QueryRegisteredReserveScriptsRequest, opts ...grpc.CallOption) (*QueryRegisteredReserveScriptsResponse, error)
+	// Queries a list of RegisteredBtcDepositAddress items.
+	RegisteredBtcDepositAddress(ctx context.Context, in *QueryRegisteredBtcDepositAddressRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressResponse, error)
 }
 
 type queryClient struct {
@@ -383,6 +492,15 @@ func (c *queryClient) RegisteredReserveScripts(ctx context.Context, in *QueryReg
 	return out, nil
 }
 
+func (c *queryClient) RegisteredBtcDepositAddress(ctx context.Context, in *QueryRegisteredBtcDepositAddressRequest, opts ...grpc.CallOption) (*QueryRegisteredBtcDepositAddressResponse, error) {
+	out := new(QueryRegisteredBtcDepositAddressResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.bridge.Query/RegisteredBtcDepositAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
@@ -391,6 +509,8 @@ type QueryServer interface {
 	RegisteredBtcDepositAddresses(context.Context, *QueryRegisteredBtcDepositAddressesRequest) (*QueryRegisteredBtcDepositAddressesResponse, error)
 	// Queries a list of RegisteredReserveScripts items.
 	RegisteredReserveScripts(context.Context, *QueryRegisteredReserveScriptsRequest) (*QueryRegisteredReserveScriptsResponse, error)
+	// Queries a list of RegisteredBtcDepositAddress items.
+	RegisteredBtcDepositAddress(context.Context, *QueryRegisteredBtcDepositAddressRequest) (*QueryRegisteredBtcDepositAddressResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -405,6 +525,9 @@ func (*UnimplementedQueryServer) RegisteredBtcDepositAddresses(ctx context.Conte
 }
 func (*UnimplementedQueryServer) RegisteredReserveScripts(ctx context.Context, req *QueryRegisteredReserveScriptsRequest) (*QueryRegisteredReserveScriptsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisteredReserveScripts not implemented")
+}
+func (*UnimplementedQueryServer) RegisteredBtcDepositAddress(ctx context.Context, req *QueryRegisteredBtcDepositAddressRequest) (*QueryRegisteredBtcDepositAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisteredBtcDepositAddress not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -465,6 +588,24 @@ func _Query_RegisteredReserveScripts_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RegisteredBtcDepositAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisteredBtcDepositAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RegisteredBtcDepositAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.bridge.Query/RegisteredBtcDepositAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RegisteredBtcDepositAddress(ctx, req.(*QueryRegisteredBtcDepositAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "twilightproject.nyks.bridge.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -480,6 +621,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisteredReserveScripts",
 			Handler:    _Query_RegisteredReserveScripts_Handler,
+		},
+		{
+			MethodName: "RegisteredBtcDepositAddress",
+			Handler:    _Query_RegisteredBtcDepositAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -662,6 +807,73 @@ func (m *QueryRegisteredReserveScriptsResponse) MarshalToSizedBuffer(dAtA []byte
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryRegisteredBtcDepositAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredBtcDepositAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DepositAddress) > 0 {
+		i -= len(m.DepositAddress)
+		copy(dAtA[i:], m.DepositAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DepositAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TwilightDepositAddress) > 0 {
+		i -= len(m.TwilightDepositAddress)
+		copy(dAtA[i:], m.TwilightDepositAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.TwilightDepositAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.DepositAddress) > 0 {
+		i -= len(m.DepositAddress)
+		copy(dAtA[i:], m.DepositAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DepositAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -737,6 +949,36 @@ func (m *QueryRegisteredReserveScriptsResponse) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *QueryRegisteredBtcDepositAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DepositAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryRegisteredBtcDepositAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DepositAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.TwilightDepositAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -1126,6 +1368,202 @@ func (m *QueryRegisteredReserveScriptsResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Scripts[len(m.Scripts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredBtcDepositAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DepositAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DepositAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredBtcDepositAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredBtcDepositAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DepositAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DepositAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TwilightDepositAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TwilightDepositAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -29,6 +29,15 @@ export interface QueryRegisteredReserveScriptsResponse {
   scripts: MsgRegisterReserveAddress[];
 }
 
+export interface QueryRegisteredBtcDepositAddressRequest {
+  depositAddress: string;
+}
+
+export interface QueryRegisteredBtcDepositAddressResponse {
+  depositAddress: string;
+  twilightDepositAddress: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -393,6 +402,175 @@ export const QueryRegisteredReserveScriptsResponse = {
   },
 };
 
+const baseQueryRegisteredBtcDepositAddressRequest: object = {
+  depositAddress: "",
+};
+
+export const QueryRegisteredBtcDepositAddressRequest = {
+  encode(
+    message: QueryRegisteredBtcDepositAddressRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.depositAddress !== "") {
+      writer.uint32(10).string(message.depositAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredBtcDepositAddressRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressRequest,
+    } as QueryRegisteredBtcDepositAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.depositAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRegisteredBtcDepositAddressRequest {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressRequest,
+    } as QueryRegisteredBtcDepositAddressRequest;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = String(object.depositAddress);
+    } else {
+      message.depositAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryRegisteredBtcDepositAddressRequest): unknown {
+    const obj: any = {};
+    message.depositAddress !== undefined &&
+      (obj.depositAddress = message.depositAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRegisteredBtcDepositAddressRequest>
+  ): QueryRegisteredBtcDepositAddressRequest {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressRequest,
+    } as QueryRegisteredBtcDepositAddressRequest;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = object.depositAddress;
+    } else {
+      message.depositAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryRegisteredBtcDepositAddressResponse: object = {
+  depositAddress: "",
+  twilightDepositAddress: "",
+};
+
+export const QueryRegisteredBtcDepositAddressResponse = {
+  encode(
+    message: QueryRegisteredBtcDepositAddressResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.depositAddress !== "") {
+      writer.uint32(10).string(message.depositAddress);
+    }
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(18).string(message.twilightDepositAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredBtcDepositAddressResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressResponse,
+    } as QueryRegisteredBtcDepositAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.depositAddress = reader.string();
+          break;
+        case 2:
+          message.twilightDepositAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRegisteredBtcDepositAddressResponse {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressResponse,
+    } as QueryRegisteredBtcDepositAddressResponse;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = String(object.depositAddress);
+    } else {
+      message.depositAddress = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryRegisteredBtcDepositAddressResponse): unknown {
+    const obj: any = {};
+    message.depositAddress !== undefined &&
+      (obj.depositAddress = message.depositAddress);
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRegisteredBtcDepositAddressResponse>
+  ): QueryRegisteredBtcDepositAddressResponse {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressResponse,
+    } as QueryRegisteredBtcDepositAddressResponse;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = object.depositAddress;
+    } else {
+      message.depositAddress = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = object.twilightDepositAddress;
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -405,6 +583,10 @@ export interface Query {
   RegisteredReserveScripts(
     request: QueryRegisteredReserveScriptsRequest
   ): Promise<QueryRegisteredReserveScriptsResponse>;
+  /** Queries a list of RegisteredBtcDepositAddress items. */
+  RegisteredBtcDepositAddress(
+    request: QueryRegisteredBtcDepositAddressRequest
+  ): Promise<QueryRegisteredBtcDepositAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -449,6 +631,22 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryRegisteredReserveScriptsResponse.decode(new Reader(data))
+    );
+  }
+
+  RegisteredBtcDepositAddress(
+    request: QueryRegisteredBtcDepositAddressRequest
+  ): Promise<QueryRegisteredBtcDepositAddressResponse> {
+    const data = QueryRegisteredBtcDepositAddressRequest.encode(
+      request
+    ).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.bridge.Query",
+      "RegisteredBtcDepositAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryRegisteredBtcDepositAddressResponse.decode(new Reader(data))
     );
   }
 }
