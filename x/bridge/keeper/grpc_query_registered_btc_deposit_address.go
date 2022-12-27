@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,5 +37,5 @@ func (k Keeper) RegisteredBtcDepositAddress(goCtx context.Context, req *types.Qu
 
 	}
 
-	return &types.QueryRegisteredBtcDepositAddressResponse{}, nil
+	return nil, sdkerrors.Wrap(types.ErrInvalid, "Given btc depositAddress doesn't exist")
 }

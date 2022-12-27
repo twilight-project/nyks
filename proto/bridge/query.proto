@@ -31,6 +31,11 @@ service Query {
 		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_address/{depositAddress}";
 	}
 
+// Queries a list of RegisteredBtcDepositAddressByTwilightAddress items.
+	rpc RegisteredBtcDepositAddressByTwilightAddress(QueryRegisteredBtcDepositAddressByTwilightAddressRequest) returns (QueryRegisteredBtcDepositAddressByTwilightAddressResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_address_by_twilight_address/{twilightDepositAddress}";
+	}
+
 // this line is used by starport scaffolding # 2
 }
 
@@ -62,6 +67,15 @@ message QueryRegisteredBtcDepositAddressRequest {
 }
 
 message QueryRegisteredBtcDepositAddressResponse {
+  string depositAddress = 1;
+  string twilightDepositAddress = 2;
+}
+
+message QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+  string twilightDepositAddress = 1;
+}
+
+message QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
   string depositAddress = 1;
   string twilightDepositAddress = 2;
 }

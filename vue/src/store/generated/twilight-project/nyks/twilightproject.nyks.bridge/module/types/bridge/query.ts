@@ -38,6 +38,15 @@ export interface QueryRegisteredBtcDepositAddressResponse {
   twilightDepositAddress: string;
 }
 
+export interface QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+  twilightDepositAddress: string;
+}
+
+export interface QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
+  depositAddress: string;
+  twilightDepositAddress: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -571,6 +580,189 @@ export const QueryRegisteredBtcDepositAddressResponse = {
   },
 };
 
+const baseQueryRegisteredBtcDepositAddressByTwilightAddressRequest: object = {
+  twilightDepositAddress: "",
+};
+
+export const QueryRegisteredBtcDepositAddressByTwilightAddressRequest = {
+  encode(
+    message: QueryRegisteredBtcDepositAddressByTwilightAddressRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(10).string(message.twilightDepositAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressRequest,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.twilightDepositAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(
+    object: any
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressRequest,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressRequest;
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(
+    message: QueryRegisteredBtcDepositAddressByTwilightAddressRequest
+  ): unknown {
+    const obj: any = {};
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRegisteredBtcDepositAddressByTwilightAddressRequest>
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressRequest,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressRequest;
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = object.twilightDepositAddress;
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryRegisteredBtcDepositAddressByTwilightAddressResponse: object = {
+  depositAddress: "",
+  twilightDepositAddress: "",
+};
+
+export const QueryRegisteredBtcDepositAddressByTwilightAddressResponse = {
+  encode(
+    message: QueryRegisteredBtcDepositAddressByTwilightAddressResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.depositAddress !== "") {
+      writer.uint32(10).string(message.depositAddress);
+    }
+    if (message.twilightDepositAddress !== "") {
+      writer.uint32(18).string(message.twilightDepositAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressResponse,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.depositAddress = reader.string();
+          break;
+        case 2:
+          message.twilightDepositAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(
+    object: any
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressResponse,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressResponse;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = String(object.depositAddress);
+    } else {
+      message.depositAddress = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = String(object.twilightDepositAddress);
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(
+    message: QueryRegisteredBtcDepositAddressByTwilightAddressResponse
+  ): unknown {
+    const obj: any = {};
+    message.depositAddress !== undefined &&
+      (obj.depositAddress = message.depositAddress);
+    message.twilightDepositAddress !== undefined &&
+      (obj.twilightDepositAddress = message.twilightDepositAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRegisteredBtcDepositAddressByTwilightAddressResponse>
+  ): QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
+    const message = {
+      ...baseQueryRegisteredBtcDepositAddressByTwilightAddressResponse,
+    } as QueryRegisteredBtcDepositAddressByTwilightAddressResponse;
+    if (object.depositAddress !== undefined && object.depositAddress !== null) {
+      message.depositAddress = object.depositAddress;
+    } else {
+      message.depositAddress = "";
+    }
+    if (
+      object.twilightDepositAddress !== undefined &&
+      object.twilightDepositAddress !== null
+    ) {
+      message.twilightDepositAddress = object.twilightDepositAddress;
+    } else {
+      message.twilightDepositAddress = "";
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -587,6 +779,10 @@ export interface Query {
   RegisteredBtcDepositAddress(
     request: QueryRegisteredBtcDepositAddressRequest
   ): Promise<QueryRegisteredBtcDepositAddressResponse>;
+  /** Queries a list of RegisteredBtcDepositAddressByTwilightAddress items. */
+  RegisteredBtcDepositAddressByTwilightAddress(
+    request: QueryRegisteredBtcDepositAddressByTwilightAddressRequest
+  ): Promise<QueryRegisteredBtcDepositAddressByTwilightAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -647,6 +843,24 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryRegisteredBtcDepositAddressResponse.decode(new Reader(data))
+    );
+  }
+
+  RegisteredBtcDepositAddressByTwilightAddress(
+    request: QueryRegisteredBtcDepositAddressByTwilightAddressRequest
+  ): Promise<QueryRegisteredBtcDepositAddressByTwilightAddressResponse> {
+    const data = QueryRegisteredBtcDepositAddressByTwilightAddressRequest.encode(
+      request
+    ).finish();
+    const promise = this.rpc.request(
+      "twilightproject.nyks.bridge.Query",
+      "RegisteredBtcDepositAddressByTwilightAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryRegisteredBtcDepositAddressByTwilightAddressResponse.decode(
+        new Reader(data)
+      )
     );
   }
 }

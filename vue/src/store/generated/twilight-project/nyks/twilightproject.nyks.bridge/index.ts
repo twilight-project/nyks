@@ -47,6 +47,7 @@ const getDefaultState = () => {
 				RegisteredBtcDepositAddresses: {},
 				RegisteredReserveScripts: {},
 				RegisteredBtcDepositAddress: {},
+				RegisteredBtcDepositAddressByTwilightAddress: {},
 				
 				_Structure: {
 						EventRegisterBtcDepositAddress: getStructure(EventRegisterBtcDepositAddress.fromPartial({})),
@@ -103,6 +104,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.RegisteredBtcDepositAddress[JSON.stringify(params)] ?? {}
+		},
+				getRegisteredBtcDepositAddressByTwilightAddress: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.RegisteredBtcDepositAddressByTwilightAddress[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -221,6 +228,28 @@ export default {
 				return getters['getRegisteredBtcDepositAddress']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryRegisteredBtcDepositAddress API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryRegisteredBtcDepositAddressByTwilightAddress({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryRegisteredBtcDepositAddressByTwilightAddress( key.twilightDepositAddress)).data
+				
+					
+				commit('QUERY', { query: 'RegisteredBtcDepositAddressByTwilightAddress', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryRegisteredBtcDepositAddressByTwilightAddress', payload: { options: { all }, params: {...key},query }})
+				return getters['getRegisteredBtcDepositAddressByTwilightAddress']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryRegisteredBtcDepositAddressByTwilightAddress API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},
