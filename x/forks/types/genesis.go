@@ -31,5 +31,5 @@ var (
 
 	// AttestationVoteCountThreshold threshold of votes count to succeed
 	// We use this for SeenBtcChainTip type proposal
-	AttestationVoteCountThreshold = 66.0
+	AttestationVoteCountThreshold = sdk.NewInt(66)
 )

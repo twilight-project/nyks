@@ -92,13 +92,13 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 				}
 			}
 
-			receivedVotes := len(att.Votes)
+			receivedVotes := sdk.NewInt(int64(len(att.Votes)))
 
 			// Calculate the number of votes needed to reach the target percentage
-			votesNeeded := int(float64(activeValidatorCount) * (types.AttestationVoteCountThreshold / 100.0))
+			votesNeeded := types.AttestationVoteCountThreshold.Mul(sdk.NewInt(int64(activeValidatorCount))).Quo(sdk.NewInt(100))
 
 			// Check if you have received at least the number of votes needed
-			if receivedVotes >= votesNeeded {
+			if receivedVotes.GTE(votesNeeded) {
 				// You have reached the target percentage of votes!
 				att.Observed = true
 				k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
