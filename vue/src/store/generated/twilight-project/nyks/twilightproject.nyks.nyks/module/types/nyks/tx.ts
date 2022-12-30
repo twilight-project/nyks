@@ -6,7 +6,7 @@ export const protobufPackage = "twilightproject.nyks.nyks";
 
 export interface MsgSetDelegateAddresses {
   validatorAddress: string;
-  orchestratorAddress: string;
+  btcOracleAddress: string;
   btcPublicKey: string;
 }
 
@@ -17,14 +17,14 @@ export interface MsgSetDelegateAddressesResponse {
 export interface MsgSeenBtcChainTip {
   height: number;
   hash: string;
-  orchestratorAddress: string;
+  btcOracleAddress: string;
 }
 
 export interface MsgSeenBtcChainTipResponse {}
 
 const baseMsgSetDelegateAddresses: object = {
   validatorAddress: "",
-  orchestratorAddress: "",
+  btcOracleAddress: "",
   btcPublicKey: "",
 };
 
@@ -36,8 +36,8 @@ export const MsgSetDelegateAddresses = {
     if (message.validatorAddress !== "") {
       writer.uint32(18).string(message.validatorAddress);
     }
-    if (message.orchestratorAddress !== "") {
-      writer.uint32(26).string(message.orchestratorAddress);
+    if (message.btcOracleAddress !== "") {
+      writer.uint32(26).string(message.btcOracleAddress);
     }
     if (message.btcPublicKey !== "") {
       writer.uint32(34).string(message.btcPublicKey);
@@ -58,7 +58,7 @@ export const MsgSetDelegateAddresses = {
           message.validatorAddress = reader.string();
           break;
         case 3:
-          message.orchestratorAddress = reader.string();
+          message.btcOracleAddress = reader.string();
           break;
         case 4:
           message.btcPublicKey = reader.string();
@@ -84,12 +84,12 @@ export const MsgSetDelegateAddresses = {
       message.validatorAddress = "";
     }
     if (
-      object.orchestratorAddress !== undefined &&
-      object.orchestratorAddress !== null
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
     ) {
-      message.orchestratorAddress = String(object.orchestratorAddress);
+      message.btcOracleAddress = String(object.btcOracleAddress);
     } else {
-      message.orchestratorAddress = "";
+      message.btcOracleAddress = "";
     }
     if (object.btcPublicKey !== undefined && object.btcPublicKey !== null) {
       message.btcPublicKey = String(object.btcPublicKey);
@@ -103,8 +103,8 @@ export const MsgSetDelegateAddresses = {
     const obj: any = {};
     message.validatorAddress !== undefined &&
       (obj.validatorAddress = message.validatorAddress);
-    message.orchestratorAddress !== undefined &&
-      (obj.orchestratorAddress = message.orchestratorAddress);
+    message.btcOracleAddress !== undefined &&
+      (obj.btcOracleAddress = message.btcOracleAddress);
     message.btcPublicKey !== undefined &&
       (obj.btcPublicKey = message.btcPublicKey);
     return obj;
@@ -125,12 +125,12 @@ export const MsgSetDelegateAddresses = {
       message.validatorAddress = "";
     }
     if (
-      object.orchestratorAddress !== undefined &&
-      object.orchestratorAddress !== null
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
     ) {
-      message.orchestratorAddress = object.orchestratorAddress;
+      message.btcOracleAddress = object.btcOracleAddress;
     } else {
-      message.orchestratorAddress = "";
+      message.btcOracleAddress = "";
     }
     if (object.btcPublicKey !== undefined && object.btcPublicKey !== null) {
       message.btcPublicKey = object.btcPublicKey;
@@ -213,7 +213,7 @@ export const MsgSetDelegateAddressesResponse = {
 const baseMsgSeenBtcChainTip: object = {
   height: 0,
   hash: "",
-  orchestratorAddress: "",
+  btcOracleAddress: "",
 };
 
 export const MsgSeenBtcChainTip = {
@@ -227,8 +227,8 @@ export const MsgSeenBtcChainTip = {
     if (message.hash !== "") {
       writer.uint32(26).string(message.hash);
     }
-    if (message.orchestratorAddress !== "") {
-      writer.uint32(34).string(message.orchestratorAddress);
+    if (message.btcOracleAddress !== "") {
+      writer.uint32(34).string(message.btcOracleAddress);
     }
     return writer;
   },
@@ -247,7 +247,7 @@ export const MsgSeenBtcChainTip = {
           message.hash = reader.string();
           break;
         case 4:
-          message.orchestratorAddress = reader.string();
+          message.btcOracleAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -270,12 +270,12 @@ export const MsgSeenBtcChainTip = {
       message.hash = "";
     }
     if (
-      object.orchestratorAddress !== undefined &&
-      object.orchestratorAddress !== null
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
     ) {
-      message.orchestratorAddress = String(object.orchestratorAddress);
+      message.btcOracleAddress = String(object.btcOracleAddress);
     } else {
-      message.orchestratorAddress = "";
+      message.btcOracleAddress = "";
     }
     return message;
   },
@@ -284,8 +284,8 @@ export const MsgSeenBtcChainTip = {
     const obj: any = {};
     message.height !== undefined && (obj.height = message.height);
     message.hash !== undefined && (obj.hash = message.hash);
-    message.orchestratorAddress !== undefined &&
-      (obj.orchestratorAddress = message.orchestratorAddress);
+    message.btcOracleAddress !== undefined &&
+      (obj.btcOracleAddress = message.btcOracleAddress);
     return obj;
   },
 
@@ -302,12 +302,12 @@ export const MsgSeenBtcChainTip = {
       message.hash = "";
     }
     if (
-      object.orchestratorAddress !== undefined &&
-      object.orchestratorAddress !== null
+      object.btcOracleAddress !== undefined &&
+      object.btcOracleAddress !== null
     ) {
-      message.orchestratorAddress = object.orchestratorAddress;
+      message.btcOracleAddress = object.btcOracleAddress;
     } else {
-      message.orchestratorAddress = "";
+      message.btcOracleAddress = "";
     }
     return message;
   },

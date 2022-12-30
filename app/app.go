@@ -97,9 +97,12 @@ import (
 
 	"github.com/twilight-project/nyks/docs"
 
-	nyksmodule "github.com/twilight-project/nyks/x/nyks"
-	nyksmodulekeeper "github.com/twilight-project/nyks/x/nyks/keeper"
-	nyksmoduletypes "github.com/twilight-project/nyks/x/nyks/types"
+	bridgemodule "github.com/twilight-project/nyks/x/bridge"
+	bridgemodulekeeper "github.com/twilight-project/nyks/x/bridge/keeper"
+	bridgemoduletypes "github.com/twilight-project/nyks/x/bridge/types"
+	nyksmodule "github.com/twilight-project/nyks/x/forks"
+	nyksmodulekeeper "github.com/twilight-project/nyks/x/forks/keeper"
+	nyksmoduletypes "github.com/twilight-project/nyks/x/forks/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -154,6 +157,7 @@ var (
 		vesting.AppModuleBasic{},
 		monitoringp.AppModuleBasic{},
 		nyksmodule.AppModuleBasic{},
+		bridgemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -166,6 +170,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -226,6 +231,8 @@ type App struct {
 	ScopedMonitoringKeeper capabilitykeeper.ScopedKeeper
 
 	nyksKeeper nyksmodulekeeper.Keeper
+
+	BridgeKeeper bridgemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -263,6 +270,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		nyksmoduletypes.StoreKey,
+		bridgemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -296,9 +304,12 @@ func New(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
+	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
+
+	app.BankKeeper = bankKeeper
+
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
 	)
@@ -382,8 +393,21 @@ func New(
 		keys[nyksmoduletypes.MemStoreKey],
 		app.GetSubspace(nyksmoduletypes.ModuleName),
 		&stakingKeeper,
+		&app.AccountKeeper,
+		&bankKeeper,
 	)
 	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.BridgeKeeper = *bridgemodulekeeper.NewKeeper(
+		appCodec,
+		keys[bridgemoduletypes.StoreKey],
+		keys[bridgemoduletypes.MemStoreKey],
+		app.GetSubspace(bridgemoduletypes.ModuleName),
+		&stakingKeeper,
+		&app.nyksKeeper,
+		&app.AccountKeeper,
+	)
+	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper, app.nyksKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -426,6 +450,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		nyksModule,
+		bridgeModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -453,6 +478,7 @@ func New(
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -476,6 +502,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -504,6 +531,7 @@ func New(
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
 		nyksmoduletypes.ModuleName,
+		bridgemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -528,6 +556,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		nyksModule,
+		bridgeModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -718,6 +747,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
 	paramsKeeper.Subspace(nyksmoduletypes.ModuleName)
+	paramsKeeper.Subspace(bridgemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
