@@ -3,7 +3,6 @@ package keeper
 import (
 	"sort"
 
-	"github.com/cosmos/btcutil/base58"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
@@ -15,10 +14,12 @@ func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	btcAddrBytes, _, err := base58.CheckDecode(btcAddr.GetBtcAddress())
-	if err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidBtcAddress, "invalid btc address hex encoding (%s) giving err (%s) ", btcAddr.GetBtcAddress(), err)
-	}
+	btcAddrBytes := []byte(btcAddr.GetBtcAddress())
+
+	// btcAddrBytes, err := btcutil.DecodeAddress(btcAddr.GetBtcAddress(), &chaincfg.MainNetParams)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrapf(types.ErrInvalidBtcAddress, "invalid btc address hex encoding (%s) giving err (%s) ", btcAddr.GetBtcAddress(), err)
+	// }
 	store := ctx.KVStore(k.storeKey)
 	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)), btcAddrBytes)
 
@@ -37,9 +38,9 @@ func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress 
 		return nil, false
 	}
 
-	address, err := types.NewBtcAddress(base58.CheckEncode(addrBytes, 0))
+	address, err := types.NewBtcAddress(string(addrBytes))
 	if err != nil {
-		ctx.Logger().Error("btcpk could not be converted")
+		ctx.Logger().Error("btc encoded could not be returned as BtcAddress")
 		return nil, false
 	}
 	return address, true
@@ -63,7 +64,8 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 		// of the actual key
 		key := iter.Key()[len(types.BtcAddressByTwilightAddressKey):]
 		value := iter.Value()
-		btcAddress, err := types.NewBtcAddress(base58.CheckEncode(value, 0))
+
+		btcAddress, err := types.NewBtcAddress(string(value))
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "found invalid btcAddress %v under key %v", string(value), key)
 		}
