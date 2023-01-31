@@ -53,9 +53,6 @@ func ValidateBtcAddress(Address string) error {
 	if len(Address) < BtcAddressMinLen && len(Address) > BtcAddressMaxLen {
 		return fmt.Errorf("Address (%s) of the wrong length expected between (%d) and (%d) actual(%d)", Address, BtcAddressMinLen, BtcAddressMaxLen, len(Address))
 	}
-	// if !regexp.MustCompile("^0x[0-9a-fA-F]{64}$").MatchString(PublicKey) {
-	// 	return fmt.Errorf("PublicKey(%s) doesn't pass regex", PublicKey)
-	// }
 
 	return nil
 }
