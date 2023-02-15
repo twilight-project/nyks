@@ -23,6 +23,7 @@ import CosmosIbcGoIbcCorePortV1 from './cosmos/ibc-go/ibc.core.port.v1'
 import TwilightProjectNyksTwilightprojectNyksBridge from './twilight-project/nyks/twilightproject.nyks.bridge'
 import TwilightProjectNyksTwilightprojectNyksForks from './twilight-project/nyks/twilightproject.nyks.forks'
 import TwilightProjectNyksTwilightprojectNyksNyks from './twilight-project/nyks/twilightproject.nyks.nyks'
+import TwilightProjectNyksTwilightprojectNyksVolt from './twilight-project/nyks/twilightproject.nyks.volt'
 import TwilightProjectTwilightCoreTwilightprojectTwilightcoreTwilightcore from './twilight-project/twilight-core/twilightproject.twilightcore.twilightcore'
 
 
@@ -50,6 +51,7 @@ export default {
   TwilightProjectNyksTwilightprojectNyksBridge: load(TwilightProjectNyksTwilightprojectNyksBridge, 'twilightproject.nyks.bridge'),
   TwilightProjectNyksTwilightprojectNyksForks: load(TwilightProjectNyksTwilightprojectNyksForks, 'twilightproject.nyks.forks'),
   TwilightProjectNyksTwilightprojectNyksNyks: load(TwilightProjectNyksTwilightprojectNyksNyks, 'twilightproject.nyks.nyks'),
+  TwilightProjectNyksTwilightprojectNyksVolt: load(TwilightProjectNyksTwilightprojectNyksVolt, 'twilightproject.nyks.volt'),
   TwilightProjectTwilightCoreTwilightprojectTwilightcoreTwilightcore: load(TwilightProjectTwilightCoreTwilightprojectTwilightcoreTwilightcore, 'twilightproject.twilightcore.twilightcore'),
   
 }

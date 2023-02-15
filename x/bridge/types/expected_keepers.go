@@ -20,9 +20,14 @@ type BankKeeper interface {
 	// Methods imported from bank should be defined here
 }
 
-// NyksKeeper defines the expected interface needed to orchestrator/oracle related methods and proposals
+// NyksKeeper defines the expected interface needed for orchestrator/oracle related methods and proposals
 type NyksKeeper interface {
 	GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool)
 	CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) error
 	ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, msg nykstypes.BtcProposal) error
+}
+
+// VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
+type VoltKeeper interface {
+	SetReserve(ctx sdk.Context, judgeAddress sdk.AccAddress) error
 }

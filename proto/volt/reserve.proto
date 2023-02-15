@@ -1,0 +1,20 @@
+syntax = "proto3";
+package twilightproject.nyks.volt;
+
+
+option go_package = "github.com/twilight-project/nyks/x/volt/types";
+
+// Reserve is a mapping of a validator address to a reserve ID
+// It holds other values in the reserve struct such as total 
+// value, private pool value, public pool value, and the btc relay capacity value
+
+message Reserve {
+    uint64  ReserveId = 1;
+    string  ValidatorAddress = 2;
+    uint64  BtcRelayCapacityValue = 3;
+    uint64  TotalValue = 4; 
+    uint64  PrivatePoolValue = 5;
+    uint64  PublicValue = 6;
+    uint64  FeePool = 7;
+    repeated string TwilightAddresses = 8;
+}

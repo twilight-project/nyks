@@ -4,15 +4,9 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgRegisterBtcDepositAddress } from "./types/bridge/tx";
-import { MsgRegisterReserveAddress } from "./types/bridge/tx";
-import { MsgConfirmBtcDeposit } from "./types/bridge/tx";
 
 
 const types = [
-  ["/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", MsgRegisterBtcDepositAddress],
-  ["/twilightproject.nyks.bridge.MsgRegisterReserveAddress", MsgRegisterReserveAddress],
-  ["/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", MsgConfirmBtcDeposit],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -45,9 +39,6 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgRegisterBtcDepositAddress: (data: MsgRegisterBtcDepositAddress): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( data ) }),
-    msgRegisterReserveAddress: (data: MsgRegisterReserveAddress): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgRegisterReserveAddress", value: MsgRegisterReserveAddress.fromPartial( data ) }),
-    msgConfirmBtcDeposit: (data: MsgConfirmBtcDeposit): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", value: MsgConfirmBtcDeposit.fromPartial( data ) }),
     
   };
 };

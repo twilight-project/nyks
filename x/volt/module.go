@@ -1,10 +1,8 @@
-package bridge
+package volt
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-
 	// this line is used by starport scaffolding # 1
 
 	"github.com/gorilla/mux"
@@ -18,9 +16,9 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/twilight-project/nyks/x/bridge/client/cli"
-	"github.com/twilight-project/nyks/x/bridge/keeper"
-	"github.com/twilight-project/nyks/x/bridge/types"
+	"github.com/twilight-project/nyks/x/volt/client/cli"
+	"github.com/twilight-project/nyks/x/volt/keeper"
+	"github.com/twilight-project/nyks/x/volt/types"
 )
 
 var (
@@ -80,7 +78,6 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	// this line is used by starport scaffolding # 2
-	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
 
 // GetTxCmd returns the capability module's root tx command.
@@ -104,8 +101,6 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	nyksKeeper    types.NyksKeeper
-	voltKeeper    types.VoltKeeper
 }
 
 func NewAppModule(
@@ -113,16 +108,12 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	nyksKeeper types.NyksKeeper,
-	voltKeeper types.VoltKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		nyksKeeper:     nyksKeeper,
-		voltKeeper:     voltKeeper,
 	}
 }
 
