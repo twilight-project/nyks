@@ -4,7 +4,7 @@ import { util, configure, Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "twilightproject.nyks.volt";
 
-export interface Reserve {
+export interface BtcReserve {
   ReserveId: number;
   ValidatorAddress: string;
   BtcRelayCapacityValue: number;
@@ -15,7 +15,7 @@ export interface Reserve {
   TwilightAddresses: string[];
 }
 
-const baseReserve: object = {
+const baseBtcReserve: object = {
   ReserveId: 0,
   ValidatorAddress: "",
   BtcRelayCapacityValue: 0,
@@ -26,8 +26,8 @@ const baseReserve: object = {
   TwilightAddresses: "",
 };
 
-export const Reserve = {
-  encode(message: Reserve, writer: Writer = Writer.create()): Writer {
+export const BtcReserve = {
+  encode(message: BtcReserve, writer: Writer = Writer.create()): Writer {
     if (message.ReserveId !== 0) {
       writer.uint32(8).uint64(message.ReserveId);
     }
@@ -55,10 +55,10 @@ export const Reserve = {
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): Reserve {
+  decode(input: Reader | Uint8Array, length?: number): BtcReserve {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseReserve } as Reserve;
+    const message = { ...baseBtcReserve } as BtcReserve;
     message.TwilightAddresses = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -95,8 +95,8 @@ export const Reserve = {
     return message;
   },
 
-  fromJSON(object: any): Reserve {
-    const message = { ...baseReserve } as Reserve;
+  fromJSON(object: any): BtcReserve {
+    const message = { ...baseBtcReserve } as BtcReserve;
     message.TwilightAddresses = [];
     if (object.ReserveId !== undefined && object.ReserveId !== null) {
       message.ReserveId = Number(object.ReserveId);
@@ -153,7 +153,7 @@ export const Reserve = {
     return message;
   },
 
-  toJSON(message: Reserve): unknown {
+  toJSON(message: BtcReserve): unknown {
     const obj: any = {};
     message.ReserveId !== undefined && (obj.ReserveId = message.ReserveId);
     message.ValidatorAddress !== undefined &&
@@ -174,8 +174,8 @@ export const Reserve = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Reserve>): Reserve {
-    const message = { ...baseReserve } as Reserve;
+  fromPartial(object: DeepPartial<BtcReserve>): BtcReserve {
+    const message = { ...baseBtcReserve } as BtcReserve;
     message.TwilightAddresses = [];
     if (object.ReserveId !== undefined && object.ReserveId !== null) {
       message.ReserveId = object.ReserveId;

@@ -38,4 +38,4 @@ message Attestation {
 message EventObservation {
     string attestation_type = 1;
     string attestation_id   = 2;
-  }
+}

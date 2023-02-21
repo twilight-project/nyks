@@ -4,11 +4,11 @@ package twilightproject.nyks.volt;
 
 option go_package = "github.com/twilight-project/nyks/x/volt/types";
 
-// Reserve is a mapping of a validator address to a reserve ID
+// BtcReserve is a mapping of a validator address to a reserve ID
 // It holds other values in the reserve struct such as total 
 // value, private pool value, public pool value, and the btc relay capacity value
 
-message Reserve {
+message BtcReserve {
     uint64  ReserveId = 1;
     string  ValidatorAddress = 2;
     uint64  BtcRelayCapacityValue = 3;

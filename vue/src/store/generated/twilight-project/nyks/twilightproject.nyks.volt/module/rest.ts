@@ -20,10 +20,36 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
+export interface VoltBtcReserve {
+  /** @format uint64 */
+  ReserveId?: string;
+  ValidatorAddress?: string;
+
+  /** @format uint64 */
+  BtcRelayCapacityValue?: string;
+
+  /** @format uint64 */
+  TotalValue?: string;
+
+  /** @format uint64 */
+  PrivatePoolValue?: string;
+
+  /** @format uint64 */
+  PublicValue?: string;
+
+  /** @format uint64 */
+  FeePool?: string;
+  TwilightAddresses?: string[];
+}
+
 /**
  * Params defines the parameters for the module.
  */
 export type VoltParams = object;
+
+export interface VoltQueryBtcReserveResponse {
+  BtcReserves?: VoltBtcReserve[];
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -229,6 +255,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBtcReserve
+   * @summary Queries a list of BtcReserve items.
+   * @request GET:/twilight-project/nyks/volt/btc_reserve
+   */
+  queryBtcReserve = (params: RequestParams = {}) =>
+    this.request<VoltQueryBtcReserveResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/btc_reserve`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

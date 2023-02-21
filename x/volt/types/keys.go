@@ -24,7 +24,7 @@ const (
 
 var (
 	// KeyReserve indexes the reserve KeyReserve
-	ReserveKey = forkstypes.HashString("KeyReserve")
+	BtcReserveKey = forkstypes.HashString("BtcKeyReserve")
 
 	// LastRegisteredReserveKey indexes the reserve LastRegisteredReserveKey
 	LastRegisteredReserveKey = forkstypes.HashString("LastRegisteredReserveKey")
@@ -37,5 +37,5 @@ func KeyPrefix(p string) []byte {
 // GetReserveKey returns the following key format
 // prefix reserve-key, judge address, reserve-nonce
 func GetReserveKey(judgeAddress sdk.AccAddress, reserveNonce uint64) []byte {
-	return forkstypes.AppendBytes(ReserveKey, judgeAddress.Bytes(), forkstypes.UInt64Bytes(reserveNonce))
+	return forkstypes.AppendBytes(BtcReserveKey, judgeAddress.Bytes(), forkstypes.UInt64Bytes(reserveNonce))
 }

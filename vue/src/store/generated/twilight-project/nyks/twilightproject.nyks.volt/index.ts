@@ -1,10 +1,10 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
 import { Params } from "./module/types/volt/params"
-import { Reserve } from "./module/types/volt/reserve"
+import { BtcReserve } from "./module/types/volt/reserve"
 
 
-export { Params, Reserve };
+export { Params, BtcReserve };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -43,10 +43,11 @@ function getStructure(template) {
 const getDefaultState = () => {
 	return {
 				Params: {},
+				BtcReserve: {},
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
-						Reserve: getStructure(Reserve.fromPartial({})),
+						BtcReserve: getStructure(BtcReserve.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -80,6 +81,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.Params[JSON.stringify(params)] ?? {}
+		},
+				getBtcReserve: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BtcReserve[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -132,6 +139,28 @@ export default {
 				return getters['getParams']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryParams API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryBtcReserve({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryBtcReserve()).data
+				
+					
+				commit('QUERY', { query: 'BtcReserve', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBtcReserve', payload: { options: { all }, params: {...key},query }})
+				return getters['getBtcReserve']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBtcReserve API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},
