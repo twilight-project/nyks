@@ -112,10 +112,10 @@ func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccA
 	return btcScriptBytes, nil
 }
 
-// GetBtcReserveKeys iterates both the BtcReserveKeys index to produce
+// GetBtcReserveScriptKeys iterates both the BtcReserveKeys index to produce
 // a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
 // export / import.
-func (k Keeper) GetBtcReserveKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
+func (k Keeper) GetBtcReserveScriptKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.BtcReserveScriptKey
 	iter := store.Iterator(prefixRange(prefix))

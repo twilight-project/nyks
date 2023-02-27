@@ -4,14 +4,14 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgConfirmBtcDeposit } from "./types/bridge/tx";
 import { MsgRegisterBtcDepositAddress } from "./types/bridge/tx";
+import { MsgConfirmBtcDeposit } from "./types/bridge/tx";
 import { MsgRegisterReserveAddress } from "./types/bridge/tx";
 
 
 const types = [
-  ["/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", MsgConfirmBtcDeposit],
   ["/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", MsgRegisterBtcDepositAddress],
+  ["/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", MsgConfirmBtcDeposit],
   ["/twilightproject.nyks.bridge.MsgRegisterReserveAddress", MsgRegisterReserveAddress],
   
 ];
@@ -45,8 +45,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgConfirmBtcDeposit: (data: MsgConfirmBtcDeposit): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", value: MsgConfirmBtcDeposit.fromPartial( data ) }),
     msgRegisterBtcDepositAddress: (data: MsgRegisterBtcDepositAddress): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( data ) }),
+    msgConfirmBtcDeposit: (data: MsgConfirmBtcDeposit): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", value: MsgConfirmBtcDeposit.fromPartial( data ) }),
     msgRegisterReserveAddress: (data: MsgRegisterReserveAddress): EncodeObject => ({ typeUrl: "/twilightproject.nyks.bridge.MsgRegisterReserveAddress", value: MsgRegisterReserveAddress.fromPartial( data ) }),
     
   };

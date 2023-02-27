@@ -14,11 +14,12 @@ var _ = strconv.Itoa(0)
 
 func CmdRegisterDepositAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-deposit-address [btc-deposit-address]",
+		Use:   "register-deposit-address [btc-deposit-address] [btc-withdrawal-address]",
 		Short: "Broadcast message registerDepositAddress",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDepositAddress := args[0]
+			argWithdrawalAddress := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -27,6 +28,7 @@ func CmdRegisterDepositAddress() *cobra.Command {
 
 			msg := types.NewMsgRegisterBtcDepositAddress(
 				argDepositAddress,
+				argWithdrawalAddress,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

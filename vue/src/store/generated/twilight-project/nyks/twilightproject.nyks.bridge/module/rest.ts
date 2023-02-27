@@ -15,6 +15,7 @@ export interface BridgeMsgConfirmBtcDepositResponse {
 
 export interface BridgeMsgRegisterBtcDepositAddress {
   depositAddress?: string;
+  withdrawalAddress?: string;
   twilightDepositAddress?: string;
 }
 

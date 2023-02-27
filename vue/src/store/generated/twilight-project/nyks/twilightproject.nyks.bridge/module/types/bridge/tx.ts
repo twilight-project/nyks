@@ -19,6 +19,7 @@ export interface MsgConfirmBtcDepositResponse {
 
 export interface MsgRegisterBtcDepositAddress {
   depositAddress: string;
+  withdrawalAddress: string;
   twilightDepositAddress: string;
 }
 
@@ -277,6 +278,7 @@ export const MsgConfirmBtcDepositResponse = {
 
 const baseMsgRegisterBtcDepositAddress: object = {
   depositAddress: "",
+  withdrawalAddress: "",
   twilightDepositAddress: "",
 };
 
@@ -288,8 +290,11 @@ export const MsgRegisterBtcDepositAddress = {
     if (message.depositAddress !== "") {
       writer.uint32(10).string(message.depositAddress);
     }
+    if (message.withdrawalAddress !== "") {
+      writer.uint32(18).string(message.withdrawalAddress);
+    }
     if (message.twilightDepositAddress !== "") {
-      writer.uint32(18).string(message.twilightDepositAddress);
+      writer.uint32(26).string(message.twilightDepositAddress);
     }
     return writer;
   },
@@ -310,6 +315,9 @@ export const MsgRegisterBtcDepositAddress = {
           message.depositAddress = reader.string();
           break;
         case 2:
+          message.withdrawalAddress = reader.string();
+          break;
+        case 3:
           message.twilightDepositAddress = reader.string();
           break;
         default:
@@ -330,6 +338,14 @@ export const MsgRegisterBtcDepositAddress = {
       message.depositAddress = "";
     }
     if (
+      object.withdrawalAddress !== undefined &&
+      object.withdrawalAddress !== null
+    ) {
+      message.withdrawalAddress = String(object.withdrawalAddress);
+    } else {
+      message.withdrawalAddress = "";
+    }
+    if (
       object.twilightDepositAddress !== undefined &&
       object.twilightDepositAddress !== null
     ) {
@@ -344,6 +360,8 @@ export const MsgRegisterBtcDepositAddress = {
     const obj: any = {};
     message.depositAddress !== undefined &&
       (obj.depositAddress = message.depositAddress);
+    message.withdrawalAddress !== undefined &&
+      (obj.withdrawalAddress = message.withdrawalAddress);
     message.twilightDepositAddress !== undefined &&
       (obj.twilightDepositAddress = message.twilightDepositAddress);
     return obj;
@@ -359,6 +377,14 @@ export const MsgRegisterBtcDepositAddress = {
       message.depositAddress = object.depositAddress;
     } else {
       message.depositAddress = "";
+    }
+    if (
+      object.withdrawalAddress !== undefined &&
+      object.withdrawalAddress !== null
+    ) {
+      message.withdrawalAddress = object.withdrawalAddress;
+    } else {
+      message.withdrawalAddress = "";
     }
     if (
       object.twilightDepositAddress !== undefined &&

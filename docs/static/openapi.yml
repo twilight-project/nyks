@@ -28486,6 +28486,8 @@ paths:
                   properties:
                     depositAddress:
                       type: string
+                    withdrawalAddress:
+                      type: string
                     twilightDepositAddress:
                       type: string
         default:
@@ -50115,6 +50117,8 @@ definitions:
     properties:
       depositAddress:
         type: string
+      withdrawalAddress:
+        type: string
       twilightDepositAddress:
         type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
@@ -50164,6 +50168,8 @@ definitions:
           type: object
           properties:
             depositAddress:
+              type: string
+            withdrawalAddress:
               type: string
             twilightDepositAddress:
               type: string

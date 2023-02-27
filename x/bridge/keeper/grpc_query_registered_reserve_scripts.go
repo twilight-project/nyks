@@ -16,7 +16,7 @@ func (k Keeper) RegisteredReserveScripts(goCtx context.Context, req *types.Query
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	scripts, err := k.GetBtcReserveKeys(ctx)
+	scripts, err := k.GetBtcReserveScriptKeys(ctx)
 	if err != nil {
 		return nil, err
 	}
