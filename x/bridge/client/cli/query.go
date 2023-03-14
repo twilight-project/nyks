@@ -27,7 +27,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdQueryParams())
 	cmd.AddCommand(CmdRegisteredBtcDepositAddresses())
 
-	cmd.AddCommand(CmdRegisteredReserveScripts())
+	cmd.AddCommand(CmdRegisteredReserveAddresses())
 
 	cmd.AddCommand(CmdRegisteredBtcDepositAddress())
 

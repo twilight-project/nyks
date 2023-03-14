@@ -28,7 +28,10 @@ var (
 	// BtcAddressByTwilightAddressKey indexes btc address according to users twilight address
 	BtcAddressByTwilightAddressKey = forkstypes.HashString("BtcAddressByTwilightAddressKey")
 
-	// BtcReserveScriptKey indexes btc reserve script according to judge address
+	// BtcReserveAddressKey indexes btc address according to btc address
+	BtcReserveAddressKey = forkstypes.HashString("BtcReserveAddressKey")
+
+	// BtcReserveScriptKey indexes btc reserve script according to btc address
 	BtcReserveScriptKey = forkstypes.HashString("BtcReserveScriptKey")
 )
 
@@ -45,11 +48,20 @@ func GetBtcAddressByTwilightAddressKey(twilightAddress sdk.AccAddress) []byte {
 	return forkstypes.AppendBytes(BtcAddressByTwilightAddressKey, twilightAddress.Bytes())
 }
 
-// GetBtcReserveScriptKey returns the following key format
-// [HashString("GetBtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
-func GetBtcReserveScriptKey(judgeAddress sdk.AccAddress) []byte {
+// GetBtcRegisterReserveAddressKey returns the following key format
+// [HashString("BtcReserveAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
+func GetBtcRegisterReserveAddressKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
-	return forkstypes.AppendBytes(BtcReserveScriptKey, judgeAddress.Bytes())
+	return forkstypes.AppendBytes(BtcReserveAddressKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
+}
+
+// Write a function that sets GetBtcRegisterReserveScriptKey returns the following key format
+// [HashString("BtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
+func GetBtcRegisterReserveScriptKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	return forkstypes.AppendBytes(BtcReserveScriptKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
 }

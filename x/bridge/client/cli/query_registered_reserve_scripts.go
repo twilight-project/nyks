@@ -11,10 +11,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdRegisteredReserveScripts() *cobra.Command {
+func CmdRegisteredReserveAddresses() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "registered-reserve-scripts",
-		Short: "Query RegisteredReserveScripts",
+		Use:   "registered-reserve-addresses",
+		Short: "Query RegisteredReserveAddresses",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -25,9 +25,9 @@ func CmdRegisteredReserveScripts() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryRegisteredReserveScriptsRequest{}
+			params := &types.QueryRegisteredReserveAddressesRequest{}
 
-			res, err := queryClient.RegisteredReserveScripts(cmd.Context(), params)
+			res, err := queryClient.RegisteredReserveAddresses(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

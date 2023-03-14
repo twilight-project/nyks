@@ -29,10 +29,12 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
-	_, errSettingAddr := k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript)
-	if errSettingAddr != nil {
-		return nil, errSettingAddr
+	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
+	if e3 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
+
+	k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript, *reserveAddress)
 
 	// set an empty reserve mapping for the judge address
 	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress)
@@ -47,5 +49,5 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		},
 	)
 
-	return &types.MsgRegisterReserveAddressResponse{ReserveScript: msg.ReserveScript}, nil
+	return &types.MsgRegisterReserveAddressResponse{ReserveAddress: msg.ReserveAddress}, nil
 }

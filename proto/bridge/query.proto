@@ -21,9 +21,9 @@ service Query {
 		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_addresses";
 	}
 
-// Queries a list of RegisteredReserveScripts items.
-	rpc RegisteredReserveScripts(QueryRegisteredReserveScriptsRequest) returns (QueryRegisteredReserveScriptsResponse) {
-		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_reserve_scripts";
+// Queries a list of RegisteredReserveAddresses items.
+	rpc RegisteredReserveAddresses(QueryRegisteredReserveAddressesRequest) returns (QueryRegisteredReserveAddressesResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_reserve_addresses";
 	}
 
 // Queries a list of RegisteredBtcDepositAddress items.
@@ -55,11 +55,11 @@ message QueryRegisteredBtcDepositAddressesResponse {
   repeated MsgRegisterBtcDepositAddress addresses = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryRegisteredReserveScriptsRequest {
+message QueryRegisteredReserveAddressesRequest {
 }
 
-message QueryRegisteredReserveScriptsResponse {
-  repeated MsgRegisterReserveAddress scripts = 1 [(gogoproto.nullable) = false];
+message QueryRegisteredReserveAddressesResponse {
+  repeated MsgRegisterReserveAddress addresses = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryRegisteredBtcDepositAddressRequest {

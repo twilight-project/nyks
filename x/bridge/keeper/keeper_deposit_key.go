@@ -97,31 +97,33 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 }
 
 // SetReserveAddressForJudge sets the btc address for a given twilight address
-func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript) ([]byte, error) {
+func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript, reserveAddress types.BtcAddress) {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	// Validation checks for BtcScript are missing
-
-	btcScriptBytes := []byte(reserveScript.GetBtcReserveScript())
+	// After validation reforming the MsgRegisterReserveAddress to avoid double loops while retreiving the data
+	regRes := &types.MsgRegisterReserveAddress{
+		ReserveScript:  reserveScript.BtcScript,
+		ReserveAddress: reserveAddress.BtcAddress,
+		JudgeAddress:   judgeAddress.String(),
+	}
 
 	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetBtcReserveScriptKey(judgeAddress)), btcScriptBytes)
-
-	return btcScriptBytes, nil
+	aKey := types.GetBtcRegisterReserveAddressKey(judgeAddress, reserveAddress)
+	store.Set(aKey, k.cdc.MustMarshal(regRes))
 }
 
-// GetBtcReserveScriptKeys iterates both the BtcReserveKeys index to produce
+// GetBtcReserveAddressKeys iterates both the BtcReserveKeys index to produce
 // a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
 // export / import.
-func (k Keeper) GetBtcReserveScriptKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
+func (k Keeper) GetBtcReserveAddressKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcReserveScriptKey
+	prefix := types.BtcReserveAddressKey
 	iter := store.Iterator(prefixRange(prefix))
 	defer iter.Close()
 
-	btcReserveScripts := make(map[string]string)
+	btcReserveAddresses := make(map[string]string)
 
 	for ; iter.Valid(); iter.Next() {
 		// the 'key' contains both the prefix and the value, so we need
@@ -138,12 +140,12 @@ func (k Keeper) GetBtcReserveScriptKeys(ctx sdk.Context) ([]types.MsgRegisterRes
 		if err := sdk.VerifyAddressFormat(reserveAddress); err != nil {
 			return nil, sdkerrors.Wrapf(err, "invalid reserveAddress in key %v", reserveAddress)
 		}
-		btcReserveScripts[reserveAddress.String()] = reserveScript.GetBtcReserveScript()
+		btcReserveAddresses[reserveAddress.String()] = reserveScript.GetBtcReserveScript()
 	}
 
 	var result []types.MsgRegisterReserveAddress
 
-	for judgeAddr, reserveScript := range btcReserveScripts {
+	for judgeAddr, reserveScript := range btcReserveAddresses {
 		result = append(result, types.MsgRegisterReserveAddress{
 			JudgeAddress:  judgeAddr,
 			ReserveScript: reserveScript,
@@ -159,6 +161,29 @@ func (k Keeper) GetBtcReserveScriptKeys(ctx sdk.Context) ([]types.MsgRegisterRes
 	})
 
 	return result, nil
+}
+
+// IterateBtcReserveAddresses iterates through all of the registered reserve addresses
+func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, types.MsgRegisterReserveAddress) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcReserveAddressKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgRegisterReserveAddress{
+			ReserveScript:  "",
+			ReserveAddress: "",
+			JudgeAddress:   "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
 }
 
 /////////////////////////////

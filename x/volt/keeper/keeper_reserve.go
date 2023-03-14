@@ -24,14 +24,14 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress) erro
 
 	// Create a new reserve
 	res := &types.BtcReserve{
-		ReserveId:             reserveId,
-		ValidatorAddress:      judgeAddress.String(),
-		BtcRelayCapacityValue: 0,
-		TotalValue:            0,
-		PrivatePoolValue:      0,
-		PublicValue:           0,
-		FeePool:               0,
-		TwilightAddresses:     []string{},
+		ReserveId:                        reserveId,
+		ValidatorAddress:                 judgeAddress.String(),
+		BtcRelayCapacityValue:            0,
+		TotalValue:                       0,
+		PrivatePoolValue:                 0,
+		PublicValue:                      0,
+		FeePool:                          0,
+		IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -69,14 +69,14 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
-			ReserveId:             0,
-			ValidatorAddress:      "",
-			BtcRelayCapacityValue: 0,
-			TotalValue:            0,
-			PrivatePoolValue:      0,
-			PublicValue:           0,
-			FeePool:               0,
-			TwilightAddresses:     []string{},
+			ReserveId:                        0,
+			ValidatorAddress:                 "",
+			BtcRelayCapacityValue:            0,
+			TotalValue:                       0,
+			PrivatePoolValue:                 0,
+			PublicValue:                      0,
+			FeePool:                          0,
+			IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)

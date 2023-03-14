@@ -28,8 +28,7 @@ message MsgConfirmBtcDepositResponse {
 
 message MsgRegisterBtcDepositAddress {
   string depositAddress = 1;
-  string withdrawalAddress = 2;
-  string twilightDepositAddress = 3;
+  string twilightDepositAddress = 2;
 }
 
 message MsgRegisterBtcDepositAddressResponse {
@@ -37,11 +36,12 @@ message MsgRegisterBtcDepositAddressResponse {
 
 message MsgRegisterReserveAddress {
   string reserveScript = 1;
-  string judgeAddress = 2;
+  string reserveAddress = 2;
+  string judgeAddress = 3;
 }
 
 message MsgRegisterReserveAddressResponse {
-  string reserveScript = 1;
+  string reserveAddress = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
