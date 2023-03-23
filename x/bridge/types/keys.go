@@ -33,6 +33,9 @@ var (
 
 	// BtcReserveScriptKey indexes btc reserve script according to btc address
 	BtcReserveScriptKey = forkstypes.HashString("BtcReserveScriptKey")
+
+	// JudgeAddressKey indexes judge address according to the validator address
+	JudgeAddressKey = forkstypes.HashString("JudgeAddressKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -57,11 +60,20 @@ func GetBtcRegisterReserveAddressKey(judgeAddress sdk.AccAddress, reserveAddress
 	return forkstypes.AppendBytes(BtcReserveAddressKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
 }
 
-// Write a function that sets GetBtcRegisterReserveScriptKey returns the following key format
+// GetBtcRegisterReserveScriptKey returns the following key format
 // [HashString("BtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
 func GetBtcRegisterReserveScriptKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 	return forkstypes.AppendBytes(BtcReserveScriptKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
+}
+
+// GetRegisterJudgeAddressKey returns the following key format
+// [HashString("JudgeAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetRegisterJudgeAddressKey(validatorAddress sdk.ValAddress) []byte {
+	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	return forkstypes.AppendBytes(JudgeAddressKey, validatorAddress.Bytes())
 }

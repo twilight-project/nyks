@@ -355,6 +355,102 @@ func (m *MsgRegisterReserveAddressResponse) GetReserveAddress() string {
 	return ""
 }
 
+type MsgRegisterJudge struct {
+	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	JudgeAddress     string `protobuf:"bytes,2,opt,name=judgeAddress,proto3" json:"judgeAddress,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,3,opt,name=validatorAddress,proto3" json:"validatorAddress,omitempty"`
+}
+
+func (m *MsgRegisterJudge) Reset()         { *m = MsgRegisterJudge{} }
+func (m *MsgRegisterJudge) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterJudge) ProtoMessage()    {}
+func (*MsgRegisterJudge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_41dc2e30e6049cae, []int{6}
+}
+func (m *MsgRegisterJudge) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterJudge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterJudge.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterJudge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterJudge.Merge(m, src)
+}
+func (m *MsgRegisterJudge) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterJudge) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterJudge.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterJudge proto.InternalMessageInfo
+
+func (m *MsgRegisterJudge) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgRegisterJudge) GetJudgeAddress() string {
+	if m != nil {
+		return m.JudgeAddress
+	}
+	return ""
+}
+
+func (m *MsgRegisterJudge) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+type MsgRegisterJudgeResponse struct {
+}
+
+func (m *MsgRegisterJudgeResponse) Reset()         { *m = MsgRegisterJudgeResponse{} }
+func (m *MsgRegisterJudgeResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterJudgeResponse) ProtoMessage()    {}
+func (*MsgRegisterJudgeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_41dc2e30e6049cae, []int{7}
+}
+func (m *MsgRegisterJudgeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterJudgeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterJudgeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterJudgeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterJudgeResponse.Merge(m, src)
+}
+func (m *MsgRegisterJudgeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterJudgeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterJudgeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterJudgeResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgConfirmBtcDeposit)(nil), "twilightproject.nyks.bridge.MsgConfirmBtcDeposit")
 	proto.RegisterType((*MsgConfirmBtcDepositResponse)(nil), "twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse")
@@ -362,41 +458,47 @@ func init() {
 	proto.RegisterType((*MsgRegisterBtcDepositAddressResponse)(nil), "twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse")
 	proto.RegisterType((*MsgRegisterReserveAddress)(nil), "twilightproject.nyks.bridge.MsgRegisterReserveAddress")
 	proto.RegisterType((*MsgRegisterReserveAddressResponse)(nil), "twilightproject.nyks.bridge.MsgRegisterReserveAddressResponse")
+	proto.RegisterType((*MsgRegisterJudge)(nil), "twilightproject.nyks.bridge.MsgRegisterJudge")
+	proto.RegisterType((*MsgRegisterJudgeResponse)(nil), "twilightproject.nyks.bridge.MsgRegisterJudgeResponse")
 }
 
 func init() { proto.RegisterFile("bridge/tx.proto", fileDescriptor_41dc2e30e6049cae) }
 
 var fileDescriptor_41dc2e30e6049cae = []byte{
-	// 450 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xcf, 0xaa, 0xd3, 0x40,
-	0x14, 0xc6, 0x3b, 0x49, 0xad, 0x78, 0xf0, 0x0f, 0x0e, 0x52, 0x72, 0xab, 0x84, 0x6b, 0xb8, 0x5c,
-	0xee, 0xc6, 0x04, 0x15, 0x0a, 0x6e, 0x84, 0xd6, 0x6e, 0x44, 0xba, 0x89, 0xe0, 0xc2, 0x5d, 0x9b,
-	0x8c, 0xc9, 0xd4, 0x36, 0x13, 0x66, 0xa6, 0xda, 0x6e, 0x04, 0x1f, 0x40, 0xe8, 0x4a, 0xf0, 0x4d,
-	0x7c, 0x04, 0x97, 0x5d, 0xba, 0x94, 0xf6, 0x45, 0x24, 0xd3, 0x24, 0x36, 0x36, 0x89, 0xb5, 0xbb,
-	0xc9, 0x99, 0xef, 0x9c, 0xef, 0x37, 0x67, 0x4e, 0x06, 0xee, 0x8c, 0x39, 0xf5, 0x03, 0xe2, 0xc8,
-	0x85, 0x1d, 0x73, 0x26, 0x19, 0xbe, 0x2f, 0x3f, 0xd2, 0x29, 0x0d, 0x42, 0x19, 0x73, 0x36, 0x21,
-	0x9e, 0xb4, 0xa3, 0xe5, 0x7b, 0x61, 0xef, 0x54, 0xd6, 0x57, 0x0d, 0xee, 0x0d, 0x45, 0xf0, 0x82,
-	0x45, 0xef, 0x28, 0x9f, 0xf5, 0xa5, 0x37, 0x20, 0x31, 0x13, 0x54, 0xe2, 0x4b, 0xb8, 0xed, 0xef,
-	0x96, 0x3d, 0xdf, 0xe7, 0x44, 0x08, 0x03, 0x9d, 0xa3, 0xab, 0x1b, 0xee, 0x5f, 0x51, 0x7c, 0x01,
-	0xb7, 0xb2, 0xc8, 0x8c, 0xcd, 0x23, 0x69, 0x68, 0xe7, 0xe8, 0xaa, 0xe9, 0x16, 0x83, 0xb8, 0x0d,
-	0xad, 0x90, 0x24, 0x0c, 0x86, 0xae, 0xb6, 0xd3, 0x2f, 0x8c, 0xa1, 0x19, 0x8e, 0x44, 0x68, 0x34,
-	0x55, 0x6d, 0xb5, 0xc6, 0x5d, 0x68, 0x67, 0xc4, 0x83, 0x22, 0xc1, 0x35, 0xa5, 0xaa, 0xd8, 0x4d,
-	0x88, 0x39, 0x11, 0x84, 0x7f, 0x20, 0x99, 0xbe, 0xb5, 0x23, 0x2e, 0x46, 0x13, 0x62, 0xc6, 0x47,
-	0xde, 0x34, 0x97, 0x5d, 0x57, 0xb2, 0x62, 0xd0, 0x7a, 0x03, 0x0f, 0xca, 0xfa, 0xe2, 0x12, 0x11,
-	0xb3, 0x48, 0x90, 0x1a, 0x4a, 0x54, 0x47, 0x69, 0x7d, 0x52, 0x75, 0x5d, 0x12, 0x50, 0x21, 0x09,
-	0xff, 0x53, 0x78, 0xef, 0x14, 0x47, 0xf5, 0xbd, 0xda, 0x5f, 0xab, 0xf5, 0xbf, 0x84, 0x8b, 0x3a,
-	0xff, 0xec, 0x7c, 0xd6, 0x17, 0x04, 0x67, 0x7b, 0x42, 0xf7, 0xa0, 0x87, 0x69, 0x57, 0x5f, 0x7b,
-	0x9c, 0xc6, 0x32, 0x85, 0x2c, 0x06, 0x4b, 0x6e, 0x44, 0x2b, 0xbd, 0x11, 0x0b, 0x6e, 0x4e, 0xe6,
-	0x7e, 0x90, 0xab, 0x74, 0xa5, 0x2a, 0xc4, 0xac, 0x57, 0xf0, 0xb0, 0x12, 0x27, 0xbf, 0x94, 0x43,
-	0x43, 0x54, 0x66, 0xf8, 0xe4, 0xbb, 0x0e, 0xfa, 0x50, 0x04, 0xf8, 0x33, 0x82, 0xbb, 0x87, 0xa3,
-	0xff, 0xd8, 0xae, 0xf9, 0x63, 0xec, 0xb2, 0xa9, 0xe8, 0x3c, 0xfb, 0xef, 0x94, 0x9c, 0xf9, 0x1b,
-	0x82, 0xb3, 0xea, 0x71, 0xf8, 0x67, 0xe1, 0xca, 0xd4, 0x4e, 0xef, 0xe4, 0xd4, 0x9c, 0x6d, 0x85,
-	0xa0, 0x5d, 0x31, 0x01, 0xdd, 0x63, 0xab, 0x17, 0xf3, 0x3a, 0xcf, 0x4f, 0xcb, 0xcb, 0x90, 0xfa,
-	0x2f, 0x7f, 0x6c, 0x4c, 0xb4, 0xde, 0x98, 0xe8, 0xd7, 0xc6, 0x44, 0xab, 0xad, 0xd9, 0x58, 0x6f,
-	0xcd, 0xc6, 0xcf, 0xad, 0xd9, 0x78, 0xeb, 0x04, 0x54, 0x86, 0xf3, 0xb1, 0xed, 0xb1, 0x99, 0x93,
-	0x79, 0x3c, 0x4a, 0x4d, 0x9c, 0xc4, 0xc4, 0x59, 0x38, 0xd9, 0xdb, 0xb8, 0x8c, 0x89, 0x18, 0xb7,
-	0xd4, 0xfb, 0xf8, 0xf4, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x02, 0x56, 0x9a, 0xea, 0x32, 0x05,
-	0x00, 0x00,
+	// 513 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xcf, 0x6b, 0xd4, 0x40,
+	0x14, 0xde, 0xc9, 0xae, 0x5b, 0x7c, 0x58, 0xad, 0x83, 0x2c, 0x69, 0x94, 0x50, 0x43, 0x29, 0x45,
+	0x68, 0x82, 0x8a, 0x05, 0x2f, 0x42, 0x6b, 0x2f, 0x2a, 0xbd, 0x44, 0xf0, 0xe0, 0x6d, 0x37, 0x19,
+	0x93, 0xd4, 0xdd, 0x9d, 0x30, 0x33, 0x5b, 0x5b, 0x10, 0xc1, 0x3f, 0x40, 0xe8, 0x49, 0xf0, 0xaf,
+	0xf0, 0xdf, 0xf0, 0xd8, 0xa3, 0x47, 0xd9, 0xfd, 0x47, 0x24, 0xb3, 0x99, 0xb8, 0xd3, 0xfc, 0x70,
+	0xbb, 0xb7, 0xe4, 0xcb, 0xf7, 0xbe, 0xef, 0x7b, 0x6f, 0x5e, 0x18, 0xb8, 0x33, 0x60, 0x49, 0x18,
+	0x11, 0x4f, 0x9c, 0xb9, 0x29, 0xa3, 0x82, 0xe2, 0xfb, 0xe2, 0x53, 0x32, 0x4c, 0xa2, 0x58, 0xa4,
+	0x8c, 0x9e, 0x90, 0x40, 0xb8, 0xe3, 0xf3, 0x8f, 0xdc, 0x9d, 0xb3, 0x9c, 0xef, 0x06, 0xdc, 0x3b,
+	0xe6, 0xd1, 0x4b, 0x3a, 0xfe, 0x90, 0xb0, 0xd1, 0xa1, 0x08, 0x8e, 0x48, 0x4a, 0x79, 0x22, 0xf0,
+	0x0e, 0xdc, 0x0e, 0xe7, 0x8f, 0x07, 0x61, 0xc8, 0x08, 0xe7, 0x26, 0xda, 0x42, 0xbb, 0x37, 0xfd,
+	0x2b, 0x28, 0xde, 0x86, 0x75, 0x85, 0x8c, 0xe8, 0x64, 0x2c, 0x4c, 0x63, 0x0b, 0xed, 0x76, 0x7c,
+	0x1d, 0xc4, 0x3d, 0xe8, 0xc6, 0x24, 0xcb, 0x60, 0xb6, 0xe5, 0xe7, 0xfc, 0x0d, 0x63, 0xe8, 0xc4,
+	0x7d, 0x1e, 0x9b, 0x1d, 0xa9, 0x2d, 0x9f, 0xf1, 0x3e, 0xf4, 0x54, 0xe2, 0x23, 0x3d, 0xc1, 0x0d,
+	0xc9, 0xaa, 0xf9, 0x9a, 0x25, 0x66, 0x84, 0x13, 0x76, 0x4a, 0x14, 0xbf, 0x3b, 0x4f, 0xac, 0xa3,
+	0x59, 0x62, 0xca, 0xfa, 0xc1, 0xb0, 0xa0, 0xad, 0x49, 0x9a, 0x0e, 0x3a, 0xef, 0xe0, 0x41, 0xd5,
+	0x5c, 0x7c, 0xc2, 0x53, 0x3a, 0xe6, 0xa4, 0x21, 0x25, 0x6a, 0x4a, 0xe9, 0x7c, 0x91, 0xba, 0x3e,
+	0x89, 0x12, 0x2e, 0x08, 0xfb, 0x27, 0xbc, 0xd0, 0xc5, 0x52, 0x73, 0xaf, 0xf7, 0x37, 0x1a, 0xfd,
+	0x77, 0x60, 0xbb, 0xc9, 0x5f, 0xf5, 0xe7, 0x7c, 0x43, 0xb0, 0xb9, 0x40, 0xf4, 0x4b, 0x33, 0xcc,
+	0xa7, 0xfa, 0x36, 0x60, 0x49, 0x2a, 0xf2, 0x90, 0x3a, 0x58, 0x71, 0x22, 0x46, 0xe5, 0x89, 0x38,
+	0x70, 0xeb, 0x64, 0x12, 0x46, 0x05, 0xab, 0x2d, 0x59, 0x1a, 0xe6, 0xbc, 0x81, 0x87, 0xb5, 0x71,
+	0x8a, 0x43, 0x29, 0x1b, 0xa2, 0x2a, 0x43, 0xe7, 0x33, 0x6c, 0x2c, 0x88, 0xbd, 0xce, 0x7c, 0xb0,
+	0x09, 0x6b, 0x01, 0x23, 0x7d, 0x41, 0x59, 0x5e, 0xa4, 0x5e, 0x4b, 0xf1, 0x8c, 0x72, 0x3c, 0xfc,
+	0x08, 0x36, 0x4e, 0xfb, 0xc3, 0x24, 0xcc, 0x0a, 0xf4, 0x36, 0x4a, 0xb8, 0x63, 0x81, 0x79, 0xd5,
+	0x5d, 0x75, 0xf0, 0xe4, 0x67, 0x07, 0xda, 0xc7, 0x3c, 0xc2, 0x5f, 0x11, 0xdc, 0x2d, 0xff, 0x94,
+	0x8f, 0xdd, 0x86, 0x7f, 0xd9, 0xad, 0xda, 0x57, 0xeb, 0xf9, 0xb5, 0x4b, 0x8a, 0x69, 0xfe, 0x40,
+	0xb0, 0x59, 0xbf, 0xa8, 0xff, 0x15, 0xae, 0x2d, 0xb5, 0x0e, 0x56, 0x2e, 0x2d, 0xb2, 0x5d, 0x20,
+	0xe8, 0xd5, 0xec, 0xe6, 0xfe, 0xb2, 0xea, 0x7a, 0x9d, 0xf5, 0x62, 0xb5, 0xba, 0x22, 0xd2, 0x04,
+	0xd6, 0xf5, 0x8d, 0xda, 0x5b, 0x56, 0x50, 0xd2, 0xad, 0x67, 0xd7, 0xa2, 0x2b, 0xdb, 0xc3, 0x57,
+	0xbf, 0xa6, 0x36, 0xba, 0x9c, 0xda, 0xe8, 0xcf, 0xd4, 0x46, 0x17, 0x33, 0xbb, 0x75, 0x39, 0xb3,
+	0x5b, 0xbf, 0x67, 0x76, 0xeb, 0xbd, 0x17, 0x25, 0x22, 0x9e, 0x0c, 0xdc, 0x80, 0x8e, 0x3c, 0x25,
+	0xbd, 0x97, 0x6b, 0x7b, 0x99, 0xb6, 0x77, 0xe6, 0xa9, 0xcb, 0xe2, 0x3c, 0x25, 0x7c, 0xd0, 0x95,
+	0x17, 0xc6, 0xd3, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x44, 0xca, 0xd8, 0xf4, 0x43, 0x06, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -414,6 +516,7 @@ type MsgClient interface {
 	ConfirmBtcDeposit(ctx context.Context, in *MsgConfirmBtcDeposit, opts ...grpc.CallOption) (*MsgConfirmBtcDepositResponse, error)
 	RegisterBtcDepositAddress(ctx context.Context, in *MsgRegisterBtcDepositAddress, opts ...grpc.CallOption) (*MsgRegisterBtcDepositAddressResponse, error)
 	RegisterReserveAddress(ctx context.Context, in *MsgRegisterReserveAddress, opts ...grpc.CallOption) (*MsgRegisterReserveAddressResponse, error)
+	RegisterJudge(ctx context.Context, in *MsgRegisterJudge, opts ...grpc.CallOption) (*MsgRegisterJudgeResponse, error)
 }
 
 type msgClient struct {
@@ -451,11 +554,21 @@ func (c *msgClient) RegisterReserveAddress(ctx context.Context, in *MsgRegisterR
 	return out, nil
 }
 
+func (c *msgClient) RegisterJudge(ctx context.Context, in *MsgRegisterJudge, opts ...grpc.CallOption) (*MsgRegisterJudgeResponse, error) {
+	out := new(MsgRegisterJudgeResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.bridge.Msg/RegisterJudge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	ConfirmBtcDeposit(context.Context, *MsgConfirmBtcDeposit) (*MsgConfirmBtcDepositResponse, error)
 	RegisterBtcDepositAddress(context.Context, *MsgRegisterBtcDepositAddress) (*MsgRegisterBtcDepositAddressResponse, error)
 	RegisterReserveAddress(context.Context, *MsgRegisterReserveAddress) (*MsgRegisterReserveAddressResponse, error)
+	RegisterJudge(context.Context, *MsgRegisterJudge) (*MsgRegisterJudgeResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -470,6 +583,9 @@ func (*UnimplementedMsgServer) RegisterBtcDepositAddress(ctx context.Context, re
 }
 func (*UnimplementedMsgServer) RegisterReserveAddress(ctx context.Context, req *MsgRegisterReserveAddress) (*MsgRegisterReserveAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterReserveAddress not implemented")
+}
+func (*UnimplementedMsgServer) RegisterJudge(ctx context.Context, req *MsgRegisterJudge) (*MsgRegisterJudgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterJudge not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -530,6 +646,24 @@ func _Msg_RegisterReserveAddress_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RegisterJudge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterJudge)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RegisterJudge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.bridge.Msg/RegisterJudge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RegisterJudge(ctx, req.(*MsgRegisterJudge))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "twilightproject.nyks.bridge.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -545,6 +679,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterReserveAddress",
 			Handler:    _Msg_RegisterReserveAddress_Handler,
+		},
+		{
+			MethodName: "RegisterJudge",
+			Handler:    _Msg_RegisterJudge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -783,6 +921,73 @@ func (m *MsgRegisterReserveAddressResponse) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRegisterJudge) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterJudge) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterJudge) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ValidatorAddress) > 0 {
+		i -= len(m.ValidatorAddress)
+		copy(dAtA[i:], m.ValidatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.JudgeAddress) > 0 {
+		i -= len(m.JudgeAddress)
+		copy(dAtA[i:], m.JudgeAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.JudgeAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRegisterJudgeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterJudgeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterJudgeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -899,6 +1104,36 @@ func (m *MsgRegisterReserveAddressResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	return n
+}
+
+func (m *MsgRegisterJudge) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.JudgeAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ValidatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRegisterJudgeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1609,6 +1844,202 @@ func (m *MsgRegisterReserveAddressResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.ReserveAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterJudge) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterJudge: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterJudge: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field JudgeAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.JudgeAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterJudgeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterJudgeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterJudgeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

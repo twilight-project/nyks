@@ -14,3 +14,9 @@ message EventRegisterReserveScript {
     string message        = 1;
     string reserveScript = 2;
 }
+
+message EventRegisterJudgeAddress {
+    string message = 1;
+    string judgeAddress = 2;
+    string validatorAddress = 3;
+}

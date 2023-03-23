@@ -10,6 +10,7 @@ service Msg {
       rpc ConfirmBtcDeposit(MsgConfirmBtcDeposit) returns (MsgConfirmBtcDepositResponse);
   rpc RegisterBtcDepositAddress(MsgRegisterBtcDepositAddress) returns (MsgRegisterBtcDepositAddressResponse);
   rpc RegisterReserveAddress(MsgRegisterReserveAddress) returns (MsgRegisterReserveAddressResponse);
+  rpc RegisterJudge (MsgRegisterJudge) returns (MsgRegisterJudgeResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -44,5 +45,13 @@ message MsgRegisterReserveAddress {
 message MsgRegisterReserveAddressResponse {
   string reserveAddress = 1;
 }
+
+message MsgRegisterJudge {
+  string creator          = 1;
+  string judgeAddress     = 2;
+  string validatorAddress = 3;
+}
+
+message MsgRegisterJudgeResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

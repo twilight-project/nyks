@@ -16,10 +16,6 @@ func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress
 
 	btcAddrBytes := []byte(btcAddr.GetBtcAddress())
 
-	// btcAddrBytes, err := btcutil.DecodeAddress(btcAddr.GetBtcAddress(), &chaincfg.MainNetParams)
-	// if err != nil {
-	// 	return nil, sdkerrors.Wrapf(types.ErrInvalidBtcAddress, "invalid btc address hex encoding (%s) giving err (%s) ", btcAddr.GetBtcAddress(), err)
-	// }
 	store := ctx.KVStore(k.storeKey)
 	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)), btcAddrBytes)
 
@@ -94,6 +90,18 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 	})
 
 	return result, nil
+}
+
+// SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
+func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAddress sdk.ValAddress, judgeAddress sdk.AccAddress) error {
+	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set([]byte(types.GetRegisterJudgeAddressKey(validatorAddress)), judgeAddress.Bytes())
+
+	return nil
 }
 
 // SetReserveAddressForJudge sets the btc address for a given twilight address

@@ -47409,6 +47409,8 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
+  twilightproject.nyks.bridge.MsgRegisterJudgeResponse:
+    type: object
   twilightproject.nyks.bridge.MsgRegisterReserveAddress:
     type: object
     properties:
