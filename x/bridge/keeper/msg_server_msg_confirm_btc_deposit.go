@@ -13,7 +13,7 @@ func (k msgServer) ConfirmBtcDeposit(goCtx context.Context, msg *types.MsgConfir
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	err := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.OracleAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
 	}

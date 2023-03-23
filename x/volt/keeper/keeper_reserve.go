@@ -5,12 +5,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	bridgetypes "github.com/twilight-project/nyks/x/bridge/types"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
 // SetBtcReserve sets a reserve in the store
-func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress) error {
+func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress bridgetypes.BtcAddress) error {
 
 	// Get the latest reserve id
 	// We keep reserve ids in a separate store and keep track of it as a counter
@@ -25,6 +26,7 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress) erro
 	// Create a new reserve
 	res := &types.BtcReserve{
 		ReserveId:                        reserveId,
+		ReserveAddress:                   reserveAddress.BtcAddress,
 		ValidatorAddress:                 judgeAddress.String(),
 		BtcRelayCapacityValue:            0,
 		TotalValue:                       0,
@@ -41,6 +43,18 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress) erro
 
 	return nil
 }
+
+// Write a GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
+// func (k Keeper) GetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveId uint64) (*types.BtcReserve, error) {
+// 	store := ctx.KVStore(k.storeKey)
+// 	aKey := types.GetReserveKey(judgeAddress, reserveId)
+// 	reserve := &types.BtcReserve{}
+// 	err := k.cdc.Unmarshal(store.Get(aKey), reserve)
+// 	if err != nil {
+// 		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(judgeAddress, reserveId))
+// 	}
+// 	return reserve, nil
+// }
 
 // setLastRegisteredBtcReserve sets the latest reserve id
 func (k Keeper) setLastRegisteredBtcReserve(ctx sdk.Context, reserveId uint64) {

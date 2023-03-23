@@ -41,7 +41,7 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal bridgetypes.MsgConfirmBtcDeposit) error {
 
 	mintAmount := sdk.NewIntFromUint64(proposal.DepositAmount)
-	denom := "btc"
+	denom := "sats"
 
 	coin := sdk.NewCoin(denom, mintAmount)
 
@@ -62,6 +62,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 
 	coins := sdk.Coins{coin}
 
+	// Mint the coins
 	if err := a.keeper.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
 		return sdkerrors.Wrapf(err, "unable to mint cosmos originated coins %v", coins)
 	}

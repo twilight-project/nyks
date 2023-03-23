@@ -13,14 +13,15 @@ const TypeMsgConfirmBtcDeposit = "confirm_btc_deposit"
 
 var _ sdk.Msg = &MsgConfirmBtcDeposit{}
 
-func NewMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, height uint64, hash string, twilightDepositAddress string, btcOracleAddress string) *MsgConfirmBtcDeposit {
+func NewMsgConfirmBtcDeposit(depositAddress string, depositAmount uint64, height uint64, hash string, twilightDepositAddress string, reserveAddress string, oracleAddress string) *MsgConfirmBtcDeposit {
 	return &MsgConfirmBtcDeposit{
 		DepositAddress:         depositAddress,
 		DepositAmount:          depositAmount,
 		Height:                 height,
 		Hash:                   hash,
 		TwilightDepositAddress: twilightDepositAddress,
-		BtcOracleAddress:       btcOracleAddress,
+		ReserveAddress:         reserveAddress,
+		OracleAddress:          oracleAddress,
 	}
 }
 
@@ -33,7 +34,7 @@ func (msg *MsgConfirmBtcDeposit) Type() string {
 }
 
 func (msg *MsgConfirmBtcDeposit) GetSigners() []sdk.AccAddress {
-	btcOracleAddress, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	btcOracleAddress, err := sdk.AccAddressFromBech32(msg.OracleAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -46,9 +47,19 @@ func (msg *MsgConfirmBtcDeposit) GetSignBytes() []byte {
 }
 
 func (msg *MsgConfirmBtcDeposit) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	_, err := sdk.AccAddressFromBech32(msg.OracleAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	e1 := ValidateBtcAddress(msg.DepositAddress)
+	e2 := ValidateBtcAddress(msg.ReserveAddress)
+	_, e3 := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
+	if e1 != nil {
+		return sdkerrors.Wrap(ErrInvalid, e1.Error())
+	} else if e2 != nil {
+		return sdkerrors.Wrap(ErrInvalid, e2.Error())
+	} else if e3 != nil {
+		return sdkerrors.Wrap(ErrInvalid, e3.Error())
 	}
 	return nil
 }
@@ -59,7 +70,7 @@ func (msg MsgConfirmBtcDeposit) GetProposarOrchestrator() sdk.AccAddress {
 		panic("MsgSeenBtcChainTip failed ValidateBasic! Should have been handled earlier")
 	}
 
-	val, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	val, err := sdk.AccAddressFromBech32(msg.OracleAddress)
 	if err != nil {
 		panic(err)
 	}

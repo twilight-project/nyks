@@ -19,7 +19,7 @@ func (k Keeper) BtcReserve(goCtx context.Context, req *types.QueryBtcReserveRequ
 	var (
 		btcReserve []types.BtcReserve
 	)
-	ctx.Logger().Error("IterateBtcReserves", "res", btcReserve)
+
 	k.IterateBtcReserves(ctx, func(_ []byte, res types.BtcReserve) (abort bool) {
 		btcReserve = append(btcReserve, res)
 		return false

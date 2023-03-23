@@ -19,7 +19,8 @@ message MsgConfirmBtcDeposit {
   uint64 height = 3;
   string hash = 4;
   string twilightDepositAddress = 5;
-  string btcOracleAddress = 6;
+  string reserveAddress = 6;
+  string oracleAddress = 7;
 }
 
 message MsgConfirmBtcDepositResponse {

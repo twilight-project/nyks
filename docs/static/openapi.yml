@@ -28572,6 +28572,8 @@ paths:
                     ReserveId:
                       type: string
                       format: uint64
+                    ReserveAddress:
+                      type: string
                     ValidatorAddress:
                       type: string
                     BtcRelayCapacityValue:
@@ -47929,6 +47931,8 @@ definitions:
       ReserveId:
         type: string
         format: uint64
+      ReserveAddress:
+        type: string
       ValidatorAddress:
         type: string
       BtcRelayCapacityValue:
@@ -47995,6 +47999,8 @@ definitions:
             ReserveId:
               type: string
               format: uint64
+            ReserveAddress:
+              type: string
             ValidatorAddress:
               type: string
             BtcRelayCapacityValue:

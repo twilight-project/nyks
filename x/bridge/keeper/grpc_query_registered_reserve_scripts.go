@@ -16,11 +16,6 @@ func (k Keeper) RegisteredReserveAddresses(goCtx context.Context, req *types.Que
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// addresses, err := k.GetBtcReserveAddressKeys(ctx)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	var (
 		btcReserveAddresses []types.MsgRegisterReserveAddress
 	)

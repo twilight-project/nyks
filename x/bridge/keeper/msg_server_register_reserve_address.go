@@ -36,8 +36,11 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 
 	k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript, *reserveAddress)
 
+	// Write a function to get validator address from a judge address
+	//validatorAddress := k.VoltKeeper.GetValidatorAddressFromJudgeAddress(ctx, judgeAddress)
+
 	// set an empty reserve mapping for the judge address
-	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress)
+	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress, *reserveAddress)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}
