@@ -20,6 +20,8 @@ export interface BridgeMsgRegisterBtcDepositAddress {
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
+export type BridgeMsgRegisterJudgeResponse = object;
+
 export interface BridgeMsgRegisterReserveAddress {
   reserveScript?: string;
   reserveAddress?: string;
@@ -56,6 +58,10 @@ export interface BridgeQueryRegisteredBtcDepositAddressResponse {
 export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
   addresses?: BridgeMsgRegisterBtcDepositAddress[];
 }
+
+export type BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse = object;
+
+export type BridgeQueryRegisteredJudgesResponse = object;
 
 export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
@@ -193,7 +199,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title bridge/events.proto
+ * @title nyks/bridge/events.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
@@ -256,6 +262,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryRegisteredBtcDepositAddresses = (params: RequestParams = {}) =>
     this.request<BridgeQueryRegisteredBtcDepositAddressesResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/registered_btc_deposit_addresses`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryRegisteredJudgeAddressByValidatorAddress
+   * @summary Queries a list of RegisteredJudgeAddressByValidatorAddress items.
+   * @request GET:/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/{judgeAddress}
+   */
+  queryRegisteredJudgeAddressByValidatorAddress = (judgeAddress: string, params: RequestParams = {}) =>
+    this.request<BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/${judgeAddress}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryRegisteredJudges
+   * @summary Queries a list of RegisteredJudges items.
+   * @request GET:/twilight-project/nyks/bridge/registered_judges
+   */
+  queryRegisteredJudges = (params: RequestParams = {}) =>
+    this.request<BridgeQueryRegisteredJudgesResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/registered_judges`,
       method: "GET",
       format: "json",
       ...params,

@@ -19,7 +19,7 @@ func SimulateMsgRegisterJudge(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgRegisterJudge{
-			Creator: simAccount.Address.String(),
+			ValidatorAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the RegisterJudge simulation

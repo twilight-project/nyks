@@ -92,18 +92,6 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 	return result, nil
 }
 
-// SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
-func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAddress sdk.ValAddress, judgeAddress sdk.AccAddress) error {
-	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-
-	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetRegisterJudgeAddressKey(validatorAddress)), judgeAddress.Bytes())
-
-	return nil
-}
-
 // SetReserveAddressForJudge sets the btc address for a given twilight address
 func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript, reserveAddress types.BtcAddress) {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
@@ -134,6 +122,47 @@ func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, type
 			ReserveScript:  "",
 			ReserveAddress: "",
 			JudgeAddress:   "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
+// SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
+func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, creator sdk.AccAddress, validatorAddress sdk.ValAddress, judgeAddress sdk.AccAddress) error {
+	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	regJudge := &types.MsgRegisterJudge{
+		Creator:          creator.String(),
+		ValidatorAddress: validatorAddress.String(),
+		JudgeAddress:     judgeAddress.String(),
+	}
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
+	store.Set(aKey, k.cdc.MustMarshal(regJudge))
+
+	return nil
+}
+
+// IterateRegisteredJudges iterates through all of the registered judge addresses
+func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.MsgRegisterJudge) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.JudgeAddressKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgRegisterJudge{
+			Creator:          "",
+			ValidatorAddress: "",
+			JudgeAddress:     "",
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)

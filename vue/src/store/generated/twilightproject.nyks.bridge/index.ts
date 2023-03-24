@@ -2,10 +2,11 @@ import { Client, registry, MissingWalletError } from 'twilight-project-nyks-clie
 
 import { EventRegisterBtcDepositAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.bridge/types"
 import { EventRegisterReserveScript } from "twilight-project-nyks-client-ts/twilightproject.nyks.bridge/types"
+import { EventRegisterJudgeAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.bridge/types"
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.bridge/types"
 
 
-export { EventRegisterBtcDepositAddress, EventRegisterReserveScript, Params };
+export { EventRegisterBtcDepositAddress, EventRegisterReserveScript, EventRegisterJudgeAddress, Params };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -41,10 +42,13 @@ const getDefaultState = () => {
 				RegisteredReserveAddresses: {},
 				RegisteredBtcDepositAddress: {},
 				RegisteredBtcDepositAddressByTwilightAddress: {},
+				RegisteredJudgeAddressByValidatorAddress: {},
+				RegisteredJudges: {},
 				
 				_Structure: {
 						EventRegisterBtcDepositAddress: getStructure(EventRegisterBtcDepositAddress.fromPartial({})),
 						EventRegisterReserveScript: getStructure(EventRegisterReserveScript.fromPartial({})),
+						EventRegisterJudgeAddress: getStructure(EventRegisterJudgeAddress.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						
 		},
@@ -103,6 +107,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.RegisteredBtcDepositAddressByTwilightAddress[JSON.stringify(params)] ?? {}
+		},
+				getRegisteredJudgeAddressByValidatorAddress: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.RegisteredJudgeAddressByValidatorAddress[JSON.stringify(params)] ?? {}
+		},
+				getRegisteredJudges: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.RegisteredJudges[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -248,20 +264,50 @@ export default {
 		},
 		
 		
-		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+		
+		
+		 		
+		
+		
+		async QueryRegisteredJudgeAddressByValidatorAddress({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
 			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterBtcDepositAddress({ value, fee: fullFee, memo })
-				return result
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksBridge.query.queryRegisteredJudgeAddressByValidatorAddress( key.judgeAddress)).data
+				
+					
+				commit('QUERY', { query: 'RegisteredJudgeAddressByValidatorAddress', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryRegisteredJudgeAddressByValidatorAddress', payload: { options: { all }, params: {...key},query }})
+				return getters['getRegisteredJudgeAddressByValidatorAddress']( { params: {...key}, query}) ?? {}
 			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
-				}
+				throw new Error('QueryClient:QueryRegisteredJudgeAddressByValidatorAddress API Node Unavailable. Could not perform query: ' + e.message)
+				
 			}
 		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryRegisteredJudges({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksBridge.query.queryRegisteredJudges()).data
+				
+					
+				commit('QUERY', { query: 'RegisteredJudges', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryRegisteredJudges', payload: { options: { all }, params: {...key},query }})
+				return getters['getRegisteredJudges']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryRegisteredJudges API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
 		async sendMsgConfirmBtcDeposit({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -290,6 +336,20 @@ export default {
 				}
 			}
 		},
+		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterBtcDepositAddress({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgRegisterJudge({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -305,19 +365,6 @@ export default {
 			}
 		},
 		
-		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterBtcDepositAddress({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
-				}
-			}
-		},
 		async MsgConfirmBtcDeposit({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -341,6 +388,19 @@ export default {
 					throw new Error('TxClient:MsgRegisterReserveAddress:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgRegisterReserveAddress:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterBtcDepositAddress({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
 				}
 			}
 		},

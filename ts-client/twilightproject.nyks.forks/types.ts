@@ -1,8 +1,8 @@
-import { Attestation } from "./types/forks/attestation"
-import { EventObservation } from "./types/forks/attestation"
-import { EventSetDelegateAddresses } from "./types/forks/events"
-import { EventProposal } from "./types/forks/events"
-import { Params } from "./types/forks/params"
+import { Attestation } from "./types/nyks/forks/attestation"
+import { EventObservation } from "./types/nyks/forks/attestation"
+import { EventSetDelegateAddresses } from "./types/nyks/forks/events"
+import { EventProposal } from "./types/nyks/forks/events"
+import { Params } from "./types/nyks/forks/params"
 
 
 export {     

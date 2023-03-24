@@ -4,8 +4,8 @@ package twilightproject.nyks.volt;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "volt/params.proto";
-import "volt/reserve.proto";
+import "nyks/volt/params.proto";
+import "nyks/volt/reserve.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/twilight-project/nyks/x/volt/types";

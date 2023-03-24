@@ -17,13 +17,13 @@ func TestMsgRegisterJudge_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgRegisterJudge{
-				Creator: "invalid_address",
+				ValidatorAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgRegisterJudge{
-				Creator: sample.AccAddress(),
+				ValidatorAddress: sample.AccAddress(),
 			},
 		},
 	}

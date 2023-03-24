@@ -4,9 +4,9 @@ package twilightproject.nyks.forks;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "forks/params.proto";
-import "forks/tx.proto";
-import "forks/attestation.proto";
+import "nyks/forks/params.proto";
+import "nyks/forks/tx.proto";
+import "nyks/forks/attestation.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/twilight-project/nyks/x/forks/types";

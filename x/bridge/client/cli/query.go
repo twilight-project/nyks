@@ -33,6 +33,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdRegisteredBtcDepositAddressByTwilightAddress())
 
+	cmd.AddCommand(CmdRegisteredJudgeAddressByValidatorAddress())
+
+	cmd.AddCommand(CmdRegisteredJudges())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd

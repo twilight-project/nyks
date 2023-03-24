@@ -27454,6 +27454,88 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/registered_judge_address_by_validator_address/{validatorAddress}:
+    get:
+      summary: Queries a list of RegisteredJudgeAddressByValidatorAddress items.
+      operationId: TwilightprojectNyksBridgeRegisteredJudgeAddressByValidatorAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              judgeAddress:
+                type: string
+              validatorAddress:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: validatorAddress
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/registered_judges:
+    get:
+      summary: Queries a list of RegisteredJudges items.
+      operationId: TwilightprojectNyksBridgeRegisteredJudges
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Judges:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    creator:
+                      type: string
+                    judgeAddress:
+                      type: string
+                    validatorAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/bridge/registered_reserve_addresses:
     get:
       summary: Queries a list of RegisteredReserveAddresses items.
@@ -47409,6 +47491,15 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
+  twilightproject.nyks.bridge.MsgRegisterJudge:
+    type: object
+    properties:
+      creator:
+        type: string
+      judgeAddress:
+        type: string
+      validatorAddress:
+        type: string
   twilightproject.nyks.bridge.MsgRegisterJudgeResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterReserveAddress:
@@ -47460,6 +47551,29 @@ definitions:
             depositAddress:
               type: string
             twilightDepositAddress:
+              type: string
+  twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
+    type: object
+    properties:
+      creator:
+        type: string
+      judgeAddress:
+        type: string
+      validatorAddress:
+        type: string
+  twilightproject.nyks.bridge.QueryRegisteredJudgesResponse:
+    type: object
+    properties:
+      Judges:
+        type: array
+        items:
+          type: object
+          properties:
+            creator:
+              type: string
+            judgeAddress:
+              type: string
+            validatorAddress:
               type: string
   twilightproject.nyks.bridge.QueryRegisteredReserveAddressesResponse:
     type: object

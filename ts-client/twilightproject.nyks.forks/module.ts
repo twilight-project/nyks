@@ -7,8 +7,8 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgSeenBtcChainTip } from "./types/forks/tx";
-import { MsgSetDelegateAddresses } from "./types/forks/tx";
+import { MsgSeenBtcChainTip } from "./types/nyks/forks/tx";
+import { MsgSetDelegateAddresses } from "./types/nyks/forks/tx";
 
 import { Attestation as typeAttestation} from "./types"
 import { EventObservation as typeEventObservation} from "./types"

@@ -188,7 +188,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title volt/genesis.proto
+ * @title nyks/volt/genesis.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {

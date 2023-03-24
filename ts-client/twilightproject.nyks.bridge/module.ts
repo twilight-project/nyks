@@ -7,22 +7,17 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgRegisterBtcDepositAddress } from "./types/bridge/tx";
-import { MsgConfirmBtcDeposit } from "./types/bridge/tx";
-import { MsgRegisterReserveAddress } from "./types/bridge/tx";
+import { MsgConfirmBtcDeposit } from "./types/nyks/bridge/tx";
+import { MsgRegisterReserveAddress } from "./types/nyks/bridge/tx";
+import { MsgRegisterBtcDepositAddress } from "./types/nyks/bridge/tx";
 import { MsgRegisterJudge } from "./types/nyks/bridge/tx";
 
 import { EventRegisterBtcDepositAddress as typeEventRegisterBtcDepositAddress} from "./types"
 import { EventRegisterReserveScript as typeEventRegisterReserveScript} from "./types"
+import { EventRegisterJudgeAddress as typeEventRegisterJudgeAddress} from "./types"
 import { Params as typeParams} from "./types"
 
-export { MsgRegisterBtcDepositAddress, MsgConfirmBtcDeposit, MsgRegisterReserveAddress, MsgRegisterJudge };
-
-type sendMsgRegisterBtcDepositAddressParams = {
-  value: MsgRegisterBtcDepositAddress,
-  fee?: StdFee,
-  memo?: string
-};
+export { MsgConfirmBtcDeposit, MsgRegisterReserveAddress, MsgRegisterBtcDepositAddress, MsgRegisterJudge };
 
 type sendMsgConfirmBtcDepositParams = {
   value: MsgConfirmBtcDeposit,
@@ -36,6 +31,12 @@ type sendMsgRegisterReserveAddressParams = {
   memo?: string
 };
 
+type sendMsgRegisterBtcDepositAddressParams = {
+  value: MsgRegisterBtcDepositAddress,
+  fee?: StdFee,
+  memo?: string
+};
+
 type sendMsgRegisterJudgeParams = {
   value: MsgRegisterJudge,
   fee?: StdFee,
@@ -43,16 +44,16 @@ type sendMsgRegisterJudgeParams = {
 };
 
 
-type msgRegisterBtcDepositAddressParams = {
-  value: MsgRegisterBtcDepositAddress,
-};
-
 type msgConfirmBtcDepositParams = {
   value: MsgConfirmBtcDeposit,
 };
 
 type msgRegisterReserveAddressParams = {
   value: MsgRegisterReserveAddress,
+};
+
+type msgRegisterBtcDepositAddressParams = {
+  value: MsgRegisterBtcDepositAddress,
 };
 
 type msgRegisterJudgeParams = {
@@ -89,20 +90,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
-		async sendMsgRegisterBtcDepositAddress({ value, fee, memo }: sendMsgRegisterBtcDepositAddressParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgRegisterBtcDepositAddress({ value: MsgRegisterBtcDepositAddress.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgConfirmBtcDeposit({ value, fee, memo }: sendMsgConfirmBtcDepositParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgConfirmBtcDeposit: Unable to sign Tx. Signer is not present.')
@@ -131,6 +118,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgRegisterBtcDepositAddress({ value, fee, memo }: sendMsgRegisterBtcDepositAddressParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgRegisterBtcDepositAddress({ value: MsgRegisterBtcDepositAddress.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgRegisterJudge({ value, fee, memo }: sendMsgRegisterJudgeParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgRegisterJudge: Unable to sign Tx. Signer is not present.')
@@ -146,14 +147,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 		},
 		
 		
-		msgRegisterBtcDepositAddress({ value }: msgRegisterBtcDepositAddressParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( value ) }  
-			} catch (e: any) {
-				throw new Error('TxClient:MsgRegisterBtcDepositAddress: Could not create message: ' + e.message)
-			}
-		},
-		
 		msgConfirmBtcDeposit({ value }: msgConfirmBtcDepositParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", value: MsgConfirmBtcDeposit.fromPartial( value ) }  
@@ -167,6 +160,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterReserveAddress", value: MsgRegisterReserveAddress.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgRegisterReserveAddress: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgRegisterBtcDepositAddress({ value }: msgRegisterBtcDepositAddressParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgRegisterBtcDepositAddress: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -202,6 +203,7 @@ class SDKModule {
 		this.structure =  {
 						EventRegisterBtcDepositAddress: getStructure(typeEventRegisterBtcDepositAddress.fromPartial({})),
 						EventRegisterReserveScript: getStructure(typeEventRegisterReserveScript.fromPartial({})),
+						EventRegisterJudgeAddress: getStructure(typeEventRegisterJudgeAddress.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						
 		};

@@ -19,7 +19,7 @@ func (k Keeper) RegisteredReserveAddresses(goCtx context.Context, req *types.Que
 	var (
 		btcReserveAddresses []types.MsgRegisterReserveAddress
 	)
-	ctx.Logger().Error("IterateBtcReserveAddresses", "res", btcReserveAddresses)
+
 	k.IterateBtcReserveAddresses(ctx, func(_ []byte, res types.MsgRegisterReserveAddress) (abort bool) {
 		btcReserveAddresses = append(btcReserveAddresses, res)
 		return false
