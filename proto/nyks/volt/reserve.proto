@@ -18,7 +18,7 @@ message IndividualTwilightReserveAccount {
 message BtcReserve {
     uint64  ReserveId = 1;
     string  ReserveAddress = 2;
-    string  ValidatorAddress = 3;
+    string  JudgeAddress = 3;
     uint64  BtcRelayCapacityValue = 4;
     uint64  TotalValue = 5; 
     uint64  PrivatePoolValue = 6;

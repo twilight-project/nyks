@@ -40,3 +40,8 @@ type StakingKeeper interface {
 	Slash(sdk.Context, sdk.ConsAddress, int64, int64, sdk.Dec)
 	Jail(sdk.Context, sdk.ConsAddress)
 }
+
+// VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
+type VoltKeeper interface {
+	UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error
+}

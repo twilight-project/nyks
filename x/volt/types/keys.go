@@ -1,7 +1,6 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
@@ -35,7 +34,7 @@ func KeyPrefix(p string) []byte {
 }
 
 // GetReserveKey returns the following key format
-// prefix reserve-key, judge address, reserve-nonce
-func GetReserveKey(judgeAddress sdk.AccAddress, reserveNonce uint64) []byte {
-	return forkstypes.AppendBytes(BtcReserveKey, judgeAddress.Bytes(), forkstypes.UInt64Bytes(reserveNonce))
+// prefix reserve-key, reserve-address
+func GetReserveKey(reserveAdderss string) []byte {
+	return forkstypes.AppendBytes(BtcReserveKey, []byte(reserveAdderss))
 }

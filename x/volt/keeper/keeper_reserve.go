@@ -5,13 +5,12 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bridgetypes "github.com/twilight-project/nyks/x/bridge/types"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
 // SetBtcReserve sets a reserve in the store
-func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress bridgetypes.BtcAddress) error {
+func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error {
 
 	// Get the latest reserve id
 	// We keep reserve ids in a separate store and keep track of it as a counter
@@ -26,8 +25,8 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 	// Create a new reserve
 	res := &types.BtcReserve{
 		ReserveId:                        reserveId,
-		ReserveAddress:                   reserveAddress.BtcAddress,
-		ValidatorAddress:                 judgeAddress.String(),
+		ReserveAddress:                   reserveAddress,
+		JudgeAddress:                     judgeAddress.String(),
 		BtcRelayCapacityValue:            0,
 		TotalValue:                       0,
 		PrivatePoolValue:                 0,
@@ -37,24 +36,48 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(judgeAddress, reserveId)
+	aKey := types.GetReserveKey(reserveAddress)
 	store.Set(aKey, k.cdc.MustMarshal(res))
 	k.setLastRegisteredBtcReserve(ctx, reserveId)
 
 	return nil
 }
 
+// UpdateBtcReserve updates a reserve in the store
+func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
+
+	// Get the reserve
+	reserve, err := k.GetBtcReserve(ctx, reserveAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
+	// Update the reserve
+	reserve.TotalValue = reserve.TotalValue + mintedValue
+	reserve.PublicValue = reserve.PublicValue + mintedValue
+
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetReserveKey(reserveAddress)
+	store.Set(aKey, k.cdc.MustMarshal(reserve))
+
+	return nil
+}
+
 // Write a GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
-// func (k Keeper) GetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveId uint64) (*types.BtcReserve, error) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	aKey := types.GetReserveKey(judgeAddress, reserveId)
-// 	reserve := &types.BtcReserve{}
-// 	err := k.cdc.Unmarshal(store.Get(aKey), reserve)
-// 	if err != nil {
-// 		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(judgeAddress, reserveId))
-// 	}
-// 	return reserve, nil
-// }
+func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveAddress string) (*types.BtcReserve, error) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetReserveKey(reserveAddress)
+	bz := store.Get(aKey)
+	if len(bz) == 0 {
+		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+	reserve := &types.BtcReserve{}
+	err := k.cdc.Unmarshal(store.Get(aKey), reserve)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+	return reserve, nil
+}
 
 // setLastRegisteredBtcReserve sets the latest reserve id
 func (k Keeper) setLastRegisteredBtcReserve(ctx sdk.Context, reserveId uint64) {
@@ -84,7 +107,7 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
 			ReserveId:                        0,
-			ValidatorAddress:                 "",
+			JudgeAddress:                     "",
 			BtcRelayCapacityValue:            0,
 			TotalValue:                       0,
 			PrivatePoolValue:                 0,

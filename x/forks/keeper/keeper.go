@@ -12,6 +12,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/twilight-project/nyks/x/forks/types"
+	voltkeeper "github.com/twilight-project/nyks/x/volt/keeper"
 )
 
 // Check that our expected keeper types are implemented
@@ -28,6 +29,7 @@ type (
 		StakingKeeper *stakingkeeper.Keeper
 		bankKeeper    *bankkeeper.BaseKeeper
 		accountKeeper *authkeeper.AccountKeeper
+		VoltKeeper    *voltkeeper.Keeper
 
 		AttestationHandler interface {
 			Handle(sdk.Context, types.Attestation, types.BtcProposal) error
@@ -50,6 +52,7 @@ func NewKeeper(
 	stakingKeeper *stakingkeeper.Keeper,
 	accKeeper *authkeeper.AccountKeeper,
 	bankKeeper *bankkeeper.BaseKeeper,
+	voltKeeper *voltkeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -65,6 +68,7 @@ func NewKeeper(
 		StakingKeeper:      stakingKeeper,
 		accountKeeper:      accKeeper,
 		bankKeeper:         bankKeeper,
+		VoltKeeper:         voltKeeper,
 		AttestationHandler: nil,
 	}
 	attestationHandler := AttestationHandler{keeper: &k}

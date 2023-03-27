@@ -101,11 +101,12 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 			if receivedVotes.GTE(votesNeeded) {
 				// You have reached the target percentage of votes!
 				att.Observed = true
-				k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
-
-				k.processAttestation(ctx, att, proposal)
-
-				k.emitObservedEvent(ctx, att, proposal)
+				// we are processing attestation first and then setting it as true
+				err := k.processAttestation(ctx, att, proposal)
+				if err == nil {
+					k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
+					k.emitObservedEvent(ctx, att, proposal)
+				}
 			}
 		} else if proposalType == 0 { // SeenChainTip Proposal
 
@@ -198,7 +199,7 @@ func (k Keeper) GetAttestation(ctx sdk.Context, height uint64, proposalHash []by
 // }
 
 // processAttestation actually applies the attestation to the consensus state
-func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, proposal types.BtcProposal) {
+func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, proposal types.BtcProposal) error {
 	hash, err := proposal.ProposalHash()
 	if err != nil {
 		panic(sdkerrors.Wrap(err, "unable to compute proposal hash"))
@@ -213,9 +214,11 @@ func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, prop
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
+		return err
 	} else {
 		commit() // persist transient storage
 	}
+	return nil
 }
 
 // GetAttestationMapping returns a mapping of eventnonce -> attestations at that nonce

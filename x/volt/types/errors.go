@@ -9,4 +9,5 @@ import (
 // x/volt module sentinel errors
 var (
 	ErrBtcReserveMaxLimitReached = sdkerrors.Register(ModuleName, 1, "Btc max reserve limit reached")
+	ErrBtcReserveNotFound        = sdkerrors.Register(ModuleName, 2, "Btc reserve not found")
 )

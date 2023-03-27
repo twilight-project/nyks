@@ -75,6 +75,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 		)
 	}
 
+	// Update the twilight address with the new amount of coins
 	receiver, err := sdk.AccAddressFromBech32(proposal.TwilightDepositAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(err, "invalid twilight deposit address %s", proposal.TwilightDepositAddress)
@@ -89,6 +90,18 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
+	}
+
+	// Update the reserve mapping with the new amount of coins
+	err = a.keeper.VoltKeeper.UpdateBtcReserve(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
+	if err != nil {
+		hash, _ := proposal.ProposalHash()
+		a.keeper.logger(ctx).Error("Could not update the reserve",
+			"cause", err.Error(),
+			"proposal type", proposal.GetType(),
+			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+		)
+		return sdkerrors.Wrapf(err, "could not update the reserve %s", proposal.ReserveAddress)
 	}
 
 	return err // returns nil if no error occurred`

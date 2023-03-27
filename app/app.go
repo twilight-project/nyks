@@ -402,8 +402,9 @@ func New(
 		&stakingKeeper,
 		&app.AccountKeeper,
 		&bankKeeper,
+		&app.VoltKeeper,
 	)
-	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper)
+	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
 
 	app.BridgeKeeper = *bridgemodulekeeper.NewKeeper(
 		appCodec,
