@@ -56,6 +56,12 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 	reserve.TotalValue = reserve.TotalValue + mintedValue
 	reserve.PublicValue = reserve.PublicValue + mintedValue
 
+	// Add twilightAddress to reserve.IndividualTwilightReserveAccount
+	reserve.IndividualTwilightReserveAccount = append(reserve.IndividualTwilightReserveAccount, &types.IndividualTwilightReserveAccount{
+		TwilightAddress: twilightAddress.String(),
+		BtcValue:        mintedValue,
+	})
+
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveAddress)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
