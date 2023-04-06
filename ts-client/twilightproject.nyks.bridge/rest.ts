@@ -46,7 +46,7 @@ export type BridgeMsgSignRefundResponse = object;
 
 export type BridgeMsgSweepProposalResponse = object;
 
-export type BridgeMsgWithdrawRequestResponse = object;
+export type BridgeMsgWithdrawBtcRequestResponse = object;
 
 export type BridgeMsgWithdrawTxFinalResponse = object;
 

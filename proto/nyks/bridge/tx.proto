@@ -16,7 +16,7 @@ service Msg {
   rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc WithdrawRequest    (MsgWithdrawRequest   ) returns (MsgWithdrawRequestResponse   );
+  rpc WithdrawBtcRequest    (MsgWithdrawBtcRequest   ) returns (MsgWithdrawBtcRequestResponse   );
   rpc SweepProposal      (MsgSweepProposal     ) returns (MsgSweepProposalResponse     );
   rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
   rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
@@ -64,15 +64,14 @@ message MsgRegisterJudge {
 message MsgRegisterJudgeResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message
-message MsgWithdrawRequest {
-  string creator         = 1;
-  string twilightAddress = 2;
-  string withdrawAddress = 3;
-  uint64 reserveId       = 4;
-  uint64 withdrawAmount  = 5;
+message MsgWithdrawBtcRequest {
+  string withdrawAddress = 1;
+  string reserveAddress  = 2;
+  uint64 withdrawAmount  = 3;
+  string twilightAddress = 4;
 }
 
-message MsgWithdrawRequestResponse {}
+message MsgWithdrawBtcRequestResponse {}
 
 message MsgSweepProposal {
            string                                                     creator                          =  1;

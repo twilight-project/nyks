@@ -186,34 +186,115 @@ func (m *EventRegisterJudgeAddress) GetValidatorAddress() string {
 	return ""
 }
 
+type EventWithdrawBtcRequest struct {
+	Message         string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	TwilightAddress string `protobuf:"bytes,2,opt,name=twilightAddress,proto3" json:"twilightAddress,omitempty"`
+	ReserveAddress  string `protobuf:"bytes,3,opt,name=reserveAddress,proto3" json:"reserveAddress,omitempty"`
+	WithdrawAddress string `protobuf:"bytes,4,opt,name=withdrawAddress,proto3" json:"withdrawAddress,omitempty"`
+	WithdrawAmount  uint64 `protobuf:"varint,5,opt,name=withdrawAmount,proto3" json:"withdrawAmount,omitempty"`
+}
+
+func (m *EventWithdrawBtcRequest) Reset()         { *m = EventWithdrawBtcRequest{} }
+func (m *EventWithdrawBtcRequest) String() string { return proto.CompactTextString(m) }
+func (*EventWithdrawBtcRequest) ProtoMessage()    {}
+func (*EventWithdrawBtcRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73850f14c9042236, []int{3}
+}
+func (m *EventWithdrawBtcRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventWithdrawBtcRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventWithdrawBtcRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventWithdrawBtcRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventWithdrawBtcRequest.Merge(m, src)
+}
+func (m *EventWithdrawBtcRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventWithdrawBtcRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventWithdrawBtcRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventWithdrawBtcRequest proto.InternalMessageInfo
+
+func (m *EventWithdrawBtcRequest) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *EventWithdrawBtcRequest) GetTwilightAddress() string {
+	if m != nil {
+		return m.TwilightAddress
+	}
+	return ""
+}
+
+func (m *EventWithdrawBtcRequest) GetReserveAddress() string {
+	if m != nil {
+		return m.ReserveAddress
+	}
+	return ""
+}
+
+func (m *EventWithdrawBtcRequest) GetWithdrawAddress() string {
+	if m != nil {
+		return m.WithdrawAddress
+	}
+	return ""
+}
+
+func (m *EventWithdrawBtcRequest) GetWithdrawAmount() uint64 {
+	if m != nil {
+		return m.WithdrawAmount
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*EventRegisterBtcDepositAddress)(nil), "twilightproject.nyks.bridge.EventRegisterBtcDepositAddress")
 	proto.RegisterType((*EventRegisterReserveScript)(nil), "twilightproject.nyks.bridge.EventRegisterReserveScript")
 	proto.RegisterType((*EventRegisterJudgeAddress)(nil), "twilightproject.nyks.bridge.EventRegisterJudgeAddress")
+	proto.RegisterType((*EventWithdrawBtcRequest)(nil), "twilightproject.nyks.bridge.EventWithdrawBtcRequest")
 }
 
 func init() { proto.RegisterFile("nyks/bridge/events.proto", fileDescriptor_73850f14c9042236) }
 
 var fileDescriptor_73850f14c9042236 = []byte{
-	// 274 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0xd1, 0xc1, 0x4a, 0xc3, 0x30,
-	0x18, 0x07, 0xf0, 0x46, 0x41, 0x31, 0xa8, 0x48, 0x4f, 0x55, 0x21, 0x48, 0x11, 0x11, 0xc1, 0xf6,
-	0xe0, 0x13, 0x38, 0xf4, 0xa0, 0xc7, 0x7a, 0x13, 0x2f, 0x6d, 0xf3, 0x91, 0x65, 0x6e, 0x4b, 0xc8,
-	0xf7, 0xad, 0xba, 0x07, 0xf0, 0xee, 0x63, 0x79, 0xdc, 0xd1, 0xa3, 0xb4, 0x2f, 0x22, 0xab, 0x2d,
-	0x2c, 0x0a, 0xee, 0x98, 0x3f, 0x3f, 0xfe, 0xf9, 0xe0, 0xcf, 0xa3, 0xe9, 0xfc, 0x19, 0xd3, 0xc2,
-	0x69, 0xa9, 0x20, 0x85, 0x0a, 0xa6, 0x84, 0x89, 0x75, 0x86, 0x4c, 0x78, 0x4c, 0x2f, 0x7a, 0xac,
-	0xd5, 0x90, 0xac, 0x33, 0x23, 0x28, 0x29, 0x59, 0xca, 0xe4, 0x47, 0xc6, 0x05, 0x17, 0xb7, 0x4b,
-	0x9c, 0x81, 0xd2, 0x48, 0xe0, 0x06, 0x54, 0xde, 0x80, 0x35, 0xa8, 0xe9, 0x5a, 0x4a, 0x07, 0x88,
-	0x61, 0xc4, 0xb7, 0x27, 0x80, 0x98, 0x2b, 0x88, 0xd8, 0x09, 0x3b, 0xdf, 0xc9, 0xfa, 0x67, 0x78,
-	0xc6, 0xf7, 0xa5, 0x67, 0xa3, 0x8d, 0x16, 0xfc, 0x4a, 0xe3, 0x27, 0x7e, 0xe4, 0xfd, 0x91, 0x01,
-	0x82, 0xab, 0xe0, 0xa1, 0x74, 0xda, 0xd2, 0x3f, 0xfd, 0xa7, 0x7c, 0xcf, 0xad, 0xd2, 0xae, 0xde,
-	0x0f, 0xe3, 0x37, 0xc6, 0x0f, 0xbd, 0xfa, 0xfb, 0x99, 0x54, 0xb0, 0xfe, 0xfa, 0x98, 0xef, 0x8e,
-	0x56, 0x64, 0x57, 0xee, 0x65, 0xe1, 0x05, 0x3f, 0xa8, 0xf2, 0xb1, 0x96, 0x39, 0x19, 0xd7, 0xbb,
-	0xcd, 0xd6, 0xfd, 0xc9, 0x07, 0x77, 0x1f, 0xb5, 0x60, 0x8b, 0x5a, 0xb0, 0xaf, 0x5a, 0xb0, 0xf7,
-	0x46, 0x04, 0x8b, 0x46, 0x04, 0x9f, 0x8d, 0x08, 0x1e, 0x53, 0xa5, 0x69, 0x38, 0x2b, 0x92, 0xd2,
-	0x4c, 0xd2, 0x7e, 0x8b, 0xcb, 0x6e, 0x8c, 0xb4, 0x9d, 0xed, 0xb5, 0x1f, 0x8e, 0xe6, 0x16, 0xb0,
-	0xd8, 0x6a, 0x87, 0xbb, 0xfa, 0x0e, 0x00, 0x00, 0xff, 0xff, 0xb3, 0xc4, 0x69, 0x64, 0xd4, 0x01,
-	0x00, 0x00,
+	// 340 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcd, 0x4a, 0xc3, 0x40,
+	0x14, 0x85, 0x3b, 0x5a, 0x15, 0x07, 0xff, 0xc8, 0xc6, 0xa8, 0x30, 0x94, 0x20, 0x52, 0x04, 0x93,
+	0x85, 0x4f, 0x60, 0xd1, 0x85, 0x2e, 0xe3, 0x42, 0x10, 0x37, 0x49, 0xe6, 0x92, 0x4e, 0x6d, 0x3b,
+	0x71, 0xe6, 0xa6, 0xb5, 0x0f, 0xe0, 0xde, 0xc7, 0x72, 0xd9, 0x9d, 0x2e, 0xa5, 0x7d, 0x11, 0x49,
+	0x9a, 0x91, 0x4e, 0x84, 0xba, 0xcc, 0xc7, 0xc7, 0xc9, 0xb9, 0xc9, 0xa1, 0xee, 0x70, 0xf2, 0xac,
+	0x83, 0x58, 0x09, 0x9e, 0x42, 0x00, 0x23, 0x18, 0xa2, 0xf6, 0x33, 0x25, 0x51, 0x3a, 0x27, 0x38,
+	0x16, 0x7d, 0x91, 0x76, 0x31, 0x53, 0xb2, 0x07, 0x09, 0xfa, 0x85, 0xe9, 0x2f, 0x4c, 0x2f, 0xa6,
+	0xec, 0xa6, 0x90, 0x43, 0x48, 0x85, 0x46, 0x50, 0x1d, 0x4c, 0xae, 0x21, 0x93, 0x5a, 0xe0, 0x15,
+	0xe7, 0x0a, 0xb4, 0x76, 0x5c, 0xba, 0x35, 0x00, 0xad, 0xa3, 0x14, 0x5c, 0xd2, 0x22, 0xed, 0xed,
+	0xd0, 0x3c, 0x3a, 0x67, 0x74, 0x8f, 0x5b, 0xae, 0xbb, 0x56, 0x0a, 0x35, 0xea, 0x3d, 0xd1, 0x63,
+	0xeb, 0x1d, 0x21, 0x68, 0x50, 0x23, 0xb8, 0x4f, 0x94, 0xc8, 0x70, 0x45, 0xfe, 0x29, 0xdd, 0x55,
+	0xcb, 0x6a, 0x15, 0x6f, 0x43, 0xef, 0x8d, 0xd0, 0x23, 0x2b, 0xfe, 0x2e, 0xe7, 0x29, 0xfc, 0xdf,
+	0xde, 0xa3, 0x3b, 0xbd, 0x25, 0xb3, 0x0a, 0xb7, 0x98, 0x73, 0x4e, 0x0f, 0x46, 0x51, 0x5f, 0xf0,
+	0x08, 0xa5, 0x32, 0xde, 0x7a, 0xe9, 0xfd, 0xe1, 0xde, 0x27, 0xa1, 0x87, 0x65, 0x8f, 0x07, 0x81,
+	0x5d, 0xae, 0xa2, 0x71, 0x07, 0x93, 0x10, 0x5e, 0x72, 0xd0, 0xab, 0x6e, 0x6c, 0xd3, 0x7d, 0xf3,
+	0x7b, 0xec, 0x22, 0x75, 0x5c, 0x7c, 0xed, 0xea, 0x70, 0xbb, 0x49, 0x8d, 0x16, 0x89, 0xe3, 0xaa,
+	0x81, 0x11, 0x9b, 0x8b, 0xc4, 0x1a, 0x2e, 0x12, 0x7f, 0xd1, 0x40, 0xe6, 0x43, 0x74, 0x37, 0x5a,
+	0xa4, 0xdd, 0x0c, 0x6b, 0xb4, 0x73, 0xfb, 0x31, 0x63, 0x64, 0x3a, 0x63, 0xe4, 0x7b, 0xc6, 0xc8,
+	0xfb, 0x9c, 0x35, 0xa6, 0x73, 0xd6, 0xf8, 0x9a, 0xb3, 0xc6, 0x63, 0x90, 0x0a, 0xec, 0xe6, 0xb1,
+	0x9f, 0xc8, 0x41, 0x60, 0xfa, 0x5e, 0x54, 0x33, 0x0b, 0xca, 0x41, 0xbe, 0x9a, 0x49, 0xe2, 0x24,
+	0x03, 0x1d, 0x6f, 0x96, 0x93, 0xbc, 0xfc, 0x09, 0x00, 0x00, 0xff, 0xff, 0xe5, 0x32, 0x9e, 0xce,
+	0xae, 0x02, 0x00, 0x00,
 }
 
 func (m *EventRegisterBtcDepositAddress) Marshal() (dAtA []byte, err error) {
@@ -334,6 +415,62 @@ func (m *EventRegisterJudgeAddress) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *EventWithdrawBtcRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventWithdrawBtcRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventWithdrawBtcRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.WithdrawAmount != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.WithdrawAmount))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.WithdrawAddress) > 0 {
+		i -= len(m.WithdrawAddress)
+		copy(dAtA[i:], m.WithdrawAddress)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.WithdrawAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ReserveAddress) > 0 {
+		i -= len(m.ReserveAddress)
+		copy(dAtA[i:], m.ReserveAddress)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.ReserveAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.TwilightAddress) > 0 {
+		i -= len(m.TwilightAddress)
+		copy(dAtA[i:], m.TwilightAddress)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.TwilightAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	offset -= sovEvents(v)
 	base := offset
@@ -396,6 +533,34 @@ func (m *EventRegisterJudgeAddress) Size() (n int) {
 	l = len(m.ValidatorAddress)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
+	}
+	return n
+}
+
+func (m *EventWithdrawBtcRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.TwilightAddress)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.ReserveAddress)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.WithdrawAddress)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.WithdrawAmount != 0 {
+		n += 1 + sovEvents(uint64(m.WithdrawAmount))
 	}
 	return n
 }
@@ -759,6 +924,203 @@ func (m *EventRegisterJudgeAddress) Unmarshal(dAtA []byte) error {
 			}
 			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventWithdrawBtcRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventWithdrawBtcRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventWithdrawBtcRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TwilightAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TwilightAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReserveAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.WithdrawAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawAmount", wireType)
+			}
+			m.WithdrawAmount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.WithdrawAmount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvents(dAtA[iNdEx:])

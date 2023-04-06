@@ -5,43 +5,42 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgWithdrawRequest = "withdraw_request"
+const TypeMsgWithdrawBtcRequest = "withdraw_request"
 
-var _ sdk.Msg = &MsgWithdrawRequest{}
+var _ sdk.Msg = &MsgWithdrawBtcRequest{}
 
-func NewMsgWithdrawRequest(creator string, twilightAddress string, withdrawAddress string, reserveId uint64, withdrawAmount uint64) *MsgWithdrawRequest {
-	return &MsgWithdrawRequest{
-		Creator:         creator,
-		TwilightAddress: twilightAddress,
+func NewMsgWithdrawBtcRequest(withdrawAddress string, reserveAddress string, withdrawAmount uint64, twilightAddress string) *MsgWithdrawBtcRequest {
+	return &MsgWithdrawBtcRequest{
 		WithdrawAddress: withdrawAddress,
-		ReserveId:       reserveId,
+		ReserveAddress:  reserveAddress,
 		WithdrawAmount:  withdrawAmount,
+		TwilightAddress: twilightAddress,
 	}
 }
 
-func (msg *MsgWithdrawRequest) Route() string {
+func (msg *MsgWithdrawBtcRequest) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgWithdrawRequest) Type() string {
-	return TypeMsgWithdrawRequest
+func (msg *MsgWithdrawBtcRequest) Type() string {
+	return TypeMsgWithdrawBtcRequest
 }
 
-func (msg *MsgWithdrawRequest) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+func (msg *MsgWithdrawBtcRequest) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if err != nil {
 		panic(err)
 	}
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgWithdrawRequest) GetSignBytes() []byte {
+func (msg *MsgWithdrawBtcRequest) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgWithdrawRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+func (msg *MsgWithdrawBtcRequest) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

@@ -47,7 +47,7 @@ export interface MsgRegisterJudgeResponse {
 }
 
 /** this line is used by starport scaffolding # proto/tx/message */
-export interface MsgWithdrawRequest {
+export interface MsgWithdrawBtcRequest {
   creator: string;
   twilightAddress: string;
   withdrawAddress: string;
@@ -55,7 +55,7 @@ export interface MsgWithdrawRequest {
   withdrawAmount: number;
 }
 
-export interface MsgWithdrawRequestResponse {
+export interface MsgWithdrawBtcRequestResponse {
 }
 
 export interface MsgSweepProposal {
@@ -605,12 +605,12 @@ export const MsgRegisterJudgeResponse = {
   },
 };
 
-function createBaseMsgWithdrawRequest(): MsgWithdrawRequest {
+function createBaseMsgWithdrawBtcRequest(): MsgWithdrawBtcRequest {
   return { creator: "", twilightAddress: "", withdrawAddress: "", reserveId: 0, withdrawAmount: 0 };
 }
 
-export const MsgWithdrawRequest = {
-  encode(message: MsgWithdrawRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgWithdrawBtcRequest = {
+  encode(message: MsgWithdrawBtcRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -629,10 +629,10 @@ export const MsgWithdrawRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawBtcRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgWithdrawRequest();
+    const message = createBaseMsgWithdrawBtcRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -659,7 +659,7 @@ export const MsgWithdrawRequest = {
     return message;
   },
 
-  fromJSON(object: any): MsgWithdrawRequest {
+  fromJSON(object: any): MsgWithdrawBtcRequest {
     return {
       creator: isSet(object.creator) ? String(object.creator) : "",
       twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
@@ -669,7 +669,7 @@ export const MsgWithdrawRequest = {
     };
   },
 
-  toJSON(message: MsgWithdrawRequest): unknown {
+  toJSON(message: MsgWithdrawBtcRequest): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
@@ -679,8 +679,8 @@ export const MsgWithdrawRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgWithdrawRequest>, I>>(object: I): MsgWithdrawRequest {
-    const message = createBaseMsgWithdrawRequest();
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawBtcRequest>, I>>(object: I): MsgWithdrawBtcRequest {
+    const message = createBaseMsgWithdrawBtcRequest();
     message.creator = object.creator ?? "";
     message.twilightAddress = object.twilightAddress ?? "";
     message.withdrawAddress = object.withdrawAddress ?? "";
@@ -690,19 +690,19 @@ export const MsgWithdrawRequest = {
   },
 };
 
-function createBaseMsgWithdrawRequestResponse(): MsgWithdrawRequestResponse {
+function createBaseMsgWithdrawBtcRequestResponse(): MsgWithdrawBtcRequestResponse {
   return {};
 }
 
-export const MsgWithdrawRequestResponse = {
-  encode(_: MsgWithdrawRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgWithdrawBtcRequestResponse = {
+  encode(_: MsgWithdrawBtcRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawRequestResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawBtcRequestResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgWithdrawRequestResponse();
+    const message = createBaseMsgWithdrawBtcRequestResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -714,17 +714,17 @@ export const MsgWithdrawRequestResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgWithdrawRequestResponse {
+  fromJSON(_: any): MsgWithdrawBtcRequestResponse {
     return {};
   },
 
-  toJSON(_: MsgWithdrawRequestResponse): unknown {
+  toJSON(_: MsgWithdrawBtcRequestResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgWithdrawRequestResponse>, I>>(_: I): MsgWithdrawRequestResponse {
-    const message = createBaseMsgWithdrawRequestResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawBtcRequestResponse>, I>>(_: I): MsgWithdrawBtcRequestResponse {
+    const message = createBaseMsgWithdrawBtcRequestResponse();
     return message;
   },
 };
@@ -1505,7 +1505,7 @@ export interface Msg {
   RegisterReserveAddress(request: MsgRegisterReserveAddress): Promise<MsgRegisterReserveAddressResponse>;
   RegisterJudge(request: MsgRegisterJudge): Promise<MsgRegisterJudgeResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  WithdrawRequest(request: MsgWithdrawRequest): Promise<MsgWithdrawRequestResponse>;
+  WithdrawRequest(request: MsgWithdrawBtcRequest): Promise<MsgWithdrawBtcRequestResponse>;
   SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse>;
   WithdrawTxSigned(request: MsgWithdrawTxSigned): Promise<MsgWithdrawTxSignedResponse>;
   WithdrawTxFinal(request: MsgWithdrawTxFinal): Promise<MsgWithdrawTxFinalResponse>;
@@ -1554,10 +1554,10 @@ export class MsgClientImpl implements Msg {
     return promise.then((data) => MsgRegisterJudgeResponse.decode(new _m0.Reader(data)));
   }
 
-  WithdrawRequest(request: MsgWithdrawRequest): Promise<MsgWithdrawRequestResponse> {
-    const data = MsgWithdrawRequest.encode(request).finish();
+  WithdrawRequest(request: MsgWithdrawBtcRequest): Promise<MsgWithdrawBtcRequestResponse> {
+    const data = MsgWithdrawBtcRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "WithdrawRequest", data);
-    return promise.then((data) => MsgWithdrawRequestResponse.decode(new _m0.Reader(data)));
+    return promise.then((data) => MsgWithdrawBtcRequestResponse.decode(new _m0.Reader(data)));
   }
 
   SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse> {

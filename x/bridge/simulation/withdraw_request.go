@@ -10,7 +10,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func SimulateMsgWithdrawRequest(
+func SimulateMsgWithdrawBtcRequest(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,8 +18,8 @@ func SimulateMsgWithdrawRequest(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgWithdrawRequest{
-			Creator: simAccount.Address.String(),
+		msg := &types.MsgWithdrawBtcRequest{
+			TwilightAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the WithdrawRequest simulation

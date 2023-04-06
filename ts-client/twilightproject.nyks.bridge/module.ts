@@ -10,7 +10,7 @@ import { Api } from "./rest";
 import { MsgWithdrawTxFinal } from "./types/nyks/bridge/tx";
 import { MsgBroadcastRefund } from "./types/nyks/bridge/tx";
 import { MsgSignRefund } from "./types/nyks/bridge/tx";
-import { MsgWithdrawRequest } from "./types/nyks/bridge/tx";
+import { MsgWithdrawBtcRequest } from "./types/nyks/bridge/tx";
 import { MsgWithdrawTxSigned } from "./types/nyks/bridge/tx";
 import { MsgSweepProposal } from "./types/nyks/bridge/tx";
 import { MsgRegisterJudge } from "./types/nyks/bridge/tx";
@@ -24,7 +24,7 @@ import { EventRegisterReserveScript as typeEventRegisterReserveScript} from "./t
 import { EventRegisterJudgeAddress as typeEventRegisterJudgeAddress} from "./types"
 import { Params as typeParams} from "./types"
 
-export { MsgWithdrawTxFinal, MsgBroadcastRefund, MsgSignRefund, MsgWithdrawRequest, MsgWithdrawTxSigned, MsgSweepProposal, MsgRegisterJudge, MsgRegisterBtcDepositAddress, MsgRegisterReserveAddress, MsgConfirmBtcDeposit, MsgConfirmBtcWithdraw };
+export { MsgWithdrawTxFinal, MsgBroadcastRefund, MsgSignRefund, MsgWithdrawBtcRequest, MsgWithdrawTxSigned, MsgSweepProposal, MsgRegisterJudge, MsgRegisterBtcDepositAddress, MsgRegisterReserveAddress, MsgConfirmBtcDeposit, MsgConfirmBtcWithdraw };
 
 type sendMsgWithdrawTxFinalParams = {
   value: MsgWithdrawTxFinal,
@@ -44,8 +44,8 @@ type sendMsgSignRefundParams = {
   memo?: string
 };
 
-type sendMsgWithdrawRequestParams = {
-  value: MsgWithdrawRequest,
+type sendMsgWithdrawBtcRequestParams = {
+  value: MsgWithdrawBtcRequest,
   fee?: StdFee,
   memo?: string
 };
@@ -105,8 +105,8 @@ type msgSignRefundParams = {
   value: MsgSignRefund,
 };
 
-type msgWithdrawRequestParams = {
-  value: MsgWithdrawRequest,
+type MsgWithdrawBtcRequestParams = {
+  value: MsgWithdrawBtcRequest,
 };
 
 type msgWithdrawTxSignedParams = {
@@ -209,17 +209,17 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgWithdrawRequest({ value, fee, memo }: sendMsgWithdrawRequestParams): Promise<DeliverTxResponse> {
+		async sendMsgWithdrawBtcRequest({ value, fee, memo }: sendMsgWithdrawBtcRequestParams): Promise<DeliverTxResponse> {
 			if (!signer) {
-					throw new Error('TxClient:sendMsgWithdrawRequest: Unable to sign Tx. Signer is not present.')
+					throw new Error('TxClient:sendMsgWithdrawBtcRequest: Unable to sign Tx. Signer is not present.')
 			}
 			try {			
 				const { address } = (await signer.getAccounts())[0]; 
 				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgWithdrawRequest({ value: MsgWithdrawRequest.fromPartial(value) })
+				let msg = this.MsgWithdrawBtcRequest({ value: MsgWithdrawBtcRequest.fromPartial(value) })
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:sendMsgWithdrawRequest: Could not broadcast Tx: '+ e.message)
+				throw new Error('TxClient:sendMsgWithdrawBtcRequest: Could not broadcast Tx: '+ e.message)
 			}
 		},
 		
@@ -346,11 +346,11 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		msgWithdrawRequest({ value }: msgWithdrawRequestParams): EncodeObject {
+		MsgWithdrawBtcRequest({ value }: MsgWithdrawBtcRequestParams): EncodeObject {
 			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgWithdrawRequest", value: MsgWithdrawRequest.fromPartial( value ) }  
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgWithdrawBtcRequest", value: MsgWithdrawBtcRequest.fromPartial( value ) }  
 			} catch (e: any) {
-				throw new Error('TxClient:MsgWithdrawRequest: Could not create message: ' + e.message)
+				throw new Error('TxClient:MsgWithdrawBtcRequest: Could not create message: ' + e.message)
 			}
 		},
 		

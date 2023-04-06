@@ -20,3 +20,11 @@ message EventRegisterJudgeAddress {
     string judgeAddress = 2;
     string validatorAddress = 3;
 }
+
+message EventWithdrawBtcRequest {
+    string message = 1;
+    string twilightAddress = 2;
+    string reserveAddress = 3;
+    string withdrawAddress = 4;
+    uint64 withdrawAmount = 5;
+}
