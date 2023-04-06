@@ -1,5 +1,7 @@
 syntax = "proto3";
+
 package twilightproject.nyks.bridge;
+import "nyks/volt/reserve.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -7,21 +9,23 @@ option go_package = "github.com/twilight-project/nyks/x/bridge/types";
 
 // Msg defines the Msg service.
 service Msg {
-      rpc ConfirmBtcDeposit(MsgConfirmBtcDeposit) returns (MsgConfirmBtcDepositResponse);
-  rpc RegisterBtcDepositAddress(MsgRegisterBtcDepositAddress) returns (MsgRegisterBtcDepositAddressResponse);
-  rpc RegisterReserveAddress(MsgRegisterReserveAddress) returns (MsgRegisterReserveAddressResponse);
-  rpc RegisterJudge (MsgRegisterJudge) returns (MsgRegisterJudgeResponse);
-// this line is used by starport scaffolding # proto/tx/rpc
+  rpc ConfirmBtcDeposit         (MsgConfirmBtcDeposit        ) returns (MsgConfirmBtcDepositResponse        );
+  rpc RegisterBtcDepositAddress (MsgRegisterBtcDepositAddress) returns (MsgRegisterBtcDepositAddressResponse);
+  rpc RegisterReserveAddress    (MsgRegisterReserveAddress   ) returns (MsgRegisterReserveAddressResponse   );
+  rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
+  
+  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc WithdrawRequest (MsgWithdrawRequest) returns (MsgWithdrawRequestResponse);
+  rpc SweepProposal   (MsgSweepProposal  ) returns (MsgSweepProposalResponse  );
 }
-
 message MsgConfirmBtcDeposit {
-  string depositAddress = 1;
-  uint64 depositAmount = 2;
-  uint64 height = 3;
-  string hash = 4;
+  string depositAddress         = 1;
+  uint64 depositAmount          = 2;
+  uint64 height                 = 3;
+  string hash                   = 4;
   string twilightDepositAddress = 5;
-  string reserveAddress = 6;
-  string oracleAddress = 7;
+  string reserveAddress         = 6;
+  string oracleAddress          = 7;
 }
 
 message MsgConfirmBtcDepositResponse {
@@ -29,17 +33,16 @@ message MsgConfirmBtcDepositResponse {
 }
 
 message MsgRegisterBtcDepositAddress {
-  string depositAddress = 1;
+  string depositAddress         = 1;
   string twilightDepositAddress = 2;
 }
 
-message MsgRegisterBtcDepositAddressResponse {
-}
+message MsgRegisterBtcDepositAddressResponse {}
 
 message MsgRegisterReserveAddress {
-  string reserveScript = 1;
+  string reserveScript  = 1;
   string reserveAddress = 2;
-  string judgeAddress = 3;
+  string judgeAddress   = 3;
 }
 
 message MsgRegisterReserveAddressResponse {
@@ -55,3 +58,30 @@ message MsgRegisterJudge {
 message MsgRegisterJudgeResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message
+message MsgWithdrawRequest {
+  string creator         = 1;
+  string twilightAddress = 2;
+  string withdrawAddress = 3;
+  uint64 reserveId       = 4;
+  uint64 withdrawAmount  = 5;
+}
+
+message MsgWithdrawRequestResponse {}
+
+message MsgSweepProposal {
+  string creator                          =  1;
+  uint64  reserveId                        =  2;
+  string reserveAddress                   =  3;
+  string judgeAddress                     =  4;
+  uint64  btcRelayCapacityValue            =  5;
+  uint64  totalValue                       =  6;
+  uint64  privatePoolValue                 =  7;
+  uint64  publicValue                      =  8;
+  uint64  feePool                          =  9;
+  repeated twilightproject.nyks.volt.IndividualTwilightReserveAccount individualTwilightReserveAccount = 10;
+  string btcRefundTx                      = 11;
+  string btcSweepTx                       = 12;
+}
+
+message MsgSweepProposalResponse {}
+

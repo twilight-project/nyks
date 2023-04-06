@@ -21,7 +21,7 @@ export interface IndividualTwilightReserveAccount {
 export interface BtcReserve {
   ReserveId: number;
   ReserveAddress: string;
-  ValidatorAddress: string;
+  JudgeAddress: string;
   BtcRelayCapacityValue: number;
   TotalValue: number;
   PrivatePoolValue: number;
@@ -94,7 +94,7 @@ function createBaseBtcReserve(): BtcReserve {
   return {
     ReserveId: 0,
     ReserveAddress: "",
-    ValidatorAddress: "",
+    JudgeAddress: "",
     BtcRelayCapacityValue: 0,
     TotalValue: 0,
     PrivatePoolValue: 0,
@@ -112,8 +112,8 @@ export const BtcReserve = {
     if (message.ReserveAddress !== "") {
       writer.uint32(18).string(message.ReserveAddress);
     }
-    if (message.ValidatorAddress !== "") {
-      writer.uint32(26).string(message.ValidatorAddress);
+    if (message.JudgeAddress !== "") {
+      writer.uint32(26).string(message.JudgeAddress);
     }
     if (message.BtcRelayCapacityValue !== 0) {
       writer.uint32(32).uint64(message.BtcRelayCapacityValue);
@@ -150,7 +150,7 @@ export const BtcReserve = {
           message.ReserveAddress = reader.string();
           break;
         case 3:
-          message.ValidatorAddress = reader.string();
+          message.JudgeAddress = reader.string();
           break;
         case 4:
           message.BtcRelayCapacityValue = longToNumber(reader.uint64() as Long);
@@ -184,7 +184,7 @@ export const BtcReserve = {
     return {
       ReserveId: isSet(object.ReserveId) ? Number(object.ReserveId) : 0,
       ReserveAddress: isSet(object.ReserveAddress) ? String(object.ReserveAddress) : "",
-      ValidatorAddress: isSet(object.ValidatorAddress) ? String(object.ValidatorAddress) : "",
+      JudgeAddress: isSet(object.JudgeAddress) ? String(object.JudgeAddress) : "",
       BtcRelayCapacityValue: isSet(object.BtcRelayCapacityValue) ? Number(object.BtcRelayCapacityValue) : 0,
       TotalValue: isSet(object.TotalValue) ? Number(object.TotalValue) : 0,
       PrivatePoolValue: isSet(object.PrivatePoolValue) ? Number(object.PrivatePoolValue) : 0,
@@ -200,7 +200,7 @@ export const BtcReserve = {
     const obj: any = {};
     message.ReserveId !== undefined && (obj.ReserveId = Math.round(message.ReserveId));
     message.ReserveAddress !== undefined && (obj.ReserveAddress = message.ReserveAddress);
-    message.ValidatorAddress !== undefined && (obj.ValidatorAddress = message.ValidatorAddress);
+    message.JudgeAddress !== undefined && (obj.JudgeAddress = message.JudgeAddress);
     message.BtcRelayCapacityValue !== undefined
       && (obj.BtcRelayCapacityValue = Math.round(message.BtcRelayCapacityValue));
     message.TotalValue !== undefined && (obj.TotalValue = Math.round(message.TotalValue));
@@ -221,7 +221,7 @@ export const BtcReserve = {
     const message = createBaseBtcReserve();
     message.ReserveId = object.ReserveId ?? 0;
     message.ReserveAddress = object.ReserveAddress ?? "";
-    message.ValidatorAddress = object.ValidatorAddress ?? "";
+    message.JudgeAddress = object.JudgeAddress ?? "";
     message.BtcRelayCapacityValue = object.BtcRelayCapacityValue ?? 0;
     message.TotalValue = object.TotalValue ?? 0;
     message.PrivatePoolValue = object.PrivatePoolValue ?? 0;

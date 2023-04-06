@@ -28656,7 +28656,7 @@ paths:
                       format: uint64
                     ReserveAddress:
                       type: string
-                    ValidatorAddress:
+                    JudgeAddress:
                       type: string
                     BtcRelayCapacityValue:
                       type: string
@@ -47516,6 +47516,10 @@ definitions:
     properties:
       reserveAddress:
         type: string
+  twilightproject.nyks.bridge.MsgSweepProposalResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgWithdrawRequestResponse:
+    type: object
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -47589,6 +47593,19 @@ definitions:
               type: string
             judgeAddress:
               type: string
+  twilightproject.nyks.volt.IndividualTwilightReserveAccount:
+    type: object
+    properties:
+      TwilightAddress:
+        type: string
+      BtcValue:
+        type: string
+        format: uint64
+    title: >-
+      IndividualTwilightReserveAccount is used to keep a mapping of how much btc
+      an individual
+
+      twilight address has in the reserve
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:
@@ -48049,7 +48066,7 @@ definitions:
         format: uint64
       ReserveAddress:
         type: string
-      ValidatorAddress:
+      JudgeAddress:
         type: string
       BtcRelayCapacityValue:
         type: string
@@ -48088,19 +48105,6 @@ definitions:
 
       value, private pool value, public pool value, and the btc relay capacity
       value
-  twilightproject.nyks.volt.IndividualTwilightReserveAccount:
-    type: object
-    properties:
-      TwilightAddress:
-        type: string
-      BtcValue:
-        type: string
-        format: uint64
-    title: >-
-      IndividualTwilightReserveAccount is used to keep a mapping of how much btc
-      an individual
-
-      twilight address has in the reserve
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -48117,7 +48121,7 @@ definitions:
               format: uint64
             ReserveAddress:
               type: string
-            ValidatorAddress:
+            JudgeAddress:
               type: string
             BtcRelayCapacityValue:
               type: string

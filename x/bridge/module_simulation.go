@@ -40,6 +40,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgRegisterJudge int = 100
 
+	opWeightMsgWithdrawRequest = "op_weight_msg_withdraw_request"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawRequest int = 100
+
+	opWeightMsgSweepProposal = "op_weight_msg_sweep_proposal"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSweepProposal int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -116,6 +124,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgRegisterJudge,
 		bridgesimulation.SimulateMsgRegisterJudge(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgWithdrawRequest int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawRequest, &weightMsgWithdrawRequest, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawRequest = defaultWeightMsgWithdrawRequest
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgWithdrawRequest,
+		bridgesimulation.SimulateMsgWithdrawRequest(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgSweepProposal int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSweepProposal, &weightMsgSweepProposal, nil,
+		func(_ *rand.Rand) {
+			weightMsgSweepProposal = defaultWeightMsgSweepProposal
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSweepProposal,
+		bridgesimulation.SimulateMsgSweepProposal(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

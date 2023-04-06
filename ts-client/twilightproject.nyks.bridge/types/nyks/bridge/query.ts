@@ -1,7 +1,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { MsgRegisterBtcDepositAddress, MsgRegisterReserveAddress } from "./tx";
+import { MsgRegisterBtcDepositAddress, MsgRegisterJudge, MsgRegisterReserveAddress } from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.bridge";
 
@@ -49,16 +49,20 @@ export interface QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryRegisteredJudgeAddressByValidatorAddressRequest {
-  judgeAddress: string;
+  validatorAddress: string;
 }
 
 export interface QueryRegisteredJudgeAddressByValidatorAddressResponse {
+  creator: string;
+  judgeAddress: string;
+  validatorAddress: string;
 }
 
 export interface QueryRegisteredJudgesRequest {
 }
 
 export interface QueryRegisteredJudgesResponse {
+  Judges: MsgRegisterJudge[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -572,7 +576,7 @@ export const QueryRegisteredBtcDepositAddressByTwilightAddressResponse = {
 };
 
 function createBaseQueryRegisteredJudgeAddressByValidatorAddressRequest(): QueryRegisteredJudgeAddressByValidatorAddressRequest {
-  return { judgeAddress: "" };
+  return { validatorAddress: "" };
 }
 
 export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
@@ -580,8 +584,8 @@ export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
     message: QueryRegisteredJudgeAddressByValidatorAddressRequest,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.judgeAddress !== "") {
-      writer.uint32(10).string(message.judgeAddress);
+    if (message.validatorAddress !== "") {
+      writer.uint32(10).string(message.validatorAddress);
     }
     return writer;
   },
@@ -594,7 +598,7 @@ export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.judgeAddress = reader.string();
+          message.validatorAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -605,12 +609,12 @@ export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
   },
 
   fromJSON(object: any): QueryRegisteredJudgeAddressByValidatorAddressRequest {
-    return { judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "" };
+    return { validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "" };
   },
 
   toJSON(message: QueryRegisteredJudgeAddressByValidatorAddressRequest): unknown {
     const obj: any = {};
-    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
 
@@ -618,20 +622,29 @@ export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
     object: I,
   ): QueryRegisteredJudgeAddressByValidatorAddressRequest {
     const message = createBaseQueryRegisteredJudgeAddressByValidatorAddressRequest();
-    message.judgeAddress = object.judgeAddress ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
 
 function createBaseQueryRegisteredJudgeAddressByValidatorAddressResponse(): QueryRegisteredJudgeAddressByValidatorAddressResponse {
-  return {};
+  return { creator: "", judgeAddress: "", validatorAddress: "" };
 }
 
 export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
   encode(
-    _: QueryRegisteredJudgeAddressByValidatorAddressResponse,
+    message: QueryRegisteredJudgeAddressByValidatorAddressResponse,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
+    }
+    if (message.validatorAddress !== "") {
+      writer.uint32(26).string(message.validatorAddress);
+    }
     return writer;
   },
 
@@ -642,6 +655,15 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
+        case 3:
+          message.validatorAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -650,19 +672,29 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryRegisteredJudgeAddressByValidatorAddressResponse {
-    return {};
+  fromJSON(object: any): QueryRegisteredJudgeAddressByValidatorAddressResponse {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+    };
   },
 
-  toJSON(_: QueryRegisteredJudgeAddressByValidatorAddressResponse): unknown {
+  toJSON(message: QueryRegisteredJudgeAddressByValidatorAddressResponse): unknown {
     const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryRegisteredJudgeAddressByValidatorAddressResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryRegisteredJudgeAddressByValidatorAddressResponse {
     const message = createBaseQueryRegisteredJudgeAddressByValidatorAddressResponse();
+    message.creator = object.creator ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -707,11 +739,14 @@ export const QueryRegisteredJudgesRequest = {
 };
 
 function createBaseQueryRegisteredJudgesResponse(): QueryRegisteredJudgesResponse {
-  return {};
+  return { Judges: [] };
 }
 
 export const QueryRegisteredJudgesResponse = {
-  encode(_: QueryRegisteredJudgesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryRegisteredJudgesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.Judges) {
+      MsgRegisterJudge.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -722,6 +757,9 @@ export const QueryRegisteredJudgesResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.Judges.push(MsgRegisterJudge.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -730,17 +768,25 @@ export const QueryRegisteredJudgesResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryRegisteredJudgesResponse {
-    return {};
+  fromJSON(object: any): QueryRegisteredJudgesResponse {
+    return { Judges: Array.isArray(object?.Judges) ? object.Judges.map((e: any) => MsgRegisterJudge.fromJSON(e)) : [] };
   },
 
-  toJSON(_: QueryRegisteredJudgesResponse): unknown {
+  toJSON(message: QueryRegisteredJudgesResponse): unknown {
     const obj: any = {};
+    if (message.Judges) {
+      obj.Judges = message.Judges.map((e) => e ? MsgRegisterJudge.toJSON(e) : undefined);
+    } else {
+      obj.Judges = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryRegisteredJudgesResponse>, I>>(_: I): QueryRegisteredJudgesResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryRegisteredJudgesResponse>, I>>(
+    object: I,
+  ): QueryRegisteredJudgesResponse {
     const message = createBaseQueryRegisteredJudgesResponse();
+    message.Judges = object.Judges?.map((e) => MsgRegisterJudge.fromPartial(e)) || [];
     return message;
   },
 };

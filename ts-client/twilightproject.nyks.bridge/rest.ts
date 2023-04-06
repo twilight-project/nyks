@@ -20,6 +20,12 @@ export interface BridgeMsgRegisterBtcDepositAddress {
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
+export interface BridgeMsgRegisterJudge {
+  creator?: string;
+  judgeAddress?: string;
+  validatorAddress?: string;
+}
+
 export type BridgeMsgRegisterJudgeResponse = object;
 
 export interface BridgeMsgRegisterReserveAddress {
@@ -31,6 +37,10 @@ export interface BridgeMsgRegisterReserveAddress {
 export interface BridgeMsgRegisterReserveAddressResponse {
   reserveAddress?: string;
 }
+
+export type BridgeMsgSweepProposalResponse = object;
+
+export type BridgeMsgWithdrawRequestResponse = object;
 
 /**
  * Params defines the parameters for the module.
@@ -59,9 +69,15 @@ export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
   addresses?: BridgeMsgRegisterBtcDepositAddress[];
 }
 
-export type BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse = object;
+export interface BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse {
+  creator?: string;
+  judgeAddress?: string;
+  validatorAddress?: string;
+}
 
-export type BridgeQueryRegisteredJudgesResponse = object;
+export interface BridgeQueryRegisteredJudgesResponse {
+  Judges?: BridgeMsgRegisterJudge[];
+}
 
 export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
@@ -273,11 +289,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryRegisteredJudgeAddressByValidatorAddress
    * @summary Queries a list of RegisteredJudgeAddressByValidatorAddress items.
-   * @request GET:/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/{judgeAddress}
+   * @request GET:/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/{validatorAddress}
    */
-  queryRegisteredJudgeAddressByValidatorAddress = (judgeAddress: string, params: RequestParams = {}) =>
+  queryRegisteredJudgeAddressByValidatorAddress = (validatorAddress: string, params: RequestParams = {}) =>
     this.request<BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse, RpcStatus>({
-      path: `/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/${judgeAddress}`,
+      path: `/twilight-project/nyks/bridge/registered_judge_address_by_validator_address/${validatorAddress}`,
       method: "GET",
       format: "json",
       ...params,

@@ -24,7 +24,7 @@ export interface VoltBtcReserve {
   /** @format uint64 */
   ReserveId?: string;
   ReserveAddress?: string;
-  ValidatorAddress?: string;
+  JudgeAddress?: string;
 
   /** @format uint64 */
   BtcRelayCapacityValue?: string;

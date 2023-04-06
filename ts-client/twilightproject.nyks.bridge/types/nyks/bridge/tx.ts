@@ -45,6 +45,36 @@ export interface MsgRegisterJudge {
 export interface MsgRegisterJudgeResponse {
 }
 
+/** this line is used by starport scaffolding # proto/tx/message */
+export interface MsgWithdrawRequest {
+  creator: string;
+  twilightAddress: string;
+  withdrawAddress: string;
+  reserveId: number;
+  withdrawAmount: number;
+}
+
+export interface MsgWithdrawRequestResponse {
+}
+
+export interface MsgSweepProposal {
+  creator: string;
+  reserveId: number;
+  reserveAddress: string;
+  judgeAddress: string;
+  btcRelayCapacityValue: number;
+  totalValue: number;
+  privatePoolValue: number;
+  publicValue: number;
+  feePool: number;
+  individualTwilightReserveAccount: string;
+  btcRefundTx: string;
+  btcSweepTx: string;
+}
+
+export interface MsgSweepProposalResponse {
+}
+
 function createBaseMsgConfirmBtcDeposit(): MsgConfirmBtcDeposit {
   return {
     depositAddress: "",
@@ -526,13 +556,343 @@ export const MsgRegisterJudgeResponse = {
   },
 };
 
+function createBaseMsgWithdrawRequest(): MsgWithdrawRequest {
+  return { creator: "", twilightAddress: "", withdrawAddress: "", reserveId: 0, withdrawAmount: 0 };
+}
+
+export const MsgWithdrawRequest = {
+  encode(message: MsgWithdrawRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.twilightAddress !== "") {
+      writer.uint32(18).string(message.twilightAddress);
+    }
+    if (message.withdrawAddress !== "") {
+      writer.uint32(26).string(message.withdrawAddress);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(32).uint64(message.reserveId);
+    }
+    if (message.withdrawAmount !== 0) {
+      writer.uint32(40).uint64(message.withdrawAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.twilightAddress = reader.string();
+          break;
+        case 3:
+          message.withdrawAddress = reader.string();
+          break;
+        case 4:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.withdrawAmount = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawRequest {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
+      withdrawAddress: isSet(object.withdrawAddress) ? String(object.withdrawAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      withdrawAmount: isSet(object.withdrawAmount) ? Number(object.withdrawAmount) : 0,
+    };
+  },
+
+  toJSON(message: MsgWithdrawRequest): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
+    message.withdrawAddress !== undefined && (obj.withdrawAddress = message.withdrawAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.withdrawAmount !== undefined && (obj.withdrawAmount = Math.round(message.withdrawAmount));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawRequest>, I>>(object: I): MsgWithdrawRequest {
+    const message = createBaseMsgWithdrawRequest();
+    message.creator = object.creator ?? "";
+    message.twilightAddress = object.twilightAddress ?? "";
+    message.withdrawAddress = object.withdrawAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.withdrawAmount = object.withdrawAmount ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgWithdrawRequestResponse(): MsgWithdrawRequestResponse {
+  return {};
+}
+
+export const MsgWithdrawRequestResponse = {
+  encode(_: MsgWithdrawRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawRequestResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawRequestResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawRequestResponse {
+    return {};
+  },
+
+  toJSON(_: MsgWithdrawRequestResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawRequestResponse>, I>>(_: I): MsgWithdrawRequestResponse {
+    const message = createBaseMsgWithdrawRequestResponse();
+    return message;
+  },
+};
+
+function createBaseMsgSweepProposal(): MsgSweepProposal {
+  return {
+    creator: "",
+    reserveId: 0,
+    reserveAddress: "",
+    judgeAddress: "",
+    btcRelayCapacityValue: 0,
+    totalValue: 0,
+    privatePoolValue: 0,
+    publicValue: 0,
+    feePool: 0,
+    individualTwilightReserveAccount: "",
+    btcRefundTx: "",
+    btcSweepTx: "",
+  };
+}
+
+export const MsgSweepProposal = {
+  encode(message: MsgSweepProposal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(16).int32(message.reserveId);
+    }
+    if (message.reserveAddress !== "") {
+      writer.uint32(26).string(message.reserveAddress);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(34).string(message.judgeAddress);
+    }
+    if (message.btcRelayCapacityValue !== 0) {
+      writer.uint32(40).int32(message.btcRelayCapacityValue);
+    }
+    if (message.totalValue !== 0) {
+      writer.uint32(48).int32(message.totalValue);
+    }
+    if (message.privatePoolValue !== 0) {
+      writer.uint32(56).int32(message.privatePoolValue);
+    }
+    if (message.publicValue !== 0) {
+      writer.uint32(64).int32(message.publicValue);
+    }
+    if (message.feePool !== 0) {
+      writer.uint32(72).int32(message.feePool);
+    }
+    if (message.individualTwilightReserveAccount !== "") {
+      writer.uint32(82).string(message.individualTwilightReserveAccount);
+    }
+    if (message.btcRefundTx !== "") {
+      writer.uint32(90).string(message.btcRefundTx);
+    }
+    if (message.btcSweepTx !== "") {
+      writer.uint32(98).string(message.btcSweepTx);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSweepProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSweepProposal();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.reserveId = reader.int32();
+          break;
+        case 3:
+          message.reserveAddress = reader.string();
+          break;
+        case 4:
+          message.judgeAddress = reader.string();
+          break;
+        case 5:
+          message.btcRelayCapacityValue = reader.int32();
+          break;
+        case 6:
+          message.totalValue = reader.int32();
+          break;
+        case 7:
+          message.privatePoolValue = reader.int32();
+          break;
+        case 8:
+          message.publicValue = reader.int32();
+          break;
+        case 9:
+          message.feePool = reader.int32();
+          break;
+        case 10:
+          message.individualTwilightReserveAccount = reader.string();
+          break;
+        case 11:
+          message.btcRefundTx = reader.string();
+          break;
+        case 12:
+          message.btcSweepTx = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSweepProposal {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      btcRelayCapacityValue: isSet(object.btcRelayCapacityValue) ? Number(object.btcRelayCapacityValue) : 0,
+      totalValue: isSet(object.totalValue) ? Number(object.totalValue) : 0,
+      privatePoolValue: isSet(object.privatePoolValue) ? Number(object.privatePoolValue) : 0,
+      publicValue: isSet(object.publicValue) ? Number(object.publicValue) : 0,
+      feePool: isSet(object.feePool) ? Number(object.feePool) : 0,
+      individualTwilightReserveAccount: isSet(object.individualTwilightReserveAccount)
+        ? String(object.individualTwilightReserveAccount)
+        : "",
+      btcRefundTx: isSet(object.btcRefundTx) ? String(object.btcRefundTx) : "",
+      btcSweepTx: isSet(object.btcSweepTx) ? String(object.btcSweepTx) : "",
+    };
+  },
+
+  toJSON(message: MsgSweepProposal): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.btcRelayCapacityValue !== undefined
+      && (obj.btcRelayCapacityValue = Math.round(message.btcRelayCapacityValue));
+    message.totalValue !== undefined && (obj.totalValue = Math.round(message.totalValue));
+    message.privatePoolValue !== undefined && (obj.privatePoolValue = Math.round(message.privatePoolValue));
+    message.publicValue !== undefined && (obj.publicValue = Math.round(message.publicValue));
+    message.feePool !== undefined && (obj.feePool = Math.round(message.feePool));
+    message.individualTwilightReserveAccount !== undefined
+      && (obj.individualTwilightReserveAccount = message.individualTwilightReserveAccount);
+    message.btcRefundTx !== undefined && (obj.btcRefundTx = message.btcRefundTx);
+    message.btcSweepTx !== undefined && (obj.btcSweepTx = message.btcSweepTx);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSweepProposal>, I>>(object: I): MsgSweepProposal {
+    const message = createBaseMsgSweepProposal();
+    message.creator = object.creator ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.reserveAddress = object.reserveAddress ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    message.btcRelayCapacityValue = object.btcRelayCapacityValue ?? 0;
+    message.totalValue = object.totalValue ?? 0;
+    message.privatePoolValue = object.privatePoolValue ?? 0;
+    message.publicValue = object.publicValue ?? 0;
+    message.feePool = object.feePool ?? 0;
+    message.individualTwilightReserveAccount = object.individualTwilightReserveAccount ?? "";
+    message.btcRefundTx = object.btcRefundTx ?? "";
+    message.btcSweepTx = object.btcSweepTx ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSweepProposalResponse(): MsgSweepProposalResponse {
+  return {};
+}
+
+export const MsgSweepProposalResponse = {
+  encode(_: MsgSweepProposalResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSweepProposalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSweepProposalResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSweepProposalResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSweepProposalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSweepProposalResponse>, I>>(_: I): MsgSweepProposalResponse {
+    const message = createBaseMsgSweepProposalResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse>;
   RegisterBtcDepositAddress(request: MsgRegisterBtcDepositAddress): Promise<MsgRegisterBtcDepositAddressResponse>;
   RegisterReserveAddress(request: MsgRegisterReserveAddress): Promise<MsgRegisterReserveAddressResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   RegisterJudge(request: MsgRegisterJudge): Promise<MsgRegisterJudgeResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  WithdrawRequest(request: MsgWithdrawRequest): Promise<MsgWithdrawRequestResponse>;
+  SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -543,6 +903,8 @@ export class MsgClientImpl implements Msg {
     this.RegisterBtcDepositAddress = this.RegisterBtcDepositAddress.bind(this);
     this.RegisterReserveAddress = this.RegisterReserveAddress.bind(this);
     this.RegisterJudge = this.RegisterJudge.bind(this);
+    this.WithdrawRequest = this.WithdrawRequest.bind(this);
+    this.SweepProposal = this.SweepProposal.bind(this);
   }
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse> {
     const data = MsgConfirmBtcDeposit.encode(request).finish();
@@ -566,6 +928,18 @@ export class MsgClientImpl implements Msg {
     const data = MsgRegisterJudge.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "RegisterJudge", data);
     return promise.then((data) => MsgRegisterJudgeResponse.decode(new _m0.Reader(data)));
+  }
+
+  WithdrawRequest(request: MsgWithdrawRequest): Promise<MsgWithdrawRequestResponse> {
+    const data = MsgWithdrawRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "WithdrawRequest", data);
+    return promise.then((data) => MsgWithdrawRequestResponse.decode(new _m0.Reader(data)));
+  }
+
+  SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse> {
+    const data = MsgSweepProposal.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "SweepProposal", data);
+    return promise.then((data) => MsgSweepProposalResponse.decode(new _m0.Reader(data)));
   }
 }
 

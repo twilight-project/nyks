@@ -1,7 +1,7 @@
 syntax = "proto3";
 package twilightproject.nyks.bridge;
 
-import "gogoproto/gogo.proto";
+//import "gogoproto/gogo.proto";
 
 option go_package = "github.com/twilight-project/nyks/x/bridge/types";
 

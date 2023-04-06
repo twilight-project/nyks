@@ -273,7 +273,7 @@ export default {
 			try {
 				const key = params ?? {};
 				const client = initClient(rootGetters);
-				let value= (await client.TwilightprojectNyksBridge.query.queryRegisteredJudgeAddressByValidatorAddress( key.judgeAddress)).data
+				let value= (await client.TwilightprojectNyksBridge.query.queryRegisteredJudgeAddressByValidatorAddress( key.validatorAddress)).data
 				
 					
 				commit('QUERY', { query: 'RegisteredJudgeAddressByValidatorAddress', key: { params: {...key}, query}, value })
@@ -308,6 +308,20 @@ export default {
 		},
 		
 		
+		async sendMsgSweepProposal({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgSweepProposal({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSweepProposal:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgConfirmBtcDeposit({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -364,7 +378,34 @@ export default {
 				}
 			}
 		},
+		async sendMsgWithdrawRequest({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawRequest({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawRequest:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgWithdrawRequest:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
+		async MsgSweepProposal({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgSweepProposal({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSweepProposal:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		async MsgConfirmBtcDeposit({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -414,6 +455,19 @@ export default {
 					throw new Error('TxClient:MsgRegisterJudge:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgRegisterJudge:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgWithdrawRequest({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawRequest({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawRequest:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgWithdrawRequest:Create Could not create message: ' + e.message)
 				}
 			}
 		},
