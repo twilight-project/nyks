@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package twilightproject.nyks.bridge;
+
 import "nyks/volt/reserve.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
@@ -15,8 +16,9 @@ service Msg {
   rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc WithdrawRequest (MsgWithdrawRequest) returns (MsgWithdrawRequestResponse);
-  rpc SweepProposal   (MsgSweepProposal  ) returns (MsgSweepProposalResponse  );
+  rpc WithdrawRequest  (MsgWithdrawRequest ) returns (MsgWithdrawRequestResponse );
+  rpc SweepProposal    (MsgSweepProposal   ) returns (MsgSweepProposalResponse   );
+  rpc WithdrawTxSigned (MsgWithdrawTxSigned) returns (MsgWithdrawTxSignedResponse);
 }
 message MsgConfirmBtcDeposit {
   string depositAddress         = 1;
@@ -69,19 +71,27 @@ message MsgWithdrawRequest {
 message MsgWithdrawRequestResponse {}
 
 message MsgSweepProposal {
-  string creator                          =  1;
-  uint64  reserveId                        =  2;
-  string reserveAddress                   =  3;
-  string judgeAddress                     =  4;
-  uint64  btcRelayCapacityValue            =  5;
-  uint64  totalValue                       =  6;
-  uint64  privatePoolValue                 =  7;
-  uint64  publicValue                      =  8;
-  uint64  feePool                          =  9;
+           string                                                     creator                          =  1;
+           uint64                                                     reserveId                        =  2;
+           string                                                     reserveAddress                   =  3;
+           string                                                     judgeAddress                     =  4;
+           uint64                                                     btcRelayCapacityValue            =  5;
+           uint64                                                     totalValue                       =  6;
+           uint64                                                     privatePoolValue                 =  7;
+           uint64                                                     publicValue                      =  8;
+           uint64                                                     feePool                          =  9;
   repeated twilightproject.nyks.volt.IndividualTwilightReserveAccount individualTwilightReserveAccount = 10;
-  string btcRefundTx                      = 11;
-  string btcSweepTx                       = 12;
+           string                                                     btcRefundTx                      = 11;
+           string                                                     btcSweepTx                       = 12;
 }
 
 message MsgSweepProposalResponse {}
+
+message MsgWithdrawTxSigned {
+  string creator          = 1;
+  string validatorAddress = 2;
+  string btcTxSigned      = 3;
+}
+
+message MsgWithdrawTxSignedResponse {}
 

@@ -48,6 +48,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSweepProposal int = 100
 
+	opWeightMsgWithdrawTxSigned = "op_weight_msg_withdraw_tx_signed"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgWithdrawTxSigned int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -146,6 +150,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgSweepProposal,
 		bridgesimulation.SimulateMsgSweepProposal(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgWithdrawTxSigned int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgWithdrawTxSigned, &weightMsgWithdrawTxSigned, nil,
+		func(_ *rand.Rand) {
+			weightMsgWithdrawTxSigned = defaultWeightMsgWithdrawTxSigned
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgWithdrawTxSigned,
+		bridgesimulation.SimulateMsgWithdrawTxSigned(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

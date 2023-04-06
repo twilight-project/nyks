@@ -42,6 +42,8 @@ export type BridgeMsgSweepProposalResponse = object;
 
 export type BridgeMsgWithdrawRequestResponse = object;
 
+export type BridgeMsgWithdrawTxSignedResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
@@ -92,6 +94,13 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+export interface VoltIndividualTwilightReserveAccount {
+  TwilightAddress?: string;
+
+  /** @format uint64 */
+  BtcValue?: string;
 }
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";

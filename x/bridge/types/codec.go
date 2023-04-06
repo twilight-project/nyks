@@ -15,6 +15,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgRegisterJudge{}, "bridge/RegisterJudge", nil)
 	cdc.RegisterConcrete(&MsgWithdrawRequest{}, "bridge/WithdrawRequest", nil)
 	cdc.RegisterConcrete(&MsgSweepProposal{}, "bridge/SweepProposal", nil)
+	cdc.RegisterConcrete(&MsgWithdrawTxSigned{}, "bridge/WithdrawTxSigned", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -41,6 +42,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSweepProposal{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgWithdrawTxSigned{},
 	)
 	// this line is used by starport scaffolding # 3
 
