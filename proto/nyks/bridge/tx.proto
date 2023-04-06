@@ -21,6 +21,8 @@ service Msg {
   rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
   rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
   rpc ConfirmBtcWithdraw (MsgConfirmBtcWithdraw) returns (MsgConfirmBtcWithdrawResponse);
+  rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
+  rpc BroadcastRefund    (MsgBroadcastRefund   ) returns (MsgBroadcastRefundResponse   );
 }
 message MsgConfirmBtcDeposit {
   string depositAddress         = 1;
@@ -112,4 +114,23 @@ message MsgConfirmBtcWithdraw {
 }
 
 message MsgConfirmBtcWithdrawResponse {}
+
+message MsgSignRefund {
+  string creator         = 1;
+  string reserveAddress  = 2;
+  string signerAddress   = 3;
+  string refundSignature = 4;
+  string sweepSignature  = 5;
+}
+
+message MsgSignRefundResponse {}
+
+message MsgBroadcastRefund {
+  string creator        = 1;
+  string judgeAddress   = 2;
+  string signedRefundTx = 3;
+  string signedSweepTx  = 4;
+}
+
+message MsgBroadcastRefundResponse {}
 

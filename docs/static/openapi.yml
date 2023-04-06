@@ -47477,6 +47477,8 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgBroadcastRefundResponse:
+    type: object
   twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse:
     type: object
     properties:
@@ -47518,6 +47520,8 @@ definitions:
     properties:
       reserveAddress:
         type: string
+  twilightproject.nyks.bridge.MsgSignRefundResponse:
+    type: object
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawRequestResponse:

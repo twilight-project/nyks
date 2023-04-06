@@ -60,6 +60,14 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgConfirmBtcWithdraw int = 100
 
+	opWeightMsgSignRefund = "op_weight_msg_sign_refund"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSignRefund int = 100
+
+	opWeightMsgBroadcastRefund = "op_weight_msg_broadcast_refund"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgBroadcastRefund int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -191,6 +199,28 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgConfirmBtcWithdraw,
 		bridgesimulation.SimulateMsgConfirmBtcWithdraw(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgSignRefund int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSignRefund, &weightMsgSignRefund, nil,
+		func(_ *rand.Rand) {
+			weightMsgSignRefund = defaultWeightMsgSignRefund
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSignRefund,
+		bridgesimulation.SimulateMsgSignRefund(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgBroadcastRefund int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBroadcastRefund, &weightMsgBroadcastRefund, nil,
+		func(_ *rand.Rand) {
+			weightMsgBroadcastRefund = defaultWeightMsgBroadcastRefund
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgBroadcastRefund,
+		bridgesimulation.SimulateMsgBroadcastRefund(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

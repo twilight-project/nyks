@@ -103,6 +103,27 @@ export interface MsgConfirmBtcWithdraw {
 export interface MsgConfirmBtcWithdrawResponse {
 }
 
+export interface MsgSignRefund {
+  creator: string;
+  reserveAddress: string;
+  signerAddress: string;
+  refundSignature: string;
+  sweepSignature: string;
+}
+
+export interface MsgSignRefundResponse {
+}
+
+export interface MsgBroadcastRefund {
+  creator: string;
+  judgeAddress: string;
+  signedRefundTx: string;
+  signedSweepTx: string;
+}
+
+export interface MsgBroadcastRefundResponse {
+}
+
 function createBaseMsgConfirmBtcDeposit(): MsgConfirmBtcDeposit {
   return {
     depositAddress: "",
@@ -1238,6 +1259,245 @@ export const MsgConfirmBtcWithdrawResponse = {
   },
 };
 
+function createBaseMsgSignRefund(): MsgSignRefund {
+  return { creator: "", reserveAddress: "", signerAddress: "", refundSignature: "", sweepSignature: "" };
+}
+
+export const MsgSignRefund = {
+  encode(message: MsgSignRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.reserveAddress !== "") {
+      writer.uint32(18).string(message.reserveAddress);
+    }
+    if (message.signerAddress !== "") {
+      writer.uint32(26).string(message.signerAddress);
+    }
+    if (message.refundSignature !== "") {
+      writer.uint32(34).string(message.refundSignature);
+    }
+    if (message.sweepSignature !== "") {
+      writer.uint32(42).string(message.sweepSignature);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSignRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSignRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.reserveAddress = reader.string();
+          break;
+        case 3:
+          message.signerAddress = reader.string();
+          break;
+        case 4:
+          message.refundSignature = reader.string();
+          break;
+        case 5:
+          message.sweepSignature = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSignRefund {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
+      refundSignature: isSet(object.refundSignature) ? String(object.refundSignature) : "",
+      sweepSignature: isSet(object.sweepSignature) ? String(object.sweepSignature) : "",
+    };
+  },
+
+  toJSON(message: MsgSignRefund): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
+    message.refundSignature !== undefined && (obj.refundSignature = message.refundSignature);
+    message.sweepSignature !== undefined && (obj.sweepSignature = message.sweepSignature);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSignRefund>, I>>(object: I): MsgSignRefund {
+    const message = createBaseMsgSignRefund();
+    message.creator = object.creator ?? "";
+    message.reserveAddress = object.reserveAddress ?? "";
+    message.signerAddress = object.signerAddress ?? "";
+    message.refundSignature = object.refundSignature ?? "";
+    message.sweepSignature = object.sweepSignature ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSignRefundResponse(): MsgSignRefundResponse {
+  return {};
+}
+
+export const MsgSignRefundResponse = {
+  encode(_: MsgSignRefundResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSignRefundResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSignRefundResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSignRefundResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSignRefundResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgSignRefundResponse>, I>>(_: I): MsgSignRefundResponse {
+    const message = createBaseMsgSignRefundResponse();
+    return message;
+  },
+};
+
+function createBaseMsgBroadcastRefund(): MsgBroadcastRefund {
+  return { creator: "", judgeAddress: "", signedRefundTx: "", signedSweepTx: "" };
+}
+
+export const MsgBroadcastRefund = {
+  encode(message: MsgBroadcastRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
+    }
+    if (message.signedRefundTx !== "") {
+      writer.uint32(26).string(message.signedRefundTx);
+    }
+    if (message.signedSweepTx !== "") {
+      writer.uint32(34).string(message.signedSweepTx);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBroadcastRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBroadcastRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
+        case 3:
+          message.signedRefundTx = reader.string();
+          break;
+        case 4:
+          message.signedSweepTx = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBroadcastRefund {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      signedRefundTx: isSet(object.signedRefundTx) ? String(object.signedRefundTx) : "",
+      signedSweepTx: isSet(object.signedSweepTx) ? String(object.signedSweepTx) : "",
+    };
+  },
+
+  toJSON(message: MsgBroadcastRefund): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.signedRefundTx !== undefined && (obj.signedRefundTx = message.signedRefundTx);
+    message.signedSweepTx !== undefined && (obj.signedSweepTx = message.signedSweepTx);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgBroadcastRefund>, I>>(object: I): MsgBroadcastRefund {
+    const message = createBaseMsgBroadcastRefund();
+    message.creator = object.creator ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    message.signedRefundTx = object.signedRefundTx ?? "";
+    message.signedSweepTx = object.signedSweepTx ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgBroadcastRefundResponse(): MsgBroadcastRefundResponse {
+  return {};
+}
+
+export const MsgBroadcastRefundResponse = {
+  encode(_: MsgBroadcastRefundResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBroadcastRefundResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBroadcastRefundResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgBroadcastRefundResponse {
+    return {};
+  },
+
+  toJSON(_: MsgBroadcastRefundResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgBroadcastRefundResponse>, I>>(_: I): MsgBroadcastRefundResponse {
+    const message = createBaseMsgBroadcastRefundResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse>;
@@ -1250,6 +1510,8 @@ export interface Msg {
   WithdrawTxSigned(request: MsgWithdrawTxSigned): Promise<MsgWithdrawTxSignedResponse>;
   WithdrawTxFinal(request: MsgWithdrawTxFinal): Promise<MsgWithdrawTxFinalResponse>;
   ConfirmBtcWithdraw(request: MsgConfirmBtcWithdraw): Promise<MsgConfirmBtcWithdrawResponse>;
+  SignRefund(request: MsgSignRefund): Promise<MsgSignRefundResponse>;
+  BroadcastRefund(request: MsgBroadcastRefund): Promise<MsgBroadcastRefundResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1265,6 +1527,8 @@ export class MsgClientImpl implements Msg {
     this.WithdrawTxSigned = this.WithdrawTxSigned.bind(this);
     this.WithdrawTxFinal = this.WithdrawTxFinal.bind(this);
     this.ConfirmBtcWithdraw = this.ConfirmBtcWithdraw.bind(this);
+    this.SignRefund = this.SignRefund.bind(this);
+    this.BroadcastRefund = this.BroadcastRefund.bind(this);
   }
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse> {
     const data = MsgConfirmBtcDeposit.encode(request).finish();
@@ -1318,6 +1582,18 @@ export class MsgClientImpl implements Msg {
     const data = MsgConfirmBtcWithdraw.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "ConfirmBtcWithdraw", data);
     return promise.then((data) => MsgConfirmBtcWithdrawResponse.decode(new _m0.Reader(data)));
+  }
+
+  SignRefund(request: MsgSignRefund): Promise<MsgSignRefundResponse> {
+    const data = MsgSignRefund.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "SignRefund", data);
+    return promise.then((data) => MsgSignRefundResponse.decode(new _m0.Reader(data)));
+  }
+
+  BroadcastRefund(request: MsgBroadcastRefund): Promise<MsgBroadcastRefundResponse> {
+    const data = MsgBroadcastRefund.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "BroadcastRefund", data);
+    return promise.then((data) => MsgBroadcastRefundResponse.decode(new _m0.Reader(data)));
   }
 }
 

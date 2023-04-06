@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+export type BridgeMsgBroadcastRefundResponse = object;
+
 export interface BridgeMsgConfirmBtcDepositResponse {
   twilightDepositAddress?: string;
 }
@@ -39,6 +41,8 @@ export interface BridgeMsgRegisterReserveAddress {
 export interface BridgeMsgRegisterReserveAddressResponse {
   reserveAddress?: string;
 }
+
+export type BridgeMsgSignRefundResponse = object;
 
 export type BridgeMsgSweepProposalResponse = object;
 
