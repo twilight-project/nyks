@@ -85,6 +85,24 @@ export interface MsgWithdrawTxSigned {
 export interface MsgWithdrawTxSignedResponse {
 }
 
+export interface MsgWithdrawTxFinal {
+  creator: string;
+  judgeAddress: string;
+  btcTx: string;
+}
+
+export interface MsgWithdrawTxFinalResponse {
+}
+
+export interface MsgConfirmBtcWithdraw {
+  creator: string;
+  validatorAddress: string;
+  txHash: string;
+}
+
+export interface MsgConfirmBtcWithdrawResponse {
+}
+
 function createBaseMsgConfirmBtcDeposit(): MsgConfirmBtcDeposit {
   return {
     depositAddress: "",
@@ -1008,6 +1026,218 @@ export const MsgWithdrawTxSignedResponse = {
   },
 };
 
+function createBaseMsgWithdrawTxFinal(): MsgWithdrawTxFinal {
+  return { creator: "", judgeAddress: "", btcTx: "" };
+}
+
+export const MsgWithdrawTxFinal = {
+  encode(message: MsgWithdrawTxFinal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
+    }
+    if (message.btcTx !== "") {
+      writer.uint32(26).string(message.btcTx);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawTxFinal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawTxFinal();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
+        case 3:
+          message.btcTx = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawTxFinal {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      btcTx: isSet(object.btcTx) ? String(object.btcTx) : "",
+    };
+  },
+
+  toJSON(message: MsgWithdrawTxFinal): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.btcTx !== undefined && (obj.btcTx = message.btcTx);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawTxFinal>, I>>(object: I): MsgWithdrawTxFinal {
+    const message = createBaseMsgWithdrawTxFinal();
+    message.creator = object.creator ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    message.btcTx = object.btcTx ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgWithdrawTxFinalResponse(): MsgWithdrawTxFinalResponse {
+  return {};
+}
+
+export const MsgWithdrawTxFinalResponse = {
+  encode(_: MsgWithdrawTxFinalResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawTxFinalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgWithdrawTxFinalResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawTxFinalResponse {
+    return {};
+  },
+
+  toJSON(_: MsgWithdrawTxFinalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawTxFinalResponse>, I>>(_: I): MsgWithdrawTxFinalResponse {
+    const message = createBaseMsgWithdrawTxFinalResponse();
+    return message;
+  },
+};
+
+function createBaseMsgConfirmBtcWithdraw(): MsgConfirmBtcWithdraw {
+  return { creator: "", validatorAddress: "", txHash: "" };
+}
+
+export const MsgConfirmBtcWithdraw = {
+  encode(message: MsgConfirmBtcWithdraw, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.validatorAddress !== "") {
+      writer.uint32(18).string(message.validatorAddress);
+    }
+    if (message.txHash !== "") {
+      writer.uint32(26).string(message.txHash);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgConfirmBtcWithdraw {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgConfirmBtcWithdraw();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.validatorAddress = reader.string();
+          break;
+        case 3:
+          message.txHash = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgConfirmBtcWithdraw {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+      txHash: isSet(object.txHash) ? String(object.txHash) : "",
+    };
+  },
+
+  toJSON(message: MsgConfirmBtcWithdraw): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
+    message.txHash !== undefined && (obj.txHash = message.txHash);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgConfirmBtcWithdraw>, I>>(object: I): MsgConfirmBtcWithdraw {
+    const message = createBaseMsgConfirmBtcWithdraw();
+    message.creator = object.creator ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
+    message.txHash = object.txHash ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgConfirmBtcWithdrawResponse(): MsgConfirmBtcWithdrawResponse {
+  return {};
+}
+
+export const MsgConfirmBtcWithdrawResponse = {
+  encode(_: MsgConfirmBtcWithdrawResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgConfirmBtcWithdrawResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgConfirmBtcWithdrawResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgConfirmBtcWithdrawResponse {
+    return {};
+  },
+
+  toJSON(_: MsgConfirmBtcWithdrawResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgConfirmBtcWithdrawResponse>, I>>(_: I): MsgConfirmBtcWithdrawResponse {
+    const message = createBaseMsgConfirmBtcWithdrawResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse>;
@@ -1018,6 +1248,8 @@ export interface Msg {
   WithdrawRequest(request: MsgWithdrawRequest): Promise<MsgWithdrawRequestResponse>;
   SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse>;
   WithdrawTxSigned(request: MsgWithdrawTxSigned): Promise<MsgWithdrawTxSignedResponse>;
+  WithdrawTxFinal(request: MsgWithdrawTxFinal): Promise<MsgWithdrawTxFinalResponse>;
+  ConfirmBtcWithdraw(request: MsgConfirmBtcWithdraw): Promise<MsgConfirmBtcWithdrawResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1031,6 +1263,8 @@ export class MsgClientImpl implements Msg {
     this.WithdrawRequest = this.WithdrawRequest.bind(this);
     this.SweepProposal = this.SweepProposal.bind(this);
     this.WithdrawTxSigned = this.WithdrawTxSigned.bind(this);
+    this.WithdrawTxFinal = this.WithdrawTxFinal.bind(this);
+    this.ConfirmBtcWithdraw = this.ConfirmBtcWithdraw.bind(this);
   }
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse> {
     const data = MsgConfirmBtcDeposit.encode(request).finish();
@@ -1072,6 +1306,18 @@ export class MsgClientImpl implements Msg {
     const data = MsgWithdrawTxSigned.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "WithdrawTxSigned", data);
     return promise.then((data) => MsgWithdrawTxSignedResponse.decode(new _m0.Reader(data)));
+  }
+
+  WithdrawTxFinal(request: MsgWithdrawTxFinal): Promise<MsgWithdrawTxFinalResponse> {
+    const data = MsgWithdrawTxFinal.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "WithdrawTxFinal", data);
+    return promise.then((data) => MsgWithdrawTxFinalResponse.decode(new _m0.Reader(data)));
+  }
+
+  ConfirmBtcWithdraw(request: MsgConfirmBtcWithdraw): Promise<MsgConfirmBtcWithdrawResponse> {
+    const data = MsgConfirmBtcWithdraw.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "ConfirmBtcWithdraw", data);
+    return promise.then((data) => MsgConfirmBtcWithdrawResponse.decode(new _m0.Reader(data)));
   }
 }
 

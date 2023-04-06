@@ -47482,6 +47482,8 @@ definitions:
     properties:
       twilightDepositAddress:
         type: string
+  twilightproject.nyks.bridge.MsgConfirmBtcWithdrawResponse:
+    type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress:
     type: object
     properties:
@@ -47519,6 +47521,8 @@ definitions:
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawRequestResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxSignedResponse:
     type: object

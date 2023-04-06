@@ -13,6 +13,8 @@ export interface BridgeMsgConfirmBtcDepositResponse {
   twilightDepositAddress?: string;
 }
 
+export type BridgeMsgConfirmBtcWithdrawResponse = object;
+
 export interface BridgeMsgRegisterBtcDepositAddress {
   depositAddress?: string;
   twilightDepositAddress?: string;
@@ -41,6 +43,8 @@ export interface BridgeMsgRegisterReserveAddressResponse {
 export type BridgeMsgSweepProposalResponse = object;
 
 export type BridgeMsgWithdrawRequestResponse = object;
+
+export type BridgeMsgWithdrawTxFinalResponse = object;
 
 export type BridgeMsgWithdrawTxSignedResponse = object;
 
