@@ -38,7 +38,7 @@ var (
 	JudgeAddressKey = forkstypes.HashString("JudgeAddressKey")
 
 	// BtcWithdrawRequest is the key for the btc withdraw request
-	BtcWithdrawRequest = forkstypes.HashString("BtcWithdrawRequest")
+	BtcWithdrawRequestKey = forkstypes.HashString("BtcWithdrawRequest")
 )
 
 func KeyPrefix(p string) []byte {
@@ -88,5 +88,5 @@ func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress Btc
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	return forkstypes.AppendBytes(BtcWithdrawRequest, twilightAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(withdrawAddress.BtcAddress), withdrawAmount.BigInt().Bytes())
+	return forkstypes.AppendBytes(BtcWithdrawRequestKey, twilightAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(withdrawAddress.BtcAddress), withdrawAmount.BigInt().Bytes())
 }

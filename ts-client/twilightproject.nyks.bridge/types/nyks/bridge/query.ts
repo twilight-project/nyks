@@ -65,6 +65,12 @@ export interface QueryRegisteredJudgesResponse {
   Judges: MsgRegisterJudge[];
 }
 
+export interface QueryWithdrawBtcRequestAllRequest {
+}
+
+export interface QueryWithdrawBtcRequestAllResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -791,6 +797,88 @@ export const QueryRegisteredJudgesResponse = {
   },
 };
 
+function createBaseQueryWithdrawBtcRequestAllRequest(): QueryWithdrawBtcRequestAllRequest {
+  return {};
+}
+
+export const QueryWithdrawBtcRequestAllRequest = {
+  encode(_: QueryWithdrawBtcRequestAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryWithdrawBtcRequestAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryWithdrawBtcRequestAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryWithdrawBtcRequestAllRequest {
+    return {};
+  },
+
+  toJSON(_: QueryWithdrawBtcRequestAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryWithdrawBtcRequestAllRequest>, I>>(
+    _: I,
+  ): QueryWithdrawBtcRequestAllRequest {
+    const message = createBaseQueryWithdrawBtcRequestAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryWithdrawBtcRequestAllResponse(): QueryWithdrawBtcRequestAllResponse {
+  return {};
+}
+
+export const QueryWithdrawBtcRequestAllResponse = {
+  encode(_: QueryWithdrawBtcRequestAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryWithdrawBtcRequestAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryWithdrawBtcRequestAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryWithdrawBtcRequestAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryWithdrawBtcRequestAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryWithdrawBtcRequestAllResponse>, I>>(
+    _: I,
+  ): QueryWithdrawBtcRequestAllResponse {
+    const message = createBaseQueryWithdrawBtcRequestAllResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -817,6 +905,8 @@ export interface Query {
   ): Promise<QueryRegisteredJudgeAddressByValidatorAddressResponse>;
   /** Queries a list of RegisteredJudges items. */
   RegisteredJudges(request: QueryRegisteredJudgesRequest): Promise<QueryRegisteredJudgesResponse>;
+  /** Queries a list of WithdrawBtcRequestAll items. */
+  WithdrawBtcRequestAll(request: QueryWithdrawBtcRequestAllRequest): Promise<QueryWithdrawBtcRequestAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -830,6 +920,7 @@ export class QueryClientImpl implements Query {
     this.RegisteredBtcDepositAddressByTwilightAddress = this.RegisteredBtcDepositAddressByTwilightAddress.bind(this);
     this.RegisteredJudgeAddressByValidatorAddress = this.RegisteredJudgeAddressByValidatorAddress.bind(this);
     this.RegisteredJudges = this.RegisteredJudges.bind(this);
+    this.WithdrawBtcRequestAll = this.WithdrawBtcRequestAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -891,6 +982,12 @@ export class QueryClientImpl implements Query {
     const data = QueryRegisteredJudgesRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "RegisteredJudges", data);
     return promise.then((data) => QueryRegisteredJudgesResponse.decode(new _m0.Reader(data)));
+  }
+
+  WithdrawBtcRequestAll(request: QueryWithdrawBtcRequestAllRequest): Promise<QueryWithdrawBtcRequestAllResponse> {
+    const data = QueryWithdrawBtcRequestAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "WithdrawBtcRequestAll", data);
+    return promise.then((data) => QueryWithdrawBtcRequestAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

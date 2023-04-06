@@ -27577,6 +27577,51 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/withdraw_btc_request_all:
+    get:
+      summary: Queries a list of WithdrawBtcRequestAll items.
+      operationId: TwilightprojectNyksBridgeWithdrawBtcRequestAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              withdrawRequest:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    withdrawAddress:
+                      type: string
+                    reserveAddress:
+                      type: string
+                    withdrawAmount:
+                      type: string
+                      format: uint64
+                    twilightAddress:
+                      type: string
+                  title: 'this line is used by starport scaffolding # proto/tx/message'
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/forks/delegate_keys_all:
     get:
       summary: Queries a list of DelegateKeysAll items.
@@ -47524,6 +47569,19 @@ definitions:
     type: object
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
     type: object
+  twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
+    type: object
+    properties:
+      withdrawAddress:
+        type: string
+      reserveAddress:
+        type: string
+      withdrawAmount:
+        type: string
+        format: uint64
+      twilightAddress:
+        type: string
+    title: 'this line is used by starport scaffolding # proto/tx/message'
   twilightproject.nyks.bridge.MsgWithdrawBtcRequestResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
@@ -47603,6 +47661,24 @@ definitions:
               type: string
             judgeAddress:
               type: string
+  twilightproject.nyks.bridge.QueryWithdrawBtcRequestAllResponse:
+    type: object
+    properties:
+      withdrawRequest:
+        type: array
+        items:
+          type: object
+          properties:
+            withdrawAddress:
+              type: string
+            reserveAddress:
+              type: string
+            withdrawAmount:
+              type: string
+              format: uint64
+            twilightAddress:
+              type: string
+          title: 'this line is used by starport scaffolding # proto/tx/message'
   twilightproject.nyks.volt.IndividualTwilightReserveAccount:
     type: object
     properties:

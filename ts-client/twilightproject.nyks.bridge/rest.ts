@@ -93,6 +93,8 @@ export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
 }
 
+export type BridgeQueryWithdrawBtcRequestAllResponse = object;
+
 export interface ProtobufAny {
   "@type"?: string;
 }
@@ -343,6 +345,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryRegisteredReserveAddresses = (params: RequestParams = {}) =>
     this.request<BridgeQueryRegisteredReserveAddressesResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/registered_reserve_addresses`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryWithdrawBtcRequestAll
+   * @summary Queries a list of WithdrawBtcRequestAll items.
+   * @request GET:/twilight-project/nyks/bridge/withdraw_btc_request_all
+   */
+  queryWithdrawBtcRequestAll = (params: RequestParams = {}) =>
+    this.request<BridgeQueryWithdrawBtcRequestAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/withdraw_btc_request_all`,
       method: "GET",
       format: "json",
       ...params,

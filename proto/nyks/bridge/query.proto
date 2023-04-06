@@ -58,6 +58,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/registered_judges";
   
   }
+  
+  // Queries a list of WithdrawBtcRequestAll items.
+  rpc WithdrawBtcRequestAll (QueryWithdrawBtcRequestAllRequest) returns (QueryWithdrawBtcRequestAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/withdraw_btc_request_all";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -105,8 +111,8 @@ message QueryRegisteredJudgeAddressByValidatorAddressRequest {
 }
 
 message QueryRegisteredJudgeAddressByValidatorAddressResponse {
-  string creator = 1;
-  string judgeAddress = 2;
+  string creator          = 1;
+  string judgeAddress     = 2;
   string validatorAddress = 3;
 }
 
@@ -114,5 +120,11 @@ message QueryRegisteredJudgesRequest {}
 
 message QueryRegisteredJudgesResponse {
   repeated MsgRegisterJudge Judges = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryWithdrawBtcRequestAllRequest {}
+
+message QueryWithdrawBtcRequestAllResponse {
+  repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
 }
 

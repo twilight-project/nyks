@@ -5,7 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgWithdrawBtcRequest = "withdraw_request"
+const TypeMsgWithdrawBtcRequest = "withdraw_btc_request"
 
 var _ sdk.Msg = &MsgWithdrawBtcRequest{}
 
@@ -42,7 +42,7 @@ func (msg *MsgWithdrawBtcRequest) GetSignBytes() []byte {
 func (msg *MsgWithdrawBtcRequest) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid twilight address (%s)", err)
 	}
 	return nil
 }

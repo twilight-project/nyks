@@ -208,6 +208,30 @@ func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 	return nil
 }
 
+// IterateRegisteredWithdrawBtcRequests iterates through all of the registered withdraw btc requests
+func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]byte, types.MsgWithdrawBtcRequest) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcWithdrawRequestKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgWithdrawBtcRequest{
+			TwilightAddress: "",
+			ReserveAddress:  "",
+			WithdrawAddress: "",
+			WithdrawAmount:  0,
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////
