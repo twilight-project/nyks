@@ -9,13 +9,12 @@ const TypeMsgSignRefund = "sign_refund"
 
 var _ sdk.Msg = &MsgSignRefund{}
 
-func NewMsgSignRefund(creator string, reserveAddress string, signerAddress string, refundSignature string, sweepSignature string) *MsgSignRefund {
+func NewMsgSignRefund(reserveAddress string, signerAddress string, refundSignature string, btcOracleAddress string) *MsgSignRefund {
 	return &MsgSignRefund{
-		Creator:         creator,
-		ReserveAddress:  reserveAddress,
-		SignerAddress:   signerAddress,
-		RefundSignature: refundSignature,
-		SweepSignature:  sweepSignature,
+		ReserveAddress:   reserveAddress,
+		SignerAddress:    signerAddress,
+		RefundSignature:  refundSignature,
+		BtcOracleAddress: btcOracleAddress,
 	}
 }
 
@@ -28,7 +27,7 @@ func (msg *MsgSignRefund) Type() string {
 }
 
 func (msg *MsgSignRefund) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +40,7 @@ func (msg *MsgSignRefund) GetSignBytes() []byte {
 }
 
 func (msg *MsgSignRefund) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

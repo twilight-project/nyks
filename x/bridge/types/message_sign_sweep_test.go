@@ -8,22 +8,22 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgSignRefund_ValidateBasic(t *testing.T) {
+func TestMsgSignSweep_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgSignRefund
+		msg  MsgSignSweep
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgSignRefund{
-				BtcOracleAddress: "invalid_address",
+			msg: MsgSignSweep{
+				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgSignRefund{
-				BtcOracleAddress: sample.AccAddress(),
+			msg: MsgSignSweep{
+				Creator: sample.AccAddress(),
 			},
 		},
 	}

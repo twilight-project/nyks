@@ -16,13 +16,14 @@ service Msg {
   rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc WithdrawBtcRequest    (MsgWithdrawBtcRequest   ) returns (MsgWithdrawBtcRequestResponse   );
+  rpc WithdrawBtcRequest (MsgWithdrawBtcRequest) returns (MsgWithdrawBtcRequestResponse);
   rpc SweepProposal      (MsgSweepProposal     ) returns (MsgSweepProposalResponse     );
   rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
   rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
   rpc ConfirmBtcWithdraw (MsgConfirmBtcWithdraw) returns (MsgConfirmBtcWithdrawResponse);
   rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
   rpc BroadcastRefund    (MsgBroadcastRefund   ) returns (MsgBroadcastRefundResponse   );
+  rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
 }
 message MsgConfirmBtcDeposit {
   string depositAddress         = 1;
@@ -115,11 +116,10 @@ message MsgConfirmBtcWithdraw {
 message MsgConfirmBtcWithdrawResponse {}
 
 message MsgSignRefund {
-  string creator         = 1;
-  string reserveAddress  = 2;
-  string signerAddress   = 3;
-  string refundSignature = 4;
-  string sweepSignature  = 5;
+  string reserveAddress   = 1;
+  string signerAddress    = 2;
+  string refundSignature  = 3;
+  string btcOracleAddress = 4;
 }
 
 message MsgSignRefundResponse {}
@@ -132,4 +132,14 @@ message MsgBroadcastRefund {
 }
 
 message MsgBroadcastRefundResponse {}
+
+message MsgSignSweep {
+  string creator          = 1;
+  string reserveAddress   = 2;
+  string signerAddress    = 3;
+  string sweepSignature   = 4;
+  string btcOracleAddress = 5;
+}
+
+message MsgSignSweepResponse {}
 

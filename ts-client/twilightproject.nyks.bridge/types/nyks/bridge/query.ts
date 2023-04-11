@@ -1,7 +1,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { MsgRegisterBtcDepositAddress, MsgRegisterJudge, MsgRegisterReserveAddress } from "./tx";
+import { MsgRegisterBtcDepositAddress, MsgRegisterJudge, MsgRegisterReserveAddress, MsgWithdrawBtcRequest } from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.bridge";
 
@@ -69,6 +69,7 @@ export interface QueryWithdrawBtcRequestAllRequest {
 }
 
 export interface QueryWithdrawBtcRequestAllResponse {
+  withdrawRequest: MsgWithdrawBtcRequest[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -839,11 +840,14 @@ export const QueryWithdrawBtcRequestAllRequest = {
 };
 
 function createBaseQueryWithdrawBtcRequestAllResponse(): QueryWithdrawBtcRequestAllResponse {
-  return {};
+  return { withdrawRequest: [] };
 }
 
 export const QueryWithdrawBtcRequestAllResponse = {
-  encode(_: QueryWithdrawBtcRequestAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryWithdrawBtcRequestAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.withdrawRequest) {
+      MsgWithdrawBtcRequest.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -854,6 +858,9 @@ export const QueryWithdrawBtcRequestAllResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.withdrawRequest.push(MsgWithdrawBtcRequest.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -862,19 +869,29 @@ export const QueryWithdrawBtcRequestAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryWithdrawBtcRequestAllResponse {
-    return {};
+  fromJSON(object: any): QueryWithdrawBtcRequestAllResponse {
+    return {
+      withdrawRequest: Array.isArray(object?.withdrawRequest)
+        ? object.withdrawRequest.map((e: any) => MsgWithdrawBtcRequest.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(_: QueryWithdrawBtcRequestAllResponse): unknown {
+  toJSON(message: QueryWithdrawBtcRequestAllResponse): unknown {
     const obj: any = {};
+    if (message.withdrawRequest) {
+      obj.withdrawRequest = message.withdrawRequest.map((e) => e ? MsgWithdrawBtcRequest.toJSON(e) : undefined);
+    } else {
+      obj.withdrawRequest = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryWithdrawBtcRequestAllResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryWithdrawBtcRequestAllResponse {
     const message = createBaseQueryWithdrawBtcRequestAllResponse();
+    message.withdrawRequest = object.withdrawRequest?.map((e) => MsgWithdrawBtcRequest.fromPartial(e)) || [];
     return message;
   },
 };

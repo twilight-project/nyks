@@ -10,7 +10,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func SimulateMsgSignRefund(
+func SimulateMsgSignSweep(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgSignRefund(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgSignRefund{
-			BtcOracleAddress: simAccount.Address.String(),
+		msg := &types.MsgSignSweep{
+			Creator: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the SignRefund simulation
+		// TODO: Handling the SignSweep simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "SignRefund simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "SignSweep simulation not implemented"), nil, nil
 	}
 }

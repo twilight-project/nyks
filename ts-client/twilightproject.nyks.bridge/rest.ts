@@ -44,7 +44,18 @@ export interface BridgeMsgRegisterReserveAddressResponse {
 
 export type BridgeMsgSignRefundResponse = object;
 
+export type BridgeMsgSignSweepResponse = object;
+
 export type BridgeMsgSweepProposalResponse = object;
+
+export interface BridgeMsgWithdrawBtcRequest {
+  withdrawAddress?: string;
+  reserveAddress?: string;
+
+  /** @format uint64 */
+  withdrawAmount?: string;
+  twilightAddress?: string;
+}
 
 export type BridgeMsgWithdrawBtcRequestResponse = object;
 
@@ -93,7 +104,9 @@ export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
 }
 
-export type BridgeQueryWithdrawBtcRequestAllResponse = object;
+export interface BridgeQueryWithdrawBtcRequestAllResponse {
+  withdrawRequest?: BridgeMsgWithdrawBtcRequest[];
+}
 
 export interface ProtobufAny {
   "@type"?: string;

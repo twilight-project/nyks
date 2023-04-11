@@ -47567,6 +47567,8 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgSignRefundResponse:
     type: object
+  twilightproject.nyks.bridge.MsgSignSweepResponse:
+    type: object
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
