@@ -227,20 +227,6 @@ export default {
 		},
 		
 		
-		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksForks.tx.sendMsgSeenBtcChainTip({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgSetDelegateAddresses({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -255,20 +241,21 @@ export default {
 				}
 			}
 		},
-		
-		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+		async sendMsgSeenBtcChainTip({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksForks.tx.msgSeenBtcChainTip({value})
-				return msg
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksForks.tx.sendMsgSeenBtcChainTip({ value, fee: fullFee, memo })
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgSetDelegateAddresses({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -279,6 +266,19 @@ export default {
 					throw new Error('TxClient:MsgSetDelegateAddresses:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgSetDelegateAddresses:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSeenBtcChainTip({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksForks.tx.msgSeenBtcChainTip({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSeenBtcChainTip:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSeenBtcChainTip:Create Could not create message: ' + e.message)
 				}
 			}
 		},

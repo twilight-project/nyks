@@ -70,6 +70,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/sign_refund_all";
   
   }
+  
+  // Queries a list of SignSweepAll items.
+  rpc SignSweepAll (QuerySignSweepAllRequest) returns (QuerySignSweepAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/sign_sweep_all";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -138,5 +144,11 @@ message QuerySignRefundAllRequest {}
 
 message QuerySignRefundAllResponse {
   repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySignSweepAllRequest {}
+
+message QuerySignSweepAllResponse {
+  repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 

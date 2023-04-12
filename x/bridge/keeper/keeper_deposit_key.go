@@ -286,6 +286,60 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 	}
 }
 
+// GetBtcSignSweepMsg returns the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
+func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) (*types.MsgSignSweep, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var signSweep types.MsgSignSweep
+	k.cdc.MustUnmarshal(bz, &signSweep)
+
+	return &signSweep, true
+}
+
+// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
+func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
+
+	signSweep := &types.MsgSignSweep{
+		BtcOracleAddress: btcOracleAddress.String(),
+		ReserveAddress:   reserveAddress.BtcAddress,
+		SignerAddress:    signerAddress.BtcAddress,
+		SweepSignature:   sweepSignature,
+	}
+	store.Set(aKey, k.cdc.MustMarshal(signSweep))
+	return nil
+}
+
+// IterateRegisteredSignSweepMsgs iterates through all of the registered sign sweep messages
+func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, types.MsgSignSweep) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcSignSweepMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgSignSweep{
+			ReserveAddress:   "",
+			SignerAddress:    "",
+			SweepSignature:   "",
+			BtcOracleAddress: "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////

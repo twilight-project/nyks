@@ -42,6 +42,13 @@ export interface BridgeMsgRegisterReserveAddressResponse {
   reserveAddress?: string;
 }
 
+export interface BridgeMsgSignRefund {
+  reserveAddress?: string;
+  signerAddress?: string;
+  refundSignature?: string;
+  btcOracleAddress?: string;
+}
+
 export type BridgeMsgSignRefundResponse = object;
 
 export type BridgeMsgSignSweepResponse = object;
@@ -104,7 +111,11 @@ export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
 }
 
-export type BridgeQuerySignRefundAllResponse = object;
+export interface BridgeQuerySignRefundAllResponse {
+  signRefundMsg?: BridgeMsgSignRefund[];
+}
+
+export type BridgeQuerySignSweepAllResponse = object;
 
 export interface BridgeQueryWithdrawBtcRequestAllResponse {
   withdrawRequest?: BridgeMsgWithdrawBtcRequest[];
@@ -376,6 +387,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   querySignRefundAll = (params: RequestParams = {}) =>
     this.request<BridgeQuerySignRefundAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/sign_refund_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySignSweepAll
+   * @summary Queries a list of SignSweepAll items.
+   * @request GET:/twilight-project/nyks/bridge/sign_sweep_all
+   */
+  querySignSweepAll = (params: RequestParams = {}) =>
+    this.request<BridgeQuerySignSweepAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/sign_sweep_all`,
       method: "GET",
       format: "json",
       ...params,

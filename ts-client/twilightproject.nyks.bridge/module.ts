@@ -9,25 +9,26 @@ import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 import { MsgRegisterJudge } from "./types/nyks/bridge/tx";
 import { MsgWithdrawTxSigned } from "./types/nyks/bridge/tx";
+import { MsgSignRefund } from "./types/nyks/bridge/tx";
 import { MsgWithdrawBtcRequest } from "./types/nyks/bridge/tx";
 import { MsgConfirmBtcWithdraw } from "./types/nyks/bridge/tx";
-import { MsgBroadcastRefund } from "./types/nyks/bridge/tx";
 import { MsgConfirmBtcDeposit } from "./types/nyks/bridge/tx";
-import { MsgRegisterBtcDepositAddress } from "./types/nyks/bridge/tx";
 import { MsgSignSweep } from "./types/nyks/bridge/tx";
-import { MsgRegisterReserveAddress } from "./types/nyks/bridge/tx";
+import { MsgBroadcastRefund } from "./types/nyks/bridge/tx";
+import { MsgRegisterBtcDepositAddress } from "./types/nyks/bridge/tx";
 import { MsgWithdrawTxFinal } from "./types/nyks/bridge/tx";
 import { MsgSweepProposal } from "./types/nyks/bridge/tx";
-import { MsgSignRefund } from "./types/nyks/bridge/tx";
+import { MsgRegisterReserveAddress } from "./types/nyks/bridge/tx";
 
 import { EventRegisterBtcDepositAddress as typeEventRegisterBtcDepositAddress} from "./types"
 import { EventRegisterReserveScript as typeEventRegisterReserveScript} from "./types"
 import { EventRegisterJudgeAddress as typeEventRegisterJudgeAddress} from "./types"
 import { EventWithdrawBtcRequest as typeEventWithdrawBtcRequest} from "./types"
 import { EventSignRefund as typeEventSignRefund} from "./types"
+import { EventSignSweep as typeEventSignSweep} from "./types"
 import { Params as typeParams} from "./types"
 
-export { MsgRegisterJudge, MsgWithdrawTxSigned, MsgWithdrawBtcRequest, MsgConfirmBtcWithdraw, MsgBroadcastRefund, MsgConfirmBtcDeposit, MsgRegisterBtcDepositAddress, MsgSignSweep, MsgRegisterReserveAddress, MsgWithdrawTxFinal, MsgSweepProposal, MsgSignRefund };
+export { MsgRegisterJudge, MsgWithdrawTxSigned, MsgSignRefund, MsgWithdrawBtcRequest, MsgConfirmBtcWithdraw, MsgConfirmBtcDeposit, MsgSignSweep, MsgBroadcastRefund, MsgRegisterBtcDepositAddress, MsgWithdrawTxFinal, MsgSweepProposal, MsgRegisterReserveAddress };
 
 type sendMsgRegisterJudgeParams = {
   value: MsgRegisterJudge,
@@ -37,6 +38,12 @@ type sendMsgRegisterJudgeParams = {
 
 type sendMsgWithdrawTxSignedParams = {
   value: MsgWithdrawTxSigned,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgSignRefundParams = {
+  value: MsgSignRefund,
   fee?: StdFee,
   memo?: string
 };
@@ -53,20 +60,8 @@ type sendMsgConfirmBtcWithdrawParams = {
   memo?: string
 };
 
-type sendMsgBroadcastRefundParams = {
-  value: MsgBroadcastRefund,
-  fee?: StdFee,
-  memo?: string
-};
-
 type sendMsgConfirmBtcDepositParams = {
   value: MsgConfirmBtcDeposit,
-  fee?: StdFee,
-  memo?: string
-};
-
-type sendMsgRegisterBtcDepositAddressParams = {
-  value: MsgRegisterBtcDepositAddress,
   fee?: StdFee,
   memo?: string
 };
@@ -77,8 +72,14 @@ type sendMsgSignSweepParams = {
   memo?: string
 };
 
-type sendMsgRegisterReserveAddressParams = {
-  value: MsgRegisterReserveAddress,
+type sendMsgBroadcastRefundParams = {
+  value: MsgBroadcastRefund,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgRegisterBtcDepositAddressParams = {
+  value: MsgRegisterBtcDepositAddress,
   fee?: StdFee,
   memo?: string
 };
@@ -95,8 +96,8 @@ type sendMsgSweepProposalParams = {
   memo?: string
 };
 
-type sendMsgSignRefundParams = {
-  value: MsgSignRefund,
+type sendMsgRegisterReserveAddressParams = {
+  value: MsgRegisterReserveAddress,
   fee?: StdFee,
   memo?: string
 };
@@ -110,6 +111,10 @@ type msgWithdrawTxSignedParams = {
   value: MsgWithdrawTxSigned,
 };
 
+type msgSignRefundParams = {
+  value: MsgSignRefund,
+};
+
 type msgWithdrawBtcRequestParams = {
   value: MsgWithdrawBtcRequest,
 };
@@ -118,24 +123,20 @@ type msgConfirmBtcWithdrawParams = {
   value: MsgConfirmBtcWithdraw,
 };
 
-type msgBroadcastRefundParams = {
-  value: MsgBroadcastRefund,
-};
-
 type msgConfirmBtcDepositParams = {
   value: MsgConfirmBtcDeposit,
-};
-
-type msgRegisterBtcDepositAddressParams = {
-  value: MsgRegisterBtcDepositAddress,
 };
 
 type msgSignSweepParams = {
   value: MsgSignSweep,
 };
 
-type msgRegisterReserveAddressParams = {
-  value: MsgRegisterReserveAddress,
+type msgBroadcastRefundParams = {
+  value: MsgBroadcastRefund,
+};
+
+type msgRegisterBtcDepositAddressParams = {
+  value: MsgRegisterBtcDepositAddress,
 };
 
 type msgWithdrawTxFinalParams = {
@@ -146,8 +147,8 @@ type msgSweepProposalParams = {
   value: MsgSweepProposal,
 };
 
-type msgSignRefundParams = {
-  value: MsgSignRefund,
+type msgRegisterReserveAddressParams = {
+  value: MsgRegisterReserveAddress,
 };
 
 
@@ -208,6 +209,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgSignRefund({ value, fee, memo }: sendMsgSignRefundParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgSignRefund: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgSignRefund({ value: MsgSignRefund.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgSignRefund: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgWithdrawBtcRequest({ value, fee, memo }: sendMsgWithdrawBtcRequestParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgWithdrawBtcRequest: Unable to sign Tx. Signer is not present.')
@@ -236,20 +251,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgBroadcastRefund({ value, fee, memo }: sendMsgBroadcastRefundParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgBroadcastRefund: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgBroadcastRefund({ value: MsgBroadcastRefund.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgBroadcastRefund: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgConfirmBtcDeposit({ value, fee, memo }: sendMsgConfirmBtcDepositParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgConfirmBtcDeposit: Unable to sign Tx. Signer is not present.')
@@ -261,20 +262,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
 				throw new Error('TxClient:sendMsgConfirmBtcDeposit: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
-		async sendMsgRegisterBtcDepositAddress({ value, fee, memo }: sendMsgRegisterBtcDepositAddressParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgRegisterBtcDepositAddress({ value: MsgRegisterBtcDepositAddress.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Could not broadcast Tx: '+ e.message)
 			}
 		},
 		
@@ -292,17 +279,31 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgRegisterReserveAddress({ value, fee, memo }: sendMsgRegisterReserveAddressParams): Promise<DeliverTxResponse> {
+		async sendMsgBroadcastRefund({ value, fee, memo }: sendMsgBroadcastRefundParams): Promise<DeliverTxResponse> {
 			if (!signer) {
-					throw new Error('TxClient:sendMsgRegisterReserveAddress: Unable to sign Tx. Signer is not present.')
+					throw new Error('TxClient:sendMsgBroadcastRefund: Unable to sign Tx. Signer is not present.')
 			}
 			try {			
 				const { address } = (await signer.getAccounts())[0]; 
 				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgRegisterReserveAddress({ value: MsgRegisterReserveAddress.fromPartial(value) })
+				let msg = this.msgBroadcastRefund({ value: MsgBroadcastRefund.fromPartial(value) })
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:sendMsgRegisterReserveAddress: Could not broadcast Tx: '+ e.message)
+				throw new Error('TxClient:sendMsgBroadcastRefund: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgRegisterBtcDepositAddress({ value, fee, memo }: sendMsgRegisterBtcDepositAddressParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgRegisterBtcDepositAddress({ value: MsgRegisterBtcDepositAddress.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgRegisterBtcDepositAddress: Could not broadcast Tx: '+ e.message)
 			}
 		},
 		
@@ -334,17 +335,17 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgSignRefund({ value, fee, memo }: sendMsgSignRefundParams): Promise<DeliverTxResponse> {
+		async sendMsgRegisterReserveAddress({ value, fee, memo }: sendMsgRegisterReserveAddressParams): Promise<DeliverTxResponse> {
 			if (!signer) {
-					throw new Error('TxClient:sendMsgSignRefund: Unable to sign Tx. Signer is not present.')
+					throw new Error('TxClient:sendMsgRegisterReserveAddress: Unable to sign Tx. Signer is not present.')
 			}
 			try {			
 				const { address } = (await signer.getAccounts())[0]; 
 				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgSignRefund({ value: MsgSignRefund.fromPartial(value) })
+				let msg = this.msgRegisterReserveAddress({ value: MsgRegisterReserveAddress.fromPartial(value) })
 				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:sendMsgSignRefund: Could not broadcast Tx: '+ e.message)
+				throw new Error('TxClient:sendMsgRegisterReserveAddress: Could not broadcast Tx: '+ e.message)
 			}
 		},
 		
@@ -365,6 +366,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		msgSignRefund({ value }: msgSignRefundParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgSignRefund", value: MsgSignRefund.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgSignRefund: Could not create message: ' + e.message)
+			}
+		},
+		
 		msgWithdrawBtcRequest({ value }: msgWithdrawBtcRequestParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.bridge.MsgWithdrawBtcRequest", value: MsgWithdrawBtcRequest.fromPartial( value ) }  
@@ -381,27 +390,11 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		msgBroadcastRefund({ value }: msgBroadcastRefundParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgBroadcastRefund", value: MsgBroadcastRefund.fromPartial( value ) }  
-			} catch (e: any) {
-				throw new Error('TxClient:MsgBroadcastRefund: Could not create message: ' + e.message)
-			}
-		},
-		
 		msgConfirmBtcDeposit({ value }: msgConfirmBtcDepositParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.bridge.MsgConfirmBtcDeposit", value: MsgConfirmBtcDeposit.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgConfirmBtcDeposit: Could not create message: ' + e.message)
-			}
-		},
-		
-		msgRegisterBtcDepositAddress({ value }: msgRegisterBtcDepositAddressParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( value ) }  
-			} catch (e: any) {
-				throw new Error('TxClient:MsgRegisterBtcDepositAddress: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -413,11 +406,19 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		msgRegisterReserveAddress({ value }: msgRegisterReserveAddressParams): EncodeObject {
+		msgBroadcastRefund({ value }: msgBroadcastRefundParams): EncodeObject {
 			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterReserveAddress", value: MsgRegisterReserveAddress.fromPartial( value ) }  
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgBroadcastRefund", value: MsgBroadcastRefund.fromPartial( value ) }  
 			} catch (e: any) {
-				throw new Error('TxClient:MsgRegisterReserveAddress: Could not create message: ' + e.message)
+				throw new Error('TxClient:MsgBroadcastRefund: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgRegisterBtcDepositAddress({ value }: msgRegisterBtcDepositAddressParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress", value: MsgRegisterBtcDepositAddress.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgRegisterBtcDepositAddress: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -437,11 +438,11 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		msgSignRefund({ value }: msgSignRefundParams): EncodeObject {
+		msgRegisterReserveAddress({ value }: msgRegisterReserveAddressParams): EncodeObject {
 			try {
-				return { typeUrl: "/twilightproject.nyks.bridge.MsgSignRefund", value: MsgSignRefund.fromPartial( value ) }  
+				return { typeUrl: "/twilightproject.nyks.bridge.MsgRegisterReserveAddress", value: MsgRegisterReserveAddress.fromPartial( value ) }  
 			} catch (e: any) {
-				throw new Error('TxClient:MsgSignRefund: Could not create message: ' + e.message)
+				throw new Error('TxClient:MsgRegisterReserveAddress: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -472,6 +473,7 @@ class SDKModule {
 						EventRegisterJudgeAddress: getStructure(typeEventRegisterJudgeAddress.fromPartial({})),
 						EventWithdrawBtcRequest: getStructure(typeEventWithdrawBtcRequest.fromPartial({})),
 						EventSignRefund: getStructure(typeEventSignRefund.fromPartial({})),
+						EventSignSweep: getStructure(typeEventSignSweep.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						
 		};

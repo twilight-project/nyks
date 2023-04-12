@@ -42,6 +42,9 @@ var (
 
 	// BtcSignRefundMsgKey is the key for the btc sign refund msg
 	BtcSignRefundMsgKey = forkstypes.HashString("BtcSignRefundMsg")
+
+	// BtcSignSweepMsgKey is the key for the btc sign sweep msg
+	BtcSignSweepMsgKey = forkstypes.HashString("BtcSignSweepMsg")
 )
 
 func KeyPrefix(p string) []byte {
@@ -102,4 +105,14 @@ func GetBtcSignRefundMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcA
 	}
 
 	return forkstypes.AppendBytes(BtcSignRefundMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(refundSignature))
+}
+
+// GetBtcSignSweepMsgKey returns the following key format
+// [HashString("BtcSignSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
+func GetBtcSignSweepMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAddress, sweepSignature string) []byte {
+	if err := sdk.VerifyAddressFormat(btcOracleAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid btc oracle address"))
+	}
+
+	return forkstypes.AppendBytes(BtcSignSweepMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(sweepSignature))
 }

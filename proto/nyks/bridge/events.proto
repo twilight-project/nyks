@@ -36,3 +36,11 @@ message EventSignRefund {
     string refundSignature = 4;
     string btcOracleAddress = 5;
 }
+
+message EventSignSweep {
+    string message = 1;
+    string reserveAddress = 2;
+    string signerAddress = 3;
+    string sweepSignature = 4;
+    string btcOracleAddress = 5;
+}

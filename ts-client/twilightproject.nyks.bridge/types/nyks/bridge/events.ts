@@ -36,6 +36,14 @@ export interface EventSignRefund {
   btcOracleAddress: string;
 }
 
+export interface EventSignSweep {
+  message: string;
+  reserveAddress: string;
+  signerAddress: string;
+  sweepSignature: string;
+  btcOracleAddress: string;
+}
+
 function createBaseEventRegisterBtcDepositAddress(): EventRegisterBtcDepositAddress {
   return { message: "", depositAddress: "" };
 }
@@ -386,6 +394,91 @@ export const EventSignRefund = {
     message.reserveAddress = object.reserveAddress ?? "";
     message.signerAddress = object.signerAddress ?? "";
     message.refundSignature = object.refundSignature ?? "";
+    message.btcOracleAddress = object.btcOracleAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventSignSweep(): EventSignSweep {
+  return { message: "", reserveAddress: "", signerAddress: "", sweepSignature: "", btcOracleAddress: "" };
+}
+
+export const EventSignSweep = {
+  encode(message: EventSignSweep, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.reserveAddress !== "") {
+      writer.uint32(18).string(message.reserveAddress);
+    }
+    if (message.signerAddress !== "") {
+      writer.uint32(26).string(message.signerAddress);
+    }
+    if (message.sweepSignature !== "") {
+      writer.uint32(34).string(message.sweepSignature);
+    }
+    if (message.btcOracleAddress !== "") {
+      writer.uint32(42).string(message.btcOracleAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventSignSweep {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventSignSweep();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.reserveAddress = reader.string();
+          break;
+        case 3:
+          message.signerAddress = reader.string();
+          break;
+        case 4:
+          message.sweepSignature = reader.string();
+          break;
+        case 5:
+          message.btcOracleAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventSignSweep {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
+      sweepSignature: isSet(object.sweepSignature) ? String(object.sweepSignature) : "",
+      btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
+    };
+  },
+
+  toJSON(message: EventSignSweep): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
+    message.sweepSignature !== undefined && (obj.sweepSignature = message.sweepSignature);
+    message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventSignSweep>, I>>(object: I): EventSignSweep {
+    const message = createBaseEventSignSweep();
+    message.message = object.message ?? "";
+    message.reserveAddress = object.reserveAddress ?? "";
+    message.signerAddress = object.signerAddress ?? "";
+    message.sweepSignature = object.sweepSignature ?? "";
     message.btcOracleAddress = object.btcOracleAddress ?? "";
     return message;
   },

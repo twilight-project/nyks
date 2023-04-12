@@ -1,7 +1,13 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { MsgRegisterBtcDepositAddress, MsgRegisterJudge, MsgRegisterReserveAddress, MsgWithdrawBtcRequest } from "./tx";
+import {
+  MsgRegisterBtcDepositAddress,
+  MsgRegisterJudge,
+  MsgRegisterReserveAddress,
+  MsgSignRefund,
+  MsgWithdrawBtcRequest,
+} from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.bridge";
 
@@ -76,6 +82,13 @@ export interface QuerySignRefundAllRequest {
 }
 
 export interface QuerySignRefundAllResponse {
+  signRefundMsg: MsgSignRefund[];
+}
+
+export interface QuerySignSweepAllRequest {
+}
+
+export interface QuerySignSweepAllResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -942,11 +955,14 @@ export const QuerySignRefundAllRequest = {
 };
 
 function createBaseQuerySignRefundAllResponse(): QuerySignRefundAllResponse {
-  return {};
+  return { signRefundMsg: [] };
 }
 
 export const QuerySignRefundAllResponse = {
-  encode(_: QuerySignRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QuerySignRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.signRefundMsg) {
+      MsgSignRefund.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -954,6 +970,58 @@ export const QuerySignRefundAllResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuerySignRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signRefundMsg.push(MsgSignRefund.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySignRefundAllResponse {
+    return {
+      signRefundMsg: Array.isArray(object?.signRefundMsg)
+        ? object.signRefundMsg.map((e: any) => MsgSignRefund.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QuerySignRefundAllResponse): unknown {
+    const obj: any = {};
+    if (message.signRefundMsg) {
+      obj.signRefundMsg = message.signRefundMsg.map((e) => e ? MsgSignRefund.toJSON(e) : undefined);
+    } else {
+      obj.signRefundMsg = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignRefundAllResponse>, I>>(object: I): QuerySignRefundAllResponse {
+    const message = createBaseQuerySignRefundAllResponse();
+    message.signRefundMsg = object.signRefundMsg?.map((e) => MsgSignRefund.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQuerySignSweepAllRequest(): QuerySignSweepAllRequest {
+  return {};
+}
+
+export const QuerySignSweepAllRequest = {
+  encode(_: QuerySignSweepAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignSweepAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignSweepAllRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -965,17 +1033,56 @@ export const QuerySignRefundAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QuerySignRefundAllResponse {
+  fromJSON(_: any): QuerySignSweepAllRequest {
     return {};
   },
 
-  toJSON(_: QuerySignRefundAllResponse): unknown {
+  toJSON(_: QuerySignSweepAllRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySignRefundAllResponse>, I>>(_: I): QuerySignRefundAllResponse {
-    const message = createBaseQuerySignRefundAllResponse();
+  fromPartial<I extends Exact<DeepPartial<QuerySignSweepAllRequest>, I>>(_: I): QuerySignSweepAllRequest {
+    const message = createBaseQuerySignSweepAllRequest();
+    return message;
+  },
+};
+
+function createBaseQuerySignSweepAllResponse(): QuerySignSweepAllResponse {
+  return {};
+}
+
+export const QuerySignSweepAllResponse = {
+  encode(_: QuerySignSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignSweepAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignSweepAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QuerySignSweepAllResponse {
+    return {};
+  },
+
+  toJSON(_: QuerySignSweepAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignSweepAllResponse>, I>>(_: I): QuerySignSweepAllResponse {
+    const message = createBaseQuerySignSweepAllResponse();
     return message;
   },
 };
@@ -1010,6 +1117,8 @@ export interface Query {
   WithdrawBtcRequestAll(request: QueryWithdrawBtcRequestAllRequest): Promise<QueryWithdrawBtcRequestAllResponse>;
   /** Queries a list of SignRefundAll items. */
   SignRefundAll(request: QuerySignRefundAllRequest): Promise<QuerySignRefundAllResponse>;
+  /** Queries a list of SignSweepAll items. */
+  SignSweepAll(request: QuerySignSweepAllRequest): Promise<QuerySignSweepAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1025,6 +1134,7 @@ export class QueryClientImpl implements Query {
     this.RegisteredJudges = this.RegisteredJudges.bind(this);
     this.WithdrawBtcRequestAll = this.WithdrawBtcRequestAll.bind(this);
     this.SignRefundAll = this.SignRefundAll.bind(this);
+    this.SignSweepAll = this.SignSweepAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1098,6 +1208,12 @@ export class QueryClientImpl implements Query {
     const data = QuerySignRefundAllRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "SignRefundAll", data);
     return promise.then((data) => QuerySignRefundAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  SignSweepAll(request: QuerySignSweepAllRequest): Promise<QuerySignSweepAllResponse> {
+    const data = QuerySignSweepAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "SignSweepAll", data);
+    return promise.then((data) => QuerySignSweepAllResponse.decode(new _m0.Reader(data)));
   }
 }
 
