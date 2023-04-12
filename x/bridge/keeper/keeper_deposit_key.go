@@ -232,6 +232,60 @@ func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]
 	}
 }
 
+// GetBtcSignRefundMsg returns the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
+func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) (*types.MsgSignRefund, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var signRefund types.MsgSignRefund
+	k.cdc.MustUnmarshal(bz, &signRefund)
+
+	return &signRefund, true
+}
+
+// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
+func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
+
+	signRefund := &types.MsgSignRefund{
+		BtcOracleAddress: btcOracleAddress.String(),
+		ReserveAddress:   reserveAddress.BtcAddress,
+		SignerAddress:    signerAddress.BtcAddress,
+		RefundSignature:  refundSignature,
+	}
+	store.Set(aKey, k.cdc.MustMarshal(signRefund))
+	return nil
+}
+
+// IterateRegisteredSignRefundMsgs iterates through all of the registered sign refund messages
+func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte, types.MsgSignRefund) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcSignRefundMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgSignRefund{
+			ReserveAddress:   "",
+			SignerAddress:    "",
+			RefundSignature:  "",
+			BtcOracleAddress: "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////

@@ -10,7 +10,6 @@ import (
 
 func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithdrawBtcRequest) (*types.MsgWithdrawBtcRequestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
 	twilightAddress := sdk.AccAddress(msg.TwilightAddress)
 	withdrawAmount := sdk.NewIntFromUint64(msg.WithdrawAmount)

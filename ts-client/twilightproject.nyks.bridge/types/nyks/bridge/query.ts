@@ -72,6 +72,12 @@ export interface QueryWithdrawBtcRequestAllResponse {
   withdrawRequest: MsgWithdrawBtcRequest[];
 }
 
+export interface QuerySignRefundAllRequest {
+}
+
+export interface QuerySignRefundAllResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -896,6 +902,84 @@ export const QueryWithdrawBtcRequestAllResponse = {
   },
 };
 
+function createBaseQuerySignRefundAllRequest(): QuerySignRefundAllRequest {
+  return {};
+}
+
+export const QuerySignRefundAllRequest = {
+  encode(_: QuerySignRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignRefundAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignRefundAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QuerySignRefundAllRequest {
+    return {};
+  },
+
+  toJSON(_: QuerySignRefundAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignRefundAllRequest>, I>>(_: I): QuerySignRefundAllRequest {
+    const message = createBaseQuerySignRefundAllRequest();
+    return message;
+  },
+};
+
+function createBaseQuerySignRefundAllResponse(): QuerySignRefundAllResponse {
+  return {};
+}
+
+export const QuerySignRefundAllResponse = {
+  encode(_: QuerySignRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignRefundAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QuerySignRefundAllResponse {
+    return {};
+  },
+
+  toJSON(_: QuerySignRefundAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignRefundAllResponse>, I>>(_: I): QuerySignRefundAllResponse {
+    const message = createBaseQuerySignRefundAllResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -924,6 +1008,8 @@ export interface Query {
   RegisteredJudges(request: QueryRegisteredJudgesRequest): Promise<QueryRegisteredJudgesResponse>;
   /** Queries a list of WithdrawBtcRequestAll items. */
   WithdrawBtcRequestAll(request: QueryWithdrawBtcRequestAllRequest): Promise<QueryWithdrawBtcRequestAllResponse>;
+  /** Queries a list of SignRefundAll items. */
+  SignRefundAll(request: QuerySignRefundAllRequest): Promise<QuerySignRefundAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -938,6 +1024,7 @@ export class QueryClientImpl implements Query {
     this.RegisteredJudgeAddressByValidatorAddress = this.RegisteredJudgeAddressByValidatorAddress.bind(this);
     this.RegisteredJudges = this.RegisteredJudges.bind(this);
     this.WithdrawBtcRequestAll = this.WithdrawBtcRequestAll.bind(this);
+    this.SignRefundAll = this.SignRefundAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1005,6 +1092,12 @@ export class QueryClientImpl implements Query {
     const data = QueryWithdrawBtcRequestAllRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "WithdrawBtcRequestAll", data);
     return promise.then((data) => QueryWithdrawBtcRequestAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  SignRefundAll(request: QuerySignRefundAllRequest): Promise<QuerySignRefundAllResponse> {
+    const data = QuerySignRefundAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "SignRefundAll", data);
+    return promise.then((data) => QuerySignRefundAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

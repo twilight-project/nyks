@@ -27577,6 +27577,49 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/sign_refund_all:
+    get:
+      summary: Queries a list of SignRefundAll items.
+      operationId: TwilightprojectNyksBridgeSignRefundAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              signRefundMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveAddress:
+                      type: string
+                    signerAddress:
+                      type: string
+                    refundSignature:
+                      type: string
+                    btcOracleAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/bridge/withdraw_btc_request_all:
     get:
       summary: Queries a list of WithdrawBtcRequestAll items.
@@ -47565,6 +47608,17 @@ definitions:
     properties:
       reserveAddress:
         type: string
+  twilightproject.nyks.bridge.MsgSignRefund:
+    type: object
+    properties:
+      reserveAddress:
+        type: string
+      signerAddress:
+        type: string
+      refundSignature:
+        type: string
+      btcOracleAddress:
+        type: string
   twilightproject.nyks.bridge.MsgSignRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgSignSweepResponse:
@@ -47662,6 +47716,22 @@ definitions:
             reserveAddress:
               type: string
             judgeAddress:
+              type: string
+  twilightproject.nyks.bridge.QuerySignRefundAllResponse:
+    type: object
+    properties:
+      signRefundMsg:
+        type: array
+        items:
+          type: object
+          properties:
+            reserveAddress:
+              type: string
+            signerAddress:
+              type: string
+            refundSignature:
+              type: string
+            btcOracleAddress:
               type: string
   twilightproject.nyks.bridge.QueryWithdrawBtcRequestAllResponse:
     type: object

@@ -64,6 +64,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/withdraw_btc_request_all";
   
   }
+  
+  // Queries a list of SignRefundAll items.
+  rpc SignRefundAll (QuerySignRefundAllRequest) returns (QuerySignRefundAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/sign_refund_all";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -126,5 +132,11 @@ message QueryWithdrawBtcRequestAllRequest {}
 
 message QueryWithdrawBtcRequestAllResponse {
   repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySignRefundAllRequest {}
+
+message QuerySignRefundAllResponse {
+  repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
 }
 

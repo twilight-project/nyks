@@ -28,3 +28,11 @@ message EventWithdrawBtcRequest {
     string withdrawAddress = 4;
     uint64 withdrawAmount = 5;
 }
+
+message EventSignRefund {
+    string message = 1;
+    string reserveAddress = 2;
+    string signerAddress = 3;
+    string refundSignature = 4;
+    string btcOracleAddress = 5;
+}

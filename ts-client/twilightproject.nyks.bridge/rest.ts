@@ -104,6 +104,8 @@ export interface BridgeQueryRegisteredReserveAddressesResponse {
   addresses?: BridgeMsgRegisterReserveAddress[];
 }
 
+export type BridgeQuerySignRefundAllResponse = object;
+
 export interface BridgeQueryWithdrawBtcRequestAllResponse {
   withdrawRequest?: BridgeMsgWithdrawBtcRequest[];
 }
@@ -358,6 +360,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryRegisteredReserveAddresses = (params: RequestParams = {}) =>
     this.request<BridgeQueryRegisteredReserveAddressesResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/registered_reserve_addresses`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySignRefundAll
+   * @summary Queries a list of SignRefundAll items.
+   * @request GET:/twilight-project/nyks/bridge/sign_refund_all
+   */
+  querySignRefundAll = (params: RequestParams = {}) =>
+    this.request<BridgeQuerySignRefundAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/sign_refund_all`,
       method: "GET",
       format: "json",
       ...params,

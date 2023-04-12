@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/hex"
 	fmt "fmt"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -55,6 +56,26 @@ func ValidateBtcAddress(Address string) error {
 	}
 
 	return nil
+}
+
+// IsValidSignature verifies that the signature is a valid hex string within the DER format length range
+// It's a basic check
+func IsValidSignature(signature string) bool {
+	signatureLen := len(signature)
+
+	// Check if the length is valid for either DER format (between 140 and 144 characters)
+	// or fixed 64-byte format (128 characters)
+	if (signatureLen < 140 || signatureLen > 144) || signatureLen != 128 {
+		return false
+	}
+
+	// Check if the string is a valid hex
+	_, err := hex.DecodeString(signature)
+	if err != nil {
+		return false
+	}
+
+	return true
 }
 
 // Returns the contained PublicKey as a string

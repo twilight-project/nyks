@@ -3,7 +3,6 @@
 import TwilightprojectNyksBridge from './twilightproject.nyks.bridge'
 import TwilightprojectNyksForks from './twilightproject.nyks.forks'
 import TwilightprojectNyksVolt from './twilightproject.nyks.volt'
-import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
 import CosmosAuthV1Beta1 from './cosmos.auth.v1beta1'
 import CosmosBankV1Beta1 from './cosmos.bank.v1beta1'
 import CosmosBaseTendermintV1Beta1 from './cosmos.base.tendermint.v1beta1'
@@ -24,13 +23,13 @@ import IbcCoreChannelV1 from './ibc.core.channel.v1'
 import IbcCoreClientV1 from './ibc.core.client.v1'
 import IbcCoreConnectionV1 from './ibc.core.connection.v1'
 import IbcCorePortV1 from './ibc.core.port.v1'
+import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
 
 
 export default { 
   TwilightprojectNyksBridge: load(TwilightprojectNyksBridge, 'twilightproject.nyks.bridge'),
   TwilightprojectNyksForks: load(TwilightprojectNyksForks, 'twilightproject.nyks.forks'),
   TwilightprojectNyksVolt: load(TwilightprojectNyksVolt, 'twilightproject.nyks.volt'),
-  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
   CosmosAuthV1Beta1: load(CosmosAuthV1Beta1, 'cosmos.auth.v1beta1'),
   CosmosBankV1Beta1: load(CosmosBankV1Beta1, 'cosmos.bank.v1beta1'),
   CosmosBaseTendermintV1Beta1: load(CosmosBaseTendermintV1Beta1, 'cosmos.base.tendermint.v1beta1'),
@@ -51,6 +50,7 @@ export default {
   IbcCoreClientV1: load(IbcCoreClientV1, 'ibc.core.client.v1'),
   IbcCoreConnectionV1: load(IbcCoreConnectionV1, 'ibc.core.connection.v1'),
   IbcCorePortV1: load(IbcCorePortV1, 'ibc.core.port.v1'),
+  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
   
 }
 

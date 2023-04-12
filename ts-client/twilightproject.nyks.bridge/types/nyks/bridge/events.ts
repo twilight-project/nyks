@@ -28,6 +28,14 @@ export interface EventWithdrawBtcRequest {
   withdrawAmount: number;
 }
 
+export interface EventSignRefund {
+  message: string;
+  reserveAddress: string;
+  signerAddress: string;
+  refundSignature: string;
+  btcOracleAddress: string;
+}
+
 function createBaseEventRegisterBtcDepositAddress(): EventRegisterBtcDepositAddress {
   return { message: "", depositAddress: "" };
 }
@@ -294,6 +302,91 @@ export const EventWithdrawBtcRequest = {
     message.reserveAddress = object.reserveAddress ?? "";
     message.withdrawAddress = object.withdrawAddress ?? "";
     message.withdrawAmount = object.withdrawAmount ?? 0;
+    return message;
+  },
+};
+
+function createBaseEventSignRefund(): EventSignRefund {
+  return { message: "", reserveAddress: "", signerAddress: "", refundSignature: "", btcOracleAddress: "" };
+}
+
+export const EventSignRefund = {
+  encode(message: EventSignRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.reserveAddress !== "") {
+      writer.uint32(18).string(message.reserveAddress);
+    }
+    if (message.signerAddress !== "") {
+      writer.uint32(26).string(message.signerAddress);
+    }
+    if (message.refundSignature !== "") {
+      writer.uint32(34).string(message.refundSignature);
+    }
+    if (message.btcOracleAddress !== "") {
+      writer.uint32(42).string(message.btcOracleAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventSignRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventSignRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.reserveAddress = reader.string();
+          break;
+        case 3:
+          message.signerAddress = reader.string();
+          break;
+        case 4:
+          message.refundSignature = reader.string();
+          break;
+        case 5:
+          message.btcOracleAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventSignRefund {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
+      refundSignature: isSet(object.refundSignature) ? String(object.refundSignature) : "",
+      btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
+    };
+  },
+
+  toJSON(message: EventSignRefund): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
+    message.refundSignature !== undefined && (obj.refundSignature = message.refundSignature);
+    message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventSignRefund>, I>>(object: I): EventSignRefund {
+    const message = createBaseEventSignRefund();
+    message.message = object.message ?? "";
+    message.reserveAddress = object.reserveAddress ?? "";
+    message.signerAddress = object.signerAddress ?? "";
+    message.refundSignature = object.refundSignature ?? "";
+    message.btcOracleAddress = object.btcOracleAddress ?? "";
     return message;
   },
 };
