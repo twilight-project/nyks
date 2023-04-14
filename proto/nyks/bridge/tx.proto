@@ -24,6 +24,7 @@ service Msg {
   rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
   rpc BroadcastRefund    (MsgBroadcastRefund   ) returns (MsgBroadcastRefundResponse   );
   rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
+  rpc ProposeRefundHash  (MsgProposeRefundHash ) returns (MsgProposeRefundHashResponse );
 }
 message MsgConfirmBtcDeposit {
   string depositAddress         = 1;
@@ -124,22 +125,26 @@ message MsgSignRefund {
 
 message MsgSignRefundResponse {}
 
+message MsgSignSweep {
+  string reserveAddress   = 1;
+  string signerAddress    = 2;
+  string sweepSignature   = 3;
+  string btcOracleAddress = 4;
+}
+
+message MsgSignSweepResponse {}
+
 message MsgBroadcastRefund {
-  string creator        = 1;
+  string signedRefundTx = 1;
   string judgeAddress   = 2;
-  string signedRefundTx = 3;
-  string signedSweepTx  = 4;
 }
 
 message MsgBroadcastRefundResponse {}
 
-message MsgSignSweep {
-  string creator          = 1;
-  string reserveAddress   = 2;
-  string signerAddress    = 3;
-  string sweepSignature   = 4;
-  string btcOracleAddress = 5;
+message MsgProposeRefundHash {
+  string refundHash   = 1;
+  string judgeAddress = 2;
 }
 
-message MsgSignSweepResponse {}
+message MsgProposeRefundHashResponse {}
 

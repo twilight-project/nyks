@@ -27301,6 +27301,45 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/broadcast_refund_all:
+    get:
+      summary: Queries a list of BroadcastRefundAll items.
+      operationId: TwilightprojectNyksBridgeBroadcastRefundAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              broadcastRefundMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    signedRefundTx:
+                      type: string
+                    judgeAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/bridge/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -27317,6 +27356,45 @@ paths:
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/propose_refund_hash_all:
+    get:
+      summary: Queries a list of ProposeRefundHashAll items.
+      operationId: TwilightprojectNyksBridgeProposeRefundHashAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              proposeRefundHashMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    refundHash:
+                      type: string
+                    judgeAddress:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -27635,8 +27713,6 @@ paths:
                 items:
                   type: object
                   properties:
-                    creator:
-                      type: string
                     reserveAddress:
                       type: string
                     signerAddress:
@@ -47610,6 +47686,13 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgBroadcastRefund:
+    type: object
+    properties:
+      signedRefundTx:
+        type: string
+      judgeAddress:
+        type: string
   twilightproject.nyks.bridge.MsgBroadcastRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse:
@@ -47618,6 +47701,15 @@ definitions:
       twilightDepositAddress:
         type: string
   twilightproject.nyks.bridge.MsgConfirmBtcWithdrawResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgProposeRefundHash:
+    type: object
+    properties:
+      refundHash:
+        type: string
+      judgeAddress:
+        type: string
+  twilightproject.nyks.bridge.MsgProposeRefundHashResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress:
     type: object
@@ -47669,8 +47761,6 @@ definitions:
   twilightproject.nyks.bridge.MsgSignSweep:
     type: object
     properties:
-      creator:
-        type: string
       reserveAddress:
         type: string
       signerAddress:
@@ -47705,6 +47795,18 @@ definitions:
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.
+  twilightproject.nyks.bridge.QueryBroadcastRefundAllResponse:
+    type: object
+    properties:
+      broadcastRefundMsg:
+        type: array
+        items:
+          type: object
+          properties:
+            signedRefundTx:
+              type: string
+            judgeAddress:
+              type: string
   twilightproject.nyks.bridge.QueryParamsResponse:
     type: object
     properties:
@@ -47712,6 +47814,18 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.bridge.QueryProposeRefundHashAllResponse:
+    type: object
+    properties:
+      proposeRefundHashMsg:
+        type: array
+        items:
+          type: object
+          properties:
+            refundHash:
+              type: string
+            judgeAddress:
+              type: string
   twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressByTwilightAddressResponse:
     type: object
     properties:
@@ -47799,8 +47913,6 @@ definitions:
         items:
           type: object
           properties:
-            creator:
-              type: string
             reserveAddress:
               type: string
             signerAddress:

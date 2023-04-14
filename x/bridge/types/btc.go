@@ -65,7 +65,7 @@ func IsValidSignature(signature string) bool {
 
 	// Check if the length is valid for either DER format (between 140 and 144 characters)
 	// or fixed 64-byte format (128 characters)
-	if (signatureLen < 140 || signatureLen > 144) || signatureLen != 128 {
+	if (signatureLen < 140 || signatureLen > 144) && signatureLen != 128 {
 		return false
 	}
 

@@ -72,6 +72,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSignSweep int = 100
 
+	opWeightMsgProposeRefundHash = "op_weight_msg_propose_refund_hash"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgProposeRefundHash int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -236,6 +240,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgSignSweep,
 		bridgesimulation.SimulateMsgSignSweep(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgProposeRefundHash int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgProposeRefundHash, &weightMsgProposeRefundHash, nil,
+		func(_ *rand.Rand) {
+			weightMsgProposeRefundHash = defaultWeightMsgProposeRefundHash
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgProposeRefundHash,
+		bridgesimulation.SimulateMsgProposeRefundHash(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

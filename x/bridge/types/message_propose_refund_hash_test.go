@@ -8,21 +8,21 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgBroadcastRefund_ValidateBasic(t *testing.T) {
+func TestMsgProposeRefundHash_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgBroadcastRefund
+		msg  MsgProposeRefundHash
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgBroadcastRefund{
+			msg: MsgProposeRefundHash{
 				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgBroadcastRefund{
+			msg: MsgProposeRefundHash{
 				JudgeAddress: sample.AccAddress(),
 			},
 		},

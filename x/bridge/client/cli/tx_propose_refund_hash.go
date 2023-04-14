@@ -12,25 +12,21 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdSignSweep() *cobra.Command {
+func CmdProposeRefundHash() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sign-sweep [reserve-address] [signer-address] [sweep-signature]",
-		Short: "Broadcast message SignSweep",
-		Args:  cobra.ExactArgs(3),
+		Use:   "propose-refund-hash [refund-hash]",
+		Short: "Broadcast message ProposeRefundHash",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argReserveAddress := args[0]
-			argSignerAddress := args[1]
-			argSweepSignature := args[2]
+			argRefundHash := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgSignSweep(
-				argReserveAddress,
-				argSignerAddress,
-				argSweepSignature,
+			msg := types.NewMsgProposeRefundHash(
+				argRefundHash,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

@@ -76,6 +76,18 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/sign_sweep_all";
   
   }
+  
+  // Queries a list of BroadcastRefundAll items.
+  rpc BroadcastRefundAll (QueryBroadcastRefundAllRequest) returns (QueryBroadcastRefundAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_refund_all";
+  
+  }
+  
+  // Queries a list of ProposeRefundHashAll items.
+  rpc ProposeRefundHashAll (QueryProposeRefundHashAllRequest) returns (QueryProposeRefundHashAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/propose_refund_hash_all";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -150,5 +162,17 @@ message QuerySignSweepAllRequest {}
 
 message QuerySignSweepAllResponse {
   repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBroadcastRefundAllRequest {}
+
+message QueryBroadcastRefundAllResponse {
+  repeated MsgBroadcastRefund broadcastRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryProposeRefundHashAllRequest {}
+
+message QueryProposeRefundHashAllResponse {
+  repeated MsgProposeRefundHash proposeRefundHashMsg = 1 [(gogoproto.nullable) = false];
 }
 

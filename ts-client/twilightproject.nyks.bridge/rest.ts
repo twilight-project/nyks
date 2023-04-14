@@ -9,6 +9,11 @@
  * ---------------------------------------------------------------
  */
 
+export interface BridgeMsgBroadcastRefund {
+  signedRefundTx?: string;
+  judgeAddress?: string;
+}
+
 export type BridgeMsgBroadcastRefundResponse = object;
 
 export interface BridgeMsgConfirmBtcDepositResponse {
@@ -16,6 +21,8 @@ export interface BridgeMsgConfirmBtcDepositResponse {
 }
 
 export type BridgeMsgConfirmBtcWithdrawResponse = object;
+
+export type BridgeMsgProposeRefundHashResponse = object;
 
 export interface BridgeMsgRegisterBtcDepositAddress {
   depositAddress?: string;
@@ -51,6 +58,13 @@ export interface BridgeMsgSignRefund {
 
 export type BridgeMsgSignRefundResponse = object;
 
+export interface BridgeMsgSignSweep {
+  reserveAddress?: string;
+  signerAddress?: string;
+  sweepSignature?: string;
+  btcOracleAddress?: string;
+}
+
 export type BridgeMsgSignSweepResponse = object;
 
 export type BridgeMsgSweepProposalResponse = object;
@@ -75,6 +89,10 @@ export type BridgeMsgWithdrawTxSignedResponse = object;
  */
 export type BridgeParams = object;
 
+export interface BridgeQueryBroadcastRefundAllResponse {
+  broadcastRefundMsg?: BridgeMsgBroadcastRefund[];
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -82,6 +100,8 @@ export interface BridgeQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: BridgeParams;
 }
+
+export type BridgeQueryProposeRefundHashAllResponse = object;
 
 export interface BridgeQueryRegisteredBtcDepositAddressByTwilightAddressResponse {
   depositAddress?: string;
@@ -115,7 +135,9 @@ export interface BridgeQuerySignRefundAllResponse {
   signRefundMsg?: BridgeMsgSignRefund[];
 }
 
-export type BridgeQuerySignSweepAllResponse = object;
+export interface BridgeQuerySignSweepAllResponse {
+  signSweepMsg?: BridgeMsgSignSweep[];
+}
 
 export interface BridgeQueryWithdrawBtcRequestAllResponse {
   withdrawRequest?: BridgeMsgWithdrawBtcRequest[];
@@ -268,6 +290,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
+   * @name QueryBroadcastRefundAll
+   * @summary Queries a list of BroadcastRefundAll items.
+   * @request GET:/twilight-project/nyks/bridge/broadcast_refund_all
+   */
+  queryBroadcastRefundAll = (params: RequestParams = {}) =>
+    this.request<BridgeQueryBroadcastRefundAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/broadcast_refund_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
    * @name QueryParams
    * @summary Parameters queries the parameters of the module.
    * @request GET:/twilight-project/nyks/bridge/params
@@ -275,6 +313,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<BridgeQueryParamsResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryProposeRefundHashAll
+   * @summary Queries a list of ProposeRefundHashAll items.
+   * @request GET:/twilight-project/nyks/bridge/propose_refund_hash_all
+   */
+  queryProposeRefundHashAll = (params: RequestParams = {}) =>
+    this.request<BridgeQueryProposeRefundHashAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/propose_refund_hash_all`,
       method: "GET",
       format: "json",
       ...params,

@@ -19,7 +19,7 @@ func SimulateMsgBroadcastRefund(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgBroadcastRefund{
-			Creator: simAccount.Address.String(),
+			JudgeAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the BroadcastRefund simulation

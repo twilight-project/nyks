@@ -340,6 +340,106 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 	}
 }
 
+// GetBtcBroadcastRefundMsg returns the broadcast refund message for btc chain using judgeAddress and SignedRefundTx
+func (k Keeper) GetBtcBroadcastRefundMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) (*types.MsgBroadcastRefund, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcBroadcastRefundMsgKey(judgeAddress, SignedRefundTx)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var broadcastRefund types.MsgBroadcastRefund
+	k.cdc.MustUnmarshal(bz, &broadcastRefund)
+
+	return &broadcastRefund, true
+}
+
+// SetBtcBroadcastRefundMsg sets the broadcast refund message for btc chain using judgeAddress and SignedRefundTx
+func (k Keeper) SetBtcBroadcastRefundMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcBroadcastRefundMsgKey(judgeAddress, SignedRefundTx)
+
+	broadcastRefund := &types.MsgBroadcastRefund{
+		JudgeAddress:   judgeAddress.String(),
+		SignedRefundTx: SignedRefundTx,
+	}
+	store.Set(aKey, k.cdc.MustMarshal(broadcastRefund))
+	return nil
+}
+
+// IterateRegisteredBroadcastRefundMsgs iterates through all of the registered broadcast refund messages
+func (k Keeper) IterateRegisteredBroadcastRefundMsgs(ctx sdk.Context, cb func([]byte, types.MsgBroadcastRefund) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcBroadcastRefundMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgBroadcastRefund{
+			JudgeAddress:   "",
+			SignedRefundTx: "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
+// GetBtcProposeRefundHashMsg returns the propose refund hash message for btc chain using judgeAddress, refundHash
+func (k Keeper) GetBtcProposeRefundHashMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, refundHash string) (*types.MsgProposeRefundHash, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcProposeRefundHashMsgKey(judgeAddress, refundHash)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var proposeRefundHash types.MsgProposeRefundHash
+	k.cdc.MustUnmarshal(bz, &proposeRefundHash)
+
+	return &proposeRefundHash, true
+}
+
+// SetProposeRefundHashMsg sets the propose refund hash message for btc chain using judgeAddress, refundHash
+func (k Keeper) SetBtcProposeRefundHashMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, refundHash string) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcProposeRefundHashMsgKey(judgeAddress, refundHash)
+
+	proposeRefundHash := &types.MsgProposeRefundHash{
+		JudgeAddress: judgeAddress.String(),
+		RefundHash:   refundHash,
+	}
+	store.Set(aKey, k.cdc.MustMarshal(proposeRefundHash))
+	return nil
+}
+
+// IterateRegisteredProposeRefundHashMsgs iterates through all of the registered propose refund hash messages
+func (k Keeper) IterateRegisteredProposeRefundHashMsgs(ctx sdk.Context, cb func([]byte, types.MsgProposeRefundHash) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcProposeRefundHashMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgProposeRefundHash{
+			JudgeAddress: "",
+			RefundHash:   "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////

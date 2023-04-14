@@ -45,6 +45,12 @@ var (
 
 	// BtcSignSweepMsgKey is the key for the btc sign sweep msg
 	BtcSignSweepMsgKey = forkstypes.HashString("BtcSignSweepMsg")
+
+	//BtcBroadcastRefundMsgKey is the key for the btc broadcast refund msg
+	BtcBroadcastRefundMsgKey = forkstypes.HashString("BtcBroadcastRefundMsg")
+
+	// BtcProposeRefundHashMsgKey is the key for the btc propose refund hash msg
+	BtcProposeRefundHashMsgKey = forkstypes.HashString("BtcProposeRefundHashMsg")
 )
 
 func KeyPrefix(p string) []byte {
@@ -61,7 +67,7 @@ func GetBtcAddressByTwilightAddressKey(twilightAddress sdk.AccAddress) []byte {
 }
 
 // GetBtcRegisterReserveAddressKey returns the following key format
-// [HashString("BtcReserveAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
+// [HashString("BtcReserveAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
 func GetBtcRegisterReserveAddressKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
@@ -70,7 +76,7 @@ func GetBtcRegisterReserveAddressKey(judgeAddress sdk.AccAddress, reserveAddress
 }
 
 // GetBtcRegisterReserveScriptKey returns the following key format
-// [HashString("BtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
+// [HashString("BtcReserveScriptKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
 func GetBtcRegisterReserveScriptKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
@@ -79,7 +85,7 @@ func GetBtcRegisterReserveScriptKey(judgeAddress sdk.AccAddress, reserveAddress 
 }
 
 // GetRegisterJudgeAddressKey returns the following key format
-// [HashString("JudgeAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+// [HashString("JudgeAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
 func GetRegisterJudgeAddressKey(validatorAddress sdk.ValAddress) []byte {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
@@ -88,7 +94,7 @@ func GetRegisterJudgeAddressKey(validatorAddress sdk.ValAddress) []byte {
 }
 
 // GetBtcWithdrawRequestKey returns the following key format
-// [HashString("BtcWithdrawRequest")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1]]
+// [HashString("BtcWithdrawRequest")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1]]
 func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress BtcAddress, withdrawAddress BtcAddress, withdrawAmount sdk.Int) []byte {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid twilight address"))
@@ -98,7 +104,7 @@ func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress Btc
 }
 
 // GetBtcSignRefundMsgKey returns the following key format
-// [HashString("BtcSignRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
+// [HashString("BtcSignRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
 func GetBtcSignRefundMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAddress, refundSignature string) []byte {
 	if err := sdk.VerifyAddressFormat(btcOracleAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid btc oracle address"))
@@ -108,11 +114,31 @@ func GetBtcSignRefundMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcA
 }
 
 // GetBtcSignSweepMsgKey returns the following key format
-// [HashString("BtcSignSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm] [1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
+// [HashString("BtcSignSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
 func GetBtcSignSweepMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAddress, sweepSignature string) []byte {
 	if err := sdk.VerifyAddressFormat(btcOracleAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid btc oracle address"))
 	}
 
 	return forkstypes.AppendBytes(BtcSignSweepMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(sweepSignature))
+}
+
+// GetBtcBroadcastRefundMsgKey returns the following key format
+// [HashString("BtcBroadcastRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][01000000015821f1bf602c89a57535286e7a59c302b3039c09e2d94bbf6464320fb0d3c5a2000000006a473044022075a48b0a69e66ea736d1aeae13dc6e8b6c7309636c45d6d01f2b43f8b3580a5a022068f1e72030c5cd2a5cdd6d99d195b5831008da88da6da79d1f91317a249fbbaa0121033686c32eeea239e2d7b2038f7312171b10ad76b0e146b676e4f4d4c708f0bb75ffffffff0288130000000000001976a91419134d474a759f7d3560b55ec977517a86e955f988ac7a110100000000001976a914f208a460bff15d809eafa80ee6cddb7ef486df7988ac00000000]
+func GetBtcBroadcastRefundMsgKey(judgeAddress sdk.AccAddress, SignedRefundTx string) []byte {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid judge address"))
+	}
+
+	return forkstypes.AppendBytes(BtcBroadcastRefundMsgKey, judgeAddress.Bytes(), []byte(SignedRefundTx))
+}
+
+// GetBtcProposeRefundHashMsgKey returns the following key format
+// [HashString("BtcProposeRefundHashMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855]
+func GetBtcProposeRefundHashMsgKey(judgeAddress sdk.AccAddress, refundHash string) []byte {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid judge address"))
+	}
+
+	return forkstypes.AppendBytes(BtcProposeRefundHashMsgKey, judgeAddress.Bytes(), []byte(refundHash))
 }

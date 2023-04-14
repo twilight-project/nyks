@@ -2,10 +2,12 @@
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import {
+  MsgBroadcastRefund,
   MsgRegisterBtcDepositAddress,
   MsgRegisterJudge,
   MsgRegisterReserveAddress,
   MsgSignRefund,
+  MsgSignSweep,
   MsgWithdrawBtcRequest,
 } from "./tx";
 
@@ -89,6 +91,20 @@ export interface QuerySignSweepAllRequest {
 }
 
 export interface QuerySignSweepAllResponse {
+  signSweepMsg: MsgSignSweep[];
+}
+
+export interface QueryBroadcastRefundAllRequest {
+}
+
+export interface QueryBroadcastRefundAllResponse {
+  broadcastRefundMsg: MsgBroadcastRefund[];
+}
+
+export interface QueryProposeRefundHashAllRequest {
+}
+
+export interface QueryProposeRefundHashAllResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1049,11 +1065,14 @@ export const QuerySignSweepAllRequest = {
 };
 
 function createBaseQuerySignSweepAllResponse(): QuerySignSweepAllResponse {
-  return {};
+  return { signSweepMsg: [] };
 }
 
 export const QuerySignSweepAllResponse = {
-  encode(_: QuerySignSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QuerySignSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.signSweepMsg) {
+      MsgSignSweep.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1061,6 +1080,58 @@ export const QuerySignSweepAllResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuerySignSweepAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signSweepMsg.push(MsgSignSweep.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySignSweepAllResponse {
+    return {
+      signSweepMsg: Array.isArray(object?.signSweepMsg)
+        ? object.signSweepMsg.map((e: any) => MsgSignSweep.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QuerySignSweepAllResponse): unknown {
+    const obj: any = {};
+    if (message.signSweepMsg) {
+      obj.signSweepMsg = message.signSweepMsg.map((e) => e ? MsgSignSweep.toJSON(e) : undefined);
+    } else {
+      obj.signSweepMsg = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignSweepAllResponse>, I>>(object: I): QuerySignSweepAllResponse {
+    const message = createBaseQuerySignSweepAllResponse();
+    message.signSweepMsg = object.signSweepMsg?.map((e) => MsgSignSweep.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQueryBroadcastRefundAllRequest(): QueryBroadcastRefundAllRequest {
+  return {};
+}
+
+export const QueryBroadcastRefundAllRequest = {
+  encode(_: QueryBroadcastRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastRefundAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastRefundAllRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1072,17 +1143,156 @@ export const QuerySignSweepAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QuerySignSweepAllResponse {
+  fromJSON(_: any): QueryBroadcastRefundAllRequest {
     return {};
   },
 
-  toJSON(_: QuerySignSweepAllResponse): unknown {
+  toJSON(_: QueryBroadcastRefundAllRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySignSweepAllResponse>, I>>(_: I): QuerySignSweepAllResponse {
-    const message = createBaseQuerySignSweepAllResponse();
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastRefundAllRequest>, I>>(_: I): QueryBroadcastRefundAllRequest {
+    const message = createBaseQueryBroadcastRefundAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryBroadcastRefundAllResponse(): QueryBroadcastRefundAllResponse {
+  return { broadcastRefundMsg: [] };
+}
+
+export const QueryBroadcastRefundAllResponse = {
+  encode(message: QueryBroadcastRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.broadcastRefundMsg) {
+      MsgBroadcastRefund.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastRefundAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.broadcastRefundMsg.push(MsgBroadcastRefund.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBroadcastRefundAllResponse {
+    return {
+      broadcastRefundMsg: Array.isArray(object?.broadcastRefundMsg)
+        ? object.broadcastRefundMsg.map((e: any) => MsgBroadcastRefund.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryBroadcastRefundAllResponse): unknown {
+    const obj: any = {};
+    if (message.broadcastRefundMsg) {
+      obj.broadcastRefundMsg = message.broadcastRefundMsg.map((e) => e ? MsgBroadcastRefund.toJSON(e) : undefined);
+    } else {
+      obj.broadcastRefundMsg = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastRefundAllResponse>, I>>(
+    object: I,
+  ): QueryBroadcastRefundAllResponse {
+    const message = createBaseQueryBroadcastRefundAllResponse();
+    message.broadcastRefundMsg = object.broadcastRefundMsg?.map((e) => MsgBroadcastRefund.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQueryProposeRefundHashAllRequest(): QueryProposeRefundHashAllRequest {
+  return {};
+}
+
+export const QueryProposeRefundHashAllRequest = {
+  encode(_: QueryProposeRefundHashAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeRefundHashAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProposeRefundHashAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryProposeRefundHashAllRequest {
+    return {};
+  },
+
+  toJSON(_: QueryProposeRefundHashAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryProposeRefundHashAllRequest>, I>>(
+    _: I,
+  ): QueryProposeRefundHashAllRequest {
+    const message = createBaseQueryProposeRefundHashAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryProposeRefundHashAllResponse(): QueryProposeRefundHashAllResponse {
+  return {};
+}
+
+export const QueryProposeRefundHashAllResponse = {
+  encode(_: QueryProposeRefundHashAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeRefundHashAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProposeRefundHashAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryProposeRefundHashAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryProposeRefundHashAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryProposeRefundHashAllResponse>, I>>(
+    _: I,
+  ): QueryProposeRefundHashAllResponse {
+    const message = createBaseQueryProposeRefundHashAllResponse();
     return message;
   },
 };
@@ -1119,6 +1329,10 @@ export interface Query {
   SignRefundAll(request: QuerySignRefundAllRequest): Promise<QuerySignRefundAllResponse>;
   /** Queries a list of SignSweepAll items. */
   SignSweepAll(request: QuerySignSweepAllRequest): Promise<QuerySignSweepAllResponse>;
+  /** Queries a list of BroadcastRefundAll items. */
+  BroadcastRefundAll(request: QueryBroadcastRefundAllRequest): Promise<QueryBroadcastRefundAllResponse>;
+  /** Queries a list of ProposeRefundHashAll items. */
+  ProposeRefundHashAll(request: QueryProposeRefundHashAllRequest): Promise<QueryProposeRefundHashAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1135,6 +1349,8 @@ export class QueryClientImpl implements Query {
     this.WithdrawBtcRequestAll = this.WithdrawBtcRequestAll.bind(this);
     this.SignRefundAll = this.SignRefundAll.bind(this);
     this.SignSweepAll = this.SignSweepAll.bind(this);
+    this.BroadcastRefundAll = this.BroadcastRefundAll.bind(this);
+    this.ProposeRefundHashAll = this.ProposeRefundHashAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1214,6 +1430,18 @@ export class QueryClientImpl implements Query {
     const data = QuerySignSweepAllRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "SignSweepAll", data);
     return promise.then((data) => QuerySignSweepAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  BroadcastRefundAll(request: QueryBroadcastRefundAllRequest): Promise<QueryBroadcastRefundAllResponse> {
+    const data = QueryBroadcastRefundAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "BroadcastRefundAll", data);
+    return promise.then((data) => QueryBroadcastRefundAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  ProposeRefundHashAll(request: QueryProposeRefundHashAllRequest): Promise<QueryProposeRefundHashAllResponse> {
+    const data = QueryProposeRefundHashAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "ProposeRefundHashAll", data);
+    return promise.then((data) => QueryProposeRefundHashAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

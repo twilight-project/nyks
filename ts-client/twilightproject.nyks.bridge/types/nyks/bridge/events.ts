@@ -44,6 +44,18 @@ export interface EventSignSweep {
   btcOracleAddress: string;
 }
 
+export interface EventBroadcastRefund {
+  message: string;
+  signedRefundTx: string;
+  judgeAddress: string;
+}
+
+export interface EventProposeRefundHash {
+  message: string;
+  refundHash: string;
+  judgeAddress: string;
+}
+
 function createBaseEventRegisterBtcDepositAddress(): EventRegisterBtcDepositAddress {
   return { message: "", depositAddress: "" };
 }
@@ -480,6 +492,140 @@ export const EventSignSweep = {
     message.signerAddress = object.signerAddress ?? "";
     message.sweepSignature = object.sweepSignature ?? "";
     message.btcOracleAddress = object.btcOracleAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventBroadcastRefund(): EventBroadcastRefund {
+  return { message: "", signedRefundTx: "", judgeAddress: "" };
+}
+
+export const EventBroadcastRefund = {
+  encode(message: EventBroadcastRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.signedRefundTx !== "") {
+      writer.uint32(18).string(message.signedRefundTx);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(26).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventBroadcastRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventBroadcastRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.signedRefundTx = reader.string();
+          break;
+        case 3:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventBroadcastRefund {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      signedRefundTx: isSet(object.signedRefundTx) ? String(object.signedRefundTx) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventBroadcastRefund): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.signedRefundTx !== undefined && (obj.signedRefundTx = message.signedRefundTx);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventBroadcastRefund>, I>>(object: I): EventBroadcastRefund {
+    const message = createBaseEventBroadcastRefund();
+    message.message = object.message ?? "";
+    message.signedRefundTx = object.signedRefundTx ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventProposeRefundHash(): EventProposeRefundHash {
+  return { message: "", refundHash: "", judgeAddress: "" };
+}
+
+export const EventProposeRefundHash = {
+  encode(message: EventProposeRefundHash, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.refundHash !== "") {
+      writer.uint32(18).string(message.refundHash);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(26).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventProposeRefundHash {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventProposeRefundHash();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.refundHash = reader.string();
+          break;
+        case 3:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventProposeRefundHash {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      refundHash: isSet(object.refundHash) ? String(object.refundHash) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventProposeRefundHash): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.refundHash !== undefined && (obj.refundHash = message.refundHash);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventProposeRefundHash>, I>>(object: I): EventProposeRefundHash {
+    const message = createBaseEventProposeRefundHash();
+    message.message = object.message ?? "";
+    message.refundHash = object.refundHash ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
 };
