@@ -16,16 +16,17 @@ import (
 func (k Keeper) Attest(
 	ctx sdk.Context,
 	proposal types.BtcProposal,
+	valAddr sdk.ValAddress,
 	anyProposal *codectypes.Any,
 ) (*types.Attestation, error) {
-	val, found := k.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
-	if !found {
-		panic("Could not find ValAddr for delegate key, should be checked by now")
-	}
-	valAddr := val.GetOperator()
-	if err := sdk.VerifyAddressFormat(valAddr); err != nil {
-		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
-	}
+	// val, found := k.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
+	// if !found {
+	// 	panic("Could not find ValAddr for delegate key, should be checked by now")
+	// }
+	// valAddr := val.GetOperator()
+	// if err := sdk.VerifyAddressFormat(valAddr); err != nil {
+	// 	return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
+	// }
 
 	// Tries to get an attestation with the same btc block height and the proposal.
 	hash, err := proposal.ProposalHash()
@@ -81,8 +82,8 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 		attestationPower := sdk.NewInt(0)
 
 		proposalType := proposal.GetType()
-		ctx.Logger().Error("proposalType", "proposalType", proposalType)
-		if proposalType == 1 { // BtcDeposit Porposal
+
+		if proposalType == 1 || proposalType == 2 { // BtcDeposit Porposal
 			validatorSet := k.StakingKeeper.GetAllValidators(ctx)
 			// Count the number of active validators
 			activeValidatorCount := 0

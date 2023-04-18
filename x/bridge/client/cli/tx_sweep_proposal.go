@@ -31,39 +31,38 @@ func CmdSweepProposal() *cobra.Command {
 	var twilightAddresses StringArray
 
 	cmd := &cobra.Command{
-		Use:   "sweep-proposal [reserve-id] [reserve-address] [judge-address] [btc-relay-capacity-value] [total-value] [private-pool-value] [public-value] [fee-pool] [btc-refund-tx] [btc-sweep-tx] [--twilight-address value]...",
+		Use:   "sweep-proposal [reserve-id] [reserve-address] [btc-relay-capacity-value] [total-value] [private-pool-value] [public-value] [fee-pool] [btc-refund-tx] [btc-sweep-tx] [--twilight-address value]...",
 		Short: "Broadcast message SweepProposal",
-		Args:  cobra.ExactArgs(10),
+		Args:  cobra.ExactArgs(9),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 			argReserveAddress := args[1]
-			argJudgeAddress := args[2]
-			argBtcRelayCapacityValue, err := strconv.ParseUint(args[3], 10, 64)
+			argBtcRelayCapacityValue, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
 				return err
 			}
-			argTotalValue, err := strconv.ParseUint(args[4], 10, 64)
+			argTotalValue, err := strconv.ParseUint(args[3], 10, 64)
 			if err != nil {
 				return err
 			}
-			argPrivatePoolValue, err := strconv.ParseUint(args[5], 10, 64)
+			argPrivatePoolValue, err := strconv.ParseUint(args[4], 10, 64)
 			if err != nil {
 				return err
 			}
-			argPublicValue, err := strconv.ParseUint(args[6], 10, 64)
+			argPublicValue, err := strconv.ParseUint(args[5], 10, 64)
 			if err != nil {
 				return err
 			}
-			argFeePool, err := strconv.ParseUint(args[7], 10, 64)
+			argFeePool, err := strconv.ParseUint(args[6], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			argBtcRefundTx := args[8]
-			argBtcSweepTx := args[9]
+			argBtcRefundTx := args[7]
+			argBtcSweepTx := args[8]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -71,10 +70,9 @@ func CmdSweepProposal() *cobra.Command {
 			}
 
 			msg := types.NewMsgSweepProposal(
-				clientCtx.GetFromAddress().String(),
 				argReserveId,
 				argReserveAddress,
-				argJudgeAddress,
+				clientCtx.GetFromAddress().String(),
 				argBtcRelayCapacityValue,
 				argTotalValue,
 				argPrivatePoolValue,

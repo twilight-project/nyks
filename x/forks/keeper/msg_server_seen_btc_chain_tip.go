@@ -32,11 +32,12 @@ func (k Keeper) CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator st
 
 // claimHandlerCommon is an internal function that provides common code for processing claims once they are
 // translated from the message to the Ethereum claim interface
-func (k Keeper) ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, msg types.BtcProposal) error {
+func (k Keeper) ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, valAddr sdk.ValAddress, msg types.BtcProposal) error {
+
 	// Add the claim to the store
-	_, err := k.Attest(ctx, msg, msgAny)
+	_, err := k.Attest(ctx, msg, valAddr, msgAny)
 	if err != nil {
-		return sdkerrors.Wrap(err, "create attestation")
+		return sdkerrors.Wrap(err, "err while creating an attestation")
 	}
 	hash, err := msg.ProposalHash()
 	if err != nil {
@@ -59,17 +60,27 @@ func (k Keeper) ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, msg 
 func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcChainTip) (*types.MsgSeenBtcChainTipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := k.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
-	}
+	// err := k.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
+	// }
 
 	any, err := codectypes.NewAnyWithValue(msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check Any value")
 	}
 
-	err = k.ClaimHandlerCommon(ctx, any, msg)
+	val, found := k.GetOrchestratorValidator(ctx, msg.GetProposarOrchestrator())
+	if !found {
+		panic("Could not find ValAddr for delegate key")
+	}
+	valAddr := val.GetOperator()
+
+	if err := sdk.VerifyAddressFormat(valAddr); err != nil {
+		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
+	}
+
+	err = k.ClaimHandlerCommon(ctx, any, valAddr, msg)
 	if err != nil {
 		return nil, err
 	}

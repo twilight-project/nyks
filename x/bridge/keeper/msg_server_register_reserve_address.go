@@ -46,7 +46,7 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	}
 
 	ctx.EventManager().EmitTypedEvent(
-		&types.EventRegisterReserveScript{
+		&types.EventRegisterReserveAddress{
 			Message:       msg.Type(),
 			ReserveScript: msg.ReserveScript,
 		},

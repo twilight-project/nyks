@@ -10,7 +10,7 @@ message EventRegisterBtcDepositAddress {
     string depositAddress = 2;
 }
 
-message EventRegisterReserveScript {
+message EventRegisterReserveAddress {
     string message        = 1;
     string reserveScript = 2;
 }

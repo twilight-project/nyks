@@ -19,7 +19,7 @@ func SimulateMsgSweepProposal(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgSweepProposal{
-			Creator: simAccount.Address.String(),
+			JudgeAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the SweepProposal simulation

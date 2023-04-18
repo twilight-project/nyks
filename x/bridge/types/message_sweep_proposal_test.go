@@ -17,13 +17,13 @@ func TestMsgSweepProposal_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSweepProposal{
-				Creator: "invalid_address",
+				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSweepProposal{
-				Creator: sample.AccAddress(),
+				JudgeAddress: sample.AccAddress(),
 			},
 		},
 	}

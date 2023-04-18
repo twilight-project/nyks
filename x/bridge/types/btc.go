@@ -95,3 +95,27 @@ func NewBtcScript(Address string) (*BtcScript, error) {
 	script := BtcScript{Address}
 	return &script, nil
 }
+
+// ValidateBtcTransaction validates the input string as an Btc Transaction
+func ValidateBtcTransaction(tx string) error {
+	// Check if the transaction data is not empty
+	if len(tx) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "%s cannot be empty", tx)
+	}
+
+	// Deserialize the Bitcoin transaction data
+	txBytes, err := hex.DecodeString(tx)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "Invalid transaction data: not a valid hex tx %s", tx)
+	}
+
+	// Check the transaction size (replace minSize and maxSize with appropriate values)
+	minSize := 100    // minimum allowed transaction size in bytes
+	maxSize := 100000 // maximum allowed transaction size in bytes
+
+	if len(txBytes) < minSize || len(txBytes) > maxSize {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Invalid transaction size: must be between %d and %d bytes, transaction passed %s", minSize, maxSize, tx))
+	}
+
+	return nil
+}

@@ -31,6 +31,8 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 
 	case *bridgetypes.MsgConfirmBtcDeposit:
 		return a.handleConfirmBtcDeposit(ctx, *proposal)
+	case *bridgetypes.MsgSweepProposal:
+		return a.handleSweepProposal(ctx, *proposal)
 
 	default:
 		panic(fmt.Sprintf("Invalid event type for attestations %s", proposal.GetType()))
@@ -105,4 +107,9 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	}
 
 	return err // returns nil if no error occurred`
+}
+
+// handleSweepProposal handles the processing of a MsgSweepProposal
+func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
+	return nil
 }

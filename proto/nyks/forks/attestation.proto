@@ -15,6 +15,7 @@ enum ProposalType {
 
   PROPOSAL_TYPE_BTC_CHAINTIP = 0;
   PROPOSAL_TYPE_BTC_DEPOSIT = 1;
+  PROPOSAL_TYPE_SWEEP_PROPOSAL = 2;
 }
 
 // Attestation is an aggregate of `proposals` that eventually becomes `observed` by

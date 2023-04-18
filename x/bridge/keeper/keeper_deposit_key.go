@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
@@ -149,6 +150,82 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, creator sdk.
 	store.Set(aKey, k.cdc.MustMarshal(regJudge))
 
 	return nil
+}
+
+// GetJudgeAddressForValidatorAddress returns the judge address for a given validator address
+func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAddress sdk.ValAddress) (sdk.AccAddress, error) {
+	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
+	addrBytes := store.Get(aKey)
+	if addrBytes == nil {
+		return nil, sdkerrors.Wrapf(types.ErrJudgeAddressNotFound, "validator address %v", validatorAddress)
+	}
+
+	address, err := sdk.AccAddressFromBech32(string(addrBytes))
+	if err != nil {
+		ctx.Logger().Error("judge encoded could not be returned as AccAddress")
+		return nil, err
+	}
+	return address, nil
+}
+
+// GetValidatorAddressForJudgeAddress returns the validator address for a given judge address
+func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.ValAddress, error) {
+	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid judge address"))
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.JudgeAddressKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgRegisterJudge{
+			Creator:          "",
+			ValidatorAddress: "",
+			JudgeAddress:     "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		if res.JudgeAddress == judgeAddress.String() {
+			ctx.Logger().Error("found judge")
+			validatorAddress, err := sdk.ValAddressFromBech32(res.ValidatorAddress)
+			if err != nil {
+				ctx.Logger().Error("validator encoded could not be returned as ValAddress")
+				return nil, err
+			}
+			return validatorAddress, nil
+		}
+		ctx.Logger().Error("not able to fine judges")
+	}
+
+	return nil, sdkerrors.Wrapf(types.ErrValidatorAddressNotFound, "judge address %v", judgeAddress)
+}
+
+// CheckJudgeValidatorInSet checks if the validator address of a judge is in the set of validators
+func (k Keeper) CheckJudgeValidatorInSet(ctx sdk.Context, judgeAddress sdk.AccAddress) bool {
+	ctx.Logger().Error(judgeAddress.String())
+	validatorAddress, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
+	if err != nil {
+		return false
+	}
+	_, found := k.StakingKeeper.GetValidator(ctx, validatorAddress)
+	return found
+}
+
+func (k Keeper) GetJudgeValidator(ctx sdk.Context, judgeAddress sdk.AccAddress) stakingtypes.Validator {
+	validatorAddress, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
+	if err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	validator, _ := k.StakingKeeper.GetValidator(ctx, validatorAddress)
+	return validator
 }
 
 // IterateRegisteredJudges iterates through all of the registered judge addresses

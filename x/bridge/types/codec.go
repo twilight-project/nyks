@@ -34,6 +34,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		(*nykstypes.BtcProposal)(nil),
 		&MsgConfirmBtcDeposit{},
 	)
+	registry.RegisterInterface(
+		"BtcProposal",
+		(*nykstypes.BtcProposal)(nil),
+		&MsgSweepProposal{},
+	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgRegisterBtcDepositAddress{},
 	)

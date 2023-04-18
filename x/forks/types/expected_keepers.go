@@ -45,3 +45,8 @@ type StakingKeeper interface {
 type VoltKeeper interface {
 	UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error
 }
+
+type BridgeKeeper interface {
+	GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.AccAddress, error)
+	// Add other required methods
+}
