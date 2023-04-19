@@ -83,7 +83,7 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 
 		proposalType := proposal.GetType()
 
-		if proposalType == 1 || proposalType == 2 { // BtcDeposit Porposal
+		if proposalType == 1 || proposalType == 2 || proposalType == 3 { // BtcDeposit Porposal
 			validatorSet := k.StakingKeeper.GetAllValidators(ctx)
 			// Count the number of active validators
 			activeValidatorCount := 0

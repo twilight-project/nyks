@@ -56,10 +56,6 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgWithdrawTxFinal int = 100
 
-	opWeightMsgConfirmBtcWithdraw = "op_weight_msg_confirm_btc_withdraw"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgConfirmBtcWithdraw int = 100
-
 	opWeightMsgSignRefund = "op_weight_msg_sign_refund"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSignRefund int = 100
@@ -75,6 +71,10 @@ const (
 	opWeightMsgProposeRefundHash = "op_weight_msg_propose_refund_hash"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgProposeRefundHash int = 100
+
+	opWeightMsgConfirmWithdraw = "op_weight_msg_confirm_withdraw"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgConfirmWithdraw int = 100
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -198,17 +198,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		bridgesimulation.SimulateMsgWithdrawTxFinal(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgConfirmBtcWithdraw int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgConfirmBtcWithdraw, &weightMsgConfirmBtcWithdraw, nil,
-		func(_ *rand.Rand) {
-			weightMsgConfirmBtcWithdraw = defaultWeightMsgConfirmBtcWithdraw
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgConfirmBtcWithdraw,
-		bridgesimulation.SimulateMsgConfirmBtcWithdraw(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgSignRefund int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSignRefund, &weightMsgSignRefund, nil,
 		func(_ *rand.Rand) {
@@ -251,6 +240,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgProposeRefundHash,
 		bridgesimulation.SimulateMsgProposeRefundHash(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgConfirmWithdraw int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgConfirmWithdraw, &weightMsgConfirmWithdraw, nil,
+		func(_ *rand.Rand) {
+			weightMsgConfirmWithdraw = defaultWeightMsgConfirmWithdraw
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgConfirmWithdraw,
+		bridgesimulation.SimulateMsgConfirmWithdraw(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

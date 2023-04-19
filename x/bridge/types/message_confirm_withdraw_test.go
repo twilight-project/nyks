@@ -8,22 +8,22 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgConfirmBtcWithdraw_ValidateBasic(t *testing.T) {
+func TestMsgConfirmWithdraw_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgConfirmBtcWithdraw
+		msg  MsgConfirmWithdraw
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgConfirmBtcWithdraw{
-				Creator: "invalid_address",
+			msg: MsgConfirmWithdraw{
+				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgConfirmBtcWithdraw{
-				Creator: sample.AccAddress(),
+			msg: MsgConfirmWithdraw{
+				JudgeAddress: sample.AccAddress(),
 			},
 		},
 	}

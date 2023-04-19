@@ -7,8 +7,8 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgSeenBtcChainTip } from "./types/nyks/forks/tx";
 import { MsgSetDelegateAddresses } from "./types/nyks/forks/tx";
+import { MsgSeenBtcChainTip } from "./types/nyks/forks/tx";
 
 import { Attestation as typeAttestation} from "./types"
 import { EventObservation as typeEventObservation} from "./types"
@@ -16,13 +16,7 @@ import { EventSetDelegateAddresses as typeEventSetDelegateAddresses} from "./typ
 import { EventProposal as typeEventProposal} from "./types"
 import { Params as typeParams} from "./types"
 
-export { MsgSeenBtcChainTip, MsgSetDelegateAddresses };
-
-type sendMsgSeenBtcChainTipParams = {
-  value: MsgSeenBtcChainTip,
-  fee?: StdFee,
-  memo?: string
-};
+export { MsgSetDelegateAddresses, MsgSeenBtcChainTip };
 
 type sendMsgSetDelegateAddressesParams = {
   value: MsgSetDelegateAddresses,
@@ -30,13 +24,19 @@ type sendMsgSetDelegateAddressesParams = {
   memo?: string
 };
 
-
-type msgSeenBtcChainTipParams = {
+type sendMsgSeenBtcChainTipParams = {
   value: MsgSeenBtcChainTip,
+  fee?: StdFee,
+  memo?: string
 };
+
 
 type msgSetDelegateAddressesParams = {
   value: MsgSetDelegateAddresses,
+};
+
+type msgSeenBtcChainTipParams = {
+  value: MsgSeenBtcChainTip,
 };
 
 
@@ -69,20 +69,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
-		async sendMsgSeenBtcChainTip({ value, fee, memo }: sendMsgSeenBtcChainTipParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgSeenBtcChainTip: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgSeenBtcChainTip({ value: MsgSeenBtcChainTip.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgSeenBtcChainTip: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgSetDelegateAddresses({ value, fee, memo }: sendMsgSetDelegateAddressesParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgSetDelegateAddresses: Unable to sign Tx. Signer is not present.')
@@ -97,20 +83,34 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		
-		msgSeenBtcChainTip({ value }: msgSeenBtcChainTipParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.forks.MsgSeenBtcChainTip", value: MsgSeenBtcChainTip.fromPartial( value ) }  
+		async sendMsgSeenBtcChainTip({ value, fee, memo }: sendMsgSeenBtcChainTipParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgSeenBtcChainTip: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgSeenBtcChainTip({ value: MsgSeenBtcChainTip.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:MsgSeenBtcChainTip: Could not create message: ' + e.message)
+				throw new Error('TxClient:sendMsgSeenBtcChainTip: Could not broadcast Tx: '+ e.message)
 			}
 		},
+		
 		
 		msgSetDelegateAddresses({ value }: msgSetDelegateAddressesParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.forks.MsgSetDelegateAddresses", value: MsgSetDelegateAddresses.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgSetDelegateAddresses: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgSeenBtcChainTip({ value }: msgSeenBtcChainTipParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.forks.MsgSeenBtcChainTip", value: MsgSeenBtcChainTip.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgSeenBtcChainTip: Could not create message: ' + e.message)
 			}
 		},
 		

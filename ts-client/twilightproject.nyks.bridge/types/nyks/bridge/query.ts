@@ -3,6 +3,7 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import {
   MsgBroadcastRefund,
+  MsgProposeRefundHash,
   MsgRegisterBtcDepositAddress,
   MsgRegisterJudge,
   MsgRegisterReserveAddress,
@@ -105,6 +106,7 @@ export interface QueryProposeRefundHashAllRequest {
 }
 
 export interface QueryProposeRefundHashAllResponse {
+  proposeRefundHashMsg: MsgProposeRefundHash[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1257,11 +1259,14 @@ export const QueryProposeRefundHashAllRequest = {
 };
 
 function createBaseQueryProposeRefundHashAllResponse(): QueryProposeRefundHashAllResponse {
-  return {};
+  return { proposeRefundHashMsg: [] };
 }
 
 export const QueryProposeRefundHashAllResponse = {
-  encode(_: QueryProposeRefundHashAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryProposeRefundHashAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.proposeRefundHashMsg) {
+      MsgProposeRefundHash.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1272,6 +1277,9 @@ export const QueryProposeRefundHashAllResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.proposeRefundHashMsg.push(MsgProposeRefundHash.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1280,19 +1288,31 @@ export const QueryProposeRefundHashAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryProposeRefundHashAllResponse {
-    return {};
+  fromJSON(object: any): QueryProposeRefundHashAllResponse {
+    return {
+      proposeRefundHashMsg: Array.isArray(object?.proposeRefundHashMsg)
+        ? object.proposeRefundHashMsg.map((e: any) => MsgProposeRefundHash.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(_: QueryProposeRefundHashAllResponse): unknown {
+  toJSON(message: QueryProposeRefundHashAllResponse): unknown {
     const obj: any = {};
+    if (message.proposeRefundHashMsg) {
+      obj.proposeRefundHashMsg = message.proposeRefundHashMsg.map((e) =>
+        e ? MsgProposeRefundHash.toJSON(e) : undefined
+      );
+    } else {
+      obj.proposeRefundHashMsg = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryProposeRefundHashAllResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryProposeRefundHashAllResponse {
     const message = createBaseQueryProposeRefundHashAllResponse();
+    message.proposeRefundHashMsg = object.proposeRefundHashMsg?.map((e) => MsgProposeRefundHash.fromPartial(e)) || [];
     return message;
   },
 };

@@ -9,8 +9,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepProposal) (*types.MsgSweepProposalResponse, error) {
-
+func (k msgServer) ConfirmWithdraw(goCtx context.Context, msg *types.MsgConfirmWithdraw) (*types.MsgConfirmWithdrawResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
@@ -42,5 +41,5 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 		return nil, err
 	}
 
-	return &types.MsgSweepProposalResponse{}, nil
+	return &types.MsgConfirmWithdrawResponse{}, nil
 }

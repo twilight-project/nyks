@@ -17,11 +17,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSweepProposal{}, "bridge/SweepProposal", nil)
 	cdc.RegisterConcrete(&MsgWithdrawTxSigned{}, "bridge/WithdrawTxSigned", nil)
 	cdc.RegisterConcrete(&MsgWithdrawTxFinal{}, "bridge/WithdrawTxFinal", nil)
-	cdc.RegisterConcrete(&MsgConfirmBtcWithdraw{}, "bridge/ConfirmBtcWithdraw", nil)
 	cdc.RegisterConcrete(&MsgSignRefund{}, "bridge/SignRefund", nil)
 	cdc.RegisterConcrete(&MsgBroadcastRefund{}, "bridge/BroadcastRefund", nil)
 	cdc.RegisterConcrete(&MsgSignSweep{}, "bridge/SignSweep", nil)
 	cdc.RegisterConcrete(&MsgProposeRefundHash{}, "bridge/ProposeRefundHash", nil)
+	cdc.RegisterConcrete(&MsgConfirmWithdraw{}, "bridge/ConfirmWithdraw", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -38,6 +38,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		"BtcProposal",
 		(*nykstypes.BtcProposal)(nil),
 		&MsgSweepProposal{},
+	)
+	registry.RegisterInterface(
+		"BtcProposal",
+		(*nykstypes.BtcProposal)(nil),
+		&MsgConfirmWithdraw{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgRegisterBtcDepositAddress{},
@@ -61,9 +66,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgWithdrawTxFinal{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgConfirmBtcWithdraw{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSignRefund{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
@@ -74,6 +76,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgProposeRefundHash{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgConfirmWithdraw{},
 	)
 	// this line is used by starport scaffolding # 3
 

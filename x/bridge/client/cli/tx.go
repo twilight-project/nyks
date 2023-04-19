@@ -38,11 +38,11 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdSweepProposal())
 	cmd.AddCommand(CmdWithdrawTxSigned())
 	cmd.AddCommand(CmdWithdrawTxFinal())
-	cmd.AddCommand(CmdConfirmBtcWithdraw())
 	cmd.AddCommand(CmdSignRefund())
 	cmd.AddCommand(CmdBroadcastRefund())
 	cmd.AddCommand(CmdSignSweep())
 	cmd.AddCommand(CmdProposeRefundHash())
+	cmd.AddCommand(CmdConfirmWithdraw())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

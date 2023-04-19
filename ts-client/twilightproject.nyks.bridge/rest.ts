@@ -22,6 +22,13 @@ export interface BridgeMsgConfirmBtcDepositResponse {
 
 export type BridgeMsgConfirmBtcWithdrawResponse = object;
 
+export type BridgeMsgConfirmWithdrawResponse = object;
+
+export interface BridgeMsgProposeRefundHash {
+  refundHash?: string;
+  judgeAddress?: string;
+}
+
 export type BridgeMsgProposeRefundHashResponse = object;
 
 export interface BridgeMsgRegisterBtcDepositAddress {
@@ -101,7 +108,9 @@ export interface BridgeQueryParamsResponse {
   params?: BridgeParams;
 }
 
-export type BridgeQueryProposeRefundHashAllResponse = object;
+export interface BridgeQueryProposeRefundHashAllResponse {
+  proposeRefundHashMsg?: BridgeMsgProposeRefundHash[];
+}
 
 export interface BridgeQueryRegisteredBtcDepositAddressByTwilightAddressResponse {
   depositAddress?: string;

@@ -9,7 +9,7 @@ export interface EventRegisterBtcDepositAddress {
   depositAddress: string;
 }
 
-export interface EventRegisterReserveScript {
+export interface EventRegisterReserveAddress {
   message: string;
   reserveScript: string;
 }
@@ -116,12 +116,12 @@ export const EventRegisterBtcDepositAddress = {
   },
 };
 
-function createBaseEventRegisterReserveScript(): EventRegisterReserveScript {
+function createBaseEventRegisterReserveAddress(): EventRegisterReserveAddress {
   return { message: "", reserveScript: "" };
 }
 
-export const EventRegisterReserveScript = {
-  encode(message: EventRegisterReserveScript, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const EventRegisterReserveAddress = {
+  encode(message: EventRegisterReserveAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
@@ -131,10 +131,10 @@ export const EventRegisterReserveScript = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): EventRegisterReserveScript {
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventRegisterReserveAddress {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEventRegisterReserveScript();
+    const message = createBaseEventRegisterReserveAddress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -152,22 +152,22 @@ export const EventRegisterReserveScript = {
     return message;
   },
 
-  fromJSON(object: any): EventRegisterReserveScript {
+  fromJSON(object: any): EventRegisterReserveAddress {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       reserveScript: isSet(object.reserveScript) ? String(object.reserveScript) : "",
     };
   },
 
-  toJSON(message: EventRegisterReserveScript): unknown {
+  toJSON(message: EventRegisterReserveAddress): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.reserveScript !== undefined && (obj.reserveScript = message.reserveScript);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<EventRegisterReserveScript>, I>>(object: I): EventRegisterReserveScript {
-    const message = createBaseEventRegisterReserveScript();
+  fromPartial<I extends Exact<DeepPartial<EventRegisterReserveAddress>, I>>(object: I): EventRegisterReserveAddress {
+    const message = createBaseEventRegisterReserveAddress();
     message.message = object.message ?? "";
     message.reserveScript = object.reserveScript ?? "";
     return message;

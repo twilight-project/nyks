@@ -12,24 +12,29 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdConfirmBtcWithdraw() *cobra.Command {
+func CmdConfirmWithdraw() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "confirm-btc-withdraw [validator-address] [tx-hash]",
-		Short: "Broadcast message ConfirmBtcWithdraw",
-		Args:  cobra.ExactArgs(2),
+		Use:   "confirm-withdraw [tx-hash] [height] [hash]",
+		Short: "Broadcast message ConfirmWithdraw",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argValidatorAddress := args[0]
-			argTxHash := args[1]
+			argTxHash := args[0]
+			argHeight, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+			argHash := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgConfirmBtcWithdraw(
-				clientCtx.GetFromAddress().String(),
-				argValidatorAddress,
+			msg := types.NewMsgConfirmWithdraw(
 				argTxHash,
+				argHeight,
+				argHash,
+				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

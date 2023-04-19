@@ -47700,7 +47700,7 @@ definitions:
     properties:
       twilightDepositAddress:
         type: string
-  twilightproject.nyks.bridge.MsgConfirmBtcWithdrawResponse:
+  twilightproject.nyks.bridge.MsgConfirmWithdrawResponse:
     type: object
   twilightproject.nyks.bridge.MsgProposeRefundHash:
     type: object

@@ -119,3 +119,18 @@ func ValidateBtcTransaction(tx string) error {
 
 	return nil
 }
+
+func IsValidBtcTxHash(txHash string) bool {
+	// Check if the hash string is a valid hexadecimal string
+	_, err := hex.DecodeString(txHash)
+	if err != nil {
+		return false
+	}
+
+	// Check if the hash string has the correct length (64 characters)
+	if len(txHash) != 64 {
+		return false
+	}
+
+	return true
+}

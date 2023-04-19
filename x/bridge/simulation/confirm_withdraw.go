@@ -10,7 +10,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func SimulateMsgConfirmBtcWithdraw(
+func SimulateMsgConfirmWithdraw(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -18,12 +18,12 @@ func SimulateMsgConfirmBtcWithdraw(
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		msg := &types.MsgConfirmBtcWithdraw{
-			Creator: simAccount.Address.String(),
+		msg := &types.MsgConfirmWithdraw{
+			JudgeAddress: simAccount.Address.String(),
 		}
 
-		// TODO: Handling the ConfirmBtcWithdraw simulation
+		// TODO: Handling the ConfirmWithdraw simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ConfirmBtcWithdraw simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ConfirmWithdraw simulation not implemented"), nil, nil
 	}
 }
