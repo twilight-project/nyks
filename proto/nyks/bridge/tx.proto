@@ -107,14 +107,6 @@ message MsgWithdrawTxFinal {
 
 message MsgWithdrawTxFinalResponse {}
 
-message MsgConfirmBtcWithdraw {
-  string creator          = 1;
-  string validatorAddress = 2;
-  string txHash           = 3;
-}
-
-message MsgConfirmBtcWithdrawResponse {}
-
 message MsgSignRefund {
   string reserveAddress   = 1;
   string signerAddress    = 2;
@@ -130,6 +122,7 @@ message MsgSignSweep {
   string sweepSignature   = 3;
   string btcOracleAddress = 4;
 }
+
 
 message MsgSignSweepResponse {}
 
