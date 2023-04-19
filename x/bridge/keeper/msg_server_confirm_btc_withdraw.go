@@ -9,7 +9,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func (k msgServer) ConfirmWithdraw(goCtx context.Context, msg *types.MsgConfirmWithdraw) (*types.MsgConfirmWithdrawResponse, error) {
+func (k msgServer) ConfirmBtcWithdraw(goCtx context.Context, msg *types.MsgConfirmBtcWithdraw) (*types.MsgConfirmBtcWithdrawResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
@@ -41,5 +41,5 @@ func (k msgServer) ConfirmWithdraw(goCtx context.Context, msg *types.MsgConfirmW
 		return nil, err
 	}
 
-	return &types.MsgConfirmWithdrawResponse{}, nil
+	return &types.MsgConfirmBtcWithdrawResponse{}, nil
 }

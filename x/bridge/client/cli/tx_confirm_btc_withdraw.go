@@ -12,10 +12,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdConfirmWithdraw() *cobra.Command {
+func CmdConfirmBtcWithdraw() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "confirm-withdraw [tx-hash] [height] [hash]",
-		Short: "Broadcast message ConfirmWithdraw",
+		Short: "Broadcast message ConfirmBtcWithdraw",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argTxHash := args[0]
@@ -30,7 +30,7 @@ func CmdConfirmWithdraw() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgConfirmWithdraw(
+			msg := types.NewMsgConfirmBtcWithdraw(
 				argTxHash,
 				argHeight,
 				argHash,

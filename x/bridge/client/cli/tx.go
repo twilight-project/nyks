@@ -42,7 +42,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdBroadcastRefund())
 	cmd.AddCommand(CmdSignSweep())
 	cmd.AddCommand(CmdProposeRefundHash())
-	cmd.AddCommand(CmdConfirmWithdraw())
+	cmd.AddCommand(CmdConfirmBtcWithdraw())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

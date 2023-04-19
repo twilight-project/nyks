@@ -9,12 +9,12 @@ import (
 	nykstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
-const TypeMsgConfirmWithdraw = "confirm_withdraw"
+const TypeMsgConfirmBtcWithdraw = "confirm_withdraw"
 
-var _ sdk.Msg = &MsgConfirmWithdraw{}
+var _ sdk.Msg = &MsgConfirmBtcWithdraw{}
 
-func NewMsgConfirmWithdraw(txHash string, height uint64, hash string, judgeAddress string) *MsgConfirmWithdraw {
-	return &MsgConfirmWithdraw{
+func NewMsgConfirmBtcWithdraw(txHash string, height uint64, hash string, judgeAddress string) *MsgConfirmBtcWithdraw {
+	return &MsgConfirmBtcWithdraw{
 		TxHash:       txHash,
 		Height:       height,
 		Hash:         hash,
@@ -22,15 +22,15 @@ func NewMsgConfirmWithdraw(txHash string, height uint64, hash string, judgeAddre
 	}
 }
 
-func (msg *MsgConfirmWithdraw) Route() string {
+func (msg *MsgConfirmBtcWithdraw) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgConfirmWithdraw) Type() string {
-	return TypeMsgConfirmWithdraw
+func (msg *MsgConfirmBtcWithdraw) Type() string {
+	return TypeMsgConfirmBtcWithdraw
 }
 
-func (msg *MsgConfirmWithdraw) GetSigners() []sdk.AccAddress {
+func (msg *MsgConfirmBtcWithdraw) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		panic(err)
@@ -38,12 +38,12 @@ func (msg *MsgConfirmWithdraw) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgConfirmWithdraw) GetSignBytes() []byte {
+func (msg *MsgConfirmBtcWithdraw) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgConfirmWithdraw) ValidateBasic() error {
+func (msg *MsgConfirmBtcWithdraw) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -68,7 +68,7 @@ func (msg *MsgConfirmWithdraw) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgConfirmWithdraw) GetProposarOrchestrator() sdk.AccAddress {
+func (msg MsgConfirmBtcWithdraw) GetProposarOrchestrator() sdk.AccAddress {
 	err := msg.ValidateBasic()
 	if err != nil {
 		panic("MsgSeenBtcChainTip failed ValidateBasic! Should have been handled earlier")
@@ -83,11 +83,11 @@ func (msg MsgConfirmWithdraw) GetProposarOrchestrator() sdk.AccAddress {
 }
 
 // GetType returns the claim type
-func (msg *MsgConfirmWithdraw) GetType() nykstypes.ProposalType {
+func (msg *MsgConfirmBtcWithdraw) GetType() nykstypes.ProposalType {
 	return nykstypes.PROPOSAL_TYPE_CONFIRM_WITHDRAW
 }
 
-func (msg *MsgConfirmWithdraw) ProposalHash() ([]byte, error) {
+func (msg *MsgConfirmBtcWithdraw) ProposalHash() ([]byte, error) {
 	path := fmt.Sprintf("%d/%s/", msg.Height, msg.Hash)
 	return tmhash.Sum([]byte(path)), nil
 }

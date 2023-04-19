@@ -24,7 +24,7 @@ service Msg {
   rpc BroadcastRefund    (MsgBroadcastRefund   ) returns (MsgBroadcastRefundResponse   );
   rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
   rpc ProposeRefundHash  (MsgProposeRefundHash ) returns (MsgProposeRefundHashResponse );
-  rpc ConfirmWithdraw    (MsgConfirmWithdraw   ) returns (MsgConfirmWithdrawResponse   );
+  rpc ConfirmBtcWithdraw    (MsgConfirmBtcWithdraw   ) returns (MsgConfirmBtcWithdrawResponse   );
 }
 message MsgConfirmBtcDeposit {
   string depositAddress         = 1;
@@ -140,12 +140,12 @@ message MsgProposeRefundHash {
 
 message MsgProposeRefundHashResponse {}
 
-message MsgConfirmWithdraw {
+message MsgConfirmBtcWithdraw {
   string txHash       = 1;
   uint64  height       = 2;
   string hash         = 3;
   string judgeAddress = 4;
 }
 
-message MsgConfirmWithdrawResponse {}
+message MsgConfirmBtcWithdrawResponse {}
 
