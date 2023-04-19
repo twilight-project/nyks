@@ -13,6 +13,8 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	ctx.Logger().Error("MsgSweepProposal", "msg", msg)
+
 	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")

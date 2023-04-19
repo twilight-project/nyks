@@ -14,7 +14,7 @@ const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, individualTwilightReserveAccount []string, btcRefundTx string, btcSweepTx string) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, individualTwilightReserveAccount []*volttypes.IndividualTwilightReserveAccount, btcRefundTx string, btcSweepTx string) *MsgSweepProposal {
 	return &MsgSweepProposal{
 		ReserveId:                        reserveId,
 		ReserveAddress:                   reserveAddress,
@@ -24,7 +24,7 @@ func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress s
 		PrivatePoolValue:                 privatePoolValue,
 		PublicValue:                      publicValue,
 		FeePool:                          feePool,
-		IndividualTwilightReserveAccount: []*volttypes.IndividualTwilightReserveAccount{},
+		IndividualTwilightReserveAccount: individualTwilightReserveAccount,
 		BtcRefundTx:                      btcRefundTx,
 		BtcSweepTx:                       btcSweepTx,
 	}

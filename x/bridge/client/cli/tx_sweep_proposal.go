@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -9,26 +10,48 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 var _ = strconv.Itoa(0)
 
-type StringArray []string
+type TwilightAddressWithValue struct {
+	Address string
+	Value   uint64
+}
 
-func (sa *StringArray) Set(value string) error {
-	*sa = append(*sa, value)
+type TwilightAddressesArray []TwilightAddressWithValue
+
+func (ta *TwilightAddressesArray) Set(value string) error {
+	parts := strings.Split(value, ":")
+	if len(parts) != 2 {
+		return fmt.Errorf("Invalid format for twilight address and value. Expected format: address:value")
+	}
+
+	address := parts[0]
+	btcValue, err := strconv.ParseUint(parts[1], 10, 64)
+	if err != nil {
+		return fmt.Errorf("Invalid BTC value for twilight address: %s", err)
+	}
+
+	*ta = append(*ta, TwilightAddressWithValue{Address: address, Value: btcValue})
 	return nil
 }
 
-func (sa *StringArray) Type() string {
-	return "stringArray"
+func (ta *TwilightAddressesArray) Type() string {
+	return "twilightAddressesArray"
 }
 
-func (sa *StringArray) String() string {
-	return strings.Join(*sa, ", ")
+func (ta *TwilightAddressesArray) String() string {
+	var result []string
+	for _, item := range *ta {
+		result = append(result, fmt.Sprintf("%s:%d", item.Address, item.Value))
+	}
+	return strings.Join(result, ", ")
 }
+
 func CmdSweepProposal() *cobra.Command {
-	var twilightAddresses StringArray
+	var twilightAddresses TwilightAddressesArray
 
 	cmd := &cobra.Command{
 		Use:   "sweep-proposal [reserve-id] [reserve-address] [btc-relay-capacity-value] [total-value] [private-pool-value] [public-value] [fee-pool] [btc-refund-tx] [btc-sweep-tx] [--twilight-address value]...",
@@ -69,6 +92,14 @@ func CmdSweepProposal() *cobra.Command {
 				return err
 			}
 
+			var individualTwilightReserveAccounts []*volttypes.IndividualTwilightReserveAccount
+			for _, ta := range twilightAddresses {
+				individualTwilightReserveAccounts = append(individualTwilightReserveAccounts, &volttypes.IndividualTwilightReserveAccount{
+					TwilightAddress: ta.Address,
+					BtcValue:        ta.Value,
+				})
+			}
+
 			msg := types.NewMsgSweepProposal(
 				argReserveId,
 				argReserveAddress,
@@ -78,7 +109,7 @@ func CmdSweepProposal() *cobra.Command {
 				argPrivatePoolValue,
 				argPublicValue,
 				argFeePool,
-				twilightAddresses,
+				individualTwilightReserveAccounts,
 				argBtcRefundTx,
 				argBtcSweepTx,
 			)
