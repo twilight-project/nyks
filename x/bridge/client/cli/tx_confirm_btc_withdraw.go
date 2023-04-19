@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 
 func CmdConfirmBtcWithdraw() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "confirm-withdraw [tx-hash] [height] [hash]",
+		Use:   "confirm-btc-withdraw [tx-hash] [height] [hash]",
 		Short: "Broadcast message ConfirmBtcWithdraw",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
