@@ -10,4 +10,5 @@ import (
 var (
 	ErrBtcReserveMaxLimitReached = sdkerrors.Register(ModuleName, 1, "Btc max reserve limit reached")
 	ErrBtcReserveNotFound        = sdkerrors.Register(ModuleName, 2, "Btc reserve not found")
+	ErrInsufficientBtcValue      = sdkerrors.Register(ModuleName, 3, "Insufficient Btc value")
 )

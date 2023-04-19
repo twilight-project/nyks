@@ -252,7 +252,7 @@ func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.M
 }
 
 // GetBtcWithdrawRequest returns the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount sdk.Int) (*types.MsgWithdrawBtcRequest, bool) {
+func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) (*types.MsgWithdrawBtcRequest, bool) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
 	if !store.Has(aKey) {
@@ -267,19 +267,16 @@ func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 }
 
 // SetBtcWithdrawRequest sets the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount sdk.Int) error {
+func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) error {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
-
-	// convert the withdraw amount to a uint64 to avoid issues with the sdk.Int
-	withdrawAmount64 := withdrawAmount.Uint64()
 
 	// After validation reforming the MsgWithdrawBtcRequest to avoid double loops while retreiving the data
 	withdrawRequest := &types.MsgWithdrawBtcRequest{
 		TwilightAddress: twilightAddress.String(),
 		ReserveAddress:  reserveAddress.BtcAddress,
 		WithdrawAddress: withdrawAddress.BtcAddress,
-		WithdrawAmount:  withdrawAmount64,
+		WithdrawAmount:  withdrawAmount,
 	}
 	store.Set(aKey, k.cdc.MustMarshal(withdrawRequest))
 	return nil

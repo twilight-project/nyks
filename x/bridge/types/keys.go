@@ -1,6 +1,9 @@
 package types
 
 import (
+	"bytes"
+	"encoding/binary"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -95,12 +98,17 @@ func GetRegisterJudgeAddressKey(validatorAddress sdk.ValAddress) []byte {
 
 // GetBtcWithdrawRequestKey returns the following key format
 // [HashString("BtcWithdrawRequest")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1]]
-func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress BtcAddress, withdrawAddress BtcAddress, withdrawAmount sdk.Int) []byte {
+func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress BtcAddress, withdrawAddress BtcAddress, withdrawAmount uint64) []byte {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid twilight address"))
 	}
 
-	return forkstypes.AppendBytes(BtcWithdrawRequestKey, twilightAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(withdrawAddress.BtcAddress), withdrawAmount.BigInt().Bytes())
+	withdrawAmountBuf := new(bytes.Buffer)
+	err := binary.Write(withdrawAmountBuf, binary.LittleEndian, withdrawAmount)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(BtcWithdrawRequestKey, twilightAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(withdrawAddress.BtcAddress), withdrawAmountBuf.Bytes())
 }
 
 // GetBtcSignRefundMsgKey returns the following key format

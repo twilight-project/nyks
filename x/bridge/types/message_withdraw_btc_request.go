@@ -44,5 +44,18 @@ func (msg *MsgWithdrawBtcRequest) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid twilight address (%s)", err)
 	}
+
+	if msg.WithdrawAddress == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "WithdrawAddress cannot be empty")
+	}
+
+	if msg.ReserveAddress == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "ReserveAddress cannot be empty")
+	}
+
+	if msg.WithdrawAmount == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "WithdrawAmount cannot be zero")
+	}
+
 	return nil
 }

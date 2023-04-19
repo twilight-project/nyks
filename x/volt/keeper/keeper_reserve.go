@@ -131,6 +131,30 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 	}
 }
 
+// CheckIndividualTwilightReserveAccountBalance checks if the twilight address is in the reserve.IndividualTwilightReserveAccount
+// and if the user has enough btc value to withdraw
+func (k Keeper) CheckIndividualTwilightReserveAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress string, btcValue uint64) error {
+
+	// Get the reserve
+	reserve, err := k.GetBtcReserve(ctx, reserveAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
+	// Check if the twilight address is in the reserve.IndividualTwilightReserveAccount
+	// and if the user has enough btc value to withdraw
+	for _, individualAccount := range reserve.IndividualTwilightReserveAccount {
+		if individualAccount.TwilightAddress == twilightAddress.String() {
+			if individualAccount.BtcValue < btcValue {
+				return sdkerrors.Wrapf(types.ErrInsufficientBtcValue, fmt.Sprint(twilightAddress))
+			}
+			return nil
+		}
+	}
+
+	return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(twilightAddress))
+}
+
 func prefixRange(prefix []byte) ([]byte, []byte) {
 	if prefix == nil {
 		panic("nil key not allowed")

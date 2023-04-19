@@ -12,7 +12,7 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	twilightAddress := sdk.AccAddress(msg.TwilightAddress)
-	withdrawAmount := sdk.NewIntFromUint64(msg.WithdrawAmount)
+	//withdrawAmount := sdk.NewIntFromUint64(msg.WithdrawAmount)
 
 	// check if btc address is valid
 	withdrawAddress, e1 := types.NewBtcAddress(msg.WithdrawAddress)
@@ -24,13 +24,19 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 	}
 
 	// check if withdraw request is also already registered
-	_, found := k.GetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, withdrawAmount)
+	_, found := k.GetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Withdraw Request")
 	}
 
+	// check if withdraw address has enough balance in the reserve
+	err := k.VoltKeeper.CheckIndividualTwilightReserveAccountBalance(ctx, twilightAddress, *&reserveAddress.BtcAddress, msg.WithdrawAmount)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient Balance")
+	}
+
 	// set withdraw request
-	err := k.SetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, withdrawAmount)
+	err = k.SetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
 	if err != nil {
 		return nil, err
 	}
