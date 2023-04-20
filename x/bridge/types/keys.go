@@ -49,8 +49,8 @@ var (
 	// BtcSignSweepMsgKey is the key for the btc sign sweep msg
 	BtcSignSweepMsgKey = forkstypes.HashString("BtcSignSweepMsg")
 
-	//BtcBroadcastRefundMsgKey is the key for the btc broadcast refund msg
-	BtcBroadcastRefundMsgKey = forkstypes.HashString("BtcBroadcastRefundMsg")
+	//BtcBroadcastTxSweepMsgKey is the key for the btc broadcast refund msg
+	BtcBroadcastTxSweepMsgKey = forkstypes.HashString("BtcBroadcastTxSweepMsg")
 
 	// BtcProposeRefundHashMsgKey is the key for the btc propose refund hash msg
 	BtcProposeRefundHashMsgKey = forkstypes.HashString("BtcProposeRefundHashMsg")
@@ -131,14 +131,14 @@ func GetBtcSignSweepMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAd
 	return forkstypes.AppendBytes(BtcSignSweepMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(sweepSignature))
 }
 
-// GetBtcBroadcastRefundMsgKey returns the following key format
-// [HashString("BtcBroadcastRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][01000000015821f1bf602c89a57535286e7a59c302b3039c09e2d94bbf6464320fb0d3c5a2000000006a473044022075a48b0a69e66ea736d1aeae13dc6e8b6c7309636c45d6d01f2b43f8b3580a5a022068f1e72030c5cd2a5cdd6d99d195b5831008da88da6da79d1f91317a249fbbaa0121033686c32eeea239e2d7b2038f7312171b10ad76b0e146b676e4f4d4c708f0bb75ffffffff0288130000000000001976a91419134d474a759f7d3560b55ec977517a86e955f988ac7a110100000000001976a914f208a460bff15d809eafa80ee6cddb7ef486df7988ac00000000]
-func GetBtcBroadcastRefundMsgKey(judgeAddress sdk.AccAddress, SignedRefundTx string) []byte {
+// GetBtcBroadcastTxSweepMsgKey returns the following key format
+// [HashString("BtcBroadcastTxSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][01000000015821f1bf602c89a57535286e7a59c302b3039c09e2d94bbf6464320fb0d3c5a2000000006a473044022075a48b0a69e66ea736d1aeae13dc6e8b6c7309636c45d6d01f2b43f8b3580a5a022068f1e72030c5cd2a5cdd6d99d195b5831008da88da6da79d1f91317a249fbbaa0121033686c32eeea239e2d7b2038f7312171b10ad76b0e146b676e4f4d4c708f0bb75ffffffff0288130000000000001976a91419134d474a759f7d3560b55ec977517a86e955f988ac7a110100000000001976a914f208a460bff15d809eafa80ee6cddb7ef486df7988ac00000000]
+func GetBtcBroadcastTxSweepMsgKey(judgeAddress sdk.AccAddress, SignedRefundTx string) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid judge address"))
 	}
 
-	return forkstypes.AppendBytes(BtcBroadcastRefundMsgKey, judgeAddress.Bytes(), []byte(SignedRefundTx))
+	return forkstypes.AppendBytes(BtcBroadcastTxSweepMsgKey, judgeAddress.Bytes(), []byte(SignedRefundTx))
 }
 
 // GetBtcProposeRefundHashMsgKey returns the following key format

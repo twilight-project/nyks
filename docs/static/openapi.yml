@@ -27303,20 +27303,22 @@ paths:
         - Query
   /twilight-project/nyks/bridge/broadcast_refund_all:
     get:
-      summary: Queries a list of BroadcastRefundAll items.
-      operationId: TwilightprojectNyksBridgeBroadcastRefundAll
+      summary: Queries a list of BroadcastTxSweepAll items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxSweepAll
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              broadcastRefundMsg:
+              BroadcastTxSweepMsg:
                 type: array
                 items:
                   type: object
                   properties:
                     signedRefundTx:
+                      type: string
+                    signedSweepTx:
                       type: string
                     judgeAddress:
                       type: string
@@ -47686,14 +47688,16 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
-  twilightproject.nyks.bridge.MsgBroadcastRefund:
+  twilightproject.nyks.bridge.MsgBroadcastTxSweep:
     type: object
     properties:
       signedRefundTx:
         type: string
+      signedSweepTx:
+        type: string
       judgeAddress:
         type: string
-  twilightproject.nyks.bridge.MsgBroadcastRefundResponse:
+  twilightproject.nyks.bridge.MsgBroadcastTxSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse:
     type: object
@@ -47795,15 +47799,17 @@ definitions:
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.
-  twilightproject.nyks.bridge.QueryBroadcastRefundAllResponse:
+  twilightproject.nyks.bridge.QueryBroadcastTxSweepAllResponse:
     type: object
     properties:
-      broadcastRefundMsg:
+      BroadcastTxSweepMsg:
         type: array
         items:
           type: object
           properties:
             signedRefundTx:
+              type: string
+            signedSweepTx:
               type: string
             judgeAddress:
               type: string

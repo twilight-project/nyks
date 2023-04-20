@@ -12,10 +12,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdBroadcastRefund() *cobra.Command {
+func CmdBroadcastTxSweep() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "broadcast-refund [signed-refund-tx]",
-		Short: "Broadcast message BroadcastRefund",
+		Use:   "broadcast-tx-sweep [signed-refund-tx]",
+		Short: "Broadcast message BroadcastTxSweep",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argSignedRefundTx := args[0]
@@ -25,7 +25,7 @@ func CmdBroadcastRefund() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgBroadcastRefund(
+			msg := types.NewMsgBroadcastTxSweep(
 				argSignedRefundTx,
 				clientCtx.GetFromAddress().String(),
 			)

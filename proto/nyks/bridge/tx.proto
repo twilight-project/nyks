@@ -21,7 +21,7 @@ service Msg {
   rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
   rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
   rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
-  rpc BroadcastRefund    (MsgBroadcastRefund   ) returns (MsgBroadcastRefundResponse   );
+  rpc BroadcastTxSweep    (MsgBroadcastTxSweep   ) returns (MsgBroadcastTxSweepResponse   );
   rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
   rpc ProposeRefundHash  (MsgProposeRefundHash ) returns (MsgProposeRefundHashResponse );
   rpc ConfirmBtcWithdraw    (MsgConfirmBtcWithdraw   ) returns (MsgConfirmBtcWithdrawResponse   );
@@ -126,12 +126,13 @@ message MsgSignSweep {
 
 message MsgSignSweepResponse {}
 
-message MsgBroadcastRefund {
+message MsgBroadcastTxSweep {
   string signedRefundTx = 1;
-  string judgeAddress   = 2;
+  string signedSweepTx = 2;
+  string judgeAddress = 3;
 }
 
-message MsgBroadcastRefundResponse {}
+message MsgBroadcastTxSweepResponse {}
 
 message MsgProposeRefundHash {
   string refundHash   = 1;

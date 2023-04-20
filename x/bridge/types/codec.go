@@ -18,7 +18,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWithdrawTxSigned{}, "bridge/WithdrawTxSigned", nil)
 	cdc.RegisterConcrete(&MsgWithdrawTxFinal{}, "bridge/WithdrawTxFinal", nil)
 	cdc.RegisterConcrete(&MsgSignRefund{}, "bridge/SignRefund", nil)
-	cdc.RegisterConcrete(&MsgBroadcastRefund{}, "bridge/BroadcastRefund", nil)
+	cdc.RegisterConcrete(&MsgBroadcastTxSweep{}, "bridge/BroadcastTxSweep", nil)
 	cdc.RegisterConcrete(&MsgSignSweep{}, "bridge/SignSweep", nil)
 	cdc.RegisterConcrete(&MsgProposeRefundHash{}, "bridge/ProposeRefundHash", nil)
 	cdc.RegisterConcrete(&MsgConfirmBtcWithdraw{}, "bridge/ConfirmBtcWithdraw", nil)
@@ -69,7 +69,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSignRefund{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgBroadcastRefund{},
+		&MsgBroadcastTxSweep{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSignSweep{},

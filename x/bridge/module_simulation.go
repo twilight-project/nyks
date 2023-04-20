@@ -60,9 +60,9 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSignRefund int = 100
 
-	opWeightMsgBroadcastRefund = "op_weight_msg_broadcast_refund"
+	opWeightMsgBroadcastTxSweep = "op_weight_msg_broadcast_refund"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgBroadcastRefund int = 100
+	defaultWeightMsgBroadcastTxSweep int = 100
 
 	opWeightMsgSignSweep = "op_weight_msg_sign_sweep"
 	// TODO: Determine the simulation weight value
@@ -209,15 +209,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		bridgesimulation.SimulateMsgSignRefund(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgBroadcastRefund int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBroadcastRefund, &weightMsgBroadcastRefund, nil,
+	var weightMsgBroadcastTxSweep int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBroadcastTxSweep, &weightMsgBroadcastTxSweep, nil,
 		func(_ *rand.Rand) {
-			weightMsgBroadcastRefund = defaultWeightMsgBroadcastRefund
+			weightMsgBroadcastTxSweep = defaultWeightMsgBroadcastTxSweep
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgBroadcastRefund,
-		bridgesimulation.SimulateMsgBroadcastRefund(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgBroadcastTxSweep,
+		bridgesimulation.SimulateMsgBroadcastTxSweep(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgSignSweep int

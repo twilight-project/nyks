@@ -5,26 +5,26 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgBroadcastRefund = "broadcast_refund"
+const TypeMsgBroadcastTxSweep = "broadcast_refund"
 
-var _ sdk.Msg = &MsgBroadcastRefund{}
+var _ sdk.Msg = &MsgBroadcastTxSweep{}
 
-func NewMsgBroadcastRefund(signedRefundTx string, judgeAddress string) *MsgBroadcastRefund {
-	return &MsgBroadcastRefund{
+func NewMsgBroadcastTxSweep(signedRefundTx string, judgeAddress string) *MsgBroadcastTxSweep {
+	return &MsgBroadcastTxSweep{
 		SignedRefundTx: signedRefundTx,
 		JudgeAddress:   judgeAddress,
 	}
 }
 
-func (msg *MsgBroadcastRefund) Route() string {
+func (msg *MsgBroadcastTxSweep) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgBroadcastRefund) Type() string {
-	return TypeMsgBroadcastRefund
+func (msg *MsgBroadcastTxSweep) Type() string {
+	return TypeMsgBroadcastTxSweep
 }
 
-func (msg *MsgBroadcastRefund) GetSigners() []sdk.AccAddress {
+func (msg *MsgBroadcastTxSweep) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		panic(err)
@@ -32,12 +32,12 @@ func (msg *MsgBroadcastRefund) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgBroadcastRefund) GetSignBytes() []byte {
+func (msg *MsgBroadcastTxSweep) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgBroadcastRefund) ValidateBasic() error {
+func (msg *MsgBroadcastTxSweep) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)

@@ -38,8 +38,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgSignSweep:
 			res, err := msgServer.SignSweep(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgBroadcastRefund:
-			res, err := msgServer.BroadcastRefund(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgBroadcastTxSweep:
+			res, err := msgServer.BroadcastTxSweep(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgProposeRefundHash:
 			res, err := msgServer.ProposeRefundHash(sdk.WrapSDKContext(ctx), msg)

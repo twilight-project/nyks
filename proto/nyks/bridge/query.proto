@@ -77,8 +77,8 @@ service Query {
   
   }
   
-  // Queries a list of BroadcastRefundAll items.
-  rpc BroadcastRefundAll (QueryBroadcastRefundAllRequest) returns (QueryBroadcastRefundAllResponse) {
+  // Queries a list of BroadcastTxSweepAll items.
+  rpc BroadcastTxSweepAll (QueryBroadcastTxSweepAllRequest) returns (QueryBroadcastTxSweepAllResponse) {
     option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_refund_all";
   
   }
@@ -164,10 +164,10 @@ message QuerySignSweepAllResponse {
   repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryBroadcastRefundAllRequest {}
+message QueryBroadcastTxSweepAllRequest {}
 
-message QueryBroadcastRefundAllResponse {
-  repeated MsgBroadcastRefund broadcastRefundMsg = 1 [(gogoproto.nullable) = false];
+message QueryBroadcastTxSweepAllResponse {
+  repeated MsgBroadcastTxSweep BroadcastTxSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryProposeRefundHashAllRequest {}

@@ -45,7 +45,7 @@ message EventSignSweep {
     string btcOracleAddress = 5;
 }
 
-message EventBroadcastRefund {
+message EventBroadcastTxSweep {
     string message = 1;
     string signedRefundTx = 2;
     string judgeAddress = 3;

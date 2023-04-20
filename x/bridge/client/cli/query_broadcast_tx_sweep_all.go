@@ -11,10 +11,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdBroadcastRefundAll() *cobra.Command {
+func CmdBroadcastTxSweepAll() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "broadcast-refund-all",
-		Short: "Query BroadcastRefundAll",
+		Use:   "broadcast-tx-sweep-all",
+		Short: "Query BroadcastTxSweepAll",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -25,9 +25,9 @@ func CmdBroadcastRefundAll() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryBroadcastRefundAllRequest{}
+			params := &types.QueryBroadcastTxSweepAllRequest{}
 
-			res, err := queryClient.BroadcastRefundAll(cmd.Context(), params)
+			res, err := queryClient.BroadcastTxSweepAll(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

@@ -43,7 +43,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdSignSweepAll())
 
-	cmd.AddCommand(CmdBroadcastRefundAll())
+	cmd.AddCommand(CmdBroadcastTxSweepAll())
 
 	cmd.AddCommand(CmdProposeRefundHashAll())
 

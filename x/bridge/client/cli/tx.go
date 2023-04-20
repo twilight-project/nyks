@@ -39,7 +39,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdWithdrawTxSigned())
 	cmd.AddCommand(CmdWithdrawTxFinal())
 	cmd.AddCommand(CmdSignRefund())
-	cmd.AddCommand(CmdBroadcastRefund())
+	cmd.AddCommand(CmdBroadcastTxSweep())
 	cmd.AddCommand(CmdSignSweep())
 	cmd.AddCommand(CmdProposeRefundHash())
 	cmd.AddCommand(CmdConfirmBtcWithdraw())

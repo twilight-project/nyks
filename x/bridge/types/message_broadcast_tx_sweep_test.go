@@ -8,21 +8,21 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgBroadcastRefund_ValidateBasic(t *testing.T) {
+func TestMsgBroadcastTxSweep_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgBroadcastRefund
+		msg  MsgBroadcastTxSweep
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgBroadcastRefund{
+			msg: MsgBroadcastTxSweep{
 				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgBroadcastRefund{
+			msg: MsgBroadcastTxSweep{
 				JudgeAddress: sample.AccAddress(),
 			},
 		},
