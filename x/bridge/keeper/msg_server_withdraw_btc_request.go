@@ -11,16 +11,18 @@ import (
 func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithdrawBtcRequest) (*types.MsgWithdrawBtcRequestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	twilightAddress := sdk.AccAddress(msg.TwilightAddress)
-	//withdrawAmount := sdk.NewIntFromUint64(msg.WithdrawAmount)
-
-	// check if btc address is valid
-	withdrawAddress, e1 := types.NewBtcAddress(msg.WithdrawAddress)
-	reserveAddress, e2 := types.NewBtcAddress(msg.ReserveAddress)
+	twilightAddress, e1 := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
-	} else if e2 != nil {
+	}
+
+	// check if btc address is valid
+	withdrawAddress, e2 := types.NewBtcAddress(msg.WithdrawAddress)
+	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
+	if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
+	} else if e3 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
 
 	// check if withdraw request is also already registered
