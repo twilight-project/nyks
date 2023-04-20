@@ -414,7 +414,7 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 	}
 }
 
-// GetBtcBroadcastTxSweepMsg returns the broadcast refund message for btc chain using judgeAddress and SignedRefundTx
+// GetBtcBroadcastTxSweepMsg returns the broadcast tx sweep message for btc chain using judgeAddress and SignedRefundTx
 func (k Keeper) GetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) (*types.MsgBroadcastTxSweep, bool) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcBroadcastTxSweepMsgKey(judgeAddress, SignedRefundTx)
@@ -430,13 +430,14 @@ func (k Keeper) GetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccA
 }
 
 // SetBtcBroadcastTxSweepMsg sets the broadcast refund message for btc chain using judgeAddress and SignedRefundTx
-func (k Keeper) SetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) error {
+func (k Keeper) SetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string, SignedSweepTx string) error {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcBroadcastTxSweepMsgKey(judgeAddress, SignedRefundTx)
 
 	BroadcastTxSweep := &types.MsgBroadcastTxSweep{
-		JudgeAddress:   judgeAddress.String(),
 		SignedRefundTx: SignedRefundTx,
+		SignedSweepTx:  SignedSweepTx,
+		JudgeAddress:   judgeAddress.String(),
 	}
 	store.Set(aKey, k.cdc.MustMarshal(BroadcastTxSweep))
 	return nil
@@ -451,8 +452,9 @@ func (k Keeper) IterateRegisteredBroadcastTxSweepMsgs(ctx sdk.Context, cb func([
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgBroadcastTxSweep{
-			JudgeAddress:   "",
 			SignedRefundTx: "",
+			SignedSweepTx:  "",
+			JudgeAddress:   "",
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)

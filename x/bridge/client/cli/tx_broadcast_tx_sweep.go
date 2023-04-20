@@ -14,11 +14,12 @@ var _ = strconv.Itoa(0)
 
 func CmdBroadcastTxSweep() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "broadcast-tx-sweep [signed-refund-tx]",
+		Use:   "broadcast-tx-sweep [signed-refund-tx] [signed-sweep-tx]",
 		Short: "Broadcast message BroadcastTxSweep",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argSignedRefundTx := args[0]
+			argSignedSweepTx := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -27,6 +28,7 @@ func CmdBroadcastTxSweep() *cobra.Command {
 
 			msg := types.NewMsgBroadcastTxSweep(
 				argSignedRefundTx,
+				argSignedSweepTx,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

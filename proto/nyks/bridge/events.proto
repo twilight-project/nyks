@@ -48,7 +48,8 @@ message EventSignSweep {
 message EventBroadcastTxSweep {
     string message = 1;
     string signedRefundTx = 2;
-    string judgeAddress = 3;
+    string signedSweepTx = 3;
+    string judgeAddress = 4;
 }
 
 message EventProposeRefundHash {
