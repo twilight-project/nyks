@@ -110,7 +110,7 @@ func ValidateBtcTransaction(tx string) error {
 	}
 
 	// Check the transaction size (replace minSize and maxSize with appropriate values)
-	minSize := 100    // minimum allowed transaction size in bytes
+	minSize := 50     // minimum allowed transaction size in bytes
 	maxSize := 100000 // maximum allowed transaction size in bytes
 
 	if len(txBytes) < minSize || len(txBytes) > maxSize {

@@ -104,6 +104,7 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
 
 	return nil
+
 }
 
 // GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
