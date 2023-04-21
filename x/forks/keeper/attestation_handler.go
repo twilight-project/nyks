@@ -9,6 +9,7 @@ import (
 
 	bridgetypes "github.com/twilight-project/nyks/x/bridge/types"
 	"github.com/twilight-project/nyks/x/forks/types"
+	sharedtypes "github.com/twilight-project/nyks/x/shared/types"
 )
 
 // AttestationHandler processes `observed` Attestations
@@ -113,10 +114,27 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 
 // handleSweepProposal handles the processing of a MsgSweepProposal
 func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
+
+	// Due to cyclic imports issue, we need to convert the proposal to a shared type
+	individualTwilightReserveAccounter := sharedtypes.ConvertToIndividualTwilightAccounter(proposal.IndividualTwilightReserveAccount)
+
+	// Update the reserve mapping with the values of the proposal
+	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.ReserveAddress, proposal.JudgeAddress, proposal.BtcRelayCapacityValue, proposal.TotalValue, proposal.PrivatePoolValue, proposal.PublicValue, proposal.FeePool, individualTwilightReserveAccounter)
+	if err != nil {
+		hash, _ := proposal.ProposalHash()
+		a.keeper.logger(ctx).Error("Could not update the reserve after sweep attestation",
+			"cause", err.Error(),
+			"proposal type", proposal.GetType(),
+			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+		)
+		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.ReserveAddress)
+	}
+
 	return nil
 }
 
 // handleConfirmBtcWithdraw handles the processing of a MsgConfirmBtcWithdraw
 func (a AttestationHandler) handleConfirmBtcWithdraw(ctx sdk.Context, proposal bridgetypes.MsgConfirmBtcWithdraw) error {
+
 	return nil
 }

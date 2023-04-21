@@ -1,6 +1,9 @@
 package types
 
 import (
+	"bytes"
+	"encoding/binary"
+
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
@@ -35,6 +38,11 @@ func KeyPrefix(p string) []byte {
 
 // GetReserveKey returns the following key format
 // prefix reserve-key, reserve-address
-func GetReserveKey(reserveAdderss string) []byte {
-	return forkstypes.AppendBytes(BtcReserveKey, []byte(reserveAdderss))
+func GetReserveKey(reserveId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(BtcReserveKey, reserveBufBytes.Bytes())
 }

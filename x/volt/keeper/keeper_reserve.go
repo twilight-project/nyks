@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
+	sharedtypes "github.com/twilight-project/nyks/x/shared/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
@@ -36,7 +37,7 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(reserveAddress)
+	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(res))
 	k.setLastRegisteredBtcReserve(ctx, reserveId)
 
@@ -46,8 +47,14 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 // UpdateBtcReserve updates a reserve in the store
 func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
 
+	// Get the reserve id
+	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
 	// Get the reserve
-	reserve, err := k.GetBtcReserve(ctx, reserveAddress)
+	reserve, err := k.GetBtcReserve(ctx, reserveId)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
 	}
@@ -63,26 +70,85 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 	})
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(reserveAddress)
+	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
 
 	return nil
 }
 
-// Write a GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
-func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveAddress string) (*types.BtcReserve, error) {
+// UpdateBtcReserveAfterSweepProposal based on the passed reserveId, the operation happens after a successful attestation of MsgSweepProposal
+func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, individualTwilightAccounter []*forkstypes.IndividualTwilightReserveAccounter) error {
+
+	// Get the reserve
+	reserve, err := k.GetBtcReserve(ctx, reserveId)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
+	// Due to the cyclic import issue, we have to use shared types to convert individualTwilightAccounter to individualTwilightReserveAccount
+	individualTwilightReserveAccount := sharedtypes.ConvertIndividualTwilightAccounts(individualTwilightAccounter)
+
+	// Update all values of the reserve based on reserveId
+
+	reserve.ReserveAddress = reserveAddress
+	reserve.JudgeAddress = judgeAddress
+	reserve.BtcRelayCapacityValue = btcRelayCapacityValue
+	reserve.TotalValue = totalValue
+	reserve.PrivatePoolValue = privatePoolValue
+	reserve.PublicValue = publicValue
+	reserve.FeePool = feePool
+	reserve.IndividualTwilightReserveAccount = individualTwilightReserveAccount
+
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(reserveAddress)
+	aKey := types.GetReserveKey(reserveId)
+	store.Set(aKey, k.cdc.MustMarshal(reserve))
+
+	return nil
+}
+
+// GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
+func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcReserve, error) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetReserveKey(reserveId)
 	bz := store.Get(aKey)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
 	}
 	reserve := &types.BtcReserve{}
 	err := k.cdc.Unmarshal(store.Get(aKey), reserve)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
 	}
 	return reserve, nil
+}
+
+// GetBtcReserveIdByAddress returns a reserve id if passed an reserve address
+func (k Keeper) GetBtcReserveIdByAddress(ctx sdk.Context, reserveAddress string) (uint64, error) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.BtcReserveKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.BtcReserve{
+			ReserveId:                        0,
+			JudgeAddress:                     "",
+			BtcRelayCapacityValue:            0,
+			TotalValue:                       0,
+			PrivatePoolValue:                 0,
+			PublicValue:                      0,
+			FeePool:                          0,
+			IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		if res.ReserveAddress == reserveAddress {
+			return res.ReserveId, nil
+		}
+	}
+
+	return 0, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
 }
 
 // setLastRegisteredBtcReserve sets the latest reserve id
@@ -135,10 +201,16 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 // and if the user has enough btc value to withdraw
 func (k Keeper) CheckIndividualTwilightReserveAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress string, btcValue uint64) error {
 
-	// Get the reserve
-	reserve, err := k.GetBtcReserve(ctx, reserveAddress)
+	// Get the reserve id
+	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
+	// Get the reserve
+	reserve, err := k.GetBtcReserve(ctx, reserveId)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
 	}
 
 	// Check if the twilight address is in the reserve.IndividualTwilightReserveAccount
