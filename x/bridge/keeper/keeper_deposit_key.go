@@ -155,22 +155,34 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, creator sdk.
 // GetJudgeAddressForValidatorAddress returns the judge address for a given validator address
 func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAddress sdk.ValAddress) (sdk.AccAddress, error) {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
+		panic(sdkerrors.Wrap(err, "invalid judge address"))
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
-	addrBytes := store.Get(aKey)
-	if addrBytes == nil {
-		return nil, sdkerrors.Wrapf(types.ErrJudgeAddressNotFound, "validator address %v", validatorAddress)
+	prefix := types.JudgeAddressKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgRegisterJudge{
+			Creator:          "",
+			ValidatorAddress: "",
+			JudgeAddress:     "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		if res.ValidatorAddress == validatorAddress.String() {
+			judgeAddress, err := sdk.AccAddressFromBech32(res.JudgeAddress)
+			if err != nil {
+				ctx.Logger().Error("validator encoded could not be returned as ValAddress")
+				return nil, err
+			}
+			return judgeAddress, nil
+		}
 	}
 
-	address, err := sdk.AccAddressFromBech32(string(addrBytes))
-	if err != nil {
-		ctx.Logger().Error("judge encoded could not be returned as AccAddress")
-		return nil, err
-	}
-	return address, nil
+	return nil, sdkerrors.Wrapf(types.ErrValidatorAddressNotFound, "validator address %v", validatorAddress)
 }
 
 // GetValidatorAddressForJudgeAddress returns the validator address for a given judge address
@@ -381,10 +393,10 @@ func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddr
 	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
 
 	signSweep := &types.MsgSignSweep{
-		BtcOracleAddress: btcOracleAddress.String(),
 		ReserveAddress:   reserveAddress.BtcAddress,
 		SignerAddress:    signerAddress.BtcAddress,
 		SweepSignature:   sweepSignature,
+		BtcOracleAddress: btcOracleAddress.String(),
 	}
 	store.Set(aKey, k.cdc.MustMarshal(signSweep))
 	return nil
@@ -404,7 +416,6 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 			SweepSignature:   "",
 			BtcOracleAddress: "",
 		}
-
 		k.cdc.MustUnmarshal(iter.Value(), &res)
 
 		// cb returns true to stop early

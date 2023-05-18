@@ -11,16 +11,18 @@ import (
 func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (*types.MsgSignRefundResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	btcOracleAddress := sdk.AccAddress(msg.BtcOracleAddress)
+	btcOracleAddress, e1 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 
 	// check if btc address is valid
-	signerAddress, e1 := types.NewBtcAddress(msg.SignerAddress)
-	reserveAddress, e2 := types.NewBtcAddress(msg.ReserveAddress)
+	signerAddress, e2 := types.NewBtcAddress(msg.SignerAddress)
+	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
 	refundSigValid := types.IsValidSignature(msg.RefundSignature)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
+	} else if e3 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	} else if refundSigValid == false {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "invalid refund signature")
 	}

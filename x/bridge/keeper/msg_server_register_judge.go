@@ -33,10 +33,10 @@ func (k msgServer) RegisterJudge(goCtx context.Context, msg *types.MsgRegisterJu
 		return nil, sdkerrors.Wrap(sdkerrors.ErrorInvalidSigner, "validator not in active set")
 	}
 
-	// address, err := k.GetJudgeAddressForValidatorAddress(ctx, valAddr)
-	// if err != nil {
-	// 	return nil, sdkerrors.Wrapf(types.ErrInvalid, "Err in finding existing validator against the judge address or validator already has a judge address: %s", address.String())
-	// }
+	address, err := k.GetJudgeAddressForValidatorAddress(ctx, valAddr)
+	if address != nil {
+		return nil, sdkerrors.Wrapf(types.ErrInvalid, "validator already has judge address %s or there is an error %s", address.String(), err.Error())
+	}
 
 	errSetting := k.SetJudgeAddressForValidatorAddress(ctx, creatorAddr, valAddr, judgeAddr)
 	if errSetting != nil {

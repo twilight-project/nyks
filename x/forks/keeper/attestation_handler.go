@@ -136,5 +136,20 @@ func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridge
 // handleConfirmBtcWithdraw handles the processing of a MsgConfirmBtcWithdraw
 func (a AttestationHandler) handleConfirmBtcWithdraw(ctx sdk.Context, proposal bridgetypes.MsgConfirmBtcWithdraw) error {
 
+	// sweepProposal, err := a.keeper.GetSweepProposalAttestationsForBtcSweepTx(ctx, proposal.TxHash)
+	// if err != nil {
+	// 	hash, _ := proposal.ProposalHash()
+	// 	a.keeper.logger(ctx).Error("Could not find the sweep proposal for the btc withdraw attestation",
+	// 		"cause", err.Error(),
+	// 		"proposal type", proposal.GetType(),
+	// 		"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+	// 	)
+	// 	return sdkerrors.Wrapf(err, "could not find the sweep proposal for the btc withdraw attestation %s", proposal.ProposalHash)
+	// } else {
+	// 	// Handle the case when an attestation is found
+
+	// 	// Update the reserve mapping with the values of the proposal
+
+	// }
 	return nil
 }

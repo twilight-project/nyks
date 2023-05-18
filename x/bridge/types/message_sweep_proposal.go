@@ -100,7 +100,7 @@ func (msg *MsgSweepProposal) GetType() nykstypes.ProposalType {
 }
 
 func (msg *MsgSweepProposal) ProposalHash() ([]byte, error) {
-	path := fmt.Sprintf("%d/%s/%s", msg.ReserveId, msg.BtcRefundTx, msg.JudgeAddress)
+	path := fmt.Sprintf("%s", msg.BtcSweepTx)
 	return tmhash.Sum([]byte(path)), nil
 }
 

@@ -11,17 +11,19 @@ import (
 func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*types.MsgSignSweepResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	btcOracleAddress := sdk.AccAddress(msg.BtcOracleAddress)
+	btcOracleAddress, e1 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 
 	// check if btc address is valid
-	signerAddress, e1 := types.NewBtcAddress(msg.SignerAddress)
-	reserveAddress, e2 := types.NewBtcAddress(msg.ReserveAddress)
-	sweepSigValie := types.IsValidSignature(msg.SweepSignature)
+	signerAddress, e2 := types.NewBtcAddress(msg.SignerAddress)
+	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
+	sweepSigValue := types.IsValidSignature(msg.SweepSignature)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
-	} else if sweepSigValie == false {
+	} else if e3 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
+	} else if sweepSigValue == false {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "invalid sweep signature")
 	}
 

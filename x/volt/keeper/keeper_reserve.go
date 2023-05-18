@@ -88,8 +88,10 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	// Due to the cyclic import issue, we have to use shared types to convert individualTwilightAccounter to individualTwilightReserveAccount
 	individualTwilightReserveAccount := sharedtypes.ConvertIndividualTwilightAccounts(individualTwilightAccounter)
 
-	// Update all values of the reserve based on reserveId
+	// Pass the individualTwilightReserveAccount through AddIndividualTwilightReserveAccount to make sure that we do not have multiple entries for the same twilight address
+	reserve.IndividualTwilightReserveAccount = k.AddIndividualTwilightReserveAccount(ctx, individualTwilightReserveAccount)
 
+	// Update all other values of the reserve based on reserveId
 	reserve.ReserveAddress = reserveAddress
 	reserve.JudgeAddress = judgeAddress
 	reserve.BtcRelayCapacityValue = btcRelayCapacityValue
@@ -97,7 +99,6 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	reserve.PrivatePoolValue = privatePoolValue
 	reserve.PublicValue = publicValue
 	reserve.FeePool = feePool
-	reserve.IndividualTwilightReserveAccount = individualTwilightReserveAccount
 
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
@@ -254,4 +255,25 @@ func prefixRange(prefix []byte) ([]byte, []byte) {
 		end = nil
 	}
 	return prefix, end
+}
+
+// AddIndividualTwilightReserveAccount adds BtcValue of the same TwilightAddress together
+func (k Keeper) AddIndividualTwilightReserveAccount(ctx sdk.Context, individualTwilightReserveAccounts []*types.IndividualTwilightReserveAccount) []*types.IndividualTwilightReserveAccount {
+	addressValueMap := make(map[string]uint64)
+
+	// Iterate over individualTwilightReserveAccounts and sum BtcValue for each TwilightAddress
+	for _, individualAccount := range individualTwilightReserveAccounts {
+		addressValueMap[individualAccount.TwilightAddress] += individualAccount.BtcValue
+	}
+
+	// Create a new slice with the summed BtcValue for each TwilightAddress
+	result := make([]*types.IndividualTwilightReserveAccount, 0, len(addressValueMap))
+	for address, value := range addressValueMap {
+		result = append(result, &types.IndividualTwilightReserveAccount{
+			TwilightAddress: address,
+			BtcValue:        value,
+		})
+	}
+
+	return result
 }
