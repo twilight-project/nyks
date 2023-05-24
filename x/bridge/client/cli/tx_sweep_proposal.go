@@ -10,7 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 	"github.com/twilight-project/nyks/x/bridge/types"
-	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 var _ = strconv.Itoa(0)
@@ -92,14 +91,6 @@ func CmdSweepProposal() *cobra.Command {
 				return err
 			}
 
-			var individualTwilightReserveAccounts []*volttypes.IndividualTwilightReserveAccount
-			for _, ta := range twilightAddresses {
-				individualTwilightReserveAccounts = append(individualTwilightReserveAccounts, &volttypes.IndividualTwilightReserveAccount{
-					TwilightAddress: ta.Address,
-					BtcValue:        ta.Value,
-				})
-			}
-
 			msg := types.NewMsgSweepProposal(
 				argReserveId,
 				argReserveAddress,
@@ -109,7 +100,6 @@ func CmdSweepProposal() *cobra.Command {
 				argPrivatePoolValue,
 				argPublicValue,
 				argFeePool,
-				individualTwilightReserveAccounts,
 				argBtcRefundTx,
 				argBtcSweepTx,
 			)

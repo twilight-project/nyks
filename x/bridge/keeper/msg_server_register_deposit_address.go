@@ -45,7 +45,7 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		}
 	}
 
-	_, errSetting := k.SetBtcAddressForTwilightAddress(ctx, twilightAddress, *btcAddr)
+	errSetting := k.VoltKeeper.SetBtcAddressForClearingAccount(ctx, twilightAddress, *btcAddr)
 	if errSetting != nil {
 		return nil, errSetting
 	}

@@ -9,20 +9,6 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-// SetBtcAddressForTwilightAddress sets the btc address for a given twilight address
-func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr types.BtcAddress) ([]byte, error) {
-	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-
-	btcAddrBytes := []byte(btcAddr.GetBtcAddress())
-
-	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)), btcAddrBytes)
-
-	return btcAddrBytes, nil
-}
-
 // GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
 func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcPublicKey *types.BtcAddress, found bool) {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {

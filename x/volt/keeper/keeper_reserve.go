@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
-	sharedtypes "github.com/twilight-project/nyks/x/shared/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
@@ -25,15 +24,14 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 
 	// Create a new reserve
 	res := &types.BtcReserve{
-		ReserveId:                        reserveId,
-		ReserveAddress:                   reserveAddress,
-		JudgeAddress:                     judgeAddress.String(),
-		BtcRelayCapacityValue:            0,
-		TotalValue:                       0,
-		PrivatePoolValue:                 0,
-		PublicValue:                      0,
-		FeePool:                          0,
-		IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
+		ReserveId:             reserveId,
+		ReserveAddress:        reserveAddress,
+		JudgeAddress:          judgeAddress.String(),
+		BtcRelayCapacityValue: 0,
+		TotalValue:            0,
+		PrivatePoolValue:      0,
+		PublicValue:           0,
+		FeePool:               0,
 	}
 
 	store := ctx.KVStore(k.storeKey)
@@ -63,12 +61,6 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 	reserve.TotalValue = reserve.TotalValue + mintedValue
 	reserve.PublicValue = reserve.PublicValue + mintedValue
 
-	// Add twilightAddress to reserve.IndividualTwilightReserveAccount
-	reserve.IndividualTwilightReserveAccount = append(reserve.IndividualTwilightReserveAccount, &types.IndividualTwilightReserveAccount{
-		TwilightAddress: twilightAddress.String(),
-		BtcValue:        mintedValue,
-	})
-
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
@@ -77,19 +69,13 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 }
 
 // UpdateBtcReserveAfterSweepProposal based on the passed reserveId, the operation happens after a successful attestation of MsgSweepProposal
-func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, individualTwilightAccounter []*forkstypes.IndividualTwilightReserveAccounter) error {
+func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64) error {
 
 	// Get the reserve
 	reserve, err := k.GetBtcReserve(ctx, reserveId)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
 	}
-
-	// Due to the cyclic import issue, we have to use shared types to convert individualTwilightAccounter to individualTwilightReserveAccount
-	individualTwilightReserveAccount := sharedtypes.ConvertIndividualTwilightAccounts(individualTwilightAccounter)
-
-	// Pass the individualTwilightReserveAccount through AddIndividualTwilightReserveAccount to make sure that we do not have multiple entries for the same twilight address
-	reserve.IndividualTwilightReserveAccount = k.AddIndividualTwilightReserveAccount(ctx, individualTwilightReserveAccount)
 
 	// Update all other values of the reserve based on reserveId
 	reserve.ReserveAddress = reserveAddress
@@ -133,14 +119,13 @@ func (k Keeper) GetBtcReserveIdByAddress(ctx sdk.Context, reserveAddress string)
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
-			ReserveId:                        0,
-			JudgeAddress:                     "",
-			BtcRelayCapacityValue:            0,
-			TotalValue:                       0,
-			PrivatePoolValue:                 0,
-			PublicValue:                      0,
-			FeePool:                          0,
-			IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
+			ReserveId:             0,
+			JudgeAddress:          "",
+			BtcRelayCapacityValue: 0,
+			TotalValue:            0,
+			PrivatePoolValue:      0,
+			PublicValue:           0,
+			FeePool:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -180,14 +165,13 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
-			ReserveId:                        0,
-			JudgeAddress:                     "",
-			BtcRelayCapacityValue:            0,
-			TotalValue:                       0,
-			PrivatePoolValue:                 0,
-			PublicValue:                      0,
-			FeePool:                          0,
-			IndividualTwilightReserveAccount: []*types.IndividualTwilightReserveAccount{},
+			ReserveId:             0,
+			JudgeAddress:          "",
+			BtcRelayCapacityValue: 0,
+			TotalValue:            0,
+			PrivatePoolValue:      0,
+			PublicValue:           0,
+			FeePool:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -197,36 +181,6 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 			return
 		}
 	}
-}
-
-// CheckIndividualTwilightReserveAccountBalance checks if the twilight address is in the reserve.IndividualTwilightReserveAccount
-// and if the user has enough btc value to withdraw
-func (k Keeper) CheckIndividualTwilightReserveAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress string, btcValue uint64) error {
-
-	// Get the reserve id
-	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
-	}
-
-	// Get the reserve
-	reserve, err := k.GetBtcReserve(ctx, reserveId)
-	if err != nil {
-		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
-	}
-
-	// Check if the twilight address is in the reserve.IndividualTwilightReserveAccount
-	// and if the user has enough btc value to withdraw
-	for _, individualAccount := range reserve.IndividualTwilightReserveAccount {
-		if individualAccount.TwilightAddress == twilightAddress.String() {
-			if individualAccount.BtcValue < btcValue {
-				return sdkerrors.Wrapf(types.ErrInsufficientBtcValue, fmt.Sprint(twilightAddress))
-			}
-			return nil
-		}
-	}
-
-	return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(twilightAddress))
 }
 
 func prefixRange(prefix []byte) ([]byte, []byte) {
@@ -255,25 +209,4 @@ func prefixRange(prefix []byte) ([]byte, []byte) {
 		end = nil
 	}
 	return prefix, end
-}
-
-// AddIndividualTwilightReserveAccount adds BtcValue of the same TwilightAddress together
-func (k Keeper) AddIndividualTwilightReserveAccount(ctx sdk.Context, individualTwilightReserveAccounts []*types.IndividualTwilightReserveAccount) []*types.IndividualTwilightReserveAccount {
-	addressValueMap := make(map[string]uint64)
-
-	// Iterate over individualTwilightReserveAccounts and sum BtcValue for each TwilightAddress
-	for _, individualAccount := range individualTwilightReserveAccounts {
-		addressValueMap[individualAccount.TwilightAddress] += individualAccount.BtcValue
-	}
-
-	// Create a new slice with the summed BtcValue for each TwilightAddress
-	result := make([]*types.IndividualTwilightReserveAccount, 0, len(addressValueMap))
-	for address, value := range addressValueMap {
-		result = append(result, &types.IndividualTwilightReserveAccount{
-			TwilightAddress: address,
-			BtcValue:        value,
-		})
-	}
-
-	return result
 }

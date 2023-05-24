@@ -32,13 +32,13 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 	}
 
 	// check if withdraw address has enough balance in the reserve
-	err := k.VoltKeeper.CheckIndividualTwilightReserveAccountBalance(ctx, twilightAddress, *&reserveAddress.BtcAddress, msg.WithdrawAmount)
-	if err != nil {
-		return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient Balance")
-	}
+	// err := k.VoltKeeper.CheckIndividualTwilightReserveAccountBalance(ctx, twilightAddress, *&reserveAddress.BtcAddress, msg.WithdrawAmount)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient Balance")
+	// }
 
 	// set withdraw request
-	err = k.SetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
+	err := k.SetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
 	if err != nil {
 		return nil, err
 	}

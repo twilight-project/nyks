@@ -30,5 +30,5 @@ type NyksKeeper interface {
 // VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
 type VoltKeeper interface {
 	SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error
-	CheckIndividualTwilightReserveAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress string, btcValue uint64) error
+	SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr BtcAddress) error
 }

@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
@@ -25,6 +27,9 @@ const (
 )
 
 var (
+	// BtcAddressForClearingAccountKey indexes btc address according to users twilight address
+	BtcAddressForClearingAccountKey = forkstypes.HashString("BtcAddressForClearingAccountKey")
+
 	// KeyReserve indexes the reserve KeyReserve
 	BtcReserveKey = forkstypes.HashString("BtcKeyReserve")
 
@@ -34,6 +39,15 @@ var (
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+// GetBtcAddressForClearingAccountKey returns the following key format
+// [HashString("GetBtcAddressForClearingAccountKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetBtcAddressForClearingAccountKey(twilightAddress sdk.AccAddress) []byte {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	return forkstypes.AppendBytes(BtcAddressForClearingAccountKey, twilightAddress.Bytes())
 }
 
 // GetReserveKey returns the following key format

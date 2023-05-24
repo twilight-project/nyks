@@ -7,26 +7,24 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/tendermint/crypto/tmhash"
 	nykstypes "github.com/twilight-project/nyks/x/forks/types"
-	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, individualTwilightReserveAccount []*volttypes.IndividualTwilightReserveAccount, btcRefundTx string, btcSweepTx string) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, btcRefundTx string, btcSweepTx string) *MsgSweepProposal {
 	return &MsgSweepProposal{
-		ReserveId:                        reserveId,
-		ReserveAddress:                   reserveAddress,
-		JudgeAddress:                     judgeAddress,
-		BtcRelayCapacityValue:            btcRelayCapacityValue,
-		TotalValue:                       totalValue,
-		PrivatePoolValue:                 privatePoolValue,
-		PublicValue:                      publicValue,
-		FeePool:                          feePool,
-		IndividualTwilightReserveAccount: individualTwilightReserveAccount,
-		BtcRefundTx:                      btcRefundTx,
-		BtcSweepTx:                       btcSweepTx,
+		ReserveId:             reserveId,
+		ReserveAddress:        reserveAddress,
+		JudgeAddress:          judgeAddress,
+		BtcRelayCapacityValue: btcRelayCapacityValue,
+		TotalValue:            totalValue,
+		PrivatePoolValue:      privatePoolValue,
+		PublicValue:           publicValue,
+		FeePool:               feePool,
+		BtcRefundTx:           btcRefundTx,
+		BtcSweepTx:            btcSweepTx,
 	}
 }
 

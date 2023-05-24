@@ -84,9 +84,8 @@ message MsgSweepProposal {
            uint64                                                     privatePoolValue                 =  6;
            uint64                                                     publicValue                      =  7;
            uint64                                                     feePool                          =  8;
-  repeated twilightproject.nyks.volt.IndividualTwilightReserveAccount individualTwilightReserveAccount =  9;
-           string                                                     btcRefundTx                      = 10;
-           string                                                     btcSweepTx                       = 11;
+           string                                                     btcRefundTx                      =  9;
+           string                                                     btcSweepTx                       = 10;
 }
 
 message MsgSweepProposalResponse {}
