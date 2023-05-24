@@ -9,26 +9,6 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-// GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
-func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcPublicKey *types.BtcAddress, found bool) {
-	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-	store := ctx.KVStore(k.storeKey)
-	addrBytes := store.Get([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)))
-	if addrBytes == nil {
-		ctx.Logger().Error("btc address bytes were not found")
-		return nil, false
-	}
-
-	address, err := types.NewBtcAddress(string(addrBytes))
-	if err != nil {
-		ctx.Logger().Error("btc encoded could not be returned as BtcAddress")
-		return nil, false
-	}
-	return address, true
-}
-
 // GetBtcDepositKeys iterates  the BtcDepositAddresses indexe to produce
 // a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
 // export / import.

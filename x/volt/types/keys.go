@@ -27,8 +27,8 @@ const (
 )
 
 var (
-	// BtcAddressForClearingAccountKey indexes btc address according to users twilight address
-	BtcAddressForClearingAccountKey = forkstypes.HashString("BtcAddressForClearingAccountKey")
+	// TwilightClearingAccountKey indexes clearing accounts according to users twilight address
+	TwilightClearingAccountKey = forkstypes.HashString("TwilightClearingAccountKey")
 
 	// KeyReserve indexes the reserve KeyReserve
 	BtcReserveKey = forkstypes.HashString("BtcKeyReserve")
@@ -41,13 +41,13 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-// GetBtcAddressForClearingAccountKey returns the following key format
-// [HashString("GetBtcAddressForClearingAccountKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
-func GetBtcAddressForClearingAccountKey(twilightAddress sdk.AccAddress) []byte {
+// GetClearingAccountKey returns the following key format
+// [HashString("GetClearingAccountKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetClearingAccountKey(twilightAddress sdk.AccAddress) []byte {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
-	return forkstypes.AppendBytes(BtcAddressForClearingAccountKey, twilightAddress.Bytes())
+	return forkstypes.AppendBytes(TwilightClearingAccountKey, twilightAddress.Bytes())
 }
 
 // GetReserveKey returns the following key format

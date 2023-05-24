@@ -31,4 +31,5 @@ type NyksKeeper interface {
 type VoltKeeper interface {
 	SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error
 	SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr BtcAddress) error
+	GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *BtcAddress, found bool)
 }

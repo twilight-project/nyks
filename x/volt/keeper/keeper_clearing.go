@@ -21,8 +21,27 @@ func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcAddressForClearingAccountKey(twilightAddress)
+	aKey := types.GetClearingAccountKey(twilightAddress)
 	store.Set(aKey, k.cdc.MustMarshal(account))
 
 	return nil
+}
+
+// GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
+func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *bridgetypes.BtcAddress, found bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetClearingAccountKey(twilightAddress)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var ClearingAccount types.ClearingAccount
+	k.cdc.MustUnmarshal(bz, &ClearingAccount)
+
+	btcAddr := ClearingAccount.BtcDepositAddress
+
+	retBtcAddr := &bridgetypes.BtcAddress{BtcAddress: btcAddr}
+
+	return retBtcAddr, true
 }
