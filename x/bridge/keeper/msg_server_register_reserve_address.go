@@ -34,6 +34,12 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
 
+	// check if a reserve address is already registered
+	_, foundExistingReserveAddress := k.GetBtcReserveAddress(ctx, *reserveAddress)
+	if foundExistingReserveAddress {
+		return nil, sdkerrors.Wrap(types.ErrDuplicate, reserveAddress.BtcAddress)
+	}
+
 	k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript, *reserveAddress)
 
 	// Write a function to get validator address from a judge address

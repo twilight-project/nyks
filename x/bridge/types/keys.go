@@ -70,12 +70,9 @@ func GetBtcAddressByTwilightAddressKey(twilightAddress sdk.AccAddress) []byte {
 }
 
 // GetBtcRegisterReserveAddressKey returns the following key format
-// [HashString("BtcReserveAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
-func GetBtcRegisterReserveAddressKey(judgeAddress sdk.AccAddress, reserveAddress BtcAddress) []byte {
-	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-	return forkstypes.AppendBytes(BtcReserveAddressKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
+// [HashString("BtcReserveAddressKey")][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
+func GetBtcRegisterReserveAddressKey(reserveAddress BtcAddress) []byte {
+	return forkstypes.AppendBytes(BtcReserveAddressKey, []byte(reserveAddress.BtcAddress))
 }
 
 // GetBtcRegisterReserveScriptKey returns the following key format

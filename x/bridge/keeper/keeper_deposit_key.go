@@ -107,8 +107,23 @@ func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccA
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcRegisterReserveAddressKey(judgeAddress, reserveAddress)
+	aKey := types.GetBtcRegisterReserveAddressKey(reserveAddress)
 	store.Set(aKey, k.cdc.MustMarshal(regRes))
+}
+
+// GetBtcReserveAddress returns a reserve address if its already registered
+func (k Keeper) GetBtcReserveAddress(ctx sdk.Context, reserveAddress types.BtcAddress) (*types.MsgRegisterReserveAddress, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcRegisterReserveAddressKey(reserveAddress)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var regRes types.MsgRegisterReserveAddress
+	k.cdc.MustUnmarshal(bz, &regRes) // Pass a pointer to MsgRegisterReserveAddress
+
+	return &regRes, true
 }
 
 // IterateBtcReserveAddresses iterates through all of the registered reserve addresses
