@@ -61,6 +61,32 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 	reserve.TotalValue = reserve.TotalValue + mintedValue
 	reserve.PublicValue = reserve.PublicValue + mintedValue
 
+	// Get the clearing account
+	clearingAccount, found := k.GetClearingAccount(ctx, twilightAddress)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+	}
+
+	// Update the clearing account
+	// Check if the reserve id already exists in the ReserveAccountBalances slice
+	found = false
+	for _, balance := range clearingAccount.ReserveAccountBalances {
+		if balance.ReserveId == reserveId {
+			// If it does, add the minted value to the existing balance
+			balance.Amount += mintedValue
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
+		clearingAccount.ReserveAccountBalances = append(clearingAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
+			ReserveId: reserveId,
+			Amount:    mintedValue,
+		})
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
