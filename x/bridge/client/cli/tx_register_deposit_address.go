@@ -16,7 +16,7 @@ func CmdRegisterDepositAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-deposit-address [btc-deposit-address]",
 		Short: "Broadcast message registerDepositAddress",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argDepositAddress := args[0]
 

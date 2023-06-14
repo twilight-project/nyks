@@ -19,7 +19,7 @@ func SimulateMsgConfirmBtcDeposit(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgConfirmBtcDeposit{
-			BtcOracleAddress: simAccount.Address.String(),
+			OracleAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the MsgConfirmBtcDeposit simulation

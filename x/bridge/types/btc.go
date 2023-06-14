@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/hex"
 	fmt "fmt"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -57,6 +58,26 @@ func ValidateBtcAddress(Address string) error {
 	return nil
 }
 
+// IsValidSignature verifies that the signature is a valid hex string within the DER format length range
+// It's a basic check
+func IsValidSignature(signature string) bool {
+	signatureLen := len(signature)
+
+	// Check if the length is valid for either DER format (between 140 and 144 characters)
+	// or fixed 64-byte format (128 characters)
+	if (signatureLen < 140 || signatureLen > 144) && signatureLen != 128 {
+		return false
+	}
+
+	// Check if the string is a valid hex
+	_, err := hex.DecodeString(signature)
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 // Returns the contained PublicKey as a string
 func (ea BtcScript) GetBtcReserveScript() string {
 	return ea.BtcScript
@@ -73,4 +94,43 @@ func (ea BtcScript) SetBtcReserveScript(Script string) error {
 func NewBtcScript(Address string) (*BtcScript, error) {
 	script := BtcScript{Address}
 	return &script, nil
+}
+
+// ValidateBtcTransaction validates the input string as an Btc Transaction
+func ValidateBtcTransaction(tx string) error {
+	// Check if the transaction data is not empty
+	if len(tx) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "%s cannot be empty", tx)
+	}
+
+	// Deserialize the Bitcoin transaction data
+	txBytes, err := hex.DecodeString(tx)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "Invalid transaction data: not a valid hex tx %s", tx)
+	}
+
+	// Check the transaction size (replace minSize and maxSize with appropriate values)
+	minSize := 50     // minimum allowed transaction size in bytes
+	maxSize := 100000 // maximum allowed transaction size in bytes
+
+	if len(txBytes) < minSize || len(txBytes) > maxSize {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Invalid transaction size: must be between %d and %d bytes, transaction passed %s", minSize, maxSize, tx))
+	}
+
+	return nil
+}
+
+func IsValidBtcTxHash(txHash string) bool {
+	// Check if the hash string is a valid hexadecimal string
+	_, err := hex.DecodeString(txHash)
+	if err != nil {
+		return false
+	}
+
+	// Check if the hash string has the correct length (64 characters)
+	if len(txHash) != 64 {
+		return false
+	}
+
+	return true
 }
