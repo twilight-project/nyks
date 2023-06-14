@@ -12,7 +12,6 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/twilight-project/nyks/x/bridge/types"
 	nykskeeper "github.com/twilight-project/nyks/x/forks/keeper"
-	voltkeeper "github.com/twilight-project/nyks/x/volt/keeper"
 )
 
 // Check that our expected keeper types are implemented
@@ -28,7 +27,6 @@ type (
 		// NOTE: If you add anything to this struct, add a nil check to ValidateMembers below!
 		StakingKeeper *stakingkeeper.Keeper
 		NyksKeeper    *nykskeeper.Keeper
-		VoltKeeper    *voltkeeper.Keeper
 		accountKeeper *authkeeper.AccountKeeper
 	}
 )
@@ -40,7 +38,6 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	stakingKeeper *stakingkeeper.Keeper,
 	nyksKeeper *nykskeeper.Keeper,
-	voltKeeper *voltkeeper.Keeper,
 	accKeeper *authkeeper.AccountKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -58,7 +55,6 @@ func NewKeeper(
 		StakingKeeper: stakingKeeper,
 		NyksKeeper:    nyksKeeper,
 		accountKeeper: accKeeper,
-		VoltKeeper:    voltKeeper,
 	}
 }
 

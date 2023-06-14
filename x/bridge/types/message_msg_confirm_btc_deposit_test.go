@@ -17,13 +17,13 @@ func TestMsgConfirmBtcDeposit_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgConfirmBtcDeposit{
-				OracleAddress: "invalid_address",
+				BtcOracleAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgConfirmBtcDeposit{
-				OracleAddress: sample.AccAddress(),
+				BtcOracleAddress: sample.AccAddress(),
 			},
 		},
 	}

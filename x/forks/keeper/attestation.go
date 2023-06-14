@@ -1,13 +1,9 @@
 package keeper
 
 import (
-	"bytes"
-	"encoding/hex"
 	"errors"
-	"fmt"
 	"sort"
 
-	"github.com/btcsuite/btcd/wire"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,17 +16,16 @@ import (
 func (k Keeper) Attest(
 	ctx sdk.Context,
 	proposal types.BtcProposal,
-	valAddr sdk.ValAddress,
 	anyProposal *codectypes.Any,
 ) (*types.Attestation, error) {
-	// val, found := k.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
-	// if !found {
-	// 	panic("Could not find ValAddr for delegate key, should be checked by now")
-	// }
-	// valAddr := val.GetOperator()
-	// if err := sdk.VerifyAddressFormat(valAddr); err != nil {
-	// 	return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
-	// }
+	val, found := k.GetOrchestratorValidator(ctx, proposal.GetProposarOrchestrator())
+	if !found {
+		panic("Could not find ValAddr for delegate key, should be checked by now")
+	}
+	valAddr := val.GetOperator()
+	if err := sdk.VerifyAddressFormat(valAddr); err != nil {
+		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
+	}
 
 	// Tries to get an attestation with the same btc block height and the proposal.
 	hash, err := proposal.ProposalHash()
@@ -86,8 +81,8 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 		attestationPower := sdk.NewInt(0)
 
 		proposalType := proposal.GetType()
-
-		if proposalType == 1 || proposalType == 2 || proposalType == 3 { // BtcDeposit Porposal
+		ctx.Logger().Error("proposalType", "proposalType", proposalType)
+		if proposalType == 1 { // BtcDeposit Porposal
 			validatorSet := k.StakingKeeper.GetAllValidators(ctx)
 			// Count the number of active validators
 			activeValidatorCount := 0
@@ -106,12 +101,11 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 			if receivedVotes.GTE(votesNeeded) {
 				// You have reached the target percentage of votes!
 				att.Observed = true
-				// we are processing attestation first and then setting it as true
-				err := k.processAttestation(ctx, att, proposal)
-				if err == nil {
-					k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
-					k.emitObservedEvent(ctx, att, proposal)
-				}
+				k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
+
+				k.processAttestation(ctx, att, proposal)
+
+				k.emitObservedEvent(ctx, att, proposal)
 			}
 		} else if proposalType == 0 { // SeenChainTip Proposal
 
@@ -188,73 +182,6 @@ func (k Keeper) GetAttestation(ctx sdk.Context, height uint64, proposalHash []by
 	return &att
 }
 
-// GetSweepProposalAttestationsForBtcSweepTx finds all attestations for a given given txHash and txHash found in btcSweepTx
-func (k Keeper) GetSweepProposalAttestationsForBtcSweepTx(ctx sdk.Context, txHash string) (types.Attestation, error) {
-
-	// iterate over all attestations and filter out the ones that are of type SweepProposal and Observed is true
-	// then check if the txHash matches with the given SweepPropsal's btcSweepTx txHash
-
-	// declare a new variable to store filtered proposal
-	var filteredAttestation types.Attestation
-	found := false
-	k.IterateAttestations(ctx, false, func(_ []byte, att types.Attestation) bool {
-		proposal, err := k.UnpackAttestationProposal(&att)
-		if err != nil {
-			panic("couldn't cast to proposal")
-		}
-		if att.Observed && proposal.GetType() == types.PROPOSAL_TYPE_SWEEP_PROPOSAL {
-			hash, err := proposal.ProposalHash()
-			if err != nil {
-				panic(sdkerrors.Wrap(err, "unable to compute proposal hash"))
-			}
-
-			// ProposalHash is the btcSweepTx string
-
-			// convert the bytes to string
-			txHash := hex.EncodeToString(hash)
-			tx, err := createTxFromHex(txHash)
-			if err != nil {
-				panic(err)
-			}
-
-			// get the txHash from the btcSweepTx
-			txHashFromProposal := tx.TxHash().String()
-
-			if txHash == txHashFromProposal {
-				filteredAttestation = att
-				found = true
-				return true
-			}
-		}
-		return false
-	})
-
-	if !found {
-		return types.Attestation{}, fmt.Errorf("no matching attestation found for txHash: %s", txHash)
-	}
-
-	return filteredAttestation, nil
-}
-
-func createTxFromHex(txHex string) (*wire.MsgTx, error) {
-	// Decode the transaction hex string
-	txBytes, err := hex.DecodeString(txHex)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode hex string: %v", err)
-	}
-
-	// Create a new transaction object
-	tx := wire.NewMsgTx(wire.TxVersion)
-
-	// Deserialize the transaction bytes
-	err = tx.Deserialize(bytes.NewReader(txBytes))
-	if err != nil {
-		return nil, fmt.Errorf("failed to deserialize transaction: %v", err)
-	}
-
-	return tx, nil
-}
-
 // // DeleteAttestation deletes the given attestation
 // func (k Keeper) DeleteAttestation(ctx sdk.Context, att types.Attestation) {
 // 	claim, err := k.UnpackAttestationClaim(&att)
@@ -271,7 +198,7 @@ func createTxFromHex(txHex string) (*wire.MsgTx, error) {
 // }
 
 // processAttestation actually applies the attestation to the consensus state
-func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, proposal types.BtcProposal) error {
+func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, proposal types.BtcProposal) {
 	hash, err := proposal.ProposalHash()
 	if err != nil {
 		panic(sdkerrors.Wrap(err, "unable to compute proposal hash"))
@@ -286,11 +213,9 @@ func (k Keeper) processAttestation(ctx sdk.Context, att *types.Attestation, prop
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
-		return err
 	} else {
 		commit() // persist transient storage
 	}
-	return nil
 }
 
 // GetAttestationMapping returns a mapping of eventnonce -> attestations at that nonce

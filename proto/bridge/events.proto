@@ -1,0 +1,16 @@
+syntax = "proto3";
+package twilightproject.nyks.bridge;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/twilight-project/nyks/x/bridge/types";
+
+message EventRegisterBtcDepositAddress {
+    string message = 1;
+    string depositAddress = 2;
+}
+
+message EventRegisterReserveScript {
+    string message        = 1;
+    string reserveScript = 2;
+}

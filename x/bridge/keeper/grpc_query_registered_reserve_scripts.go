@@ -9,21 +9,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) RegisteredReserveAddresses(goCtx context.Context, req *types.QueryRegisteredReserveAddressesRequest) (*types.QueryRegisteredReserveAddressesResponse, error) {
+func (k Keeper) RegisteredReserveScripts(goCtx context.Context, req *types.QueryRegisteredReserveScriptsRequest) (*types.QueryRegisteredReserveScriptsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	var (
-		btcReserveAddresses []types.MsgRegisterReserveAddress
-	)
+	scripts, err := k.GetBtcReserveKeys(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	k.IterateBtcReserveAddresses(ctx, func(_ []byte, res types.MsgRegisterReserveAddress) (abort bool) {
-		btcReserveAddresses = append(btcReserveAddresses, res)
-		return false
-	})
-
-	return &types.QueryRegisteredReserveAddressesResponse{Addresses: btcReserveAddresses}, nil
+	return &types.QueryRegisteredReserveScriptsResponse{Scripts: scripts}, nil
 }

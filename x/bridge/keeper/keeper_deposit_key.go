@@ -5,9 +5,46 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
+
+// SetBtcAddressForTwilightAddress sets the btc address for a given twilight address
+func (k Keeper) SetBtcAddressForTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr types.BtcAddress) ([]byte, error) {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	btcAddrBytes := []byte(btcAddr.GetBtcAddress())
+
+	// btcAddrBytes, err := btcutil.DecodeAddress(btcAddr.GetBtcAddress(), &chaincfg.MainNetParams)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrapf(types.ErrInvalidBtcAddress, "invalid btc address hex encoding (%s) giving err (%s) ", btcAddr.GetBtcAddress(), err)
+	// }
+	store := ctx.KVStore(k.storeKey)
+	store.Set([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)), btcAddrBytes)
+
+	return btcAddrBytes, nil
+}
+
+// GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
+func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcPublicKey *types.BtcAddress, found bool) {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	store := ctx.KVStore(k.storeKey)
+	addrBytes := store.Get([]byte(types.GetBtcAddressByTwilightAddressKey(twilightAddress)))
+	if addrBytes == nil {
+		ctx.Logger().Error("btc address bytes were not found")
+		return nil, false
+	}
+
+	address, err := types.NewBtcAddress(string(addrBytes))
+	if err != nil {
+		ctx.Logger().Error("btc encoded could not be returned as BtcAddress")
+		return nil, false
+	}
+	return address, true
+}
 
 // GetBtcDepositKeys iterates  the BtcDepositAddresses indexe to produce
 // a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
@@ -60,437 +97,68 @@ func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDeposi
 }
 
 // SetReserveAddressForJudge sets the btc address for a given twilight address
-func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript, reserveAddress types.BtcAddress) {
+func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript) ([]byte, error) {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	// After validation reforming the MsgRegisterReserveAddress to avoid double loops while retreiving the data
-	regRes := &types.MsgRegisterReserveAddress{
-		ReserveScript:  reserveScript.BtcScript,
-		ReserveAddress: reserveAddress.BtcAddress,
-		JudgeAddress:   judgeAddress.String(),
-	}
+	// Validation checks for BtcScript are missing
+
+	btcScriptBytes := []byte(reserveScript.GetBtcReserveScript())
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcRegisterReserveAddressKey(judgeAddress, reserveAddress)
-	store.Set(aKey, k.cdc.MustMarshal(regRes))
+	store.Set([]byte(types.GetBtcReserveScriptKey(judgeAddress)), btcScriptBytes)
+
+	return btcScriptBytes, nil
 }
 
-// IterateBtcReserveAddresses iterates through all of the registered reserve addresses
-func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, types.MsgRegisterReserveAddress) bool) {
+// GetBtcReserveKeys iterates both the BtcReserveKeys index to produce
+// a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
+// export / import.
+func (k Keeper) GetBtcReserveKeys(ctx sdk.Context) ([]types.MsgRegisterReserveAddress, error) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcReserveAddressKey
+	prefix := types.BtcReserveScriptKey
 	iter := store.Iterator(prefixRange(prefix))
 	defer iter.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterReserveAddress{
-			ReserveScript:  "",
-			ReserveAddress: "",
-			JudgeAddress:   "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
-func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, creator sdk.AccAddress, validatorAddress sdk.ValAddress, judgeAddress sdk.AccAddress) error {
-	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-
-	regJudge := &types.MsgRegisterJudge{
-		Creator:          creator.String(),
-		ValidatorAddress: validatorAddress.String(),
-		JudgeAddress:     judgeAddress.String(),
-	}
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
-	store.Set(aKey, k.cdc.MustMarshal(regJudge))
-
-	return nil
-}
-
-// GetJudgeAddressForValidatorAddress returns the judge address for a given validator address
-func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAddress sdk.ValAddress) (sdk.AccAddress, error) {
-	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid judge address"))
-	}
-
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.JudgeAddressKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
+	btcReserveScripts := make(map[string]string)
 
 	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
+		// the 'key' contains both the prefix and the value, so we need
+		// to cut off the starting bytes, if you don't do this a valid
+		// cosmos key will be made out of BtcReserveScriptKey + the startin bytes
+		// of the actual key
+		key := iter.Key()[len(types.BtcReserveScriptKey):]
+		value := iter.Value()
+		reserveScript, err := types.NewBtcScript(string(value))
+		if err != nil {
+			return nil, sdkerrors.Wrapf(err, "found invalid btcAddress %v under key %v", string(value), key)
 		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		if res.ValidatorAddress == validatorAddress.String() {
-			judgeAddress, err := sdk.AccAddressFromBech32(res.JudgeAddress)
-			if err != nil {
-				ctx.Logger().Error("validator encoded could not be returned as ValAddress")
-				return nil, err
-			}
-			return judgeAddress, nil
+		reserveAddress := sdk.AccAddress(key)
+		if err := sdk.VerifyAddressFormat(reserveAddress); err != nil {
+			return nil, sdkerrors.Wrapf(err, "invalid reserveAddress in key %v", reserveAddress)
 		}
+		btcReserveScripts[reserveAddress.String()] = reserveScript.GetBtcReserveScript()
 	}
 
-	return nil, sdkerrors.Wrapf(types.ErrValidatorAddressNotFound, "validator address %v", validatorAddress)
-}
+	var result []types.MsgRegisterReserveAddress
 
-// GetValidatorAddressForJudgeAddress returns the validator address for a given judge address
-func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.ValAddress, error) {
-	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid judge address"))
+	for judgeAddr, reserveScript := range btcReserveScripts {
+		result = append(result, types.MsgRegisterReserveAddress{
+			JudgeAddress:  judgeAddr,
+			ReserveScript: reserveScript,
+		})
+
 	}
 
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.JudgeAddressKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
+	// we iterated over a map, so now we have to sort to ensure the
+	// output here is deterministic, btc deposit address chosen for no particular
+	// reason
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].JudgeAddress < result[j].ReserveScript
+	})
 
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		if res.JudgeAddress == judgeAddress.String() {
-			ctx.Logger().Error("found judge")
-			validatorAddress, err := sdk.ValAddressFromBech32(res.ValidatorAddress)
-			if err != nil {
-				ctx.Logger().Error("validator encoded could not be returned as ValAddress")
-				return nil, err
-			}
-			return validatorAddress, nil
-		}
-		ctx.Logger().Error("not able to fine judges")
-	}
-
-	return nil, sdkerrors.Wrapf(types.ErrValidatorAddressNotFound, "judge address %v", judgeAddress)
-}
-
-// CheckJudgeValidatorInSet checks if the validator address of a judge is in the set of validators
-func (k Keeper) CheckJudgeValidatorInSet(ctx sdk.Context, judgeAddress sdk.AccAddress) bool {
-	ctx.Logger().Error(judgeAddress.String())
-	validatorAddress, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
-	if err != nil {
-		return false
-	}
-	_, found := k.StakingKeeper.GetValidator(ctx, validatorAddress)
-	return found
-}
-
-func (k Keeper) GetJudgeValidator(ctx sdk.Context, judgeAddress sdk.AccAddress) stakingtypes.Validator {
-	validatorAddress, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
-	if err != nil {
-		panic(sdkerrors.Wrap(err, "invalid validator address"))
-	}
-	validator, _ := k.StakingKeeper.GetValidator(ctx, validatorAddress)
-	return validator
-}
-
-// IterateRegisteredJudges iterates through all of the registered judge addresses
-func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.MsgRegisterJudge) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.JudgeAddressKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// GetBtcWithdrawRequest returns the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) (*types.MsgWithdrawBtcRequest, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
-	if !store.Has(aKey) {
-		return nil, false
-	}
-
-	bz := store.Get(aKey)
-	var withdrawRequest types.MsgWithdrawBtcRequest
-	k.cdc.MustUnmarshal(bz, &withdrawRequest)
-
-	return &withdrawRequest, true
-}
-
-// SetBtcWithdrawRequest sets the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
-
-	// After validation reforming the MsgWithdrawBtcRequest to avoid double loops while retreiving the data
-	withdrawRequest := &types.MsgWithdrawBtcRequest{
-		TwilightAddress: twilightAddress.String(),
-		ReserveAddress:  reserveAddress.BtcAddress,
-		WithdrawAddress: withdrawAddress.BtcAddress,
-		WithdrawAmount:  withdrawAmount,
-	}
-	store.Set(aKey, k.cdc.MustMarshal(withdrawRequest))
-	return nil
-}
-
-// IterateRegisteredWithdrawBtcRequests iterates through all of the registered withdraw btc requests
-func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]byte, types.MsgWithdrawBtcRequest) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcWithdrawRequestKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgWithdrawBtcRequest{
-			TwilightAddress: "",
-			ReserveAddress:  "",
-			WithdrawAddress: "",
-			WithdrawAmount:  0,
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// GetBtcSignRefundMsg returns the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
-func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) (*types.MsgSignRefund, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
-	if !store.Has(aKey) {
-		return nil, false
-	}
-
-	bz := store.Get(aKey)
-	var signRefund types.MsgSignRefund
-	k.cdc.MustUnmarshal(bz, &signRefund)
-
-	return &signRefund, true
-}
-
-// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
-func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
-
-	signRefund := &types.MsgSignRefund{
-		BtcOracleAddress: btcOracleAddress.String(),
-		ReserveAddress:   reserveAddress.BtcAddress,
-		SignerAddress:    signerAddress.BtcAddress,
-		RefundSignature:  refundSignature,
-	}
-	store.Set(aKey, k.cdc.MustMarshal(signRefund))
-	return nil
-}
-
-// IterateRegisteredSignRefundMsgs iterates through all of the registered sign refund messages
-func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte, types.MsgSignRefund) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcSignRefundMsgKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgSignRefund{
-			ReserveAddress:   "",
-			SignerAddress:    "",
-			RefundSignature:  "",
-			BtcOracleAddress: "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// GetBtcSignSweepMsg returns the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
-func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) (*types.MsgSignSweep, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
-	if !store.Has(aKey) {
-		return nil, false
-	}
-
-	bz := store.Get(aKey)
-	var signSweep types.MsgSignSweep
-	k.cdc.MustUnmarshal(bz, &signSweep)
-
-	return &signSweep, true
-}
-
-// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
-func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
-
-	signSweep := &types.MsgSignSweep{
-		ReserveAddress:   reserveAddress.BtcAddress,
-		SignerAddress:    signerAddress.BtcAddress,
-		SweepSignature:   sweepSignature,
-		BtcOracleAddress: btcOracleAddress.String(),
-	}
-	store.Set(aKey, k.cdc.MustMarshal(signSweep))
-	return nil
-}
-
-// IterateRegisteredSignSweepMsgs iterates through all of the registered sign sweep messages
-func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, types.MsgSignSweep) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcSignSweepMsgKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgSignSweep{
-			ReserveAddress:   "",
-			SignerAddress:    "",
-			SweepSignature:   "",
-			BtcOracleAddress: "",
-		}
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// GetBtcBroadcastTxSweepMsg returns the broadcast tx sweep message for btc chain using judgeAddress and SignedRefundTx
-func (k Keeper) GetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) (*types.MsgBroadcastTxSweep, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcBroadcastTxSweepMsgKey(judgeAddress, SignedRefundTx)
-	if !store.Has(aKey) {
-		return nil, false
-	}
-
-	bz := store.Get(aKey)
-	var BroadcastTxSweep types.MsgBroadcastTxSweep
-	k.cdc.MustUnmarshal(bz, &BroadcastTxSweep)
-
-	return &BroadcastTxSweep, true
-}
-
-// SetBtcBroadcastTxSweepMsg sets the broadcast refund message for btc chain using judgeAddress and SignedRefundTx
-func (k Keeper) SetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string, SignedSweepTx string) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcBroadcastTxSweepMsgKey(judgeAddress, SignedRefundTx)
-
-	BroadcastTxSweep := &types.MsgBroadcastTxSweep{
-		SignedRefundTx: SignedRefundTx,
-		SignedSweepTx:  SignedSweepTx,
-		JudgeAddress:   judgeAddress.String(),
-	}
-	store.Set(aKey, k.cdc.MustMarshal(BroadcastTxSweep))
-	return nil
-}
-
-// IterateRegisteredBroadcastTxSweepMsgs iterates through all of the registered broadcast refund messages
-func (k Keeper) IterateRegisteredBroadcastTxSweepMsgs(ctx sdk.Context, cb func([]byte, types.MsgBroadcastTxSweep) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcBroadcastTxSweepMsgKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgBroadcastTxSweep{
-			SignedRefundTx: "",
-			SignedSweepTx:  "",
-			JudgeAddress:   "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
-
-// GetBtcProposeRefundHashMsg returns the propose refund hash message for btc chain using judgeAddress, refundHash
-func (k Keeper) GetBtcProposeRefundHashMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, refundHash string) (*types.MsgProposeRefundHash, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcProposeRefundHashMsgKey(judgeAddress, refundHash)
-	if !store.Has(aKey) {
-		return nil, false
-	}
-
-	bz := store.Get(aKey)
-	var proposeRefundHash types.MsgProposeRefundHash
-	k.cdc.MustUnmarshal(bz, &proposeRefundHash)
-
-	return &proposeRefundHash, true
-}
-
-// SetProposeRefundHashMsg sets the propose refund hash message for btc chain using judgeAddress, refundHash
-func (k Keeper) SetBtcProposeRefundHashMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, refundHash string) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcProposeRefundHashMsgKey(judgeAddress, refundHash)
-
-	proposeRefundHash := &types.MsgProposeRefundHash{
-		JudgeAddress: judgeAddress.String(),
-		RefundHash:   refundHash,
-	}
-	store.Set(aKey, k.cdc.MustMarshal(proposeRefundHash))
-	return nil
-}
-
-// IterateRegisteredProposeRefundHashMsgs iterates through all of the registered propose refund hash messages
-func (k Keeper) IterateRegisteredProposeRefundHashMsgs(ctx sdk.Context, cb func([]byte, types.MsgProposeRefundHash) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcProposeRefundHashMsgKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgProposeRefundHash{
-			JudgeAddress: "",
-			RefundHash:   "",
-		}
-
-		k.cdc.MustUnmarshal(iter.Value(), &res)
-
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
+	return result, nil
 }
 
 /////////////////////////////
