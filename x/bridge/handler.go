@@ -26,30 +26,6 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgRegisterReserveAddress:
 			res, err := msgServer.RegisterReserveAddress(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRegisterJudge:
-			res, err := msgServer.RegisterJudge(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgWithdrawBtcRequest:
-			res, err := msgServer.WithdrawBtcRequest(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgSignRefund:
-			res, err := msgServer.SignRefund(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgSignSweep:
-			res, err := msgServer.SignSweep(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgBroadcastTxSweep:
-			res, err := msgServer.BroadcastTxSweep(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgProposeRefundHash:
-			res, err := msgServer.ProposeRefundHash(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgSweepProposal:
-			res, err := msgServer.SweepProposal(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgConfirmBtcWithdraw:
-			res, err := msgServer.ConfirmBtcWithdraw(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

@@ -31,10 +31,6 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 
 	case *bridgetypes.MsgConfirmBtcDeposit:
 		return a.handleConfirmBtcDeposit(ctx, *proposal)
-	case *bridgetypes.MsgSweepProposal:
-		return a.handleSweepProposal(ctx, *proposal)
-	case *bridgetypes.MsgConfirmBtcWithdraw:
-		return a.handleConfirmBtcWithdraw(ctx, *proposal)
 
 	default:
 		panic(fmt.Sprintf("Invalid event type for attestations %s", proposal.GetType()))
@@ -45,7 +41,7 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal bridgetypes.MsgConfirmBtcDeposit) error {
 
 	mintAmount := sdk.NewIntFromUint64(proposal.DepositAmount)
-	denom := "sats"
+	denom := "btc"
 
 	coin := sdk.NewCoin(denom, mintAmount)
 
@@ -66,7 +62,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 
 	coins := sdk.Coins{coin}
 
-	// Mint the coins
 	if err := a.keeper.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
 		return sdkerrors.Wrapf(err, "unable to mint cosmos originated coins %v", coins)
 	}
@@ -79,7 +74,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 		)
 	}
 
-	// Update the twilight address with the new amount of coins
 	receiver, err := sdk.AccAddressFromBech32(proposal.TwilightDepositAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(err, "invalid twilight deposit address %s", proposal.TwilightDepositAddress)
@@ -96,56 +90,5 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 		)
 	}
 
-	// Update the reserve mapping with the new amount of coins
-	err = a.keeper.VoltKeeper.UpdateBtcReserve(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
-	if err != nil {
-		hash, _ := proposal.ProposalHash()
-		a.keeper.logger(ctx).Error("Could not update the reserve",
-			"cause", err.Error(),
-			"proposal type", proposal.GetType(),
-			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
-		)
-		return sdkerrors.Wrapf(err, "could not update the reserve %s", proposal.ReserveAddress)
-	}
-
 	return err // returns nil if no error occurred`
-}
-
-// handleSweepProposal handles the processing of a MsgSweepProposal
-func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
-
-	// Update the reserve mapping with the values of the proposal
-	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.ReserveAddress, proposal.JudgeAddress, proposal.BtcRelayCapacityValue, proposal.TotalValue, proposal.PrivatePoolValue, proposal.PublicValue, proposal.FeePool)
-	if err != nil {
-		hash, _ := proposal.ProposalHash()
-		a.keeper.logger(ctx).Error("Could not update the reserve after sweep attestation",
-			"cause", err.Error(),
-			"proposal type", proposal.GetType(),
-			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
-		)
-		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.ReserveAddress)
-	}
-
-	return nil
-}
-
-// handleConfirmBtcWithdraw handles the processing of a MsgConfirmBtcWithdraw
-func (a AttestationHandler) handleConfirmBtcWithdraw(ctx sdk.Context, proposal bridgetypes.MsgConfirmBtcWithdraw) error {
-
-	// sweepProposal, err := a.keeper.GetSweepProposalAttestationsForBtcSweepTx(ctx, proposal.TxHash)
-	// if err != nil {
-	// 	hash, _ := proposal.ProposalHash()
-	// 	a.keeper.logger(ctx).Error("Could not find the sweep proposal for the btc withdraw attestation",
-	// 		"cause", err.Error(),
-	// 		"proposal type", proposal.GetType(),
-	// 		"id", types.GetAttestationKey(proposal.GetHeight(), hash),
-	// 	)
-	// 	return sdkerrors.Wrapf(err, "could not find the sweep proposal for the btc withdraw attestation %s", proposal.ProposalHash)
-	// } else {
-	// 	// Handle the case when an attestation is found
-
-	// 	// Update the reserve mapping with the values of the proposal
-
-	// }
-	return nil
 }

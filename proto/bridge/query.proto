@@ -1,0 +1,83 @@
+syntax = "proto3";
+package twilightproject.nyks.bridge;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "bridge/tx.proto";
+import "bridge/params.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/twilight-project/nyks/x/bridge/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/params";
+  }
+  // Queries a list of RegisteredBtcDepositAddresses items.
+	rpc RegisteredBtcDepositAddresses(QueryRegisteredBtcDepositAddressesRequest) returns (QueryRegisteredBtcDepositAddressesResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_addresses";
+	}
+
+// Queries a list of RegisteredReserveScripts items.
+	rpc RegisteredReserveScripts(QueryRegisteredReserveScriptsRequest) returns (QueryRegisteredReserveScriptsResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_reserve_scripts";
+	}
+
+// Queries a list of RegisteredBtcDepositAddress items.
+	rpc RegisteredBtcDepositAddress(QueryRegisteredBtcDepositAddressRequest) returns (QueryRegisteredBtcDepositAddressResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_address/{depositAddress}";
+	}
+
+// Queries a list of RegisteredBtcDepositAddressByTwilightAddress items.
+	rpc RegisteredBtcDepositAddressByTwilightAddress(QueryRegisteredBtcDepositAddressByTwilightAddressRequest) returns (QueryRegisteredBtcDepositAddressByTwilightAddressResponse) {
+		option (google.api.http).get = "/twilight-project/nyks/bridge/registered_btc_deposit_address_by_twilight_address/{twilightDepositAddress}";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRegisteredBtcDepositAddressesRequest {
+}
+
+message QueryRegisteredBtcDepositAddressesResponse {
+  repeated MsgRegisterBtcDepositAddress addresses = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRegisteredReserveScriptsRequest {
+}
+
+message QueryRegisteredReserveScriptsResponse {
+  repeated MsgRegisterReserveAddress scripts = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRegisteredBtcDepositAddressRequest {
+  string depositAddress = 1;
+}
+
+message QueryRegisteredBtcDepositAddressResponse {
+  string depositAddress = 1;
+  string twilightDepositAddress = 2;
+}
+
+message QueryRegisteredBtcDepositAddressByTwilightAddressRequest {
+  string twilightDepositAddress = 1;
+}
+
+message QueryRegisteredBtcDepositAddressByTwilightAddressResponse {
+  string depositAddress = 1;
+  string twilightDepositAddress = 2;
+}
+
+// this line is used by starport scaffolding # 3

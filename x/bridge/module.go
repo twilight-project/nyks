@@ -105,7 +105,6 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	nyksKeeper    types.NyksKeeper
-	voltKeeper    types.VoltKeeper
 }
 
 func NewAppModule(
@@ -114,7 +113,6 @@ func NewAppModule(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	nyksKeeper types.NyksKeeper,
-	voltKeeper types.VoltKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -122,7 +120,6 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		nyksKeeper:     nyksKeeper,
-		voltKeeper:     voltKeeper,
 	}
 }
 

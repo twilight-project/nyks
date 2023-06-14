@@ -9,11 +9,10 @@ const TypeMsgRegisterReserveAddress = "register_reserve_address"
 
 var _ sdk.Msg = &MsgRegisterReserveAddress{}
 
-func NewMsgRegisterReserveAddress(reserveScript string, reserveAddress string, judgeAddress string) *MsgRegisterReserveAddress {
+func NewMsgRegisterReserveAddress(reserveScript string, judgeAddress string) *MsgRegisterReserveAddress {
 	return &MsgRegisterReserveAddress{
-		ReserveScript:  reserveScript,
-		ReserveAddress: reserveAddress,
-		JudgeAddress:   judgeAddress,
+		ReserveScript: reserveScript,
+		JudgeAddress:  judgeAddress,
 	}
 }
 

@@ -1,39 +1,28 @@
-version: 1
-build:
-  proto:
-    path: proto
-    third_party_paths:
-    - third_party/proto
-    - proto_vendor
 accounts:
-- name: alice
-  coins:
-  - 100000000nyks
-  - 0btc
-- name: bob
-  coins:
-  - 100000000nyks
-  - 0btc
+  - name: alice
+    coins: ["100000000nyks", "0btc"]
+  - name: bob
+    coins: ["100000000nyks", "0btc"]
+validator:
+  name: alice
+  staked: "100000000nyks"
+client:
+  openapi:
+    path: "docs/static/openapi.yml"
+  vuex:
+    path: "vue/src/store"
 faucet:
   name: bob
-  coins:
-  - 100000nyks
-  - 1btc
-  host: 0.0.0.0:4500
-client:
-  vuex:
-    path: vue/src/store
-  openapi:
-    path: docs/static/openapi.yml
+  coins: ["100000nyks", "1btc"]
+genesis:
+  chain_id: "nyks"
+init:
+  home: "$HOME/.nyks"
 genesis:
   app_state:
-    mint:
-      params:
-        mint_denom: nyks
     staking:
       params:
-        bond_denom: nyks
-validators:
-- name: alice
-  bonded: 100000000nyks
-  home: $HOME/.nyks
+        bond_denom: "nyks" 
+    mint:
+      params:
+        mint_denom: nyks    
