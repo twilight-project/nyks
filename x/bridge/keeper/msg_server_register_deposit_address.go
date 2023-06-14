@@ -28,7 +28,7 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
-	address, foundExistingBtcAddress := k.VoltKeeper.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
+	address, foundExistingBtcAddress := k.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
 
 	if foundExistingBtcAddress {
 		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcAddress)
@@ -45,7 +45,7 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		}
 	}
 
-	errSetting := k.VoltKeeper.SetBtcAddressForClearingAccount(ctx, twilightAddress, *btcAddr)
+	_, errSetting := k.SetBtcAddressForTwilightAddress(ctx, twilightAddress, *btcAddr)
 	if errSetting != nil {
 		return nil, errSetting
 	}

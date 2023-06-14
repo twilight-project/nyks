@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	//voltkeeper "github.com/cosmos/cosmos-sdk/nyks/x/volt/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
@@ -29,28 +28,16 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
-	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
-	if e3 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
+	_, errSetting := k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript)
+	if errSetting != nil {
+		return nil, errSetting
 	}
-
-	k.SetReserveAddressForJudge(ctx, judgeAddress, *reserveScript, *reserveAddress)
-
-	// Write a function to get validator address from a judge address
-	//validatorAddress := k.VoltKeeper.GetValidatorAddressFromJudgeAddress(ctx, judgeAddress)
-
-	// set an empty reserve mapping for the judge address
-	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
-	if errSettingRes != nil {
-		return nil, errSettingRes
-	}
-
 	ctx.EventManager().EmitTypedEvent(
-		&types.EventRegisterReserveAddress{
+		&types.EventRegisterReserveScript{
 			Message:       msg.Type(),
 			ReserveScript: msg.ReserveScript,
 		},
 	)
 
-	return &types.MsgRegisterReserveAddressResponse{ReserveAddress: msg.ReserveAddress}, nil
+	return &types.MsgRegisterReserveAddressResponse{ReserveScript: msg.ReserveScript}, nil
 }

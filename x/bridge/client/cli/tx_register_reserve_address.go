@@ -14,12 +14,11 @@ var _ = strconv.Itoa(0)
 
 func CmdRegisterReserveAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-reserve-address [reserve-script] [reserve-address] [judge-address]",
+		Use:   "register-reserve-address [reserve-script] [judge-address]",
 		Short: "Broadcast message RegisterReserveAddress",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReserveScript := args[0]
-			argReserveAddress := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -28,7 +27,6 @@ func CmdRegisterReserveAddress() *cobra.Command {
 
 			msg := types.NewMsgRegisterReserveAddress(
 				argReserveScript,
-				argReserveAddress,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
