@@ -213,7 +213,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
+	BankKeeper       bankkeeper.BaseKeeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -311,11 +311,24 @@ func New(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
-	bankKeeper := bankkeeper.NewBaseKeeper(
+	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
 
-	app.BankKeeper = bankKeeper
+	app.VoltKeeper = *voltmodulekeeper.NewKeeper(
+		appCodec,
+		keys[voltmoduletypes.StoreKey],
+		keys[voltmoduletypes.MemStoreKey],
+		app.GetSubspace(voltmoduletypes.ModuleName),
+		app.BankKeeper,
+		app.BridgeKeeper,
+	)
+	// now hook voltkeeper hooks with the bankkeeper hooks
+	app.BankKeeper.SetHooks(
+		banktypes.NewMultiBankHooks(
+			app.VoltKeeper.Hooks(),
+		),
+	)
 
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
@@ -401,7 +414,7 @@ func New(
 		app.GetSubspace(nyksmoduletypes.ModuleName),
 		&stakingKeeper,
 		&app.AccountKeeper,
-		&bankKeeper,
+		&app.BankKeeper,
 		&app.VoltKeeper,
 	)
 	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
@@ -418,15 +431,7 @@ func New(
 	)
 	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper, app.nyksKeeper, app.VoltKeeper)
 
-	app.VoltKeeper = *voltmodulekeeper.NewKeeper(
-		appCodec,
-		keys[voltmoduletypes.StoreKey],
-		keys[voltmoduletypes.MemStoreKey],
-		app.GetSubspace(voltmoduletypes.ModuleName),
-
-		app.BridgeKeeper,
-	)
-	voltModule := voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper)
+	//voltModule := voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -470,7 +475,7 @@ func New(
 		monitoringModule,
 		nyksModule,
 		bridgeModule,
-		voltModule,
+		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -580,7 +585,7 @@ func New(
 		monitoringModule,
 		nyksModule,
 		bridgeModule,
-		voltModule,
+		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
