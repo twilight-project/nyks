@@ -172,7 +172,6 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 		k.cdc.MustUnmarshal(iter.Value(), &res)
 
 		if res.JudgeAddress == judgeAddress.String() {
-			ctx.Logger().Error("found judge")
 			validatorAddress, err := sdk.ValAddressFromBech32(res.ValidatorAddress)
 			if err != nil {
 				ctx.Logger().Error("validator encoded could not be returned as ValAddress")

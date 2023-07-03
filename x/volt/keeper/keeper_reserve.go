@@ -146,6 +146,7 @@ func (k Keeper) GetBtcReserveIdByAddress(ctx sdk.Context, reserveAddress string)
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
 			ReserveId:             0,
+			ReserveAddress:        "",
 			JudgeAddress:          "",
 			BtcRelayCapacityValue: 0,
 			TotalValue:            0,
@@ -192,6 +193,7 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
 			ReserveId:             0,
+			ReserveAddress:        "",
 			JudgeAddress:          "",
 			BtcRelayCapacityValue: 0,
 			TotalValue:            0,

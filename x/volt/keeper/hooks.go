@@ -7,7 +7,12 @@ import (
 
 // TrackBeforeSend tracks the transfers
 func (k Keeper) TrackBeforeSend(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) {
-	ctx.Logger().Error("TrackBeforeSend in vault")
+	for _, coin := range amount {
+		if coin.Denom == "sats" {
+			ctx.Logger().Error("TrackBeforeSend in vault")
+		}
+	}
+
 }
 
 // Hooks wrapper struct for slashing keeper

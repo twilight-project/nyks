@@ -50,7 +50,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	coin := sdk.NewCoin(denom, mintAmount)
 
 	moduleAddr := a.keeper.accountKeeper.GetModuleAddress(types.ModuleName)
-	ctx.Logger().Error("ModuleAddr", "moduleAddr", moduleAddr)
 	preMintBalance := a.keeper.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
 
 	// Ensure that users are not bridging an impossible amount, only 2^256 - 1 (verify the logic if this check is necessary here)
