@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	nykstypes "github.com/twilight-project/nyks/x/forks/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -32,4 +33,6 @@ type VoltKeeper interface {
 	SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error
 	SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr BtcAddress) error
 	GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *BtcAddress, found bool)
+	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
+	GetAllClearingAccounts(ctx sdk.Context) ([]volttypes.ClearingAccount, error)
 }

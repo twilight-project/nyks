@@ -34,17 +34,6 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcAddress)
 	}
 
-	// check that if we already have this btc key already registered against any twilight address
-	delegateKeys, keyErr := k.GetBtcDepositKeys(ctx)
-	if keyErr != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, keyErr.Error())
-	}
-	for i := range delegateKeys {
-		if delegateKeys[i].DepositAddress == btcAddr.BtcAddress {
-			return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate BTC Address")
-		}
-	}
-
 	errSetting := k.VoltKeeper.SetBtcAddressForClearingAccount(ctx, twilightAddress, *btcAddr)
 	if errSetting != nil {
 		return nil, errSetting

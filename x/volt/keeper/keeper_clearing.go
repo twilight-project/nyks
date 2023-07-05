@@ -51,6 +51,7 @@ func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress 
 // GetClearingAccount returns the clearing account for a given twilight address
 func (k Keeper) GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*types.ClearingAccount, bool) {
 	store := ctx.KVStore(k.storeKey)
+	ctx.Logger().Error("GetClearingAccount", "twilightAddress", twilightAddress)
 	aKey := types.GetClearingAccountKey(twilightAddress)
 	if !store.Has(aKey) {
 		return nil, false
@@ -61,6 +62,23 @@ func (k Keeper) GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddre
 	k.cdc.MustUnmarshal(bz, &ClearingAccount) // Pass a pointer to ClearingAccount
 
 	return &ClearingAccount, true
+}
+
+// GetAllClearingAccounts returns the all clearing accounts
+func (k Keeper) GetAllClearingAccounts(ctx sdk.Context) ([]types.ClearingAccount, error) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TwilightClearingAccountKey)
+
+	defer iterator.Close()
+	var clearingAccounts []types.ClearingAccount
+	for ; iterator.Valid(); iterator.Next() {
+		var clearingAccount types.ClearingAccount
+		k.cdc.MustUnmarshal(iterator.Value(), &clearingAccount)
+
+		clearingAccounts = append(clearingAccounts, clearingAccount)
+	}
+
+	return clearingAccounts, nil
 }
 
 // UpdateTransfersInClearing updates the ClearingAccounts of the sender and receiver

@@ -1,63 +1,11 @@
 package keeper
 
 import (
-	"sort"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
-
-// GetBtcDepositKeys iterates  the BtcDepositAddresses indexe to produce
-// a vector of MsgRegisterBtcDepositAddress entires containing all the delgate keys for state
-// export / import.
-func (k Keeper) GetBtcDepositKeys(ctx sdk.Context) ([]types.MsgRegisterBtcDepositAddress, error) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcAddressByTwilightAddressKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
-
-	btcAddresses := make(map[string]string)
-
-	for ; iter.Valid(); iter.Next() {
-		// the 'key' contains both the prefix and the value, so we need
-		// to cut off the starting bytes, if you don't do this a valid
-		// cosmos key will be made out of BtcPublicKeyByValidatorKey + the startin bytes
-		// of the actual key
-		key := iter.Key()[len(types.BtcAddressByTwilightAddressKey):]
-		value := iter.Value()
-
-		btcAddress, err := types.NewBtcAddress(string(value))
-		if err != nil {
-			return nil, sdkerrors.Wrapf(err, "found invalid btcAddress %v under key %v", string(value), key)
-		}
-		twilightAddress := sdk.AccAddress(key)
-		if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
-			return nil, sdkerrors.Wrapf(err, "invalid twilightAddress in key %v", twilightAddress)
-		}
-		btcAddresses[twilightAddress.String()] = btcAddress.GetBtcAddress()
-	}
-
-	var result []types.MsgRegisterBtcDepositAddress
-
-	for twilightAddr, btcAddr := range btcAddresses {
-		result = append(result, types.MsgRegisterBtcDepositAddress{
-			DepositAddress:         btcAddr,
-			TwilightDepositAddress: twilightAddr,
-		})
-
-	}
-
-	// we iterated over a map, so now we have to sort to ensure the
-	// output here is deterministic, btc deposit address chosen for no particular
-	// reason
-	sort.Slice(result, func(i, j int) bool {
-		return result[i].DepositAddress < result[j].DepositAddress
-	})
-
-	return result, nil
-}
 
 // SetReserveAddressForJudge sets the btc address for a given twilight address
 func (k Keeper) SetReserveAddressForJudge(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveScript types.BtcScript, reserveAddress types.BtcAddress) {

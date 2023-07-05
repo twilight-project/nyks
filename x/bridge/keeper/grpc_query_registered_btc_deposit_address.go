@@ -17,22 +17,22 @@ func (k Keeper) RegisteredBtcDepositAddress(goCtx context.Context, req *types.Qu
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	keys, err := k.GetBtcDepositKeys(ctx)
+	accounts, err := k.VoltKeeper.GetAllClearingAccounts(ctx)
 	if err != nil {
-		return nil, err
+		return nil, sdkerrors.Wrap(types.ErrInvalidBtcAddress, "Given btc depositAddress doesn't exist")
 	}
 	reqDepositAddress, err := types.NewBtcAddress(req.DepositAddress)
 	if err != nil {
 		return nil, err
 	}
-	for _, key := range keys {
-		keyDepositAddress, err := types.NewBtcAddress(key.DepositAddress)
+	for _, acc := range accounts {
+		keyDepositAddress, err := types.NewBtcAddress(acc.BtcDepositAddress)
 		// this should be impossible due to the validate basic on the set deposit address message
 		if err != nil {
 			panic("Invalid btc deposit addr in store!")
 		}
 		if reqDepositAddress.BtcAddress == keyDepositAddress.BtcAddress {
-			return &types.QueryRegisteredBtcDepositAddressResponse{DepositAddress: key.DepositAddress, TwilightDepositAddress: key.TwilightDepositAddress}, nil
+			return &types.QueryRegisteredBtcDepositAddressResponse{DepositAddress: acc.BtcDepositAddress, TwilightDepositAddress: acc.TwilightAddress}, nil
 		}
 
 	}

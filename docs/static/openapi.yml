@@ -27505,15 +27505,35 @@ paths:
           schema:
             type: object
             properties:
-              addresses:
+              accounts:
                 type: array
                 items:
                   type: object
                   properties:
-                    depositAddress:
+                    TwilightAddress:
                       type: string
-                    twilightDepositAddress:
+                    BtcDepositAddress:
                       type: string
+                    BtcWithdrawAddress:
+                      type: string
+                    QQDepositAddress:
+                      type: string
+                    QQWithdrawAddress:
+                      type: string
+                    ReserveAccountBalances:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          ReserveId:
+                            type: string
+                            format: uint64
+                          Amount:
+                            type: string
+                            format: uint64
+                  title: >-
+                    ClearingAccount is used to keep a mapping of how a user's
+                    addresses and its reserve account balances
         default:
           description: An unexpected error response.
           schema:
@@ -47703,13 +47723,6 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgProposeRefundHashResponse:
     type: object
-  twilightproject.nyks.bridge.MsgRegisterBtcDepositAddress:
-    type: object
-    properties:
-      depositAddress:
-        type: string
-      twilightDepositAddress:
-        type: string
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterJudge:
@@ -47837,15 +47850,35 @@ definitions:
   twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesResponse:
     type: object
     properties:
-      addresses:
+      accounts:
         type: array
         items:
           type: object
           properties:
-            depositAddress:
+            TwilightAddress:
               type: string
-            twilightDepositAddress:
+            BtcDepositAddress:
               type: string
+            BtcWithdrawAddress:
+              type: string
+            QQDepositAddress:
+              type: string
+            QQWithdrawAddress:
+              type: string
+            ReserveAccountBalances:
+              type: array
+              items:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  Amount:
+                    type: string
+                    format: uint64
+          title: >-
+            ClearingAccount is used to keep a mapping of how a user's addresses
+            and its reserve account balances
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
@@ -47933,6 +47966,42 @@ definitions:
             twilightAddress:
               type: string
           title: 'this line is used by starport scaffolding # proto/tx/message'
+  twilightproject.nyks.volt.ClearingAccount:
+    type: object
+    properties:
+      TwilightAddress:
+        type: string
+      BtcDepositAddress:
+        type: string
+      BtcWithdrawAddress:
+        type: string
+      QQDepositAddress:
+        type: string
+      QQWithdrawAddress:
+        type: string
+      ReserveAccountBalances:
+        type: array
+        items:
+          type: object
+          properties:
+            ReserveId:
+              type: string
+              format: uint64
+            Amount:
+              type: string
+              format: uint64
+    title: >-
+      ClearingAccount is used to keep a mapping of how a user's addresses and
+      its reserve account balances
+  twilightproject.nyks.volt.IndividualTwilightReserveAccountBalance:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      Amount:
+        type: string
+        format: uint64
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:

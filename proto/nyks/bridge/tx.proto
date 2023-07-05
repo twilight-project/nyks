@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package twilightproject.nyks.bridge;
 
-import "nyks/volt/reserve.proto";
+//import "nyks/volt/reserve.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
