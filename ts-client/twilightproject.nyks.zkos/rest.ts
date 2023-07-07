@@ -35,6 +35,8 @@ export interface ZkosQueryParamsResponse {
   params?: ZkosParams;
 }
 
+export type ZkosQueryTransferTxResponse = object;
+
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
@@ -171,6 +173,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<ZkosQueryParamsResponse, RpcStatus>({
       path: `/twilight-project/nyks/zkos/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryTransferTx
+   * @summary Queries a list of TransferTx items.
+   * @request GET:/twilight-project/nyks/zkos/transfer_tx/{txId}
+   */
+  queryTransferTx = (txId: string, params: RequestParams = {}) =>
+    this.request<ZkosQueryTransferTxResponse, RpcStatus>({
+      path: `/twilight-project/nyks/zkos/transfer_tx/${txId}`,
       method: "GET",
       format: "json",
       ...params,

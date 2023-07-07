@@ -11,7 +11,7 @@ func (k msgServer) TransferTx(goCtx context.Context, msg *types.MsgTransferTx) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// set the set transfer tx
-	k.SetTransferTx(ctx, msg.TxId, msg.TxByteCode)
+	k.SetTransferTx(ctx, msg.TxId, msg.TxByteCode, msg.ZkOracleAddress)
 
 	return &types.MsgTransferTxResponse{}, nil
 }

@@ -8,5 +8,5 @@ import (
 
 // x/zkos module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrTransferTxNotFound = sdkerrors.Register(ModuleName, 1, "could not find transfer tx")
 )

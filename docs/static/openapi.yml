@@ -29007,6 +29007,50 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/zkos/transfer_tx/{txId}:
+    get:
+      summary: Queries a list of TransferTx items.
+      operationId: TwilightprojectNyksZkosTransferTx
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              TransferTx:
+                type: object
+                properties:
+                  txId:
+                    type: string
+                  txByteCode:
+                    type: string
+                  zkOracleAddress:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: txId
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.Params:
     type: object
@@ -48575,6 +48619,15 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.zkos.MsgTransferTx:
+    type: object
+    properties:
+      txId:
+        type: string
+      txByteCode:
+        type: string
+      zkOracleAddress:
+        type: string
   twilightproject.nyks.zkos.MsgTransferTxResponse:
     type: object
   twilightproject.nyks.zkos.Params:
@@ -48587,3 +48640,15 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.zkos.QueryTransferTxResponse:
+    type: object
+    properties:
+      TransferTx:
+        type: object
+        properties:
+          txId:
+            type: string
+          txByteCode:
+            type: string
+          zkOracleAddress:
+            type: string

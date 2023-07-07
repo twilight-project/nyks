@@ -11,7 +11,7 @@ service Msg {
 message MsgTransferTx {
   string txId       = 1;
   string txByteCode = 2;
-  string zkOracleAddress    = 3;
+  string zkOracleAddress = 3;
 }
 
 message MsgTransferTxResponse {}

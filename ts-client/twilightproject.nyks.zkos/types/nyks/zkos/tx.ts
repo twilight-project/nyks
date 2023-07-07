@@ -4,28 +4,28 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "twilightproject.nyks.zkos";
 
 export interface MsgTransferTx {
-  creator: string;
   txId: string;
   txByteCode: string;
+  zkOracleAddress: string;
 }
 
 export interface MsgTransferTxResponse {
 }
 
 function createBaseMsgTransferTx(): MsgTransferTx {
-  return { creator: "", txId: "", txByteCode: "" };
+  return { txId: "", txByteCode: "", zkOracleAddress: "" };
 }
 
 export const MsgTransferTx = {
   encode(message: MsgTransferTx, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.txId !== "") {
-      writer.uint32(18).string(message.txId);
+      writer.uint32(10).string(message.txId);
     }
     if (message.txByteCode !== "") {
-      writer.uint32(26).string(message.txByteCode);
+      writer.uint32(18).string(message.txByteCode);
+    }
+    if (message.zkOracleAddress !== "") {
+      writer.uint32(26).string(message.zkOracleAddress);
     }
     return writer;
   },
@@ -38,13 +38,13 @@ export const MsgTransferTx = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.txId = reader.string();
           break;
-        case 3:
+        case 2:
           message.txByteCode = reader.string();
+          break;
+        case 3:
+          message.zkOracleAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -56,25 +56,25 @@ export const MsgTransferTx = {
 
   fromJSON(object: any): MsgTransferTx {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
       txId: isSet(object.txId) ? String(object.txId) : "",
       txByteCode: isSet(object.txByteCode) ? String(object.txByteCode) : "",
+      zkOracleAddress: isSet(object.zkOracleAddress) ? String(object.zkOracleAddress) : "",
     };
   },
 
   toJSON(message: MsgTransferTx): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.txId !== undefined && (obj.txId = message.txId);
     message.txByteCode !== undefined && (obj.txByteCode = message.txByteCode);
+    message.zkOracleAddress !== undefined && (obj.zkOracleAddress = message.zkOracleAddress);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgTransferTx>, I>>(object: I): MsgTransferTx {
     const message = createBaseMsgTransferTx();
-    message.creator = object.creator ?? "";
     message.txId = object.txId ?? "";
     message.txByteCode = object.txByteCode ?? "";
+    message.zkOracleAddress = object.zkOracleAddress ?? "";
     return message;
   },
 };

@@ -14,6 +14,13 @@ export interface QueryParamsResponse {
   params: Params | undefined;
 }
 
+export interface QueryTransferTxRequest {
+  txId: string;
+}
+
+export interface QueryTransferTxResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -102,10 +109,98 @@ export const QueryParamsResponse = {
   },
 };
 
+function createBaseQueryTransferTxRequest(): QueryTransferTxRequest {
+  return { txId: "" };
+}
+
+export const QueryTransferTxRequest = {
+  encode(message: QueryTransferTxRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.txId !== "") {
+      writer.uint32(10).string(message.txId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTransferTxRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryTransferTxRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.txId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTransferTxRequest {
+    return { txId: isSet(object.txId) ? String(object.txId) : "" };
+  },
+
+  toJSON(message: QueryTransferTxRequest): unknown {
+    const obj: any = {};
+    message.txId !== undefined && (obj.txId = message.txId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryTransferTxRequest>, I>>(object: I): QueryTransferTxRequest {
+    const message = createBaseQueryTransferTxRequest();
+    message.txId = object.txId ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryTransferTxResponse(): QueryTransferTxResponse {
+  return {};
+}
+
+export const QueryTransferTxResponse = {
+  encode(_: QueryTransferTxResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTransferTxResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryTransferTxResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryTransferTxResponse {
+    return {};
+  },
+
+  toJSON(_: QueryTransferTxResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryTransferTxResponse>, I>>(_: I): QueryTransferTxResponse {
+    const message = createBaseQueryTransferTxResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Queries a list of TransferTx items. */
+  TransferTx(request: QueryTransferTxRequest): Promise<QueryTransferTxResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -113,11 +208,18 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
+    this.TransferTx = this.TransferTx.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.zkos.Query", "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new _m0.Reader(data)));
+  }
+
+  TransferTx(request: QueryTransferTxRequest): Promise<QueryTransferTxResponse> {
+    const data = QueryTransferTxRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.zkos.Query", "TransferTx", data);
+    return promise.then((data) => QueryTransferTxResponse.decode(new _m0.Reader(data)));
   }
 }
 
