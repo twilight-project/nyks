@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package twilightproject.nyks.zkos;
+
+option go_package = "github.com/twilight-project/nyks/x/zkos/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc TransferTx (MsgTransferTx) returns (MsgTransferTxResponse);
+}
+message MsgTransferTx {
+  string txId       = 1;
+  string txByteCode = 2;
+  string zkOracleAddress    = 3;
+}
+
+message MsgTransferTxResponse {}
+
