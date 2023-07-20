@@ -120,6 +120,63 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 
 }
 
+// UpdateBtcReserveAfterTransfer updates a reserve after a successful transfer of tokens from Send and Multisend in the bank module
+// This function is called from the bank module through hooks.go
+func (k Keeper) UpdateBtcReserveAfterTransfer(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) error {
+	// Get the clearing accounts for the sender and recipient
+	fromAccount, fromExists := k.GetClearingAccount(ctx, from)
+	toAccount, toExists := k.GetClearingAccount(ctx, to)
+
+	// If the sender's clearing account doesn't exist, return an error
+	if !fromExists {
+		return fmt.Errorf("clearing account for sender does not exist")
+	}
+
+	// If the recipient's clearing account doesn't exist, create a new one
+	if !toExists {
+		toAccount = &types.ClearingAccount{
+			TwilightAddress: to.String(),
+			// Initialize other fields as necessary
+		}
+		k.SetClearingAccount(ctx, to, toAccount)
+	}
+
+	// Iterate over the sender's reserve account balances
+	for i, balance := range fromAccount.ReserveAccountBalances {
+		// If the balance is sufficient to cover the transfer amount
+		if balance.Amount >= uint64(amount.AmountOf("sats").Int64()) {
+			// Deduct the transfer amount from the sender's balance
+			balance.Amount -= uint64(amount.AmountOf("sats").Int64())
+			fromAccount.ReserveAccountBalances[i] = balance
+
+			// Add the transfer amount to the recipient's balance
+			// If the recipient already has a balance for this reserve ID, update it
+			// Otherwise, append a new balance
+			found := false
+			for j, toBalance := range toAccount.ReserveAccountBalances {
+				if toBalance.ReserveId == balance.ReserveId {
+					toBalance.Amount += uint64(amount.AmountOf("sats").Int64())
+					toAccount.ReserveAccountBalances[j] = toBalance
+					found = true
+					break
+				}
+			}
+			if !found {
+				toAccount.ReserveAccountBalances = append(toAccount.ReserveAccountBalances, balance)
+			}
+
+			// Update the clearing accounts in the store
+			k.SetClearingAccount(ctx, from, fromAccount)
+			k.SetClearingAccount(ctx, to, toAccount)
+
+			return nil
+		}
+	}
+
+	// If no sufficient balance was found, return an error
+	return fmt.Errorf("insufficient balance in any reserve account")
+}
+
 // GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
 func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcReserve, error) {
 	store := ctx.KVStore(k.storeKey)

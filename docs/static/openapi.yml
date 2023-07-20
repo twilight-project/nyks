@@ -28904,9 +28904,6 @@ paths:
                     FeePool:
                       type: string
                       format: uint64
-                      title: >-
-                        repeated IndividualTwilightReserveAccount
-                        IndividualTwilightReserveAccount = 9;
                   title: >-
                     BtcReserve is a mapping of a validator address to a reserve
                     ID
@@ -48559,9 +48556,6 @@ definitions:
       FeePool:
         type: string
         format: uint64
-        title: >-
-          repeated IndividualTwilightReserveAccount
-          IndividualTwilightReserveAccount = 9;
     title: >-
       BtcReserve is a mapping of a validator address to a reserve ID
 
@@ -48602,9 +48596,6 @@ definitions:
             FeePool:
               type: string
               format: uint64
-              title: >-
-                repeated IndividualTwilightReserveAccount
-                IndividualTwilightReserveAccount = 9;
           title: >-
             BtcReserve is a mapping of a validator address to a reserve ID
 

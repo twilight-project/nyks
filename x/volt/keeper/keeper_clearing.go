@@ -9,6 +9,19 @@ import (
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
+// SetClearingAccount sets a clearing account given the ClearingAccount type
+func (k Keeper) SetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, account *types.ClearingAccount) error {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetClearingAccountKey(twilightAddress)
+	store.Set(aKey, k.cdc.MustMarshal(account))
+
+	return nil
+}
+
 // SetBtcAddressForClearingAccount sets the btc address for a given twilight address
 func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr bridgetypes.BtcAddress) error {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {

@@ -6,10 +6,11 @@ import (
 )
 
 // TrackBeforeSend tracks the transfers
-func (k Keeper) TrackBeforeSend(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) {
+func (k Keeper) TrackBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins) {
 	for _, coin := range amount {
 		if coin.Denom == "sats" {
-			ctx.Logger().Error("TrackBeforeSend in vault")
+			ctx.Logger().Error("we have got a sats transfer")
+			k.UpdateBtcReserveAfterTransfer(ctx, from, to, amount)
 		}
 	}
 
@@ -29,10 +30,10 @@ func (k Keeper) Hooks() Hooks {
 
 // Implements sdk.BankHooks
 
-func (h Hooks) BlockBeforeSend(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) error {
+func (h Hooks) BlockBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins) error {
 	return nil
 }
 
-func (h Hooks) TrackBeforeSend(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) {
+func (h Hooks) TrackBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins) {
 	h.k.TrackBeforeSend(ctx, from, to, amount)
 }
