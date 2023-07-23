@@ -141,40 +141,64 @@ func (k Keeper) UpdateBtcReserveAfterTransfer(ctx sdk.Context, from, to sdk.AccA
 		k.SetClearingAccount(ctx, to, toAccount)
 	}
 
+	// Calculate the total transfer amount
+	totalAmount := uint64(amount.AmountOf("sats").Int64())
+
 	// Iterate over the sender's reserve account balances
 	for i, balance := range fromAccount.ReserveAccountBalances {
-		// If the balance is sufficient to cover the transfer amount
-		if balance.Amount >= uint64(amount.AmountOf("sats").Int64()) {
-			// Deduct the transfer amount from the sender's balance
-			balance.Amount -= uint64(amount.AmountOf("sats").Int64())
-			fromAccount.ReserveAccountBalances[i] = balance
+		// If the balance is zero, skip this reserve account
+		if balance.Amount == 0 {
+			continue
+		}
 
-			// Add the transfer amount to the recipient's balance
-			// If the recipient already has a balance for this reserve ID, update it
-			// Otherwise, append a new balance
-			found := false
-			for j, toBalance := range toAccount.ReserveAccountBalances {
-				if toBalance.ReserveId == balance.ReserveId {
-					toBalance.Amount += uint64(amount.AmountOf("sats").Int64())
-					toAccount.ReserveAccountBalances[j] = toBalance
-					found = true
-					break
-				}
+		// Calculate the transfer amount for this reserve account
+		transferAmount := balance.Amount
+		if transferAmount > totalAmount {
+			transferAmount = totalAmount
+		}
+
+		// Deduct the transfer amount from the sender's balance
+		balance.Amount -= transferAmount
+		fromAccount.ReserveAccountBalances[i] = balance
+
+		// Add the transfer amount to the recipient's balance
+		// If the recipient already has a balance for this reserve ID, update it
+		// Otherwise, append a new balance
+		found := false
+		for j, toBalance := range toAccount.ReserveAccountBalances {
+			if toBalance.ReserveId == balance.ReserveId {
+				toBalance.Amount += transferAmount
+				toAccount.ReserveAccountBalances[j] = toBalance
+				found = true
+				break
 			}
-			if !found {
-				toAccount.ReserveAccountBalances = append(toAccount.ReserveAccountBalances, balance)
-			}
+		}
+		if !found {
+			toAccount.ReserveAccountBalances = append(toAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
+				ReserveId: balance.ReserveId,
+				Amount:    transferAmount,
+			})
+		}
 
-			// Update the clearing accounts in the store
-			k.SetClearingAccount(ctx, from, fromAccount)
-			k.SetClearingAccount(ctx, to, toAccount)
+		// Update the total transfer amount
+		totalAmount -= transferAmount
 
-			return nil
+		// If the total transfer amount is zero, break the loop
+		if totalAmount == 0 {
+			break
 		}
 	}
 
-	// If no sufficient balance was found, return an error
-	return fmt.Errorf("insufficient balance in any reserve account")
+	// If the total transfer amount is not zero, return an error
+	if totalAmount != 0 {
+		return fmt.Errorf("insufficient balance in any reserve account")
+	}
+
+	// Update the clearing accounts in the store
+	k.SetClearingAccount(ctx, from, fromAccount)
+	k.SetClearingAccount(ctx, to, toAccount)
+
+	return nil
 }
 
 // GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
