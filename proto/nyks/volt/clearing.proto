@@ -9,12 +9,17 @@ message IndividualTwilightReserveAccountBalance {
     uint64 Amount = 2;
 }
 
+message QQAccount {
+    uint64 nonce = 1;
+    string depositAccount = 2;
+    string withdrawAccount = 3;
+}
+
 // ClearingAccount is used to keep a mapping of how a user's addresses and its reserve account balances
 message ClearingAccount {
     string TwilightAddress = 1;
     string BtcDepositAddress = 2;
     string BtcWithdrawAddress = 3;
-    string QQDepositAddress = 4;
-    string QQWithdrawAddress = 5;
-    repeated IndividualTwilightReserveAccountBalance ReserveAccountBalances = 6;
+    repeated QQAccount QQAccounts = 4;
+    repeated IndividualTwilightReserveAccountBalance ReserveAccountBalances = 5;
 }

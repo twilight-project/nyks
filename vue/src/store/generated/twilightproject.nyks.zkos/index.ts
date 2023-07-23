@@ -36,6 +36,7 @@ const getDefaultState = () => {
 	return {
 				Params: {},
 				TransferTx: {},
+				MintOrBurnTradingBtc: {},
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
@@ -78,6 +79,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.TransferTx[JSON.stringify(params)] ?? {}
+		},
+				getMintOrBurnTradingBtc: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.MintOrBurnTradingBtc[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -157,6 +164,42 @@ export default {
 		},
 		
 		
+		
+		
+		 		
+		
+		
+		async QueryMintOrBurnTradingBtc({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksZkos.query.queryMintOrBurnTradingBtc( key.twilightAddress)).data
+				
+					
+				commit('QUERY', { query: 'MintOrBurnTradingBtc', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryMintOrBurnTradingBtc', payload: { options: { all }, params: {...key},query }})
+				return getters['getMintOrBurnTradingBtc']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryMintOrBurnTradingBtc API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		async sendMsgMintBurnTradingBtc({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksZkos.tx.sendMsgMintBurnTradingBtc({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgMintBurnTradingBtc:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgMintBurnTradingBtc:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgTransferTx({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -172,6 +215,19 @@ export default {
 			}
 		},
 		
+		async MsgMintBurnTradingBtc({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksZkos.tx.msgMintBurnTradingBtc({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgMintBurnTradingBtc:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgMintBurnTradingBtc:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		async MsgTransferTx({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
+import { MsgTransferTx } from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.zkos";
 
@@ -19,6 +20,14 @@ export interface QueryTransferTxRequest {
 }
 
 export interface QueryTransferTxResponse {
+  TransferTx: MsgTransferTx | undefined;
+}
+
+export interface QueryMintOrBurnTradingBtcRequest {
+  twilightAddress: string;
+}
+
+export interface QueryMintOrBurnTradingBtcResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -157,11 +166,14 @@ export const QueryTransferTxRequest = {
 };
 
 function createBaseQueryTransferTxResponse(): QueryTransferTxResponse {
-  return {};
+  return { TransferTx: undefined };
 }
 
 export const QueryTransferTxResponse = {
-  encode(_: QueryTransferTxResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryTransferTxResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.TransferTx !== undefined) {
+      MsgTransferTx.encode(message.TransferTx, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -169,6 +181,102 @@ export const QueryTransferTxResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryTransferTxResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.TransferTx = MsgTransferTx.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTransferTxResponse {
+    return { TransferTx: isSet(object.TransferTx) ? MsgTransferTx.fromJSON(object.TransferTx) : undefined };
+  },
+
+  toJSON(message: QueryTransferTxResponse): unknown {
+    const obj: any = {};
+    message.TransferTx !== undefined
+      && (obj.TransferTx = message.TransferTx ? MsgTransferTx.toJSON(message.TransferTx) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryTransferTxResponse>, I>>(object: I): QueryTransferTxResponse {
+    const message = createBaseQueryTransferTxResponse();
+    message.TransferTx = (object.TransferTx !== undefined && object.TransferTx !== null)
+      ? MsgTransferTx.fromPartial(object.TransferTx)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryMintOrBurnTradingBtcRequest(): QueryMintOrBurnTradingBtcRequest {
+  return { twilightAddress: "" };
+}
+
+export const QueryMintOrBurnTradingBtcRequest = {
+  encode(message: QueryMintOrBurnTradingBtcRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.twilightAddress !== "") {
+      writer.uint32(10).string(message.twilightAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMintOrBurnTradingBtcRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryMintOrBurnTradingBtcRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.twilightAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMintOrBurnTradingBtcRequest {
+    return { twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "" };
+  },
+
+  toJSON(message: QueryMintOrBurnTradingBtcRequest): unknown {
+    const obj: any = {};
+    message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryMintOrBurnTradingBtcRequest>, I>>(
+    object: I,
+  ): QueryMintOrBurnTradingBtcRequest {
+    const message = createBaseQueryMintOrBurnTradingBtcRequest();
+    message.twilightAddress = object.twilightAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryMintOrBurnTradingBtcResponse(): QueryMintOrBurnTradingBtcResponse {
+  return {};
+}
+
+export const QueryMintOrBurnTradingBtcResponse = {
+  encode(_: QueryMintOrBurnTradingBtcResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMintOrBurnTradingBtcResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryMintOrBurnTradingBtcResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -180,17 +288,19 @@ export const QueryTransferTxResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryTransferTxResponse {
+  fromJSON(_: any): QueryMintOrBurnTradingBtcResponse {
     return {};
   },
 
-  toJSON(_: QueryTransferTxResponse): unknown {
+  toJSON(_: QueryMintOrBurnTradingBtcResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryTransferTxResponse>, I>>(_: I): QueryTransferTxResponse {
-    const message = createBaseQueryTransferTxResponse();
+  fromPartial<I extends Exact<DeepPartial<QueryMintOrBurnTradingBtcResponse>, I>>(
+    _: I,
+  ): QueryMintOrBurnTradingBtcResponse {
+    const message = createBaseQueryMintOrBurnTradingBtcResponse();
     return message;
   },
 };
@@ -201,6 +311,8 @@ export interface Query {
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Queries a list of TransferTx items. */
   TransferTx(request: QueryTransferTxRequest): Promise<QueryTransferTxResponse>;
+  /** Queries a list of MintOrBurnTradingBtc items. */
+  MintOrBurnTradingBtc(request: QueryMintOrBurnTradingBtcRequest): Promise<QueryMintOrBurnTradingBtcResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -209,6 +321,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.TransferTx = this.TransferTx.bind(this);
+    this.MintOrBurnTradingBtc = this.MintOrBurnTradingBtc.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -220,6 +333,12 @@ export class QueryClientImpl implements Query {
     const data = QueryTransferTxRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.zkos.Query", "TransferTx", data);
     return promise.then((data) => QueryTransferTxResponse.decode(new _m0.Reader(data)));
+  }
+
+  MintOrBurnTradingBtc(request: QueryMintOrBurnTradingBtcRequest): Promise<QueryMintOrBurnTradingBtcResponse> {
+    const data = QueryMintOrBurnTradingBtcRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.zkos.Query", "MintOrBurnTradingBtc", data);
+    return promise.then((data) => QueryMintOrBurnTradingBtcResponse.decode(new _m0.Reader(data)));
   }
 }
 

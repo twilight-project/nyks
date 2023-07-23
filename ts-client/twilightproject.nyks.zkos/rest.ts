@@ -20,12 +20,22 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
+export type ZkosMsgMintBurnTradingBtcResponse = object;
+
+export interface ZkosMsgTransferTx {
+  txId?: string;
+  txByteCode?: string;
+  zkOracleAddress?: string;
+}
+
 export type ZkosMsgTransferTxResponse = object;
 
 /**
  * Params defines the parameters for the module.
  */
 export type ZkosParams = object;
+
+export type ZkosQueryMintOrBurnTradingBtcResponse = object;
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -35,7 +45,9 @@ export interface ZkosQueryParamsResponse {
   params?: ZkosParams;
 }
 
-export type ZkosQueryTransferTxResponse = object;
+export interface ZkosQueryTransferTxResponse {
+  TransferTx?: ZkosMsgTransferTx;
+}
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
 
@@ -162,6 +174,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryMintOrBurnTradingBtc
+   * @summary Queries a list of MintOrBurnTradingBtc items.
+   * @request GET:/twilight-project/nyks/zkos/mint_or_burn_trading_btc/{twilightAddress}
+   */
+  queryMintOrBurnTradingBtc = (twilightAddress: string, params: RequestParams = {}) =>
+    this.request<ZkosQueryMintOrBurnTradingBtcResponse, RpcStatus>({
+      path: `/twilight-project/nyks/zkos/mint_or_burn_trading_btc/${twilightAddress}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

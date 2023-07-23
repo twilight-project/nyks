@@ -9,12 +9,16 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgTransferTx{}, "zkos/TransferTx", nil)
+	cdc.RegisterConcrete(&MsgMintBurnTradingBtc{}, "zkos/MintBurnTradingBtc", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgTransferTx{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgMintBurnTradingBtc{},
 	)
 	// this line is used by starport scaffolding # 3
 

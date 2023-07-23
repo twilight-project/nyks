@@ -12,6 +12,17 @@ export interface MsgTransferTx {
 export interface MsgTransferTxResponse {
 }
 
+export interface MsgMintBurnTradingBtc {
+  mintOrBurn: boolean;
+  btcValue: number;
+  qqAccount: string;
+  encryptScalar: string;
+  twilightAddress: string;
+}
+
+export interface MsgMintBurnTradingBtcResponse {
+}
+
 function createBaseMsgTransferTx(): MsgTransferTx {
   return { txId: "", txByteCode: "", zkOracleAddress: "" };
 }
@@ -118,9 +129,134 @@ export const MsgTransferTxResponse = {
   },
 };
 
+function createBaseMsgMintBurnTradingBtc(): MsgMintBurnTradingBtc {
+  return { mintOrBurn: false, btcValue: 0, qqAccount: "", encryptScalar: "", twilightAddress: "" };
+}
+
+export const MsgMintBurnTradingBtc = {
+  encode(message: MsgMintBurnTradingBtc, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.mintOrBurn === true) {
+      writer.uint32(8).bool(message.mintOrBurn);
+    }
+    if (message.btcValue !== 0) {
+      writer.uint32(16).int32(message.btcValue);
+    }
+    if (message.qqAccount !== "") {
+      writer.uint32(26).string(message.qqAccount);
+    }
+    if (message.encryptScalar !== "") {
+      writer.uint32(34).string(message.encryptScalar);
+    }
+    if (message.twilightAddress !== "") {
+      writer.uint32(42).string(message.twilightAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintBurnTradingBtc {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgMintBurnTradingBtc();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.mintOrBurn = reader.bool();
+          break;
+        case 2:
+          message.btcValue = reader.int32();
+          break;
+        case 3:
+          message.qqAccount = reader.string();
+          break;
+        case 4:
+          message.encryptScalar = reader.string();
+          break;
+        case 5:
+          message.twilightAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMintBurnTradingBtc {
+    return {
+      mintOrBurn: isSet(object.mintOrBurn) ? Boolean(object.mintOrBurn) : false,
+      btcValue: isSet(object.btcValue) ? Number(object.btcValue) : 0,
+      qqAccount: isSet(object.qqAccount) ? String(object.qqAccount) : "",
+      encryptScalar: isSet(object.encryptScalar) ? String(object.encryptScalar) : "",
+      twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
+    };
+  },
+
+  toJSON(message: MsgMintBurnTradingBtc): unknown {
+    const obj: any = {};
+    message.mintOrBurn !== undefined && (obj.mintOrBurn = message.mintOrBurn);
+    message.btcValue !== undefined && (obj.btcValue = Math.round(message.btcValue));
+    message.qqAccount !== undefined && (obj.qqAccount = message.qqAccount);
+    message.encryptScalar !== undefined && (obj.encryptScalar = message.encryptScalar);
+    message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgMintBurnTradingBtc>, I>>(object: I): MsgMintBurnTradingBtc {
+    const message = createBaseMsgMintBurnTradingBtc();
+    message.mintOrBurn = object.mintOrBurn ?? false;
+    message.btcValue = object.btcValue ?? 0;
+    message.qqAccount = object.qqAccount ?? "";
+    message.encryptScalar = object.encryptScalar ?? "";
+    message.twilightAddress = object.twilightAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgMintBurnTradingBtcResponse(): MsgMintBurnTradingBtcResponse {
+  return {};
+}
+
+export const MsgMintBurnTradingBtcResponse = {
+  encode(_: MsgMintBurnTradingBtcResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintBurnTradingBtcResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgMintBurnTradingBtcResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgMintBurnTradingBtcResponse {
+    return {};
+  },
+
+  toJSON(_: MsgMintBurnTradingBtcResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgMintBurnTradingBtcResponse>, I>>(_: I): MsgMintBurnTradingBtcResponse {
+    const message = createBaseMsgMintBurnTradingBtcResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   TransferTx(request: MsgTransferTx): Promise<MsgTransferTxResponse>;
+  MintBurnTradingBtc(request: MsgMintBurnTradingBtc): Promise<MsgMintBurnTradingBtcResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -128,11 +264,18 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.TransferTx = this.TransferTx.bind(this);
+    this.MintBurnTradingBtc = this.MintBurnTradingBtc.bind(this);
   }
   TransferTx(request: MsgTransferTx): Promise<MsgTransferTxResponse> {
     const data = MsgTransferTx.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.zkos.Msg", "TransferTx", data);
     return promise.then((data) => MsgTransferTxResponse.decode(new _m0.Reader(data)));
+  }
+
+  MintBurnTradingBtc(request: MsgMintBurnTradingBtc): Promise<MsgMintBurnTradingBtcResponse> {
+    const data = MsgMintBurnTradingBtc.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.zkos.Msg", "MintBurnTradingBtc", data);
+    return promise.then((data) => MsgMintBurnTradingBtcResponse.decode(new _m0.Reader(data)));
   }
 }
 

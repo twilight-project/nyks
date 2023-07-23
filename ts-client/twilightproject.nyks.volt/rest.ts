@@ -38,10 +38,7 @@ export interface VoltBtcReserve {
   /** @format uint64 */
   PublicValue?: string;
 
-  /**
-   * repeated IndividualTwilightReserveAccount IndividualTwilightReserveAccount = 9;
-   * @format uint64
-   */
+  /** @format uint64 */
   FeePool?: string;
 }
 

@@ -7,11 +7,18 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
+import { MsgMintBurnTradingBtc } from "./types/nyks/zkos/tx";
 import { MsgTransferTx } from "./types/nyks/zkos/tx";
 
 import { Params as typeParams} from "./types"
 
-export { MsgTransferTx };
+export { MsgMintBurnTradingBtc, MsgTransferTx };
+
+type sendMsgMintBurnTradingBtcParams = {
+  value: MsgMintBurnTradingBtc,
+  fee?: StdFee,
+  memo?: string
+};
 
 type sendMsgTransferTxParams = {
   value: MsgTransferTx,
@@ -19,6 +26,10 @@ type sendMsgTransferTxParams = {
   memo?: string
 };
 
+
+type msgMintBurnTradingBtcParams = {
+  value: MsgMintBurnTradingBtc,
+};
 
 type msgTransferTxParams = {
   value: MsgTransferTx,
@@ -54,6 +65,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
+		async sendMsgMintBurnTradingBtc({ value, fee, memo }: sendMsgMintBurnTradingBtcParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgMintBurnTradingBtc: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgMintBurnTradingBtc({ value: MsgMintBurnTradingBtc.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgMintBurnTradingBtc: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgTransferTx({ value, fee, memo }: sendMsgTransferTxParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgTransferTx: Unable to sign Tx. Signer is not present.')
@@ -68,6 +93,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		
+		msgMintBurnTradingBtc({ value }: msgMintBurnTradingBtcParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.zkos.MsgMintBurnTradingBtc", value: MsgMintBurnTradingBtc.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgMintBurnTradingBtc: Could not create message: ' + e.message)
+			}
+		},
 		
 		msgTransferTx({ value }: msgTransferTxParams): EncodeObject {
 			try {

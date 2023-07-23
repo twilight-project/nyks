@@ -17,7 +17,6 @@ export interface BtcReserve {
   TotalValue: number;
   PrivatePoolValue: number;
   PublicValue: number;
-  /** repeated IndividualTwilightReserveAccount IndividualTwilightReserveAccount = 9; */
   FeePool: number;
 }
 

@@ -24,6 +24,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/zkos/transfer_tx/{txId}";
   
   }
+  
+  // Queries a list of MintOrBurnTradingBtc items.
+  rpc MintOrBurnTradingBtc (QueryMintOrBurnTradingBtcRequest) returns (QueryMintOrBurnTradingBtcResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/zkos/mint_or_burn_trading_btc/{twilightAddress}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -41,5 +47,13 @@ message QueryTransferTxRequest {
 
 message QueryTransferTxResponse {
   MsgTransferTx TransferTx = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryMintOrBurnTradingBtcRequest {
+  string twilightAddress = 1;
+}
+
+message QueryMintOrBurnTradingBtcResponse {
+  repeated MsgMintBurnTradingBtc MintOrBurnTradingBtc = 1 [(gogoproto.nullable) = false];
 }
 

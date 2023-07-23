@@ -19,12 +19,12 @@ import CosmosStakingV1Beta1 from './cosmos.staking.v1beta1'
 import CosmosTxV1Beta1 from './cosmos.tx.v1beta1'
 import CosmosUpgradeV1Beta1 from './cosmos.upgrade.v1beta1'
 import CosmosVestingV1Beta1 from './cosmos.vesting.v1beta1'
+import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
 import IbcApplicationsTransferV1 from './ibc.applications.transfer.v1'
 import IbcCoreChannelV1 from './ibc.core.channel.v1'
 import IbcCoreClientV1 from './ibc.core.client.v1'
 import IbcCoreConnectionV1 from './ibc.core.connection.v1'
 import IbcCorePortV1 from './ibc.core.port.v1'
-import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
 
 
 export default { 
@@ -47,12 +47,12 @@ export default {
   CosmosTxV1Beta1: load(CosmosTxV1Beta1, 'cosmos.tx.v1beta1'),
   CosmosUpgradeV1Beta1: load(CosmosUpgradeV1Beta1, 'cosmos.upgrade.v1beta1'),
   CosmosVestingV1Beta1: load(CosmosVestingV1Beta1, 'cosmos.vesting.v1beta1'),
+  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
   IbcApplicationsTransferV1: load(IbcApplicationsTransferV1, 'ibc.applications.transfer.v1'),
   IbcCoreChannelV1: load(IbcCoreChannelV1, 'ibc.core.channel.v1'),
   IbcCoreClientV1: load(IbcCoreClientV1, 'ibc.core.client.v1'),
   IbcCoreConnectionV1: load(IbcCoreConnectionV1, 'ibc.core.connection.v1'),
   IbcCorePortV1: load(IbcCorePortV1, 'ibc.core.port.v1'),
-  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
   
 }
 
