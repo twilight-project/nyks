@@ -20,6 +20,16 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
+export interface ZkosMsgMintBurnTradingBtc {
+  mintOrBurn?: boolean;
+
+  /** @format int32 */
+  btcValue?: number;
+  qqAccount?: string;
+  encryptScalar?: string;
+  twilightAddress?: string;
+}
+
 export type ZkosMsgMintBurnTradingBtcResponse = object;
 
 export interface ZkosMsgTransferTx {
@@ -35,7 +45,9 @@ export type ZkosMsgTransferTxResponse = object;
  */
 export type ZkosParams = object;
 
-export type ZkosQueryMintOrBurnTradingBtcResponse = object;
+export interface ZkosQueryMintOrBurnTradingBtcResponse {
+  MintOrBurnTradingBtc?: ZkosMsgMintBurnTradingBtc[];
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.

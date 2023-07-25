@@ -32,7 +32,6 @@ func (k Keeper) GetTransferTx(ctx sdk.Context, txId string) (types.MsgTransferTx
 	}
 
 	bz := store.Get(aKey)
-	ctx.Logger().Error("bz: " + string(bz))
 	var MsgTransferTx types.MsgTransferTx
 	k.cdc.MustUnmarshal(bz, &MsgTransferTx)
 
@@ -44,33 +43,10 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 
 	// ADD VALIDATION HERE
 
-	// Create a new MsgTransferTx message
-	// ttx := &types.MsgTransferTx{
-	// 	TxId:            txId,
-	// 	TxByteCode:      txByteCode,
-	// 	ZkOracleAddress: zkOracleAddress,
-	// }
-
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetMintOrBurnTradingBtcKey(msg.EncryptScalar, msg.TwilightAddress)
+	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.EncryptScalar)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
 }
-
-// // GetMintOrBurnTradingBtc returns the stored mint or burn quisquis btc using given twilight address
-// func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string) (types.MsgMintBurnTradingBtc, bool) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	aKey := types.GetMintOrBurnTradingBtcKey(encryptScalar, twilightAddress)
-// 	if !store.Has(aKey) {
-// 		return types.MsgMintBurnTradingBtc{}, false
-// 	}
-
-// 	bz := store.Get(aKey)
-// 	ctx.Logger().Error("bz: " + string(bz))
-// 	var MsgMintBurnTradingBtc types.MsgMintBurnTradingBtc
-// 	k.cdc.MustUnmarshal(bz, &MsgMintBurnTradingBtc)
-
-// 	return MsgMintBurnTradingBtc, true
-// }
 
 // GetMintOrBurnTradingBtc returns the stored mint or burn quisquis btc using given twilight address
 func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string) ([]types.MsgMintBurnTradingBtc, bool) {

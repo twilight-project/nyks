@@ -1,7 +1,7 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { MsgTransferTx } from "./tx";
+import { MsgMintBurnTradingBtc, MsgTransferTx } from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.zkos";
 
@@ -28,6 +28,7 @@ export interface QueryMintOrBurnTradingBtcRequest {
 }
 
 export interface QueryMintOrBurnTradingBtcResponse {
+  MintOrBurnTradingBtc: MsgMintBurnTradingBtc[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -265,11 +266,14 @@ export const QueryMintOrBurnTradingBtcRequest = {
 };
 
 function createBaseQueryMintOrBurnTradingBtcResponse(): QueryMintOrBurnTradingBtcResponse {
-  return {};
+  return { MintOrBurnTradingBtc: [] };
 }
 
 export const QueryMintOrBurnTradingBtcResponse = {
-  encode(_: QueryMintOrBurnTradingBtcResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryMintOrBurnTradingBtcResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.MintOrBurnTradingBtc) {
+      MsgMintBurnTradingBtc.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -280,6 +284,9 @@ export const QueryMintOrBurnTradingBtcResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.MintOrBurnTradingBtc.push(MsgMintBurnTradingBtc.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -288,19 +295,31 @@ export const QueryMintOrBurnTradingBtcResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryMintOrBurnTradingBtcResponse {
-    return {};
+  fromJSON(object: any): QueryMintOrBurnTradingBtcResponse {
+    return {
+      MintOrBurnTradingBtc: Array.isArray(object?.MintOrBurnTradingBtc)
+        ? object.MintOrBurnTradingBtc.map((e: any) => MsgMintBurnTradingBtc.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(_: QueryMintOrBurnTradingBtcResponse): unknown {
+  toJSON(message: QueryMintOrBurnTradingBtcResponse): unknown {
     const obj: any = {};
+    if (message.MintOrBurnTradingBtc) {
+      obj.MintOrBurnTradingBtc = message.MintOrBurnTradingBtc.map((e) =>
+        e ? MsgMintBurnTradingBtc.toJSON(e) : undefined
+      );
+    } else {
+      obj.MintOrBurnTradingBtc = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryMintOrBurnTradingBtcResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryMintOrBurnTradingBtcResponse {
     const message = createBaseQueryMintOrBurnTradingBtcResponse();
+    message.MintOrBurnTradingBtc = object.MintOrBurnTradingBtc?.map((e) => MsgMintBurnTradingBtc.fromPartial(e)) || [];
     return message;
   },
 };

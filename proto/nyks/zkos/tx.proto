@@ -19,7 +19,7 @@ message MsgTransferTxResponse {}
 
 message MsgMintBurnTradingBtc {
   bool   mintOrBurn      = 1;
-  int32  btcValue        = 2;
+  uint64  btcValue        = 2;
   string qqAccount       = 3;
   string encryptScalar   = 4;
   string twilightAddress = 5;

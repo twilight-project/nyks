@@ -4,6 +4,12 @@ import TwilightprojectNyksBridge from './twilightproject.nyks.bridge'
 import TwilightprojectNyksForks from './twilightproject.nyks.forks'
 import TwilightprojectNyksVolt from './twilightproject.nyks.volt'
 import TwilightprojectNyksZkos from './twilightproject.nyks.zkos'
+import IbcApplicationsTransferV1 from './ibc.applications.transfer.v1'
+import IbcCoreChannelV1 from './ibc.core.channel.v1'
+import IbcCoreClientV1 from './ibc.core.client.v1'
+import IbcCoreConnectionV1 from './ibc.core.connection.v1'
+import IbcCorePortV1 from './ibc.core.port.v1'
+import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
 import CosmosAuthV1Beta1 from './cosmos.auth.v1beta1'
 import CosmosBankV1Beta1 from './cosmos.bank.v1beta1'
 import CosmosBaseTendermintV1Beta1 from './cosmos.base.tendermint.v1beta1'
@@ -19,12 +25,6 @@ import CosmosStakingV1Beta1 from './cosmos.staking.v1beta1'
 import CosmosTxV1Beta1 from './cosmos.tx.v1beta1'
 import CosmosUpgradeV1Beta1 from './cosmos.upgrade.v1beta1'
 import CosmosVestingV1Beta1 from './cosmos.vesting.v1beta1'
-import TendermintSpnMonitoringp from './tendermint.spn.monitoringp'
-import IbcApplicationsTransferV1 from './ibc.applications.transfer.v1'
-import IbcCoreChannelV1 from './ibc.core.channel.v1'
-import IbcCoreClientV1 from './ibc.core.client.v1'
-import IbcCoreConnectionV1 from './ibc.core.connection.v1'
-import IbcCorePortV1 from './ibc.core.port.v1'
 
 
 export default { 
@@ -32,6 +32,12 @@ export default {
   TwilightprojectNyksForks: load(TwilightprojectNyksForks, 'twilightproject.nyks.forks'),
   TwilightprojectNyksVolt: load(TwilightprojectNyksVolt, 'twilightproject.nyks.volt'),
   TwilightprojectNyksZkos: load(TwilightprojectNyksZkos, 'twilightproject.nyks.zkos'),
+  IbcApplicationsTransferV1: load(IbcApplicationsTransferV1, 'ibc.applications.transfer.v1'),
+  IbcCoreChannelV1: load(IbcCoreChannelV1, 'ibc.core.channel.v1'),
+  IbcCoreClientV1: load(IbcCoreClientV1, 'ibc.core.client.v1'),
+  IbcCoreConnectionV1: load(IbcCoreConnectionV1, 'ibc.core.connection.v1'),
+  IbcCorePortV1: load(IbcCorePortV1, 'ibc.core.port.v1'),
+  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
   CosmosAuthV1Beta1: load(CosmosAuthV1Beta1, 'cosmos.auth.v1beta1'),
   CosmosBankV1Beta1: load(CosmosBankV1Beta1, 'cosmos.bank.v1beta1'),
   CosmosBaseTendermintV1Beta1: load(CosmosBaseTendermintV1Beta1, 'cosmos.base.tendermint.v1beta1'),
@@ -47,12 +53,6 @@ export default {
   CosmosTxV1Beta1: load(CosmosTxV1Beta1, 'cosmos.tx.v1beta1'),
   CosmosUpgradeV1Beta1: load(CosmosUpgradeV1Beta1, 'cosmos.upgrade.v1beta1'),
   CosmosVestingV1Beta1: load(CosmosVestingV1Beta1, 'cosmos.vesting.v1beta1'),
-  TendermintSpnMonitoringp: load(TendermintSpnMonitoringp, 'tendermint.spn.monitoringp'),
-  IbcApplicationsTransferV1: load(IbcApplicationsTransferV1, 'ibc.applications.transfer.v1'),
-  IbcCoreChannelV1: load(IbcCoreChannelV1, 'ibc.core.channel.v1'),
-  IbcCoreClientV1: load(IbcCoreClientV1, 'ibc.core.client.v1'),
-  IbcCoreConnectionV1: load(IbcCoreConnectionV1, 'ibc.core.connection.v1'),
-  IbcCorePortV1: load(IbcCorePortV1, 'ibc.core.port.v1'),
   
 }
 

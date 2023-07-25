@@ -23,7 +23,7 @@ func CmdMintBurnTradingBtc() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argBtcValue, err := cast.ToInt32E(args[1])
+			argBtcValue, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
 			}

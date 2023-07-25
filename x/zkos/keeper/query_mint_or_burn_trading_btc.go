@@ -19,7 +19,7 @@ func (k Keeper) MintOrBurnTradingBtc(goCtx context.Context, req *types.QueryMint
 
 	mintOrBurnReqs, found := k.GetMintOrBurnTradingBtc(ctx, req.TwilightAddress)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrTransferTxNotFound, "couldn't find tx")
+		return nil, sdkerrors.Wrap(types.ErrMintOrBurnNotFound, "couldn't find mint or burn trading btc")
 	}
 
 	return &types.QueryMintOrBurnTradingBtcResponse{MintOrBurnTradingBtc: mintOrBurnReqs}, nil

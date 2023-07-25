@@ -9,7 +9,7 @@ const TypeMsgMintBurnTradingBtc = "mint_burn_trading_btc"
 
 var _ sdk.Msg = &MsgMintBurnTradingBtc{}
 
-func NewMsgMintBurnTradingBtc(mintOrBurn bool, btcValue int32, qqAccount string, encryptScalar string, twilightAddress string) *MsgMintBurnTradingBtc {
+func NewMsgMintBurnTradingBtc(mintOrBurn bool, btcValue uint64, qqAccount string, encryptScalar string, twilightAddress string) *MsgMintBurnTradingBtc {
 	return &MsgMintBurnTradingBtc{
 		MintOrBurn:      mintOrBurn,
 		BtcValue:        btcValue,

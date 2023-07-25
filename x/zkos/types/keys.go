@@ -39,6 +39,6 @@ func GetTransferTxKey(txId string) []byte {
 // GetMintOrBurnTradingBtcKey returns the following key format
 // prefix twilightAddress
 // [HashString("KeyMintOrBurnTradingBtc")][1]
-func GetMintOrBurnTradingBtcKey(encryptScalar string, twilightAddress string) []byte {
+func GetMintOrBurnTradingBtcKey(twilightAddress string, encryptScalar string) []byte {
 	return forkstypes.AppendBytes(KeyMintOrBurnTradingBtc, []byte(twilightAddress), []byte(encryptScalar))
 }

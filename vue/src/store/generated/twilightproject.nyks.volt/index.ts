@@ -40,6 +40,7 @@ const getDefaultState = () => {
 	return {
 				Params: {},
 				BtcReserve: {},
+				ClearingAccount: {},
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
@@ -86,6 +87,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.BtcReserve[JSON.stringify(params)] ?? {}
+		},
+				getClearingAccount: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.ClearingAccount[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -160,6 +167,28 @@ export default {
 				return getters['getBtcReserve']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryBtcReserve API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryClearingAccount({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.queryClearingAccount( key.twilightAddress)).data
+				
+					
+				commit('QUERY', { query: 'ClearingAccount', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryClearingAccount', payload: { options: { all }, params: {...key},query }})
+				return getters['getClearingAccount']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryClearingAccount API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

@@ -28932,6 +28932,76 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/volt/clearing_account/{twilightAddress}:
+    get:
+      summary: Queries a list of ClearingAccount items.
+      operationId: TwilightprojectNyksVoltClearingAccount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ClearingAccount:
+                type: object
+                properties:
+                  TwilightAddress:
+                    type: string
+                  BtcDepositAddress:
+                    type: string
+                  BtcWithdrawAddress:
+                    type: string
+                  QQAccounts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        nonce:
+                          type: string
+                          format: uint64
+                        depositAccount:
+                          type: string
+                        withdrawAccount:
+                          type: string
+                  ReserveAccountBalances:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ReserveId:
+                          type: string
+                          format: uint64
+                        Amount:
+                          type: string
+                          format: uint64
+                title: >-
+                  ClearingAccount is used to keep a mapping of how a user's
+                  addresses and its reserve account balances
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: twilightAddress
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /twilight-project/nyks/volt/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -28979,19 +29049,21 @@ paths:
             type: object
             properties:
               MintOrBurnTradingBtc:
-                type: object
-                properties:
-                  mintOrBurn:
-                    type: boolean
-                  btcValue:
-                    type: integer
-                    format: int32
-                  qqAccount:
-                    type: string
-                  encryptScalar:
-                    type: string
-                  twilightAddress:
-                    type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    mintOrBurn:
+                      type: boolean
+                    btcValue:
+                      type: string
+                      format: uint64
+                    qqAccount:
+                      type: string
+                    encryptScalar:
+                      type: string
+                    twilightAddress:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -48116,6 +48188,18 @@ definitions:
             Amount:
               type: string
               format: uint64
+      QQAccounts:
+        type: array
+        items:
+          type: object
+          properties:
+            nonce:
+              type: string
+              format: uint64
+            depositAccount:
+              type: string
+            withdrawAccount:
+              type: string
     title: >-
       ClearingAccount is used to keep a mapping of how a user's addresses and
       its reserve account balances
@@ -48615,6 +48699,16 @@ definitions:
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.
+  twilightproject.nyks.volt.QQAccount:
+    type: object
+    properties:
+      nonce:
+        type: string
+        format: uint64
+      depositAccount:
+        type: string
+      withdrawAccount:
+        type: string
   twilightproject.nyks.volt.QueryBtcReserveResponse:
     type: object
     properties:
@@ -48652,6 +48746,44 @@ definitions:
 
             value, private pool value, public pool value, and the btc relay
             capacity value
+  twilightproject.nyks.volt.QueryClearingAccountResponse:
+    type: object
+    properties:
+      ClearingAccount:
+        type: object
+        properties:
+          TwilightAddress:
+            type: string
+          BtcDepositAddress:
+            type: string
+          BtcWithdrawAddress:
+            type: string
+          QQAccounts:
+            type: array
+            items:
+              type: object
+              properties:
+                nonce:
+                  type: string
+                  format: uint64
+                depositAccount:
+                  type: string
+                withdrawAccount:
+                  type: string
+          ReserveAccountBalances:
+            type: array
+            items:
+              type: object
+              properties:
+                ReserveId:
+                  type: string
+                  format: uint64
+                Amount:
+                  type: string
+                  format: uint64
+        title: >-
+          ClearingAccount is used to keep a mapping of how a user's addresses
+          and its reserve account balances
   twilightproject.nyks.volt.QueryParamsResponse:
     type: object
     properties:
@@ -48665,8 +48797,8 @@ definitions:
       mintOrBurn:
         type: boolean
       btcValue:
-        type: integer
-        format: int32
+        type: string
+        format: uint64
       qqAccount:
         type: string
       encryptScalar:
@@ -48693,19 +48825,21 @@ definitions:
     type: object
     properties:
       MintOrBurnTradingBtc:
-        type: object
-        properties:
-          mintOrBurn:
-            type: boolean
-          btcValue:
-            type: integer
-            format: int32
-          qqAccount:
-            type: string
-          encryptScalar:
-            type: string
-          twilightAddress:
-            type: string
+        type: array
+        items:
+          type: object
+          properties:
+            mintOrBurn:
+              type: boolean
+            btcValue:
+              type: string
+              format: uint64
+            qqAccount:
+              type: string
+            encryptScalar:
+              type: string
+            twilightAddress:
+              type: string
   twilightproject.nyks.zkos.QueryParamsResponse:
     type: object
     properties:

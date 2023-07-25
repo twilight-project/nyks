@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	bridgetypes "github.com/twilight-project/nyks/x/bridge/types"
@@ -93,38 +91,38 @@ func (k Keeper) GetAllClearingAccounts(ctx sdk.Context) ([]types.ClearingAccount
 	return clearingAccounts, nil
 }
 
-// UpdateTransfersInClearing updates the ClearingAccounts of the sender and receiver
-func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, sender sdk.AccAddress, receiver sdk.AccAddress, amount uint64) error {
-	// Get the sender's ClearingAccount
-	senderAccount, found := k.GetClearingAccount(ctx, sender)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(sender))
-	}
+// // UpdateTransfersInClearing updates the ClearingAccounts of the sender and receiver
+// func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, sender sdk.AccAddress, receiver sdk.AccAddress, amount uint64) error {
+// 	// Get the sender's ClearingAccount
+// 	senderAccount, found := k.GetClearingAccount(ctx, sender)
+// 	if !found {
+// 		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(sender))
+// 	}
 
-	// Get the receiver's ClearingAccount
-	receiverAccount, found := k.GetClearingAccount(ctx, receiver)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(receiver))
-	}
+// 	// Get the receiver's ClearingAccount
+// 	receiverAccount, found := k.GetClearingAccount(ctx, receiver)
+// 	if !found {
+// 		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(receiver))
+// 	}
 
-	// Iterate over the sender's ReserveAccountBalances
-	for _, balance := range senderAccount.ReserveAccountBalances {
-		// Deduct the transferred amount from the balance
-		if balance.Amount >= amount {
-			balance.Amount -= amount
+// 	// Iterate over the sender's ReserveAccountBalances
+// 	for _, balance := range senderAccount.ReserveAccountBalances {
+// 		// Deduct the transferred amount from the balance
+// 		if balance.Amount >= amount {
+// 			balance.Amount -= amount
 
-			// Add the transferred amount to the receiver's ReserveAccountBalances
-			for _, receiverBalance := range receiverAccount.ReserveAccountBalances {
-				if receiverBalance.ReserveId == balance.ReserveId {
-					receiverBalance.Amount += amount
-					break
-				}
-			}
+// 			// Add the transferred amount to the receiver's ReserveAccountBalances
+// 			for _, receiverBalance := range receiverAccount.ReserveAccountBalances {
+// 				if receiverBalance.ReserveId == balance.ReserveId {
+// 					receiverBalance.Amount += amount
+// 					break
+// 				}
+// 			}
 
-			// Break after deducting the amount
-			break
-		}
-	}
+// 			// Break after deducting the amount
+// 			break
+// 		}
+// 	}
 
-	return nil
-}
+// 	return nil
+// }

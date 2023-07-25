@@ -51,6 +51,8 @@ export interface VoltQueryBtcReserveResponse {
   BtcReserves?: VoltBtcReserve[];
 }
 
+export type VoltQueryClearingAccountResponse = object;
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -195,6 +197,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryBtcReserve = (params: RequestParams = {}) =>
     this.request<VoltQueryBtcReserveResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/btc_reserve`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryClearingAccount
+   * @summary Queries a list of ClearingAccount items.
+   * @request GET:/twilight-project/nyks/volt/clearing_account/{twilightAddress}
+   */
+  queryClearingAccount = (twilightAddress: string, params: RequestParams = {}) =>
+    this.request<VoltQueryClearingAccountResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/clearing_account/${twilightAddress}`,
       method: "GET",
       format: "json",
       ...params,
