@@ -327,6 +327,7 @@ func New(
 		keys[voltmoduletypes.StoreKey],
 		keys[voltmoduletypes.MemStoreKey],
 		app.GetSubspace(voltmoduletypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
 		app.BridgeKeeper,
 	)

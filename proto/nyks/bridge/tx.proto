@@ -27,12 +27,11 @@ service Msg {
   rpc ConfirmBtcWithdraw    (MsgConfirmBtcWithdraw   ) returns (MsgConfirmBtcWithdrawResponse   );
 }
 message MsgConfirmBtcDeposit {
-  string depositAddress         = 1;
+  string reserveAddress         = 1;
   uint64 depositAmount          = 2;
   uint64 height                 = 3;
   string hash                   = 4;
   string twilightDepositAddress = 5;
-  string reserveAddress         = 6;
   string oracleAddress          = 7;
 }
 

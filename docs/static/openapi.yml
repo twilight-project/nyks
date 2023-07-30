@@ -27516,10 +27516,18 @@ paths:
                       type: string
                     BtcWithdrawAddress:
                       type: string
-                    QQDepositAddress:
-                      type: string
-                    QQWithdrawAddress:
-                      type: string
+                    QQAccounts:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          nonce:
+                            type: string
+                            format: uint64
+                          depositAccount:
+                            type: string
+                          withdrawAccount:
+                            type: string
                     ReserveAccountBalances:
                       type: array
                       items:
@@ -48059,10 +48067,18 @@ definitions:
               type: string
             BtcWithdrawAddress:
               type: string
-            QQDepositAddress:
-              type: string
-            QQWithdrawAddress:
-              type: string
+            QQAccounts:
+              type: array
+              items:
+                type: object
+                properties:
+                  nonce:
+                    type: string
+                    format: uint64
+                  depositAccount:
+                    type: string
+                  withdrawAccount:
+                    type: string
             ReserveAccountBalances:
               type: array
               items:
@@ -48173,21 +48189,6 @@ definitions:
         type: string
       BtcWithdrawAddress:
         type: string
-      QQDepositAddress:
-        type: string
-      QQWithdrawAddress:
-        type: string
-      ReserveAccountBalances:
-        type: array
-        items:
-          type: object
-          properties:
-            ReserveId:
-              type: string
-              format: uint64
-            Amount:
-              type: string
-              format: uint64
       QQAccounts:
         type: array
         items:
@@ -48200,6 +48201,17 @@ definitions:
               type: string
             withdrawAccount:
               type: string
+      ReserveAccountBalances:
+        type: array
+        items:
+          type: object
+          properties:
+            ReserveId:
+              type: string
+              format: uint64
+            Amount:
+              type: string
+              format: uint64
     title: >-
       ClearingAccount is used to keep a mapping of how a user's addresses and
       its reserve account balances
@@ -48212,6 +48224,16 @@ definitions:
       Amount:
         type: string
         format: uint64
+  twilightproject.nyks.volt.QQAccount:
+    type: object
+    properties:
+      nonce:
+        type: string
+        format: uint64
+      depositAccount:
+        type: string
+      withdrawAccount:
+        type: string
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:
@@ -48699,16 +48721,6 @@ definitions:
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.
-  twilightproject.nyks.volt.QQAccount:
-    type: object
-    properties:
-      nonce:
-        type: string
-        format: uint64
-      depositAccount:
-        type: string
-      withdrawAccount:
-        type: string
   twilightproject.nyks.volt.QueryBtcReserveResponse:
     type: object
     properties:

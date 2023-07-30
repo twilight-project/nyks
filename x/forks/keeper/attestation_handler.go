@@ -93,6 +93,21 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
+		return sdkerrors.Wrapf(err, "could not send coins to the user %s", proposal.TwilightDepositAddress)
+	}
+
+	// SendCoins has a hook that goes to volt module and update clearing account of the user
+	// however, we need a reserveAddress to update the clearing account in the case of mint
+	// so we pass it in a separate function
+	err = a.keeper.VoltKeeper.UpdateMintInClearing(ctx, receiver, proposal.DepositAmount, proposal.ReserveAddress)
+	if err != nil {
+		hash, _ := proposal.ProposalHash()
+		a.keeper.logger(ctx).Error("Could not update the clearing account",
+			"cause", err.Error(),
+			"proposal type", proposal.GetType(),
+			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+		)
+		return sdkerrors.Wrapf(err, "could not update the clearing account %s", proposal.TwilightDepositAddress)
 	}
 
 	// Update the reserve mapping with the new amount of coins

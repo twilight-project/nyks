@@ -12,6 +12,7 @@ type BridgeKeeper interface {
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetModuleAddress(name string) sdk.AccAddress
 	// Methods imported from account should be defined here
 }
 
@@ -23,6 +24,6 @@ type BankKeeper interface {
 
 // BankHooks event hooks for bank sends
 type BankHooks interface {
-	TrackBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins)       // Must be before any send is executed
+	TrackBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins) error // Must be before any send is executed
 	BlockBeforeSend(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Coins) error // Must be before any send is executed
 }
