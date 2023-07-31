@@ -28959,18 +28959,6 @@ paths:
                     type: string
                   BtcWithdrawAddress:
                     type: string
-                  QQAccounts:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        nonce:
-                          type: string
-                          format: uint64
-                        depositAccount:
-                          type: string
-                        withdrawAccount:
-                          type: string
                   ReserveAccountBalances:
                     type: array
                     items:
@@ -48770,18 +48758,6 @@ definitions:
             type: string
           BtcWithdrawAddress:
             type: string
-          QQAccounts:
-            type: array
-            items:
-              type: object
-              properties:
-                nonce:
-                  type: string
-                  format: uint64
-                depositAccount:
-                  type: string
-                withdrawAccount:
-                  type: string
           ReserveAccountBalances:
             type: array
             items:
