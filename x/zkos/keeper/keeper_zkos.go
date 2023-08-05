@@ -39,13 +39,74 @@ func (k Keeper) GetTransferTx(ctx sdk.Context, txId string) (types.MsgTransferTx
 }
 
 // SetMintOrBurnTradingBtc mints or burns quisquis btc
-func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnTradingBtc) {
-
+func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnTradingBtc) error {
 	// ADD VALIDATION HERE
+
+	// Fetch the ClearingAccount for the twilight address
+	account := k.GetClearingAccount(ctx, msg.TwilightAddress)
+	if account == nil {
+		return fmt.Errorf("no clearing account found for address %s", msg.TwilightAddress)
+	}
+
+	// Calculate the total balance across all reserves
+	totalBalance := uint64(0)
+	for _, balance := range account.ReserveAccountBalances {
+		totalBalance += balance.Amount
+	}
+
+	// Check if there is enough balance in the reserves
+	if msg.BtcValue > totalBalance {
+		return fmt.Errorf("not enough balance in the reserves")
+	}
+
+	// Distribute the btc value across the reserves
+	remaining := msg.BtcValue
+	for _, balance := range account.ReserveAccountBalances {
+		if remaining == 0 {
+			break
+		}
+
+		// Fetch the reserve
+		reserve := k.GetBtcReserve(ctx, balance.ReserveId)
+		if reserve == nil {
+			return fmt.Errorf("reserve %d not found", balance.ReserveId)
+		}
+
+		// Calculate the amount to deduct from this reserve
+		deduct := min(remaining, balance.Amount)
+
+		// Update the reserve and clearing account balance
+		if msg.MintOrBurn {
+			// Mint: Deduct from public and add to private
+			if reserve.PublicValue < deduct {
+				return fmt.Errorf("not enough public value in reserve %d", balance.ReserveId)
+			}
+			reserve.PublicValue -= deduct
+			reserve.PrivatePoolValue += deduct
+		} else {
+			// Burn: Deduct from private and add to public
+			if reserve.PrivatePoolValue < deduct {
+				return fmt.Errorf("not enough private value in reserve %d", balance.ReserveId)
+			}
+			reserve.PrivatePoolValue -= deduct
+			reserve.PublicValue += deduct
+		}
+		balance.Amount -= deduct
+		remaining -= deduct
+
+		// Save the updated reserve and clearing account balance
+		k.SetBtcReserve(ctx, reserve)
+		k.SetIndividualTwilightReserveAccountBalance(ctx, account, balance)
+	}
+
+	// Save the updated clearing account
+	k.SetClearingAccount(ctx, account)
 
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.EncryptScalar)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
+
+	return nil
 }
 
 // GetMintOrBurnTradingBtc returns the stored mint or burn quisquis btc using given twilight address
@@ -74,4 +135,11 @@ func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string)
 	}
 
 	return results, true
+}
+
+func min(a, b uint64) uint64 {
+	if a < b {
+		return a
+	}
+	return b
 }
