@@ -12,4 +12,5 @@ var (
 	ErrBtcReserveNotFound        = sdkerrors.Register(ModuleName, 2, "Btc reserve not found")
 	ErrInsufficientBtcValue      = sdkerrors.Register(ModuleName, 3, "Insufficient Btc value")
 	ErrClearingAccountNotFound   = sdkerrors.Register(ModuleName, 4, "Clearing account not found")
+	ErrCouldNotSetReserve        = sdkerrors.Register(ModuleName, 5, "Could not set reserve")
 )

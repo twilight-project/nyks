@@ -111,7 +111,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	}
 
 	// Update the reserve mapping with the new amount of coins
-	err = a.keeper.VoltKeeper.UpdateBtcReserve(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
+	err = a.keeper.VoltKeeper.UpdateBtcReserveAfterMint(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
 	if err != nil {
 		hash, _ := proposal.ProposalHash()
 		a.keeper.logger(ctx).Error("Could not update the reserve",

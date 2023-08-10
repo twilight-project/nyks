@@ -9,8 +9,8 @@ import (
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
-// SetBtcReserve sets a reserve in the store
-func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error {
+// RegisterNewBtcReserve sets a reserve in the store
+func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error {
 
 	// Get the latest reserve id
 	// We keep reserve ids in a separate store and keep track of it as a counter
@@ -34,16 +34,29 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 		FeePool:               0,
 	}
 
+	// Set the reserve
+	err := k.SetBtcReserve(ctx, res)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrCouldNotSetReserve, fmt.Sprint(reserveAddress))
+	} else {
+		k.setLastRegisteredBtcReserve(ctx, reserveId)
+	}
+
+	return nil
+}
+
+// SetBtcReserve sets a reserve in the store
+func (k Keeper) SetBtcReserve(ctx sdk.Context, reserve *types.BtcReserve) error {
+
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(reserveId)
-	store.Set(aKey, k.cdc.MustMarshal(res))
-	k.setLastRegisteredBtcReserve(ctx, reserveId)
+	aKey := types.GetReserveKey(reserve.ReserveId)
+	store.Set(aKey, k.cdc.MustMarshal(reserve))
 
 	return nil
 }
 
 // UpdateBtcReserve updates a reserve in the store
-func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
+func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
 
 	// Get the reserve id
 	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)

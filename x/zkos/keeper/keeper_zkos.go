@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	"github.com/twilight-project/nyks/x/zkos/types"
 )
@@ -40,12 +43,15 @@ func (k Keeper) GetTransferTx(ctx sdk.Context, txId string) (types.MsgTransferTx
 
 // SetMintOrBurnTradingBtc mints or burns quisquis btc
 func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnTradingBtc) error {
-	// ADD VALIDATION HERE
+	twilightAddress, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
+	if err != nil {
+		return sdkerrors.Wrap(types.ErrInvalidTwilightAddress, msg.TwilightAddress)
+	}
 
 	// Fetch the ClearingAccount for the twilight address
-	account := k.GetClearingAccount(ctx, msg.TwilightAddress)
-	if account == nil {
-		return fmt.Errorf("no clearing account found for address %s", msg.TwilightAddress)
+	account, found := k.VoltKeeper.GetClearingAccount(ctx, twilightAddress)
+	if !found {
+		return sdkerrors.Wrap(types.ErrClearingAccountNotFound, "clearing account not found")
 	}
 
 	// Calculate the total balance across all reserves
@@ -56,20 +62,20 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 
 	// Check if there is enough balance in the reserves
 	if msg.BtcValue > totalBalance {
-		return fmt.Errorf("not enough balance in the reserves")
+		return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInReserves, msg.TwilightAddress)
 	}
 
 	// Distribute the btc value across the reserves
 	remaining := msg.BtcValue
-	for _, balance := range account.ReserveAccountBalances {
+	for i, balance := range account.ReserveAccountBalances {
 		if remaining == 0 {
 			break
 		}
 
 		// Fetch the reserve
-		reserve := k.GetBtcReserve(ctx, balance.ReserveId)
-		if reserve == nil {
-			return fmt.Errorf("reserve %d not found", balance.ReserveId)
+		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, balance.ReserveId)
+		if err != nil {
+			return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while minting or burning quisquis btc")
 		}
 
 		// Calculate the amount to deduct from this reserve
@@ -79,28 +85,35 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		if msg.MintOrBurn {
 			// Mint: Deduct from public and add to private
 			if reserve.PublicValue < deduct {
-				return fmt.Errorf("not enough public value in reserve %d", balance.ReserveId)
+				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPublic, strconv.FormatUint(balance.ReserveId, 10))
 			}
 			reserve.PublicValue -= deduct
 			reserve.PrivatePoolValue += deduct
+
+			// Increase the user's individual reserve balance
+			balance.Amount -= deduct
 		} else {
 			// Burn: Deduct from private and add to public
 			if reserve.PrivatePoolValue < deduct {
-				return fmt.Errorf("not enough private value in reserve %d", balance.ReserveId)
+				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(balance.ReserveId, 10))
 			}
 			reserve.PrivatePoolValue -= deduct
 			reserve.PublicValue += deduct
+
+			// Decrease the user's individual reserve balance
+			balance.Amount += deduct
 		}
-		balance.Amount -= deduct
+
+		account.ReserveAccountBalances[i] = balance
+
 		remaining -= deduct
 
-		// Save the updated reserve and clearing account balance
-		k.SetBtcReserve(ctx, reserve)
-		k.SetIndividualTwilightReserveAccountBalance(ctx, account, balance)
+		// Save the updated reserve
+		k.VoltKeeper.SetBtcReserve(ctx, reserve)
 	}
 
 	// Save the updated clearing account
-	k.SetClearingAccount(ctx, account)
+	k.VoltKeeper.SetClearingAccount(ctx, twilightAddress, account)
 
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.EncryptScalar)

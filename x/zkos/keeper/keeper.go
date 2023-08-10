@@ -9,6 +9,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
+	voltkeeper "github.com/twilight-project/nyks/x/volt/keeper"
 	"github.com/twilight-project/nyks/x/zkos/types"
 )
 
@@ -18,6 +19,7 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
+		VoltKeeper *voltkeeper.Keeper
 	}
 )
 
@@ -26,6 +28,7 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	voltKeeper *voltkeeper.Keeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -38,6 +41,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+		VoltKeeper: voltKeeper,
 	}
 }
 

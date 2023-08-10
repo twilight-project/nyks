@@ -40,7 +40,7 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	//validatorAddress := k.VoltKeeper.GetValidatorAddressFromJudgeAddress(ctx, judgeAddress)
 
 	// set an empty reserve mapping for the judge address
-	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
+	errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}

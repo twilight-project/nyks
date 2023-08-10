@@ -446,8 +446,9 @@ func New(
 		keys[zkosmoduletypes.StoreKey],
 		keys[zkosmoduletypes.MemStoreKey],
 		app.GetSubspace(zkosmoduletypes.ModuleName),
+		&app.VoltKeeper,
 	)
-	zkosModule := zkosmodule.NewAppModule(appCodec, app.ZkosKeeper, app.AccountKeeper, app.BankKeeper)
+	zkosModule := zkosmodule.NewAppModule(appCodec, app.ZkosKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
