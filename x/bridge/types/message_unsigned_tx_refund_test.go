@@ -17,13 +17,13 @@ func TestMsgUnsignedTxRefund_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUnsignedTxRefund{
-				Creator: "invalid_address",
+				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUnsignedTxRefund{
-				Creator: sample.AccAddress(),
+				JudgeAddress: sample.AccAddress(),
 			},
 		},
 	}

@@ -9,8 +9,9 @@ const TypeMsgUnsignedTxRefund = "unsigned_tx_refund"
 
 var _ sdk.Msg = &MsgUnsignedTxRefund{}
 
-func NewMsgUnsignedTxRefund(btcUnsignedRefundTx string, judgeAddress string) *MsgUnsignedTxRefund {
+func NewMsgUnsignedTxRefund(reserveId uint64, btcUnsignedRefundTx string, judgeAddress string) *MsgUnsignedTxRefund {
 	return &MsgUnsignedTxRefund{
+		ReserveId:           reserveId,
 		BtcUnsignedRefundTx: btcUnsignedRefundTx,
 		JudgeAddress:        judgeAddress,
 	}

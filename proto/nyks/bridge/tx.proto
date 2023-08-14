@@ -159,8 +159,9 @@ message MsgUnsignedTxSweep {
 message MsgUnsignedTxSweepResponse {}
 
 message MsgUnsignedTxRefund {
-  string btcUnsignedRefundTx = 1;
-  string judgeAddress        = 2;
+  uint64 reserveId           = 1;
+  string btcUnsignedRefundTx = 2;
+  string judgeAddress        = 3;
 }
 
 message MsgUnsignedTxRefundResponse {}

@@ -17,13 +17,13 @@ func TestMsgUnsignedTxSweep_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUnsignedTxSweep{
-				Creator: "invalid_address",
+				JudgeAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUnsignedTxSweep{
-				Creator: sample.AccAddress(),
+				JudgeAddress: sample.AccAddress(),
 			},
 		},
 	}

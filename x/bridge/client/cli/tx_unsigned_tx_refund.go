@@ -14,11 +14,15 @@ var _ = strconv.Itoa(0)
 
 func CmdUnsignedTxRefund() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unsigned-tx-refund [btc-unsigned-refund-tx]",
+		Use:   "unsigned-tx-refund [reserve-id] [btc-unsigned-refund-tx]",
 		Short: "Broadcast message UnsignedTxRefund",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argBtcUnsignedRefundTx := args[0]
+			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+			argBtcUnsignedRefundTx := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -26,6 +30,7 @@ func CmdUnsignedTxRefund() *cobra.Command {
 			}
 
 			msg := types.NewMsgUnsignedTxRefund(
+				argReserveId,
 				argBtcUnsignedRefundTx,
 				clientCtx.GetFromAddress().String(),
 			)

@@ -440,6 +440,64 @@ func (k Keeper) IterateRegisteredProposeRefundHashMsgs(ctx sdk.Context, cb func(
 	}
 }
 
+// SetUnsignedTxSweepMsg sets the unsigned sweep message for btc chain using txId, unsignedSweepTx and judgeAddress
+func (k Keeper) SetUnsignedTxSweepMsg(ctx sdk.Context, txId string, unsignedSweepTx string, judgeAddress sdk.AccAddress) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUnsignedTxSweepMsgKey(judgeAddress, txId)
+
+	unsignedTxSweep := &types.MsgUnsignedTxSweep{
+		TxId:               txId,
+		BtcUnsignedSweepTx: unsignedSweepTx,
+		JudgeAddress:       judgeAddress.String(),
+	}
+	store.Set(aKey, k.cdc.MustMarshal(unsignedTxSweep))
+	return nil
+}
+
+// GetUnsignedTxSweepMsg returns the unsigned sweep message for btc chain using txId, unsignedSweepTx and judgeAddress
+func (k Keeper) GetUnsignedTxSweepMsg(ctx sdk.Context, txId string, judgeAddress sdk.AccAddress) (*types.MsgUnsignedTxSweep, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUnsignedTxSweepMsgKey(judgeAddress, txId)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var unsignedTxSweep types.MsgUnsignedTxSweep
+	k.cdc.MustUnmarshal(bz, &unsignedTxSweep)
+
+	return &unsignedTxSweep, true
+}
+
+// SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, btcUnsignedRefundTx and judgeAddress
+func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, btcUnsignedRefundTx string, judgeAddress sdk.AccAddress) error {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId)
+
+	unsignedTxRefund := &types.MsgUnsignedTxRefund{
+		ReserveId:           reserveId,
+		BtcUnsignedRefundTx: btcUnsignedRefundTx,
+		JudgeAddress:        judgeAddress.String(),
+	}
+	store.Set(aKey, k.cdc.MustMarshal(unsignedTxRefund))
+	return nil
+}
+
+// GetUnsignedTxRefundMsg returns the unsigned refund message for btc chain using reserveId and judgeAddress
+func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress) (*types.MsgUnsignedTxRefund, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var unsignedTxRefund types.MsgUnsignedTxRefund
+	k.cdc.MustUnmarshal(bz, &unsignedTxRefund)
+
+	return &unsignedTxRefund, true
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////
