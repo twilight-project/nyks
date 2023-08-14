@@ -17,4 +17,5 @@ var (
 	ErrNotEnoughBalanceInPrivate      = sdkerrors.Register(ModuleName, 7, "not enough balance in private pool")
 	ErrNotEnoughUserBalanceInReserves = sdkerrors.Register(ModuleName, 8, "not enough user balance in reserves")
 	ErrInvalidTwilightAddress         = sdkerrors.Register(ModuleName, 9, "invalid twilight address")
+	ErrInvalidInput                   = sdkerrors.Register(ModuleName, 10, "invalid input")
 )
