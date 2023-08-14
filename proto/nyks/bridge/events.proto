@@ -57,3 +57,17 @@ message EventProposeRefundHash {
     string refundHash = 2;
     string judgeAddress = 3;
 }
+
+message EventUnsignedTxSweep {
+    string message = 1;
+    string txId = 2;
+    string unsignedSweepTx = 3;
+    string judgeAddress = 4;
+}
+
+message EventUnsignedTxRefund {
+    string message = 1;
+    uint64 reserveId = 2;
+    string unsignedRefundTx = 3;
+    string judgeAddress = 4;
+}

@@ -32,6 +32,7 @@ export interface MsgRegisterReserveAddress {
 }
 
 export interface MsgRegisterReserveAddressResponse {
+  reserveId: string;
   reserveAddress: string;
 }
 
@@ -137,7 +138,6 @@ export interface MsgConfirmBtcWithdrawResponse {
 }
 
 export interface MsgUnsignedTxSweep {
-  creator: string;
   txId: string;
   btcUnsignedSweepTx: string;
   judgeAddress: string;
@@ -147,7 +147,7 @@ export interface MsgUnsignedTxSweepResponse {
 }
 
 export interface MsgUnsignedTxRefund {
-  creator: string;
+  reserveId: number;
   btcUnsignedRefundTx: string;
   judgeAddress: string;
 }
@@ -465,13 +465,16 @@ export const MsgRegisterReserveAddress = {
 };
 
 function createBaseMsgRegisterReserveAddressResponse(): MsgRegisterReserveAddressResponse {
-  return { reserveAddress: "" };
+  return { reserveId: "", reserveAddress: "" };
 }
 
 export const MsgRegisterReserveAddressResponse = {
   encode(message: MsgRegisterReserveAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== "") {
+      writer.uint32(10).string(message.reserveId);
+    }
     if (message.reserveAddress !== "") {
-      writer.uint32(10).string(message.reserveAddress);
+      writer.uint32(18).string(message.reserveAddress);
     }
     return writer;
   },
@@ -484,6 +487,9 @@ export const MsgRegisterReserveAddressResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.reserveId = reader.string();
+          break;
+        case 2:
           message.reserveAddress = reader.string();
           break;
         default:
@@ -495,11 +501,15 @@ export const MsgRegisterReserveAddressResponse = {
   },
 
   fromJSON(object: any): MsgRegisterReserveAddressResponse {
-    return { reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "" };
+    return {
+      reserveId: isSet(object.reserveId) ? String(object.reserveId) : "",
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+    };
   },
 
   toJSON(message: MsgRegisterReserveAddressResponse): unknown {
     const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = message.reserveId);
     message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
     return obj;
   },
@@ -508,6 +518,7 @@ export const MsgRegisterReserveAddressResponse = {
     object: I,
   ): MsgRegisterReserveAddressResponse {
     const message = createBaseMsgRegisterReserveAddressResponse();
+    message.reserveId = object.reserveId ?? "";
     message.reserveAddress = object.reserveAddress ?? "";
     return message;
   },
@@ -1676,22 +1687,19 @@ export const MsgConfirmBtcWithdrawResponse = {
 };
 
 function createBaseMsgUnsignedTxSweep(): MsgUnsignedTxSweep {
-  return { creator: "", txId: "", btcUnsignedSweepTx: "", judgeAddress: "" };
+  return { txId: "", btcUnsignedSweepTx: "", judgeAddress: "" };
 }
 
 export const MsgUnsignedTxSweep = {
   encode(message: MsgUnsignedTxSweep, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.txId !== "") {
-      writer.uint32(18).string(message.txId);
+      writer.uint32(10).string(message.txId);
     }
     if (message.btcUnsignedSweepTx !== "") {
-      writer.uint32(26).string(message.btcUnsignedSweepTx);
+      writer.uint32(18).string(message.btcUnsignedSweepTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(34).string(message.judgeAddress);
+      writer.uint32(26).string(message.judgeAddress);
     }
     return writer;
   },
@@ -1704,15 +1712,12 @@ export const MsgUnsignedTxSweep = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.txId = reader.string();
           break;
-        case 3:
+        case 2:
           message.btcUnsignedSweepTx = reader.string();
           break;
-        case 4:
+        case 3:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -1725,7 +1730,6 @@ export const MsgUnsignedTxSweep = {
 
   fromJSON(object: any): MsgUnsignedTxSweep {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
       txId: isSet(object.txId) ? String(object.txId) : "",
       btcUnsignedSweepTx: isSet(object.btcUnsignedSweepTx) ? String(object.btcUnsignedSweepTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
@@ -1734,7 +1738,6 @@ export const MsgUnsignedTxSweep = {
 
   toJSON(message: MsgUnsignedTxSweep): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.txId !== undefined && (obj.txId = message.txId);
     message.btcUnsignedSweepTx !== undefined && (obj.btcUnsignedSweepTx = message.btcUnsignedSweepTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
@@ -1743,7 +1746,6 @@ export const MsgUnsignedTxSweep = {
 
   fromPartial<I extends Exact<DeepPartial<MsgUnsignedTxSweep>, I>>(object: I): MsgUnsignedTxSweep {
     const message = createBaseMsgUnsignedTxSweep();
-    message.creator = object.creator ?? "";
     message.txId = object.txId ?? "";
     message.btcUnsignedSweepTx = object.btcUnsignedSweepTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
@@ -1791,13 +1793,13 @@ export const MsgUnsignedTxSweepResponse = {
 };
 
 function createBaseMsgUnsignedTxRefund(): MsgUnsignedTxRefund {
-  return { creator: "", btcUnsignedRefundTx: "", judgeAddress: "" };
+  return { reserveId: 0, btcUnsignedRefundTx: "", judgeAddress: "" };
 }
 
 export const MsgUnsignedTxRefund = {
   encode(message: MsgUnsignedTxRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+    if (message.reserveId !== 0) {
+      writer.uint32(8).uint64(message.reserveId);
     }
     if (message.btcUnsignedRefundTx !== "") {
       writer.uint32(18).string(message.btcUnsignedRefundTx);
@@ -1816,7 +1818,7 @@ export const MsgUnsignedTxRefund = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 2:
           message.btcUnsignedRefundTx = reader.string();
@@ -1834,7 +1836,7 @@ export const MsgUnsignedTxRefund = {
 
   fromJSON(object: any): MsgUnsignedTxRefund {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       btcUnsignedRefundTx: isSet(object.btcUnsignedRefundTx) ? String(object.btcUnsignedRefundTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -1842,7 +1844,7 @@ export const MsgUnsignedTxRefund = {
 
   toJSON(message: MsgUnsignedTxRefund): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.btcUnsignedRefundTx !== undefined && (obj.btcUnsignedRefundTx = message.btcUnsignedRefundTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -1850,7 +1852,7 @@ export const MsgUnsignedTxRefund = {
 
   fromPartial<I extends Exact<DeepPartial<MsgUnsignedTxRefund>, I>>(object: I): MsgUnsignedTxRefund {
     const message = createBaseMsgUnsignedTxRefund();
-    message.creator = object.creator ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.btcUnsignedRefundTx = object.btcUnsignedRefundTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;

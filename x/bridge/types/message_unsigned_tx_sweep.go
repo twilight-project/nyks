@@ -1,6 +1,10 @@
 package types
 
 import (
+	"errors"
+	"regexp"
+
+	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -39,9 +43,27 @@ func (msg *MsgUnsignedTxSweep) GetSignBytes() []byte {
 }
 
 func (msg *MsgUnsignedTxSweep) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	// Validate txId (Cosmos transaction ID)
+	if !isValidTxId(msg.TxId) {
+		return errors.New("invalid txId format")
 	}
+
+	// Validate judgeAddress (Cosmos address)
+	if _, err := types.AccAddressFromBech32(msg.JudgeAddress); err != nil {
+		return errors.New("invalid judgeAddress format")
+	}
+
+	// Validate BtcUnsignedSweepTx (Bitcoin transaction)
+	err := ValidateBtcTransaction(msg.BtcUnsignedSweepTx)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid unsigned sweep tx (%s)", err)
+	}
+
 	return nil
+}
+
+func isValidTxId(txId string) bool {
+	// Regular expression to match the format of a Cosmos transaction ID
+	re := regexp.MustCompile(`^[a-fA-F0-9]{64}$`)
+	return re.MatchString(txId)
 }

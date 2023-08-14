@@ -89,6 +89,18 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/propose_refund_hash_all";
   
   }
+  
+  // Queries a list of UnsignedTxSweep items.
+  rpc UnsignedTxSweep (QueryUnsignedTxSweepRequest) returns (QueryUnsignedTxSweepResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_sweep/{txId}";
+  
+  }
+  
+  // Queries a list of UnsignedTxRefund items.
+  rpc UnsignedTxRefund (QueryUnsignedTxRefundRequest) returns (QueryUnsignedTxRefundResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{judgeAddress}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -177,3 +189,20 @@ message QueryProposeRefundHashAllResponse {
   repeated MsgProposeRefundHash proposeRefundHashMsg = 1 [(gogoproto.nullable) = false];
 }
 
+message QueryUnsignedTxSweepRequest {
+  string txId = 1;
+  string judgeAddress = 2;
+}
+
+message QueryUnsignedTxSweepResponse {
+  MsgUnsignedTxSweep unsignedTxSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUnsignedTxRefundRequest {
+  uint64 reserveId    = 1;
+  string judgeAddress = 2;
+}
+
+message QueryUnsignedTxRefundResponse {
+  MsgUnsignedTxRefund unsignedTxRefundMsg = 1 [(gogoproto.nullable) = false];
+}

@@ -50,6 +50,12 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgConfirmBtcWithdraw:
 			res, err := msgServer.ConfirmBtcWithdraw(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUnsignedTxSweep:
+			res, err := msgServer.UnsignedTxSweep(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUnsignedTxRefund:
+			res, err := msgServer.UnsignedTxRefund(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)
