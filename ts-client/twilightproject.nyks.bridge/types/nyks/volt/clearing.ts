@@ -14,8 +14,6 @@ export interface ClearingAccount {
   TwilightAddress: string;
   BtcDepositAddress: string;
   BtcWithdrawAddress: string;
-  QQDepositAddress: string;
-  QQWithdrawAddress: string;
   ReserveAccountBalances: IndividualTwilightReserveAccountBalance[];
 }
 
@@ -80,14 +78,7 @@ export const IndividualTwilightReserveAccountBalance = {
 };
 
 function createBaseClearingAccount(): ClearingAccount {
-  return {
-    TwilightAddress: "",
-    BtcDepositAddress: "",
-    BtcWithdrawAddress: "",
-    QQDepositAddress: "",
-    QQWithdrawAddress: "",
-    ReserveAccountBalances: [],
-  };
+  return { TwilightAddress: "", BtcDepositAddress: "", BtcWithdrawAddress: "", ReserveAccountBalances: [] };
 }
 
 export const ClearingAccount = {
@@ -101,14 +92,8 @@ export const ClearingAccount = {
     if (message.BtcWithdrawAddress !== "") {
       writer.uint32(26).string(message.BtcWithdrawAddress);
     }
-    if (message.QQDepositAddress !== "") {
-      writer.uint32(34).string(message.QQDepositAddress);
-    }
-    if (message.QQWithdrawAddress !== "") {
-      writer.uint32(42).string(message.QQWithdrawAddress);
-    }
     for (const v of message.ReserveAccountBalances) {
-      IndividualTwilightReserveAccountBalance.encode(v!, writer.uint32(50).fork()).ldelim();
+      IndividualTwilightReserveAccountBalance.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -130,12 +115,6 @@ export const ClearingAccount = {
           message.BtcWithdrawAddress = reader.string();
           break;
         case 4:
-          message.QQDepositAddress = reader.string();
-          break;
-        case 5:
-          message.QQWithdrawAddress = reader.string();
-          break;
-        case 6:
           message.ReserveAccountBalances.push(IndividualTwilightReserveAccountBalance.decode(reader, reader.uint32()));
           break;
         default:
@@ -151,8 +130,6 @@ export const ClearingAccount = {
       TwilightAddress: isSet(object.TwilightAddress) ? String(object.TwilightAddress) : "",
       BtcDepositAddress: isSet(object.BtcDepositAddress) ? String(object.BtcDepositAddress) : "",
       BtcWithdrawAddress: isSet(object.BtcWithdrawAddress) ? String(object.BtcWithdrawAddress) : "",
-      QQDepositAddress: isSet(object.QQDepositAddress) ? String(object.QQDepositAddress) : "",
-      QQWithdrawAddress: isSet(object.QQWithdrawAddress) ? String(object.QQWithdrawAddress) : "",
       ReserveAccountBalances: Array.isArray(object?.ReserveAccountBalances)
         ? object.ReserveAccountBalances.map((e: any) => IndividualTwilightReserveAccountBalance.fromJSON(e))
         : [],
@@ -164,8 +141,6 @@ export const ClearingAccount = {
     message.TwilightAddress !== undefined && (obj.TwilightAddress = message.TwilightAddress);
     message.BtcDepositAddress !== undefined && (obj.BtcDepositAddress = message.BtcDepositAddress);
     message.BtcWithdrawAddress !== undefined && (obj.BtcWithdrawAddress = message.BtcWithdrawAddress);
-    message.QQDepositAddress !== undefined && (obj.QQDepositAddress = message.QQDepositAddress);
-    message.QQWithdrawAddress !== undefined && (obj.QQWithdrawAddress = message.QQWithdrawAddress);
     if (message.ReserveAccountBalances) {
       obj.ReserveAccountBalances = message.ReserveAccountBalances.map((e) =>
         e ? IndividualTwilightReserveAccountBalance.toJSON(e) : undefined
@@ -181,8 +156,6 @@ export const ClearingAccount = {
     message.TwilightAddress = object.TwilightAddress ?? "";
     message.BtcDepositAddress = object.BtcDepositAddress ?? "";
     message.BtcWithdrawAddress = object.BtcWithdrawAddress ?? "";
-    message.QQDepositAddress = object.QQDepositAddress ?? "";
-    message.QQWithdrawAddress = object.QQWithdrawAddress ?? "";
     message.ReserveAccountBalances =
       object.ReserveAccountBalances?.map((e) => IndividualTwilightReserveAccountBalance.fromPartial(e)) || [];
     return message;

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	//voltkeeper "github.com/cosmos/cosmos-sdk/nyks/x/volt/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -40,7 +41,7 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	//validatorAddress := k.VoltKeeper.GetValidatorAddressFromJudgeAddress(ctx, judgeAddress)
 
 	// set an empty reserve mapping for the judge address
-	errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
+	reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}
@@ -52,5 +53,6 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		},
 	)
 
-	return &types.MsgRegisterReserveAddressResponse{ReserveAddress: msg.ReserveAddress}, nil
+	return &types.MsgRegisterReserveAddressResponse{ReserveId: strconv.FormatUint(reserveId, 10), ReserveAddress: msg.ReserveAddress}, nil
+
 }

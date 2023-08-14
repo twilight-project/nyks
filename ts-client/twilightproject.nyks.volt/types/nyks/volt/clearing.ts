@@ -9,18 +9,11 @@ export interface IndividualTwilightReserveAccountBalance {
   Amount: number;
 }
 
-export interface QQAccount {
-  nonce: number;
-  depositAccount: string;
-  withdrawAccount: string;
-}
-
 /** ClearingAccount is used to keep a mapping of how a user's addresses and its reserve account balances */
 export interface ClearingAccount {
   TwilightAddress: string;
   BtcDepositAddress: string;
   BtcWithdrawAddress: string;
-  QQAccounts: QQAccount[];
   ReserveAccountBalances: IndividualTwilightReserveAccountBalance[];
 }
 
@@ -84,81 +77,8 @@ export const IndividualTwilightReserveAccountBalance = {
   },
 };
 
-function createBaseQQAccount(): QQAccount {
-  return { nonce: 0, depositAccount: "", withdrawAccount: "" };
-}
-
-export const QQAccount = {
-  encode(message: QQAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.nonce !== 0) {
-      writer.uint32(8).uint64(message.nonce);
-    }
-    if (message.depositAccount !== "") {
-      writer.uint32(18).string(message.depositAccount);
-    }
-    if (message.withdrawAccount !== "") {
-      writer.uint32(26).string(message.withdrawAccount);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QQAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQQAccount();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.nonce = longToNumber(reader.uint64() as Long);
-          break;
-        case 2:
-          message.depositAccount = reader.string();
-          break;
-        case 3:
-          message.withdrawAccount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QQAccount {
-    return {
-      nonce: isSet(object.nonce) ? Number(object.nonce) : 0,
-      depositAccount: isSet(object.depositAccount) ? String(object.depositAccount) : "",
-      withdrawAccount: isSet(object.withdrawAccount) ? String(object.withdrawAccount) : "",
-    };
-  },
-
-  toJSON(message: QQAccount): unknown {
-    const obj: any = {};
-    message.nonce !== undefined && (obj.nonce = Math.round(message.nonce));
-    message.depositAccount !== undefined && (obj.depositAccount = message.depositAccount);
-    message.withdrawAccount !== undefined && (obj.withdrawAccount = message.withdrawAccount);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<QQAccount>, I>>(object: I): QQAccount {
-    const message = createBaseQQAccount();
-    message.nonce = object.nonce ?? 0;
-    message.depositAccount = object.depositAccount ?? "";
-    message.withdrawAccount = object.withdrawAccount ?? "";
-    return message;
-  },
-};
-
 function createBaseClearingAccount(): ClearingAccount {
-  return {
-    TwilightAddress: "",
-    BtcDepositAddress: "",
-    BtcWithdrawAddress: "",
-    QQAccounts: [],
-    ReserveAccountBalances: [],
-  };
+  return { TwilightAddress: "", BtcDepositAddress: "", BtcWithdrawAddress: "", ReserveAccountBalances: [] };
 }
 
 export const ClearingAccount = {
@@ -172,11 +92,8 @@ export const ClearingAccount = {
     if (message.BtcWithdrawAddress !== "") {
       writer.uint32(26).string(message.BtcWithdrawAddress);
     }
-    for (const v of message.QQAccounts) {
-      QQAccount.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
     for (const v of message.ReserveAccountBalances) {
-      IndividualTwilightReserveAccountBalance.encode(v!, writer.uint32(42).fork()).ldelim();
+      IndividualTwilightReserveAccountBalance.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -198,9 +115,6 @@ export const ClearingAccount = {
           message.BtcWithdrawAddress = reader.string();
           break;
         case 4:
-          message.QQAccounts.push(QQAccount.decode(reader, reader.uint32()));
-          break;
-        case 5:
           message.ReserveAccountBalances.push(IndividualTwilightReserveAccountBalance.decode(reader, reader.uint32()));
           break;
         default:
@@ -216,7 +130,6 @@ export const ClearingAccount = {
       TwilightAddress: isSet(object.TwilightAddress) ? String(object.TwilightAddress) : "",
       BtcDepositAddress: isSet(object.BtcDepositAddress) ? String(object.BtcDepositAddress) : "",
       BtcWithdrawAddress: isSet(object.BtcWithdrawAddress) ? String(object.BtcWithdrawAddress) : "",
-      QQAccounts: Array.isArray(object?.QQAccounts) ? object.QQAccounts.map((e: any) => QQAccount.fromJSON(e)) : [],
       ReserveAccountBalances: Array.isArray(object?.ReserveAccountBalances)
         ? object.ReserveAccountBalances.map((e: any) => IndividualTwilightReserveAccountBalance.fromJSON(e))
         : [],
@@ -228,11 +141,6 @@ export const ClearingAccount = {
     message.TwilightAddress !== undefined && (obj.TwilightAddress = message.TwilightAddress);
     message.BtcDepositAddress !== undefined && (obj.BtcDepositAddress = message.BtcDepositAddress);
     message.BtcWithdrawAddress !== undefined && (obj.BtcWithdrawAddress = message.BtcWithdrawAddress);
-    if (message.QQAccounts) {
-      obj.QQAccounts = message.QQAccounts.map((e) => e ? QQAccount.toJSON(e) : undefined);
-    } else {
-      obj.QQAccounts = [];
-    }
     if (message.ReserveAccountBalances) {
       obj.ReserveAccountBalances = message.ReserveAccountBalances.map((e) =>
         e ? IndividualTwilightReserveAccountBalance.toJSON(e) : undefined
@@ -248,7 +156,6 @@ export const ClearingAccount = {
     message.TwilightAddress = object.TwilightAddress ?? "";
     message.BtcDepositAddress = object.BtcDepositAddress ?? "";
     message.BtcWithdrawAddress = object.BtcWithdrawAddress ?? "";
-    message.QQAccounts = object.QQAccounts?.map((e) => QQAccount.fromPartial(e)) || [];
     message.ReserveAccountBalances =
       object.ReserveAccountBalances?.map((e) => IndividualTwilightReserveAccountBalance.fromPartial(e)) || [];
     return message;

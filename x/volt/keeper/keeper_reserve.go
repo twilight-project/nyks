@@ -10,7 +10,7 @@ import (
 )
 
 // RegisterNewBtcReserve sets a reserve in the store
-func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error {
+func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, error) {
 
 	// Get the latest reserve id
 	// We keep reserve ids in a separate store and keep track of it as a counter
@@ -19,7 +19,7 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 
 	// Check if the reserve limit has been reached
 	if (reserveId) > types.BtcReserveMaxLimit {
-		return sdkerrors.Wrapf(types.ErrBtcReserveMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
+		return 0, sdkerrors.Wrapf(types.ErrBtcReserveMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
 	}
 
 	// Create a new reserve
@@ -37,12 +37,12 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 	// Set the reserve
 	err := k.SetBtcReserve(ctx, res)
 	if err != nil {
-		return sdkerrors.Wrapf(types.ErrCouldNotSetReserve, fmt.Sprint(reserveAddress))
+		return 0, sdkerrors.Wrapf(types.ErrCouldNotSetReserve, fmt.Sprint(reserveAddress))
 	} else {
 		k.setLastRegisteredBtcReserve(ctx, reserveId)
 	}
 
-	return nil
+	return reserveId, nil
 }
 
 // SetBtcReserve sets a reserve in the store

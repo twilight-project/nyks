@@ -1,5 +1,6 @@
 /* eslint-disable */
 import _m0 from "protobufjs/minimal";
+import { ClearingAccount } from "./clearing";
 import { Params } from "./params";
 import { BtcReserve } from "./reserve";
 
@@ -28,6 +29,7 @@ export interface QueryClearingAccountRequest {
 }
 
 export interface QueryClearingAccountResponse {
+  ClearingAccount: ClearingAccount | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -258,11 +260,14 @@ export const QueryClearingAccountRequest = {
 };
 
 function createBaseQueryClearingAccountResponse(): QueryClearingAccountResponse {
-  return {};
+  return { ClearingAccount: undefined };
 }
 
 export const QueryClearingAccountResponse = {
-  encode(_: QueryClearingAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryClearingAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ClearingAccount !== undefined) {
+      ClearingAccount.encode(message.ClearingAccount, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -273,6 +278,9 @@ export const QueryClearingAccountResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.ClearingAccount = ClearingAccount.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -281,17 +289,24 @@ export const QueryClearingAccountResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryClearingAccountResponse {
-    return {};
+  fromJSON(object: any): QueryClearingAccountResponse {
+    return {
+      ClearingAccount: isSet(object.ClearingAccount) ? ClearingAccount.fromJSON(object.ClearingAccount) : undefined,
+    };
   },
 
-  toJSON(_: QueryClearingAccountResponse): unknown {
+  toJSON(message: QueryClearingAccountResponse): unknown {
     const obj: any = {};
+    message.ClearingAccount !== undefined
+      && (obj.ClearingAccount = message.ClearingAccount ? ClearingAccount.toJSON(message.ClearingAccount) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryClearingAccountResponse>, I>>(_: I): QueryClearingAccountResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryClearingAccountResponse>, I>>(object: I): QueryClearingAccountResponse {
     const message = createBaseQueryClearingAccountResponse();
+    message.ClearingAccount = (object.ClearingAccount !== undefined && object.ClearingAccount !== null)
+      ? ClearingAccount.fromPartial(object.ClearingAccount)
+      : undefined;
     return message;
   },
 };

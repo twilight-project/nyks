@@ -70,6 +70,10 @@ export type BridgeMsgSignSweepResponse = object;
 
 export type BridgeMsgSweepProposalResponse = object;
 
+export type BridgeMsgUnsignedTxRefundResponse = object;
+
+export type BridgeMsgUnsignedTxSweepResponse = object;
+
 export interface BridgeMsgWithdrawBtcRequest {
   withdrawAddress?: string;
   reserveAddress?: string;
@@ -161,8 +165,6 @@ export interface VoltClearingAccount {
   TwilightAddress?: string;
   BtcDepositAddress?: string;
   BtcWithdrawAddress?: string;
-  QQDepositAddress?: string;
-  QQWithdrawAddress?: string;
   ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
 }
 

@@ -42,6 +42,21 @@ export interface VoltBtcReserve {
   FeePool?: string;
 }
 
+export interface VoltClearingAccount {
+  TwilightAddress?: string;
+  BtcDepositAddress?: string;
+  BtcWithdrawAddress?: string;
+  ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
+}
+
+export interface VoltIndividualTwilightReserveAccountBalance {
+  /** @format uint64 */
+  ReserveId?: string;
+
+  /** @format uint64 */
+  Amount?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
@@ -51,7 +66,9 @@ export interface VoltQueryBtcReserveResponse {
   BtcReserves?: VoltBtcReserve[];
 }
 
-export type VoltQueryClearingAccountResponse = object;
+export interface VoltQueryClearingAccountResponse {
+  ClearingAccount?: VoltClearingAccount;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.

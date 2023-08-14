@@ -9,7 +9,6 @@ import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 
 import { IndividualTwilightReserveAccountBalance as typeIndividualTwilightReserveAccountBalance} from "./types"
-import { QQAccount as typeQQAccount} from "./types"
 import { ClearingAccount as typeClearingAccount} from "./types"
 import { Params as typeParams} from "./types"
 import { BtcReserve as typeBtcReserve} from "./types"
@@ -71,7 +70,6 @@ class SDKModule {
 		this.updateTX(client);
 		this.structure =  {
 						IndividualTwilightReserveAccountBalance: getStructure(typeIndividualTwilightReserveAccountBalance.fromPartial({})),
-						QQAccount: getStructure(typeQQAccount.fromPartial({})),
 						ClearingAccount: getStructure(typeClearingAccount.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						BtcReserve: getStructure(typeBtcReserve.fromPartial({})),

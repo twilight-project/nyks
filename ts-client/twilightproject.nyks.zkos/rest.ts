@@ -23,8 +23,8 @@ export interface RpcStatus {
 export interface ZkosMsgMintBurnTradingBtc {
   mintOrBurn?: boolean;
 
-  /** @format int32 */
-  btcValue?: number;
+  /** @format uint64 */
+  btcValue?: string;
   qqAccount?: string;
   encryptScalar?: string;
   twilightAddress?: string;

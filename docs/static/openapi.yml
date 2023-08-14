@@ -27516,18 +27516,6 @@ paths:
                       type: string
                     BtcWithdrawAddress:
                       type: string
-                    QQAccounts:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          nonce:
-                            type: string
-                            format: uint64
-                          depositAccount:
-                            type: string
-                          withdrawAccount:
-                            type: string
                     ReserveAccountBalances:
                       type: array
                       items:
@@ -47942,6 +47930,8 @@ definitions:
   twilightproject.nyks.bridge.MsgRegisterReserveAddressResponse:
     type: object
     properties:
+      reserveId:
+        type: string
       reserveAddress:
         type: string
   twilightproject.nyks.bridge.MsgSignRefund:
@@ -47971,6 +47961,10 @@ definitions:
   twilightproject.nyks.bridge.MsgSignSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgUnsignedTxRefundResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgUnsignedTxSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
     type: object
@@ -48055,18 +48049,6 @@ definitions:
               type: string
             BtcWithdrawAddress:
               type: string
-            QQAccounts:
-              type: array
-              items:
-                type: object
-                properties:
-                  nonce:
-                    type: string
-                    format: uint64
-                  depositAccount:
-                    type: string
-                  withdrawAccount:
-                    type: string
             ReserveAccountBalances:
               type: array
               items:
@@ -48177,18 +48159,6 @@ definitions:
         type: string
       BtcWithdrawAddress:
         type: string
-      QQAccounts:
-        type: array
-        items:
-          type: object
-          properties:
-            nonce:
-              type: string
-              format: uint64
-            depositAccount:
-              type: string
-            withdrawAccount:
-              type: string
       ReserveAccountBalances:
         type: array
         items:
@@ -48212,16 +48182,6 @@ definitions:
       Amount:
         type: string
         format: uint64
-  twilightproject.nyks.volt.QQAccount:
-    type: object
-    properties:
-      nonce:
-        type: string
-        format: uint64
-      depositAccount:
-        type: string
-      withdrawAccount:
-        type: string
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:

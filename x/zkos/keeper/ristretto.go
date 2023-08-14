@@ -81,7 +81,7 @@ func ScalarFromBytes(b [32]byte) (*r255.Scalar, error) {
 	return s, nil
 }
 
-//uintToScalar converts a uint64 value to a canonical Ristretto Scalar
+// uintToScalar converts a uint64 value to a canonical Ristretto Scalar
 func uintToScalar(bl uint64) (*r255.Scalar, error) {
 
 	//32 byte slice to hold little endian representation

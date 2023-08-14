@@ -1,13 +1,12 @@
 import { Client, registry, MissingWalletError } from 'twilight-project-nyks-client-ts'
 
 import { IndividualTwilightReserveAccountBalance } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
-import { QQAccount } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { ClearingAccount } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { BtcReserve } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 
 
-export { IndividualTwilightReserveAccountBalance, QQAccount, ClearingAccount, Params, BtcReserve };
+export { IndividualTwilightReserveAccountBalance, ClearingAccount, Params, BtcReserve };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -44,7 +43,6 @@ const getDefaultState = () => {
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
-						QQAccount: getStructure(QQAccount.fromPartial({})),
 						ClearingAccount: getStructure(ClearingAccount.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						BtcReserve: getStructure(BtcReserve.fromPartial({})),

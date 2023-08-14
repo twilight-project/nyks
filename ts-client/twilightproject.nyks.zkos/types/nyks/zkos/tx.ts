@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "twilightproject.nyks.zkos";
@@ -139,7 +140,7 @@ export const MsgMintBurnTradingBtc = {
       writer.uint32(8).bool(message.mintOrBurn);
     }
     if (message.btcValue !== 0) {
-      writer.uint32(16).int32(message.btcValue);
+      writer.uint32(16).uint64(message.btcValue);
     }
     if (message.qqAccount !== "") {
       writer.uint32(26).string(message.qqAccount);
@@ -164,7 +165,7 @@ export const MsgMintBurnTradingBtc = {
           message.mintOrBurn = reader.bool();
           break;
         case 2:
-          message.btcValue = reader.int32();
+          message.btcValue = longToNumber(reader.uint64() as Long);
           break;
         case 3:
           message.qqAccount = reader.string();
@@ -283,6 +284,25 @@ interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
@@ -293,6 +313,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;
