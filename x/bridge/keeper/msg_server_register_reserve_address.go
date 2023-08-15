@@ -22,6 +22,11 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	// check the following, all should be validated in validate basic
 	judgeAddress, e1 := sdk.AccAddressFromBech32(msg.JudgeAddress)
 
+	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
+	if found == false {
+		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
+	}
+
 	// FOLLOWING DOES NOT CONTAIN ANY VALIDATION CHECK FOR THE SCRIPT - ITS KIND OF A PLACEHOLDER
 	reserveScript, e2 := types.NewBtcScript(msg.ReserveScript)
 	if e1 != nil {
