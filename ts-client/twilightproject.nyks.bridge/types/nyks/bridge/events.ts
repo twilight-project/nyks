@@ -57,6 +57,20 @@ export interface EventProposeRefundHash {
   judgeAddress: string;
 }
 
+export interface EventUnsignedTxSweep {
+  message: string;
+  txId: string;
+  unsignedSweepTx: string;
+  judgeAddress: string;
+}
+
+export interface EventUnsignedTxRefund {
+  message: string;
+  reserveId: number;
+  unsignedRefundTx: string;
+  judgeAddress: string;
+}
+
 function createBaseEventRegisterBtcDepositAddress(): EventRegisterBtcDepositAddress {
   return { message: "", depositAddress: "" };
 }
@@ -635,6 +649,158 @@ export const EventProposeRefundHash = {
     const message = createBaseEventProposeRefundHash();
     message.message = object.message ?? "";
     message.refundHash = object.refundHash ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventUnsignedTxSweep(): EventUnsignedTxSweep {
+  return { message: "", txId: "", unsignedSweepTx: "", judgeAddress: "" };
+}
+
+export const EventUnsignedTxSweep = {
+  encode(message: EventUnsignedTxSweep, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.txId !== "") {
+      writer.uint32(18).string(message.txId);
+    }
+    if (message.unsignedSweepTx !== "") {
+      writer.uint32(26).string(message.unsignedSweepTx);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(34).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventUnsignedTxSweep {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventUnsignedTxSweep();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.txId = reader.string();
+          break;
+        case 3:
+          message.unsignedSweepTx = reader.string();
+          break;
+        case 4:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventUnsignedTxSweep {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      txId: isSet(object.txId) ? String(object.txId) : "",
+      unsignedSweepTx: isSet(object.unsignedSweepTx) ? String(object.unsignedSweepTx) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventUnsignedTxSweep): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.txId !== undefined && (obj.txId = message.txId);
+    message.unsignedSweepTx !== undefined && (obj.unsignedSweepTx = message.unsignedSweepTx);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventUnsignedTxSweep>, I>>(object: I): EventUnsignedTxSweep {
+    const message = createBaseEventUnsignedTxSweep();
+    message.message = object.message ?? "";
+    message.txId = object.txId ?? "";
+    message.unsignedSweepTx = object.unsignedSweepTx ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventUnsignedTxRefund(): EventUnsignedTxRefund {
+  return { message: "", reserveId: 0, unsignedRefundTx: "", judgeAddress: "" };
+}
+
+export const EventUnsignedTxRefund = {
+  encode(message: EventUnsignedTxRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
+    }
+    if (message.unsignedRefundTx !== "") {
+      writer.uint32(26).string(message.unsignedRefundTx);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(34).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventUnsignedTxRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventUnsignedTxRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.unsignedRefundTx = reader.string();
+          break;
+        case 4:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventUnsignedTxRefund {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      unsignedRefundTx: isSet(object.unsignedRefundTx) ? String(object.unsignedRefundTx) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventUnsignedTxRefund): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.unsignedRefundTx !== undefined && (obj.unsignedRefundTx = message.unsignedRefundTx);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventUnsignedTxRefund>, I>>(object: I): EventUnsignedTxRefund {
+    const message = createBaseEventUnsignedTxRefund();
+    message.message = object.message ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.unsignedRefundTx = object.unsignedRefundTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },

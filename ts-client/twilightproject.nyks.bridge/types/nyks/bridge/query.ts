@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ClearingAccount } from "../volt/clearing";
 import { Params } from "./params";
@@ -9,6 +10,8 @@ import {
   MsgRegisterReserveAddress,
   MsgSignRefund,
   MsgSignSweep,
+  MsgUnsignedTxRefund,
+  MsgUnsignedTxSweep,
   MsgWithdrawBtcRequest,
 } from "./tx";
 
@@ -111,17 +114,32 @@ export interface QueryProposeRefundHashAllResponse {
 
 export interface QueryUnsignedTxSweepRequest {
   txId: string;
+  judgeAddress: string;
 }
 
 export interface QueryUnsignedTxSweepResponse {
+  unsignedTxSweepMsg: MsgUnsignedTxSweep | undefined;
 }
 
 export interface QueryUnsignedTxRefundRequest {
-  reserveId: string;
+  reserveId: number;
   judgeAddress: string;
 }
 
 export interface QueryUnsignedTxRefundResponse {
+  unsignedTxRefundMsg: MsgUnsignedTxRefund | undefined;
+}
+
+export interface QueryUnsignedTxSweepAllRequest {
+}
+
+export interface QueryUnsignedTxSweepAllResponse {
+}
+
+export interface QueryUnsignedTxRefundAllRequest {
+}
+
+export interface QueryUnsignedTxRefundAllResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1331,13 +1349,16 @@ export const QueryProposeRefundHashAllResponse = {
 };
 
 function createBaseQueryUnsignedTxSweepRequest(): QueryUnsignedTxSweepRequest {
-  return { txId: "" };
+  return { txId: "", judgeAddress: "" };
 }
 
 export const QueryUnsignedTxSweepRequest = {
   encode(message: QueryUnsignedTxSweepRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.txId !== "") {
       writer.uint32(10).string(message.txId);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
     }
     return writer;
   },
@@ -1352,6 +1373,9 @@ export const QueryUnsignedTxSweepRequest = {
         case 1:
           message.txId = reader.string();
           break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1361,28 +1385,36 @@ export const QueryUnsignedTxSweepRequest = {
   },
 
   fromJSON(object: any): QueryUnsignedTxSweepRequest {
-    return { txId: isSet(object.txId) ? String(object.txId) : "" };
+    return {
+      txId: isSet(object.txId) ? String(object.txId) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
   },
 
   toJSON(message: QueryUnsignedTxSweepRequest): unknown {
     const obj: any = {};
     message.txId !== undefined && (obj.txId = message.txId);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepRequest>, I>>(object: I): QueryUnsignedTxSweepRequest {
     const message = createBaseQueryUnsignedTxSweepRequest();
     message.txId = object.txId ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxSweepResponse(): QueryUnsignedTxSweepResponse {
-  return {};
+  return { unsignedTxSweepMsg: undefined };
 }
 
 export const QueryUnsignedTxSweepResponse = {
-  encode(_: QueryUnsignedTxSweepResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxSweepResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.unsignedTxSweepMsg !== undefined) {
+      MsgUnsignedTxSweep.encode(message.unsignedTxSweepMsg, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1393,6 +1425,9 @@ export const QueryUnsignedTxSweepResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.unsignedTxSweepMsg = MsgUnsignedTxSweep.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1401,29 +1436,39 @@ export const QueryUnsignedTxSweepResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxSweepResponse {
-    return {};
+  fromJSON(object: any): QueryUnsignedTxSweepResponse {
+    return {
+      unsignedTxSweepMsg: isSet(object.unsignedTxSweepMsg)
+        ? MsgUnsignedTxSweep.fromJSON(object.unsignedTxSweepMsg)
+        : undefined,
+    };
   },
 
-  toJSON(_: QueryUnsignedTxSweepResponse): unknown {
+  toJSON(message: QueryUnsignedTxSweepResponse): unknown {
     const obj: any = {};
+    message.unsignedTxSweepMsg !== undefined && (obj.unsignedTxSweepMsg = message.unsignedTxSweepMsg
+      ? MsgUnsignedTxSweep.toJSON(message.unsignedTxSweepMsg)
+      : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepResponse>, I>>(_: I): QueryUnsignedTxSweepResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepResponse>, I>>(object: I): QueryUnsignedTxSweepResponse {
     const message = createBaseQueryUnsignedTxSweepResponse();
+    message.unsignedTxSweepMsg = (object.unsignedTxSweepMsg !== undefined && object.unsignedTxSweepMsg !== null)
+      ? MsgUnsignedTxSweep.fromPartial(object.unsignedTxSweepMsg)
+      : undefined;
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxRefundRequest(): QueryUnsignedTxRefundRequest {
-  return { reserveId: "", judgeAddress: "" };
+  return { reserveId: 0, judgeAddress: "" };
 }
 
 export const QueryUnsignedTxRefundRequest = {
   encode(message: QueryUnsignedTxRefundRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.reserveId !== "") {
-      writer.uint32(10).string(message.reserveId);
+    if (message.reserveId !== 0) {
+      writer.uint32(8).uint64(message.reserveId);
     }
     if (message.judgeAddress !== "") {
       writer.uint32(18).string(message.judgeAddress);
@@ -1439,7 +1484,7 @@ export const QueryUnsignedTxRefundRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.reserveId = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 2:
           message.judgeAddress = reader.string();
@@ -1454,32 +1499,35 @@ export const QueryUnsignedTxRefundRequest = {
 
   fromJSON(object: any): QueryUnsignedTxRefundRequest {
     return {
-      reserveId: isSet(object.reserveId) ? String(object.reserveId) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
   },
 
   toJSON(message: QueryUnsignedTxRefundRequest): unknown {
     const obj: any = {};
-    message.reserveId !== undefined && (obj.reserveId = message.reserveId);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundRequest>, I>>(object: I): QueryUnsignedTxRefundRequest {
     const message = createBaseQueryUnsignedTxRefundRequest();
-    message.reserveId = object.reserveId ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxRefundResponse(): QueryUnsignedTxRefundResponse {
-  return {};
+  return { unsignedTxRefundMsg: undefined };
 }
 
 export const QueryUnsignedTxRefundResponse = {
-  encode(_: QueryUnsignedTxRefundResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxRefundResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.unsignedTxRefundMsg !== undefined) {
+      MsgUnsignedTxRefund.encode(message.unsignedTxRefundMsg, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1487,6 +1535,60 @@ export const QueryUnsignedTxRefundResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryUnsignedTxRefundResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.unsignedTxRefundMsg = MsgUnsignedTxRefund.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUnsignedTxRefundResponse {
+    return {
+      unsignedTxRefundMsg: isSet(object.unsignedTxRefundMsg)
+        ? MsgUnsignedTxRefund.fromJSON(object.unsignedTxRefundMsg)
+        : undefined,
+    };
+  },
+
+  toJSON(message: QueryUnsignedTxRefundResponse): unknown {
+    const obj: any = {};
+    message.unsignedTxRefundMsg !== undefined && (obj.unsignedTxRefundMsg = message.unsignedTxRefundMsg
+      ? MsgUnsignedTxRefund.toJSON(message.unsignedTxRefundMsg)
+      : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundResponse>, I>>(
+    object: I,
+  ): QueryUnsignedTxRefundResponse {
+    const message = createBaseQueryUnsignedTxRefundResponse();
+    message.unsignedTxRefundMsg = (object.unsignedTxRefundMsg !== undefined && object.unsignedTxRefundMsg !== null)
+      ? MsgUnsignedTxRefund.fromPartial(object.unsignedTxRefundMsg)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryUnsignedTxSweepAllRequest(): QueryUnsignedTxSweepAllRequest {
+  return {};
+}
+
+export const QueryUnsignedTxSweepAllRequest = {
+  encode(_: QueryUnsignedTxSweepAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnsignedTxSweepAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryUnsignedTxSweepAllRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1498,17 +1600,136 @@ export const QueryUnsignedTxRefundResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxRefundResponse {
+  fromJSON(_: any): QueryUnsignedTxSweepAllRequest {
     return {};
   },
 
-  toJSON(_: QueryUnsignedTxRefundResponse): unknown {
+  toJSON(_: QueryUnsignedTxSweepAllRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundResponse>, I>>(_: I): QueryUnsignedTxRefundResponse {
-    const message = createBaseQueryUnsignedTxRefundResponse();
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllRequest>, I>>(_: I): QueryUnsignedTxSweepAllRequest {
+    const message = createBaseQueryUnsignedTxSweepAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryUnsignedTxSweepAllResponse(): QueryUnsignedTxSweepAllResponse {
+  return {};
+}
+
+export const QueryUnsignedTxSweepAllResponse = {
+  encode(_: QueryUnsignedTxSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnsignedTxSweepAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryUnsignedTxSweepAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryUnsignedTxSweepAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryUnsignedTxSweepAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllResponse>, I>>(_: I): QueryUnsignedTxSweepAllResponse {
+    const message = createBaseQueryUnsignedTxSweepAllResponse();
+    return message;
+  },
+};
+
+function createBaseQueryUnsignedTxRefundAllRequest(): QueryUnsignedTxRefundAllRequest {
+  return {};
+}
+
+export const QueryUnsignedTxRefundAllRequest = {
+  encode(_: QueryUnsignedTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnsignedTxRefundAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryUnsignedTxRefundAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryUnsignedTxRefundAllRequest {
+    return {};
+  },
+
+  toJSON(_: QueryUnsignedTxRefundAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundAllRequest>, I>>(_: I): QueryUnsignedTxRefundAllRequest {
+    const message = createBaseQueryUnsignedTxRefundAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryUnsignedTxRefundAllResponse(): QueryUnsignedTxRefundAllResponse {
+  return {};
+}
+
+export const QueryUnsignedTxRefundAllResponse = {
+  encode(_: QueryUnsignedTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnsignedTxRefundAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryUnsignedTxRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryUnsignedTxRefundAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryUnsignedTxRefundAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundAllResponse>, I>>(
+    _: I,
+  ): QueryUnsignedTxRefundAllResponse {
+    const message = createBaseQueryUnsignedTxRefundAllResponse();
     return message;
   },
 };
@@ -1553,6 +1774,10 @@ export interface Query {
   UnsignedTxSweep(request: QueryUnsignedTxSweepRequest): Promise<QueryUnsignedTxSweepResponse>;
   /** Queries a list of UnsignedTxRefund items. */
   UnsignedTxRefund(request: QueryUnsignedTxRefundRequest): Promise<QueryUnsignedTxRefundResponse>;
+  /** Queries a list of UnsignedTxSweepAll items. */
+  UnsignedTxSweepAll(request: QueryUnsignedTxSweepAllRequest): Promise<QueryUnsignedTxSweepAllResponse>;
+  /** Queries a list of UnsignedTxRefundAll items. */
+  UnsignedTxRefundAll(request: QueryUnsignedTxRefundAllRequest): Promise<QueryUnsignedTxRefundAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1573,6 +1798,8 @@ export class QueryClientImpl implements Query {
     this.ProposeRefundHashAll = this.ProposeRefundHashAll.bind(this);
     this.UnsignedTxSweep = this.UnsignedTxSweep.bind(this);
     this.UnsignedTxRefund = this.UnsignedTxRefund.bind(this);
+    this.UnsignedTxSweepAll = this.UnsignedTxSweepAll.bind(this);
+    this.UnsignedTxRefundAll = this.UnsignedTxRefundAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1677,11 +1904,42 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "UnsignedTxRefund", data);
     return promise.then((data) => QueryUnsignedTxRefundResponse.decode(new _m0.Reader(data)));
   }
+
+  UnsignedTxSweepAll(request: QueryUnsignedTxSweepAllRequest): Promise<QueryUnsignedTxSweepAllResponse> {
+    const data = QueryUnsignedTxSweepAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "UnsignedTxSweepAll", data);
+    return promise.then((data) => QueryUnsignedTxSweepAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  UnsignedTxRefundAll(request: QueryUnsignedTxRefundAllRequest): Promise<QueryUnsignedTxRefundAllResponse> {
+    const data = QueryUnsignedTxRefundAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "UnsignedTxRefundAll", data);
+    return promise.then((data) => QueryUnsignedTxRefundAllResponse.decode(new _m0.Reader(data)));
+  }
 }
 
 interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
@@ -1693,6 +1951,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

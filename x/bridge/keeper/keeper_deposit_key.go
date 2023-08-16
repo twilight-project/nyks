@@ -469,6 +469,29 @@ func (k Keeper) GetUnsignedTxSweepMsg(ctx sdk.Context, txId string, judgeAddress
 	return &unsignedTxSweep, true
 }
 
+// GetAllUnsignedTxSweepMsg returns all unsigned sweep messages for btc chain using txId, unsignedSweepTx and judgeAddress
+func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]types.MsgUnsignedTxSweep, error) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.UnsignedTxSweepMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	var unsignedTxSweep []types.MsgUnsignedTxSweep
+	var count uint64 = 0
+	for ; iter.Valid() && count < limit; iter.Next() {
+		res := types.MsgUnsignedTxSweep{
+			TxId:               "",
+			BtcUnsignedSweepTx: "",
+			JudgeAddress:       "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+		unsignedTxSweep = append(unsignedTxSweep, res)
+		count++
+	}
+	return unsignedTxSweep, nil
+}
+
 // SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, btcUnsignedRefundTx and judgeAddress
 func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, btcUnsignedRefundTx string, judgeAddress sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
@@ -496,6 +519,29 @@ func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, judgeA
 	k.cdc.MustUnmarshal(bz, &unsignedTxRefund)
 
 	return &unsignedTxRefund, true
+}
+
+// GetAllUnsignedTxRefundMsg returns all unsigned refund messages for btc chain using reserveId and judgeAddress
+func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]types.MsgUnsignedTxRefund, error) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.UnsignedTxRefundMsgKey
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	var unsignedTxRefund []types.MsgUnsignedTxRefund
+	var count uint64 = 0
+	for ; iter.Valid() && count < limit; iter.Next() {
+		res := types.MsgUnsignedTxRefund{
+			ReserveId:           0,
+			BtcUnsignedRefundTx: "",
+			JudgeAddress:        "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+		unsignedTxRefund = append(unsignedTxRefund, res)
+		count++
+	}
+	return unsignedTxRefund, nil
 }
 
 /////////////////////////////
