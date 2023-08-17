@@ -16,17 +16,19 @@ service Msg {
   rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc WithdrawBtcRequest (MsgWithdrawBtcRequest) returns (MsgWithdrawBtcRequestResponse);
-  rpc SweepProposal      (MsgSweepProposal     ) returns (MsgSweepProposalResponse     );
-  rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
-  rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
-  rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
-  rpc BroadcastTxSweep   (MsgBroadcastTxSweep  ) returns (MsgBroadcastTxSweepResponse  );
-  rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
-  rpc ProposeRefundHash  (MsgProposeRefundHash ) returns (MsgProposeRefundHashResponse );
-  rpc ConfirmBtcWithdraw (MsgConfirmBtcWithdraw) returns (MsgConfirmBtcWithdrawResponse);
-  rpc UnsignedTxSweep    (MsgUnsignedTxSweep   ) returns (MsgUnsignedTxSweepResponse   );
-  rpc UnsignedTxRefund   (MsgUnsignedTxRefund  ) returns (MsgUnsignedTxRefundResponse  );
+  rpc WithdrawBtcRequest  (MsgWithdrawBtcRequest ) returns (MsgWithdrawBtcRequestResponse );
+  rpc SweepProposal       (MsgSweepProposal      ) returns (MsgSweepProposalResponse      );
+  rpc WithdrawTxSigned    (MsgWithdrawTxSigned   ) returns (MsgWithdrawTxSignedResponse   );
+  rpc WithdrawTxFinal     (MsgWithdrawTxFinal    ) returns (MsgWithdrawTxFinalResponse    );
+  rpc SignRefund          (MsgSignRefund         ) returns (MsgSignRefundResponse         );
+  rpc BroadcastTxSweep    (MsgBroadcastTxSweep   ) returns (MsgBroadcastTxSweepResponse   );
+  rpc SignSweep           (MsgSignSweep          ) returns (MsgSignSweepResponse          );
+  rpc ProposeRefundHash   (MsgProposeRefundHash  ) returns (MsgProposeRefundHashResponse  );
+  rpc ConfirmBtcWithdraw  (MsgConfirmBtcWithdraw ) returns (MsgConfirmBtcWithdrawResponse );
+  rpc UnsignedTxSweep     (MsgUnsignedTxSweep    ) returns (MsgUnsignedTxSweepResponse    );
+  rpc UnsignedTxRefund    (MsgUnsignedTxRefund   ) returns (MsgUnsignedTxRefundResponse   );
+  rpc BroadcastTxRefund   (MsgBroadcastTxRefund  ) returns (MsgBroadcastTxRefundResponse  );
+  rpc ProposeSweepAddress (MsgProposeSweepAddress) returns (MsgProposeSweepAddressResponse);
 }
 message MsgConfirmBtcDeposit {
   string reserveAddress         = 1;
@@ -55,7 +57,7 @@ message MsgRegisterReserveAddress {
 }
 
 message MsgRegisterReserveAddressResponse {
-  string reserveId = 1;
+  string reserveId      = 1;
   string reserveAddress = 2;
 }
 
@@ -127,12 +129,18 @@ message MsgSignSweep {
 message MsgSignSweepResponse {}
 
 message MsgBroadcastTxSweep {
-  string signedRefundTx = 1;
-  string signedSweepTx  = 2;
-  string judgeAddress   = 3;
+  string signedSweepTx = 1;
+  string judgeAddress  = 2;
 }
 
 message MsgBroadcastTxSweepResponse {}
+
+message MsgBroadcastTxRefund {
+  string signedRefundTx = 1;
+  string judgeAddress   = 2;
+}
+
+message MsgBroadcastTxRefundResponse {}
 
 message MsgProposeRefundHash {
   string refundHash   = 1;
@@ -165,4 +173,14 @@ message MsgUnsignedTxRefund {
 }
 
 message MsgUnsignedTxRefundResponse {}
+
+message MsgProposeSweepAddress {
+  string creator      = 1;
+  string btcAddress   = 2;
+  string btcScript    = 3;
+  int32  reserveId    = 4;
+  string judgeAddress = 5;
+}
+
+message MsgProposeSweepAddressResponse {}
 

@@ -6,28 +6,38 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
 var _ = strconv.Itoa(0)
 
-func CmdBroadcastTxSweep() *cobra.Command {
+func CmdProposeSweepAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "broadcast-tx-sweep [signed-sweep-tx]",
-		Short: "Broadcast message BroadcastTxSweep",
-		Args:  cobra.ExactArgs(1),
+		Use:   "propose-sweep-address [btc-address] [btc-script] [reserve-id] [judge-address]",
+		Short: "Broadcast message ProposeSweepAddress",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argSignedSweepTx := args[0]
+			argBtcAddress := args[0]
+			argBtcScript := args[1]
+			argReserveId, err := cast.ToInt32E(args[2])
+			if err != nil {
+				return err
+			}
+			argJudgeAddress := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgBroadcastTxSweep(
-				argSignedSweepTx,
+			msg := types.NewMsgProposeSweepAddress(
 				clientCtx.GetFromAddress().String(),
+				argBtcAddress,
+				argBtcScript,
+				argReserveId,
+				argJudgeAddress,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -27316,8 +27316,6 @@ paths:
                 items:
                   type: object
                   properties:
-                    signedRefundTx:
-                      type: string
                     signedSweepTx:
                       type: string
                     judgeAddress:
@@ -48071,11 +48069,11 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgBroadcastTxRefundResponse:
+    type: object
   twilightproject.nyks.bridge.MsgBroadcastTxSweep:
     type: object
     properties:
-      signedRefundTx:
-        type: string
       signedSweepTx:
         type: string
       judgeAddress:
@@ -48097,6 +48095,8 @@ definitions:
       judgeAddress:
         type: string
   twilightproject.nyks.bridge.MsgProposeRefundHashResponse:
+    type: object
+  twilightproject.nyks.bridge.MsgProposeSweepAddressResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
     type: object
@@ -48208,8 +48208,6 @@ definitions:
         items:
           type: object
           properties:
-            signedRefundTx:
-              type: string
             signedSweepTx:
               type: string
             judgeAddress:

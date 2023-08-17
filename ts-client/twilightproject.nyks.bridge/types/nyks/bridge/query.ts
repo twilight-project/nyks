@@ -131,15 +131,19 @@ export interface QueryUnsignedTxRefundResponse {
 }
 
 export interface QueryUnsignedTxSweepAllRequest {
+  limit: number;
 }
 
 export interface QueryUnsignedTxSweepAllResponse {
+  unsignedTxSweepMsgs: MsgUnsignedTxSweep[];
 }
 
 export interface QueryUnsignedTxRefundAllRequest {
+  limit: number;
 }
 
 export interface QueryUnsignedTxRefundAllResponse {
+  unsignedTxRefundMsgs: MsgUnsignedTxRefund[];
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1577,11 +1581,14 @@ export const QueryUnsignedTxRefundResponse = {
 };
 
 function createBaseQueryUnsignedTxSweepAllRequest(): QueryUnsignedTxSweepAllRequest {
-  return {};
+  return { limit: 0 };
 }
 
 export const QueryUnsignedTxSweepAllRequest = {
-  encode(_: QueryUnsignedTxSweepAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxSweepAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== 0) {
+      writer.uint32(8).uint64(message.limit);
+    }
     return writer;
   },
 
@@ -1592,6 +1599,9 @@ export const QueryUnsignedTxSweepAllRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.limit = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1600,27 +1610,34 @@ export const QueryUnsignedTxSweepAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxSweepAllRequest {
-    return {};
+  fromJSON(object: any): QueryUnsignedTxSweepAllRequest {
+    return { limit: isSet(object.limit) ? Number(object.limit) : 0 };
   },
 
-  toJSON(_: QueryUnsignedTxSweepAllRequest): unknown {
+  toJSON(message: QueryUnsignedTxSweepAllRequest): unknown {
     const obj: any = {};
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllRequest>, I>>(_: I): QueryUnsignedTxSweepAllRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllRequest>, I>>(
+    object: I,
+  ): QueryUnsignedTxSweepAllRequest {
     const message = createBaseQueryUnsignedTxSweepAllRequest();
+    message.limit = object.limit ?? 0;
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxSweepAllResponse(): QueryUnsignedTxSweepAllResponse {
-  return {};
+  return { unsignedTxSweepMsgs: [] };
 }
 
 export const QueryUnsignedTxSweepAllResponse = {
-  encode(_: QueryUnsignedTxSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxSweepAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.unsignedTxSweepMsgs) {
+      MsgUnsignedTxSweep.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1631,6 +1648,9 @@ export const QueryUnsignedTxSweepAllResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.unsignedTxSweepMsgs.push(MsgUnsignedTxSweep.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1639,27 +1659,42 @@ export const QueryUnsignedTxSweepAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxSweepAllResponse {
-    return {};
+  fromJSON(object: any): QueryUnsignedTxSweepAllResponse {
+    return {
+      unsignedTxSweepMsgs: Array.isArray(object?.unsignedTxSweepMsgs)
+        ? object.unsignedTxSweepMsgs.map((e: any) => MsgUnsignedTxSweep.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(_: QueryUnsignedTxSweepAllResponse): unknown {
+  toJSON(message: QueryUnsignedTxSweepAllResponse): unknown {
     const obj: any = {};
+    if (message.unsignedTxSweepMsgs) {
+      obj.unsignedTxSweepMsgs = message.unsignedTxSweepMsgs.map((e) => e ? MsgUnsignedTxSweep.toJSON(e) : undefined);
+    } else {
+      obj.unsignedTxSweepMsgs = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllResponse>, I>>(_: I): QueryUnsignedTxSweepAllResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxSweepAllResponse>, I>>(
+    object: I,
+  ): QueryUnsignedTxSweepAllResponse {
     const message = createBaseQueryUnsignedTxSweepAllResponse();
+    message.unsignedTxSweepMsgs = object.unsignedTxSweepMsgs?.map((e) => MsgUnsignedTxSweep.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxRefundAllRequest(): QueryUnsignedTxRefundAllRequest {
-  return {};
+  return { limit: 0 };
 }
 
 export const QueryUnsignedTxRefundAllRequest = {
-  encode(_: QueryUnsignedTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== 0) {
+      writer.uint32(8).uint64(message.limit);
+    }
     return writer;
   },
 
@@ -1670,6 +1705,9 @@ export const QueryUnsignedTxRefundAllRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.limit = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1678,27 +1716,34 @@ export const QueryUnsignedTxRefundAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxRefundAllRequest {
-    return {};
+  fromJSON(object: any): QueryUnsignedTxRefundAllRequest {
+    return { limit: isSet(object.limit) ? Number(object.limit) : 0 };
   },
 
-  toJSON(_: QueryUnsignedTxRefundAllRequest): unknown {
+  toJSON(message: QueryUnsignedTxRefundAllRequest): unknown {
     const obj: any = {};
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundAllRequest>, I>>(_: I): QueryUnsignedTxRefundAllRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundAllRequest>, I>>(
+    object: I,
+  ): QueryUnsignedTxRefundAllRequest {
     const message = createBaseQueryUnsignedTxRefundAllRequest();
+    message.limit = object.limit ?? 0;
     return message;
   },
 };
 
 function createBaseQueryUnsignedTxRefundAllResponse(): QueryUnsignedTxRefundAllResponse {
-  return {};
+  return { unsignedTxRefundMsgs: [] };
 }
 
 export const QueryUnsignedTxRefundAllResponse = {
-  encode(_: QueryUnsignedTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryUnsignedTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.unsignedTxRefundMsgs) {
+      MsgUnsignedTxRefund.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1709,6 +1754,9 @@ export const QueryUnsignedTxRefundAllResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.unsignedTxRefundMsgs.push(MsgUnsignedTxRefund.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1717,19 +1765,29 @@ export const QueryUnsignedTxRefundAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryUnsignedTxRefundAllResponse {
-    return {};
+  fromJSON(object: any): QueryUnsignedTxRefundAllResponse {
+    return {
+      unsignedTxRefundMsgs: Array.isArray(object?.unsignedTxRefundMsgs)
+        ? object.unsignedTxRefundMsgs.map((e: any) => MsgUnsignedTxRefund.fromJSON(e))
+        : [],
+    };
   },
 
-  toJSON(_: QueryUnsignedTxRefundAllResponse): unknown {
+  toJSON(message: QueryUnsignedTxRefundAllResponse): unknown {
     const obj: any = {};
+    if (message.unsignedTxRefundMsgs) {
+      obj.unsignedTxRefundMsgs = message.unsignedTxRefundMsgs.map((e) => e ? MsgUnsignedTxRefund.toJSON(e) : undefined);
+    } else {
+      obj.unsignedTxRefundMsgs = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryUnsignedTxRefundAllResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryUnsignedTxRefundAllResponse {
     const message = createBaseQueryUnsignedTxRefundAllResponse();
+    message.unsignedTxRefundMsgs = object.unsignedTxRefundMsgs?.map((e) => MsgUnsignedTxRefund.fromPartial(e)) || [];
     return message;
   },
 };

@@ -9,8 +9,9 @@
  * ---------------------------------------------------------------
  */
 
+export type BridgeMsgBroadcastTxRefundResponse = object;
+
 export interface BridgeMsgBroadcastTxSweep {
-  signedRefundTx?: string;
   signedSweepTx?: string;
   judgeAddress?: string;
 }
@@ -29,6 +30,8 @@ export interface BridgeMsgProposeRefundHash {
 }
 
 export type BridgeMsgProposeRefundHashResponse = object;
+
+export type BridgeMsgProposeSweepAddressResponse = object;
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
@@ -160,13 +163,17 @@ export interface BridgeQuerySignSweepAllResponse {
   signSweepMsg?: BridgeMsgSignSweep[];
 }
 
-export type BridgeQueryUnsignedTxRefundAllResponse = object;
+export interface BridgeQueryUnsignedTxRefundAllResponse {
+  unsignedTxRefundMsgs?: BridgeMsgUnsignedTxRefund[];
+}
 
 export interface BridgeQueryUnsignedTxRefundResponse {
   unsignedTxRefundMsg?: BridgeMsgUnsignedTxRefund;
 }
 
-export type BridgeQueryUnsignedTxSweepAllResponse = object;
+export interface BridgeQueryUnsignedTxSweepAllResponse {
+  unsignedTxSweepMsgs?: BridgeMsgUnsignedTxSweep[];
+}
 
 export interface BridgeQueryUnsignedTxSweepResponse {
   unsignedTxSweepMsg?: BridgeMsgUnsignedTxSweep;
@@ -527,10 +534,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of UnsignedTxRefundAll items.
    * @request GET:/twilight-project/nyks/bridge/unsigned_tx_refund_all
    */
-  queryUnsignedTxRefundAll = (params: RequestParams = {}) =>
+  queryUnsignedTxRefundAll = (query?: { limit?: string }, params: RequestParams = {}) =>
     this.request<BridgeQueryUnsignedTxRefundAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/unsigned_tx_refund_all`,
       method: "GET",
+      query: query,
       format: "json",
       ...params,
     });
@@ -560,10 +568,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of UnsignedTxSweepAll items.
    * @request GET:/twilight-project/nyks/bridge/unsigned_tx_sweep_all
    */
-  queryUnsignedTxSweepAll = (params: RequestParams = {}) =>
+  queryUnsignedTxSweepAll = (query?: { limit?: string }, params: RequestParams = {}) =>
     this.request<BridgeQueryUnsignedTxSweepAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/unsigned_tx_sweep_all`,
       method: "GET",
+      query: query,
       format: "json",
       ...params,
     });

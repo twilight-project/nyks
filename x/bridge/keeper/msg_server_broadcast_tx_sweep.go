@@ -13,24 +13,23 @@ func (k msgServer) BroadcastTxSweep(goCtx context.Context, msg *types.MsgBroadca
 
 	judgeAddress := sdk.AccAddress(msg.JudgeAddress)
 
-	// check if this broadcast refund message is already registered
-	_, found := k.GetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedRefundTx)
+	// check if this broadcast sweep message is already registered
+	_, found := k.GetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
 	if found {
-		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast refund request")
+		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast sweep request")
 	}
 
 	// set broadcast refund message
-	err := k.SetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedRefundTx, msg.SignedSweepTx)
+	err := k.SetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventBroadcastTxSweep{
-			Message:        msg.Type(),
-			SignedRefundTx: msg.SignedRefundTx,
-			SignedSweepTx:  msg.SignedSweepTx,
-			JudgeAddress:   msg.JudgeAddress,
+			Message:       msg.Type(),
+			SignedSweepTx: msg.SignedSweepTx,
+			JudgeAddress:  msg.JudgeAddress,
 		},
 	)
 

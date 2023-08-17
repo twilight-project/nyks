@@ -9,11 +9,10 @@ const TypeMsgBroadcastTxSweep = "broadcast_refund"
 
 var _ sdk.Msg = &MsgBroadcastTxSweep{}
 
-func NewMsgBroadcastTxSweep(signedRefundTx string, signedSweepTx string, judgeAddress string) *MsgBroadcastTxSweep {
+func NewMsgBroadcastTxSweep(signedSweepTx string, judgeAddress string) *MsgBroadcastTxSweep {
 	return &MsgBroadcastTxSweep{
-		SignedRefundTx: signedRefundTx,
-		SignedSweepTx:  signedSweepTx,
-		JudgeAddress:   judgeAddress,
+		SignedSweepTx: signedSweepTx,
+		JudgeAddress:  judgeAddress,
 	}
 }
 
@@ -42,11 +41,6 @@ func (msg *MsgBroadcastTxSweep) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
-	}
-
-	err = ValidateBtcTransaction(msg.SignedRefundTx)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signed refund tx (%s)", err)
 	}
 
 	err = ValidateBtcTransaction(msg.SignedSweepTx)
