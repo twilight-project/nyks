@@ -27340,6 +27340,45 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/broadcast_tx_refund_all:
+    get:
+      summary: Queries a list of BroadcastTxRefundAll items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxRefundAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BroadcastTxRefundMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    signedRefundTx:
+                      type: string
+                    judgeAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/bridge/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -48069,6 +48108,13 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgBroadcastTxRefund:
+    type: object
+    properties:
+      signedRefundTx:
+        type: string
+      judgeAddress:
+        type: string
   twilightproject.nyks.bridge.MsgBroadcastTxRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgBroadcastTxSweep:
@@ -48200,6 +48246,18 @@ definitions:
   twilightproject.nyks.bridge.Params:
     type: object
     description: Params defines the parameters for the module.
+  twilightproject.nyks.bridge.QueryBroadcastTxRefundAllResponse:
+    type: object
+    properties:
+      BroadcastTxRefundMsg:
+        type: array
+        items:
+          type: object
+          properties:
+            signedRefundTx:
+              type: string
+            judgeAddress:
+              type: string
   twilightproject.nyks.bridge.QueryBroadcastTxSweepAllResponse:
     type: object
     properties:

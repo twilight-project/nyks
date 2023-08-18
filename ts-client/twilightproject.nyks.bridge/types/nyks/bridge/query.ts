@@ -146,6 +146,12 @@ export interface QueryUnsignedTxRefundAllResponse {
   unsignedTxRefundMsgs: MsgUnsignedTxRefund[];
 }
 
+export interface QueryBroadcastTxRefundAllRequest {
+}
+
+export interface QueryBroadcastTxRefundAllResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -1792,6 +1798,88 @@ export const QueryUnsignedTxRefundAllResponse = {
   },
 };
 
+function createBaseQueryBroadcastTxRefundAllRequest(): QueryBroadcastTxRefundAllRequest {
+  return {};
+}
+
+export const QueryBroadcastTxRefundAllRequest = {
+  encode(_: QueryBroadcastTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastTxRefundAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBroadcastTxRefundAllRequest {
+    return {};
+  },
+
+  toJSON(_: QueryBroadcastTxRefundAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllRequest>, I>>(
+    _: I,
+  ): QueryBroadcastTxRefundAllRequest {
+    const message = createBaseQueryBroadcastTxRefundAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryBroadcastTxRefundAllResponse(): QueryBroadcastTxRefundAllResponse {
+  return {};
+}
+
+export const QueryBroadcastTxRefundAllResponse = {
+  encode(_: QueryBroadcastTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastTxRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBroadcastTxRefundAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryBroadcastTxRefundAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllResponse>, I>>(
+    _: I,
+  ): QueryBroadcastTxRefundAllResponse {
+    const message = createBaseQueryBroadcastTxRefundAllResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -1836,6 +1924,8 @@ export interface Query {
   UnsignedTxSweepAll(request: QueryUnsignedTxSweepAllRequest): Promise<QueryUnsignedTxSweepAllResponse>;
   /** Queries a list of UnsignedTxRefundAll items. */
   UnsignedTxRefundAll(request: QueryUnsignedTxRefundAllRequest): Promise<QueryUnsignedTxRefundAllResponse>;
+  /** Queries a list of BroadcastTxRefundAll items. */
+  BroadcastTxRefundAll(request: QueryBroadcastTxRefundAllRequest): Promise<QueryBroadcastTxRefundAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1858,6 +1948,7 @@ export class QueryClientImpl implements Query {
     this.UnsignedTxRefund = this.UnsignedTxRefund.bind(this);
     this.UnsignedTxSweepAll = this.UnsignedTxSweepAll.bind(this);
     this.UnsignedTxRefundAll = this.UnsignedTxRefundAll.bind(this);
+    this.BroadcastTxRefundAll = this.BroadcastTxRefundAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1973,6 +2064,12 @@ export class QueryClientImpl implements Query {
     const data = QueryUnsignedTxRefundAllRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "UnsignedTxRefundAll", data);
     return promise.then((data) => QueryUnsignedTxRefundAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  BroadcastTxRefundAll(request: QueryBroadcastTxRefundAllRequest): Promise<QueryBroadcastTxRefundAllResponse> {
+    const data = QueryBroadcastTxRefundAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "BroadcastTxRefundAll", data);
+    return promise.then((data) => QueryBroadcastTxRefundAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

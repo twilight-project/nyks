@@ -41,6 +41,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgBroadcastTxSweep:
 			res, err := msgServer.BroadcastTxSweep(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgBroadcastTxRefund:
+			res, err := msgServer.BroadcastTxRefund(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgProposeRefundHash:
 			res, err := msgServer.ProposeRefundHash(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)

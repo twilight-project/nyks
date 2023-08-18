@@ -366,7 +366,7 @@ func (k Keeper) GetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccA
 	return &BroadcastTxSweep, true
 }
 
-// IterateRegisteredBroadcastTxSweepMsgs iterates through all of the registered broadcast refund messages
+// IterateRegisteredBroadcastTxSweepMsgs iterates through all of the registered broadcast sweep messages
 func (k Keeper) IterateRegisteredBroadcastTxSweepMsgs(ctx sdk.Context, cb func([]byte, types.MsgBroadcastTxSweep) bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.BtcBroadcastTxSweepMsgKey

@@ -46,8 +46,13 @@ export interface EventSignSweep {
 
 export interface EventBroadcastTxSweep {
   message: string;
-  signedRefundTx: string;
   signedSweepTx: string;
+  judgeAddress: string;
+}
+
+export interface EventBroadcastTxRefund {
+  message: string;
+  signedRefundTx: string;
   judgeAddress: string;
 }
 
@@ -512,7 +517,7 @@ export const EventSignSweep = {
 };
 
 function createBaseEventBroadcastTxSweep(): EventBroadcastTxSweep {
-  return { message: "", signedRefundTx: "", signedSweepTx: "", judgeAddress: "" };
+  return { message: "", signedSweepTx: "", judgeAddress: "" };
 }
 
 export const EventBroadcastTxSweep = {
@@ -520,14 +525,11 @@ export const EventBroadcastTxSweep = {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
-    if (message.signedRefundTx !== "") {
-      writer.uint32(18).string(message.signedRefundTx);
-    }
     if (message.signedSweepTx !== "") {
-      writer.uint32(26).string(message.signedSweepTx);
+      writer.uint32(18).string(message.signedSweepTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(34).string(message.judgeAddress);
+      writer.uint32(26).string(message.judgeAddress);
     }
     return writer;
   },
@@ -543,12 +545,9 @@ export const EventBroadcastTxSweep = {
           message.message = reader.string();
           break;
         case 2:
-          message.signedRefundTx = reader.string();
-          break;
-        case 3:
           message.signedSweepTx = reader.string();
           break;
-        case 4:
+        case 3:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -562,7 +561,6 @@ export const EventBroadcastTxSweep = {
   fromJSON(object: any): EventBroadcastTxSweep {
     return {
       message: isSet(object.message) ? String(object.message) : "",
-      signedRefundTx: isSet(object.signedRefundTx) ? String(object.signedRefundTx) : "",
       signedSweepTx: isSet(object.signedSweepTx) ? String(object.signedSweepTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -571,7 +569,6 @@ export const EventBroadcastTxSweep = {
   toJSON(message: EventBroadcastTxSweep): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
-    message.signedRefundTx !== undefined && (obj.signedRefundTx = message.signedRefundTx);
     message.signedSweepTx !== undefined && (obj.signedSweepTx = message.signedSweepTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -580,8 +577,74 @@ export const EventBroadcastTxSweep = {
   fromPartial<I extends Exact<DeepPartial<EventBroadcastTxSweep>, I>>(object: I): EventBroadcastTxSweep {
     const message = createBaseEventBroadcastTxSweep();
     message.message = object.message ?? "";
-    message.signedRefundTx = object.signedRefundTx ?? "";
     message.signedSweepTx = object.signedSweepTx ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventBroadcastTxRefund(): EventBroadcastTxRefund {
+  return { message: "", signedRefundTx: "", judgeAddress: "" };
+}
+
+export const EventBroadcastTxRefund = {
+  encode(message: EventBroadcastTxRefund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.signedRefundTx !== "") {
+      writer.uint32(18).string(message.signedRefundTx);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(26).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventBroadcastTxRefund {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventBroadcastTxRefund();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.signedRefundTx = reader.string();
+          break;
+        case 3:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventBroadcastTxRefund {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      signedRefundTx: isSet(object.signedRefundTx) ? String(object.signedRefundTx) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventBroadcastTxRefund): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.signedRefundTx !== undefined && (obj.signedRefundTx = message.signedRefundTx);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventBroadcastTxRefund>, I>>(object: I): EventBroadcastTxRefund {
+    const message = createBaseEventBroadcastTxRefund();
+    message.message = object.message ?? "";
+    message.signedRefundTx = object.signedRefundTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },

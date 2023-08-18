@@ -5,6 +5,7 @@ import { EventWithdrawBtcRequest } from "./types/nyks/bridge/events"
 import { EventSignRefund } from "./types/nyks/bridge/events"
 import { EventSignSweep } from "./types/nyks/bridge/events"
 import { EventBroadcastTxSweep } from "./types/nyks/bridge/events"
+import { EventBroadcastTxRefund } from "./types/nyks/bridge/events"
 import { EventProposeRefundHash } from "./types/nyks/bridge/events"
 import { EventUnsignedTxSweep } from "./types/nyks/bridge/events"
 import { EventUnsignedTxRefund } from "./types/nyks/bridge/events"
@@ -19,6 +20,7 @@ export {
     EventSignRefund,
     EventSignSweep,
     EventBroadcastTxSweep,
+    EventBroadcastTxRefund,
     EventProposeRefundHash,
     EventUnsignedTxSweep,
     EventUnsignedTxRefund,

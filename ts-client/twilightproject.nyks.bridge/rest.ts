@@ -111,6 +111,8 @@ export type BridgeMsgWithdrawTxSignedResponse = object;
  */
 export type BridgeParams = object;
 
+export type BridgeQueryBroadcastTxRefundAllResponse = object;
+
 export interface BridgeQueryBroadcastTxSweepAllResponse {
   BroadcastTxSweepMsg?: BridgeMsgBroadcastTxSweep[];
 }
@@ -345,6 +347,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryBroadcastTxSweepAll = (params: RequestParams = {}) =>
     this.request<BridgeQueryBroadcastTxSweepAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/broadcast_refund_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBroadcastTxRefundAll
+   * @summary Queries a list of BroadcastTxRefundAll items.
+   * @request GET:/twilight-project/nyks/bridge/broadcast_tx_refund_all
+   */
+  queryBroadcastTxRefundAll = (params: RequestParams = {}) =>
+    this.request<BridgeQueryBroadcastTxRefundAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/broadcast_tx_refund_all`,
       method: "GET",
       format: "json",
       ...params,

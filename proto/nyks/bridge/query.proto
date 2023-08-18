@@ -113,6 +113,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_refund_all";
   
   }
+  
+  // Queries a list of BroadcastTxRefundAll items.
+  rpc BroadcastTxRefundAll (QueryBroadcastTxRefundAllRequest) returns (QueryBroadcastTxRefundAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_refund_all";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -193,6 +199,12 @@ message QueryBroadcastTxSweepAllRequest {}
 
 message QueryBroadcastTxSweepAllResponse {
   repeated MsgBroadcastTxSweep BroadcastTxSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBroadcastTxRefundAllRequest {}
+
+message QueryBroadcastTxRefundAllResponse {
+  repeated MsgBroadcastTxRefund BroadcastTxRefundMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryProposeRefundHashAllRequest {}
