@@ -16,6 +16,11 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
+	_, foundDuplicate := k.GetUnsignedTxSweepMsg(ctx, msg.TxId, judgeAddress)
+	if foundDuplicate != false {
+		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
+	}
+
 	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
 	if found == false {
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")

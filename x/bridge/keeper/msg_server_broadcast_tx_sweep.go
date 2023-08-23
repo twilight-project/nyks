@@ -11,18 +11,26 @@ import (
 func (k msgServer) BroadcastTxSweep(goCtx context.Context, msg *types.MsgBroadcastTxSweep) (*types.MsgBroadcastTxSweepResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	judgeAddress := sdk.AccAddress(msg.JudgeAddress)
+	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
+	}
 
 	// check if this broadcast sweep message is already registered
-	_, found := k.GetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
-	if found {
+	_, foundDuplicate := k.GetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
+	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast sweep request")
 	}
 
+	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
+	if found == false {
+		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
+	}
+
 	// set broadcast refund message
-	err := k.SetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
-	if err != nil {
-		return nil, err
+	errSet := k.SetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
+	if errSet != nil {
+		return nil, errSet
 	}
 
 	ctx.EventManager().EmitTypedEvent(

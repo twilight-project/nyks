@@ -542,8 +542,9 @@ func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]type
 
 // SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, btcUnsignedRefundTx and judgeAddress
 func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, btcUnsignedRefundTx string, judgeAddress sdk.AccAddress) error {
+	btcTxPrefix := btcUnsignedRefundTx[:4]
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId)
+	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId, btcTxPrefix)
 
 	unsignedTxRefund := &types.MsgUnsignedTxRefund{
 		ReserveId:           reserveId,
@@ -555,9 +556,9 @@ func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, btcUns
 }
 
 // GetUnsignedTxRefundMsg returns the unsigned refund message for btc chain using reserveId and judgeAddress
-func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress) (*types.MsgUnsignedTxRefund, bool) {
+func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcTxPrefix string) (*types.MsgUnsignedTxRefund, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId)
+	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId, btcTxPrefix)
 	if !store.Has(aKey) {
 		return nil, false
 	}

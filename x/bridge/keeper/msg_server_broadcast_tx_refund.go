@@ -11,18 +11,26 @@ import (
 func (k msgServer) BroadcastTxRefund(goCtx context.Context, msg *types.MsgBroadcastTxRefund) (*types.MsgBroadcastTxRefundResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	judgeAddress := sdk.AccAddress(msg.JudgeAddress)
+	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
+	}
 
 	// check if this broadcast refund message is already registered
-	_, found := k.GetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
-	if found {
+	_, foundDuplicate := k.GetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
+	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast refund request")
 	}
 
+	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
+	if found == false {
+		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
+	}
+
 	// set broadcast refund message
-	err := k.SetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
-	if err != nil {
-		return nil, err
+	errSet := k.SetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
+	if errSet != nil {
+		return nil, errSet
 	}
 
 	ctx.EventManager().EmitTypedEvent(

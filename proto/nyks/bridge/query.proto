@@ -225,6 +225,7 @@ message QueryUnsignedTxSweepResponse {
 message QueryUnsignedTxRefundRequest {
   uint64 reserveId    = 1;
   string judgeAddress = 2;
+  string btcTxPrefix = 3;
 }
 
 message QueryUnsignedTxRefundResponse {

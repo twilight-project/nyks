@@ -9,9 +9,8 @@ const TypeMsgProposeSweepAddress = "propose_sweep_address"
 
 var _ sdk.Msg = &MsgProposeSweepAddress{}
 
-func NewMsgProposeSweepAddress(creator string, btcAddress string, btcScript string, reserveId int32, judgeAddress string) *MsgProposeSweepAddress {
+func NewMsgProposeSweepAddress(btcAddress string, btcScript string, reserveId int32, judgeAddress string) *MsgProposeSweepAddress {
 	return &MsgProposeSweepAddress{
-		Creator:      creator,
 		BtcAddress:   btcAddress,
 		BtcScript:    btcScript,
 		ReserveId:    reserveId,
@@ -28,7 +27,7 @@ func (msg *MsgProposeSweepAddress) Type() string {
 }
 
 func (msg *MsgProposeSweepAddress) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +40,7 @@ func (msg *MsgProposeSweepAddress) GetSignBytes() []byte {
 }
 
 func (msg *MsgProposeSweepAddress) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

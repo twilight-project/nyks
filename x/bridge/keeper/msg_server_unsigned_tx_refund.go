@@ -16,6 +16,12 @@ func (k msgServer) UnsignedTxRefund(goCtx context.Context, msg *types.MsgUnsigne
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
+	btcTxPrefix := msg.BtcUnsignedRefundTx[:4]
+	_, foundDuplicate := k.GetUnsignedTxRefundMsg(ctx, msg.ReserveId, judgeAddress, btcTxPrefix)
+	if foundDuplicate != false {
+		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxRefund already exists!")
+	}
+
 	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
 	if found == false {
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")

@@ -15,9 +15,9 @@ var _ = strconv.Itoa(0)
 
 func CmdProposeSweepAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "propose-sweep-address [btc-address] [btc-script] [reserve-id] [judge-address]",
+		Use:   "propose-sweep-address [btc-address] [btc-script] [reserve-id]",
 		Short: "Broadcast message ProposeSweepAddress",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argBtcAddress := args[0]
 			argBtcScript := args[1]
@@ -25,7 +25,6 @@ func CmdProposeSweepAddress() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argJudgeAddress := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -33,11 +32,10 @@ func CmdProposeSweepAddress() *cobra.Command {
 			}
 
 			msg := types.NewMsgProposeSweepAddress(
-				clientCtx.GetFromAddress().String(),
 				argBtcAddress,
 				argBtcScript,
 				argReserveId,
-				argJudgeAddress,
+				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

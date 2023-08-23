@@ -175,11 +175,10 @@ message MsgUnsignedTxRefund {
 message MsgUnsignedTxRefundResponse {}
 
 message MsgProposeSweepAddress {
-  string creator      = 1;
-  string btcAddress   = 2;
-  string btcScript    = 3;
-  int32  reserveId    = 4;
-  string judgeAddress = 5;
+  string btcAddress   = 1;
+  string btcScript    = 2;
+  int32  reserveId    = 3;
+  string judgeAddress = 4;
 }
 
 message MsgProposeSweepAddressResponse {}

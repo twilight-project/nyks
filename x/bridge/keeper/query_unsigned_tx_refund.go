@@ -22,7 +22,7 @@ func (k Keeper) UnsignedTxRefund(goCtx context.Context, req *types.QueryUnsigned
 		return nil, err
 	}
 
-	unsignedTxRefund, found := k.GetUnsignedTxRefundMsg(ctx, req.ReserveId, judgeAddress)
+	unsignedTxRefund, found := k.GetUnsignedTxRefundMsg(ctx, req.ReserveId, judgeAddress, req.BtcTxPrefix)
 	if found != true {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "An unsignedTxRefund doesn't exist with the given reserveId or judgeAddress")
 	}

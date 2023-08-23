@@ -27844,6 +27844,10 @@ paths:
           in: path
           required: true
           type: string
+        - name: btcTxPrefix
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /twilight-project/nyks/bridge/unsigned_tx_refund_all:
