@@ -9,7 +9,7 @@ const TypeMsgProposeSweepAddress = "propose_sweep_address"
 
 var _ sdk.Msg = &MsgProposeSweepAddress{}
 
-func NewMsgProposeSweepAddress(btcAddress string, btcScript string, reserveId int32, judgeAddress string) *MsgProposeSweepAddress {
+func NewMsgProposeSweepAddress(btcAddress string, btcScript string, reserveId uint64, judgeAddress string) *MsgProposeSweepAddress {
 	return &MsgProposeSweepAddress{
 		BtcAddress:   btcAddress,
 		BtcScript:    btcScript,

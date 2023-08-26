@@ -542,7 +542,7 @@ func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]type
 
 // SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, btcUnsignedRefundTx and judgeAddress
 func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, btcUnsignedRefundTx string, judgeAddress sdk.AccAddress) error {
-	btcTxPrefix := btcUnsignedRefundTx[:4]
+	btcTxPrefix := btcUnsignedRefundTx[:10]
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId, btcTxPrefix)
 
@@ -591,6 +591,37 @@ func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]typ
 		count++
 	}
 	return unsignedTxRefund, nil
+}
+
+// SetProposeSweepAddress sets the propose sweep address message for btc chain using btcAddress, btcScript, reserveId and judgeAddress
+func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress string, btcScript string, reserveId uint64, judgeAddress sdk.AccAddress) error {
+	btcScriptPrefix := btcScript[:10]
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
+
+	proposeSweepAddress := &types.MsgProposeSweepAddress{
+		BtcAddress:   btcAddress,
+		BtcScript:    btcScript,
+		ReserveId:    reserveId,
+		JudgeAddress: judgeAddress.String(),
+	}
+	store.Set(aKey, k.cdc.MustMarshal(proposeSweepAddress))
+	return nil
+}
+
+// GetProposeSweepAddressMsg returns the propose sweep address message for btc chain using reserveId and judgeAddress
+func (k Keeper) GetProposeSweepAddressMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcScriptPrefix string) (*types.MsgProposeSweepAddress, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var proposeSweepAddress types.MsgProposeSweepAddress
+	k.cdc.MustUnmarshal(bz, &proposeSweepAddress)
+
+	return &proposeSweepAddress, true
 }
 
 /////////////////////////////

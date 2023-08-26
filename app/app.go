@@ -179,6 +179,7 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		zkosmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -447,6 +448,7 @@ func New(
 		keys[zkosmoduletypes.MemStoreKey],
 		app.GetSubspace(zkosmoduletypes.ModuleName),
 		&app.VoltKeeper,
+		&app.BankKeeper,
 	)
 	zkosModule := zkosmodule.NewAppModule(appCodec, app.ZkosKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
 
@@ -674,7 +676,22 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 		panic(err)
 	}
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
-	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+	res := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+
+	// Initialize or normalize the zkOSMinter module account
+	normalizeModuleAccount(ctx, app.AccountKeeper, zkosmoduletypes.ModuleName)
+
+	// Fetch or create the zkOSMinter module account
+	minterModuleAcc := app.AccountKeeper.GetModuleAccount(ctx, zkosmoduletypes.ModuleName)
+	if minterModuleAcc == nil {
+		// Create a new module account (this should not happen if normalizeModuleAccount is working correctly)
+		minterModuleAcc = authtypes.NewEmptyModuleAccount(zkosmoduletypes.ModuleName, authtypes.Minter, authtypes.Burner)
+	}
+
+	// Add the module account to the x/auth store
+	app.AccountKeeper.SetModuleAccount(ctx, minterModuleAcc)
+
+	return res
 }
 
 // LoadHeight loads a particular height
@@ -809,4 +826,21 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 // SimulationManager implements the SimulationApp interface
 func (app *App) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// normalizeModuleAccount ensures that the given account is a module account,
+// initializing or updating it if necessary. The account name must be listed in maccPerms.
+func normalizeModuleAccount(ctx sdk.Context, ak authkeeper.AccountKeeper, name string) {
+	addr := ak.GetModuleAddress(name)
+	acct := ak.GetAccount(ctx, addr)
+	if _, ok := acct.(authtypes.ModuleAccountI); ok {
+		return
+	}
+	perms := maccPerms[name]
+	newAcct := authtypes.NewEmptyModuleAccount(name, perms...)
+	if acct != nil {
+		newAcct.AccountNumber = acct.GetAccountNumber()
+		newAcct.Sequence = acct.GetSequence()
+	}
+	ak.SetModuleAccount(ctx, newAcct)
 }

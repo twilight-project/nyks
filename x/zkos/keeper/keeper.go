@@ -20,6 +20,7 @@ type (
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
 		VoltKeeper *voltkeeper.Keeper
+		BankKeeper types.BankKeeper
 	}
 )
 
@@ -29,6 +30,7 @@ func NewKeeper(
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	voltKeeper *voltkeeper.Keeper,
+	bankKeeper types.BankKeeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -42,6 +44,7 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 		VoltKeeper: voltKeeper,
+		BankKeeper: bankKeeper,
 	}
 }
 

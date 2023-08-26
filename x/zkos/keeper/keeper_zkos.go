@@ -54,10 +54,23 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		return sdkerrors.Wrap(types.ErrClearingAccountNotFound, "clearing account not found")
 	}
 
+	// Fetch the Bank Balance for the twilight address
+	bankBalanceCoin := k.BankKeeper.GetBalance(ctx, twilightAddress, "sats")
+	if !found {
+		return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInBank, "bank balance not found")
+	}
+
+	bankBalance := bankBalanceCoin.Amount.Uint64()
+
 	// Calculate the total balance across all reserves
 	totalBalance := uint64(0)
 	for _, balance := range account.ReserveAccountBalances {
 		totalBalance += balance.Amount
+	}
+
+	// Check if bankBalance is equal to totalBalance - additional check for sanity
+	if bankBalance != totalBalance {
+		return sdkerrors.Wrap(types.ErrBankBalanceNotEqualReserveBalance, "bank balance not equal to reserve balance")
 	}
 
 	// Check if there is enough balance in the reserves
@@ -67,50 +80,83 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 
 	// Distribute the btc value across the reserves
 	remaining := msg.BtcValue
-	for i, balance := range account.ReserveAccountBalances {
+	for i, reserveBalance := range account.ReserveAccountBalances {
 		if remaining == 0 {
 			break
 		}
 
 		// Fetch the reserve
-		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, balance.ReserveId)
+		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, reserveBalance.ReserveId)
 		if err != nil {
 			return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while minting or burning quisquis btc")
 		}
 
 		// Calculate the amount to deduct from this reserve
-		deduct := min(remaining, balance.Amount)
+		deduct := min(remaining, reserveBalance.Amount)
 
 		// Update the reserve and clearing account balance
 		if msg.MintOrBurn {
 			// Mint: Deduct from public and add to private
 			if reserve.PublicValue < deduct {
-				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPublic, strconv.FormatUint(balance.ReserveId, 10))
+				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPublic, strconv.FormatUint(reserveBalance.ReserveId, 10))
 			}
 			reserve.PublicValue -= deduct
 			reserve.PrivatePoolValue += deduct
 
 			// Increase the user's individual reserve balance
-			balance.Amount -= deduct
+			reserveBalance.Amount -= deduct
+			bankBalance -= deduct
+
+			// Send coins to the module account before burning
+			err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
+			if err != nil {
+				return sdkerrors.Wrap(err, "failed to send coins to module account")
+			}
+
+			// Update the bank balance
+			errBurn := k.BankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
+			if errBurn != nil {
+				return sdkerrors.Wrap(err, "failed to burn coins")
+			}
 		} else {
 			// Burn: Deduct from private and add to public
 			if reserve.PrivatePoolValue < deduct {
-				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(balance.ReserveId, 10))
+				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(reserveBalance.ReserveId, 10))
 			}
 			reserve.PrivatePoolValue -= deduct
 			reserve.PublicValue += deduct
 
 			// Decrease the user's individual reserve balance
-			balance.Amount += deduct
+			reserveBalance.Amount += deduct
+			bankBalance -= deduct
+
+			// Update the bank balance
+			err := k.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
+			if err != nil {
+				return sdkerrors.Wrap(err, "failed to mint new coins")
+			}
+
+			// Send coins from the module account to the user's account
+			err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
+			if err != nil {
+				return sdkerrors.Wrap(err, "failed to send coins to user account")
+			}
 		}
 
-		account.ReserveAccountBalances[i] = balance
+		account.ReserveAccountBalances[i] = reserveBalance
 
 		remaining -= deduct
 
 		// Save the updated reserve
 		k.VoltKeeper.SetBtcReserve(ctx, reserve)
 	}
+
+	// newBalance := sdk.NewCoin("sats", sdk.NewIntFromUint64(bankBalance))
+	// // Set the new balance
+	// errSet := k.BankKeeper.SetBalance(ctx, twilightAddress, newBalance)
+	// if errSet != nil {
+	// 	return sdkerrors.Wrap(err, "failed to set new balance")
+	// }
 
 	// Save the updated clearing account
 	k.VoltKeeper.SetClearingAccount(ctx, twilightAddress, account)
