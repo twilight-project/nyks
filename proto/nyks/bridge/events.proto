@@ -76,3 +76,11 @@ message EventUnsignedTxRefund {
     string unsignedRefundTx = 3;
     string judgeAddress = 4;
 }
+
+message EventProposeSweepAddress{
+    string message = 1;      
+    string btcAddress = 2;   
+    string btcScript = 3;    
+    uint64 reserveId = 4;   
+    string judgeAddress = 5; 
+}

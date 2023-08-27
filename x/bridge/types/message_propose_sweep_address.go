@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -40,9 +42,32 @@ func (msg *MsgProposeSweepAddress) GetSignBytes() []byte {
 }
 
 func (msg *MsgProposeSweepAddress) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	// Validate BTC Address
+	if strings.TrimSpace(msg.BtcAddress) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "BTC address cannot be empty")
+	}
+
+	if ValidateBtcAddress(msg.BtcAddress) != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid BTC address")
+	}
+
+	// Validate BTC Script
+	if strings.TrimSpace(msg.BtcScript) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "BTC script cannot be empty")
+	}
+
+	if len(msg.BtcScript) < 5 || len(msg.BtcScript) > 10000 {
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Invalid BTC script length")
+	}
+
+	// Validate Reserve ID
+	if msg.ReserveId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Reserve ID cannot be zero")
+	}
+
+	// Validate Judge Address
+	if _, err := sdk.AccAddressFromBech32(msg.JudgeAddress); err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Invalid judge address")
 	}
 	return nil
 }

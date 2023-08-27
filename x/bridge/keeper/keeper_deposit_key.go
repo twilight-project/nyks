@@ -594,13 +594,13 @@ func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]typ
 }
 
 // SetProposeSweepAddress sets the propose sweep address message for btc chain using btcAddress, btcScript, reserveId and judgeAddress
-func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress string, btcScript string, reserveId uint64, judgeAddress sdk.AccAddress) error {
+func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress types.BtcAddress, btcScript string, reserveId uint64, judgeAddress sdk.AccAddress) error {
 	btcScriptPrefix := btcScript[:10]
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
 
 	proposeSweepAddress := &types.MsgProposeSweepAddress{
-		BtcAddress:   btcAddress,
+		BtcAddress:   btcAddress.BtcAddress,
 		BtcScript:    btcScript,
 		ReserveId:    reserveId,
 		JudgeAddress: judgeAddress.String(),
@@ -609,8 +609,8 @@ func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress string, btcSc
 	return nil
 }
 
-// GetProposeSweepAddressMsg returns the propose sweep address message for btc chain using reserveId and judgeAddress
-func (k Keeper) GetProposeSweepAddressMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcScriptPrefix string) (*types.MsgProposeSweepAddress, bool) {
+// GetProposeSweepAddress returns the propose sweep address message for btc chain using reserveId and judgeAddress
+func (k Keeper) GetProposeSweepAddress(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcScriptPrefix string) (*types.MsgProposeSweepAddress, bool) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
 	if !store.Has(aKey) {
@@ -622,6 +622,30 @@ func (k Keeper) GetProposeSweepAddressMsg(ctx sdk.Context, reserveId uint64, jud
 	k.cdc.MustUnmarshal(bz, &proposeSweepAddress)
 
 	return &proposeSweepAddress, true
+}
+
+// IterateRegisteredProposeSweepAddressMsgs iterates through all of the registered propose sweep address messages
+func (k Keeper) IterateRegisteredProposeSweepAddressMsgs(ctx sdk.Context, cb func([]byte, types.MsgProposeSweepAddress) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.ProposeSweepAddressMsg
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		res := types.MsgProposeSweepAddress{
+			BtcAddress:   "",
+			BtcScript:    "",
+			ReserveId:    0,
+			JudgeAddress: "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+
+		// cb returns true to stop early
+		if cb(iter.Key(), res) {
+			return
+		}
+	}
 }
 
 /////////////////////////////
