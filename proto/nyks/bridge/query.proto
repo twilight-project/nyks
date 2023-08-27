@@ -119,6 +119,18 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_refund_all";
   
   }
+  
+  // Queries a list of ProposeSweepAddress items.
+  rpc ProposeSweepAddress (QueryProposeSweepAddressRequest) returns (QueryProposeSweepAddressResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{judgeAddress}/{btcAddress}";
+  
+  }
+  
+  // Queries a list of ProposeSweepAddressesAll items.
+  rpc ProposeSweepAddressesAll (QueryProposeSweepAddressesAllRequest) returns (QueryProposeSweepAddressesAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/propose_sweep_addresses_all/{limit}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -225,7 +237,7 @@ message QueryUnsignedTxSweepResponse {
 message QueryUnsignedTxRefundRequest {
   uint64 reserveId    = 1;
   string judgeAddress = 2;
-  string btcTxPrefix = 3;
+  string btcTxPrefix  = 3;
 }
 
 message QueryUnsignedTxRefundResponse {
@@ -246,5 +258,23 @@ message QueryUnsignedTxRefundAllRequest {
 
 message QueryUnsignedTxRefundAllResponse {
   repeated MsgUnsignedTxRefund unsignedTxRefundMsgs = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryProposeSweepAddressRequest {
+  uint64 reserveId    = 1;
+  string judgeAddress = 2;
+  string btcAddress   = 3;
+}
+
+message QueryProposeSweepAddressResponse {
+  MsgProposeSweepAddress proposeSweepAddressMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryProposeSweepAddressesAllRequest {
+  uint64 limit = 1;
+}
+
+message QueryProposeSweepAddressesAllResponse {
+  repeated MsgProposeSweepAddress proposeSweepAddressMsgs = 1 [(gogoproto.nullable) = false];
 }
 

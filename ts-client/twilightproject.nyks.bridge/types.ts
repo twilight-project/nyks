@@ -9,6 +9,7 @@ import { EventBroadcastTxRefund } from "./types/nyks/bridge/events"
 import { EventProposeRefundHash } from "./types/nyks/bridge/events"
 import { EventUnsignedTxSweep } from "./types/nyks/bridge/events"
 import { EventUnsignedTxRefund } from "./types/nyks/bridge/events"
+import { EventProposeSweepAddress } from "./types/nyks/bridge/events"
 import { Params } from "./types/nyks/bridge/params"
 
 
@@ -24,6 +25,7 @@ export {
     EventProposeRefundHash,
     EventUnsignedTxSweep,
     EventUnsignedTxRefund,
+    EventProposeSweepAddress,
     Params,
     
  }

@@ -76,6 +76,14 @@ export interface EventUnsignedTxRefund {
   judgeAddress: string;
 }
 
+export interface EventProposeSweepAddress {
+  message: string;
+  btcAddress: string;
+  btcScript: string;
+  reserveId: number;
+  judgeAddress: string;
+}
+
 function createBaseEventRegisterBtcDepositAddress(): EventRegisterBtcDepositAddress {
   return { message: "", depositAddress: "" };
 }
@@ -864,6 +872,91 @@ export const EventUnsignedTxRefund = {
     message.message = object.message ?? "";
     message.reserveId = object.reserveId ?? 0;
     message.unsignedRefundTx = object.unsignedRefundTx ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseEventProposeSweepAddress(): EventProposeSweepAddress {
+  return { message: "", btcAddress: "", btcScript: "", reserveId: 0, judgeAddress: "" };
+}
+
+export const EventProposeSweepAddress = {
+  encode(message: EventProposeSweepAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.btcAddress !== "") {
+      writer.uint32(18).string(message.btcAddress);
+    }
+    if (message.btcScript !== "") {
+      writer.uint32(26).string(message.btcScript);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(32).uint64(message.reserveId);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(42).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventProposeSweepAddress {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventProposeSweepAddress();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.btcAddress = reader.string();
+          break;
+        case 3:
+          message.btcScript = reader.string();
+          break;
+        case 4:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventProposeSweepAddress {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      btcAddress: isSet(object.btcAddress) ? String(object.btcAddress) : "",
+      btcScript: isSet(object.btcScript) ? String(object.btcScript) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventProposeSweepAddress): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.btcAddress !== undefined && (obj.btcAddress = message.btcAddress);
+    message.btcScript !== undefined && (obj.btcScript = message.btcScript);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventProposeSweepAddress>, I>>(object: I): EventProposeSweepAddress {
+    const message = createBaseEventProposeSweepAddress();
+    message.message = object.message ?? "";
+    message.btcAddress = object.btcAddress ?? "";
+    message.btcScript = object.btcScript ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },

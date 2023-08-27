@@ -190,7 +190,7 @@ func GetUnsignedTxRefundMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, bt
 
 // GetProposeSweepAddressMsgKey returns the following key format
 // [HashString("ProposeSweepAddressMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
-func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, btcScriptPrefix string) []byte {
+func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, btcAddress string) []byte {
 	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid judge address"))
 	}
@@ -201,5 +201,5 @@ func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64,
 		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(ProposeSweepAddressMsg, judgeAddress.Bytes(), reserveIdBuf.Bytes(), []byte(btcScriptPrefix))
+	return forkstypes.AppendBytes(ProposeSweepAddressMsg, judgeAddress.Bytes(), reserveIdBuf.Bytes(), []byte(btcAddress))
 }

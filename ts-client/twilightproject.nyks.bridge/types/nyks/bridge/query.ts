@@ -4,8 +4,10 @@ import _m0 from "protobufjs/minimal";
 import { ClearingAccount } from "../volt/clearing";
 import { Params } from "./params";
 import {
+  MsgBroadcastTxRefund,
   MsgBroadcastTxSweep,
   MsgProposeRefundHash,
+  MsgProposeSweepAddress,
   MsgRegisterJudge,
   MsgRegisterReserveAddress,
   MsgSignRefund,
@@ -105,6 +107,13 @@ export interface QueryBroadcastTxSweepAllResponse {
   BroadcastTxSweepMsg: MsgBroadcastTxSweep[];
 }
 
+export interface QueryBroadcastTxRefundAllRequest {
+}
+
+export interface QueryBroadcastTxRefundAllResponse {
+  BroadcastTxRefundMsg: MsgBroadcastTxRefund[];
+}
+
 export interface QueryProposeRefundHashAllRequest {
 }
 
@@ -124,6 +133,7 @@ export interface QueryUnsignedTxSweepResponse {
 export interface QueryUnsignedTxRefundRequest {
   reserveId: number;
   judgeAddress: string;
+  btcTxPrefix: string;
 }
 
 export interface QueryUnsignedTxRefundResponse {
@@ -146,10 +156,21 @@ export interface QueryUnsignedTxRefundAllResponse {
   unsignedTxRefundMsgs: MsgUnsignedTxRefund[];
 }
 
-export interface QueryBroadcastTxRefundAllRequest {
+export interface QueryProposeSweepAddressRequest {
+  reserveId: number;
+  judgeAddress: string;
+  btcAddress: string;
 }
 
-export interface QueryBroadcastTxRefundAllResponse {
+export interface QueryProposeSweepAddressResponse {
+  proposeSweepAddressMsg: MsgProposeSweepAddress | undefined;
+}
+
+export interface QueryProposeSweepAddressesAllRequest {
+  limit: number;
+}
+
+export interface QueryProposeSweepAddressesAllResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1258,6 +1279,106 @@ export const QueryBroadcastTxSweepAllResponse = {
   },
 };
 
+function createBaseQueryBroadcastTxRefundAllRequest(): QueryBroadcastTxRefundAllRequest {
+  return {};
+}
+
+export const QueryBroadcastTxRefundAllRequest = {
+  encode(_: QueryBroadcastTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastTxRefundAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBroadcastTxRefundAllRequest {
+    return {};
+  },
+
+  toJSON(_: QueryBroadcastTxRefundAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllRequest>, I>>(
+    _: I,
+  ): QueryBroadcastTxRefundAllRequest {
+    const message = createBaseQueryBroadcastTxRefundAllRequest();
+    return message;
+  },
+};
+
+function createBaseQueryBroadcastTxRefundAllResponse(): QueryBroadcastTxRefundAllResponse {
+  return { BroadcastTxRefundMsg: [] };
+}
+
+export const QueryBroadcastTxRefundAllResponse = {
+  encode(message: QueryBroadcastTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.BroadcastTxRefundMsg) {
+      MsgBroadcastTxRefund.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBroadcastTxRefundAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.BroadcastTxRefundMsg.push(MsgBroadcastTxRefund.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBroadcastTxRefundAllResponse {
+    return {
+      BroadcastTxRefundMsg: Array.isArray(object?.BroadcastTxRefundMsg)
+        ? object.BroadcastTxRefundMsg.map((e: any) => MsgBroadcastTxRefund.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryBroadcastTxRefundAllResponse): unknown {
+    const obj: any = {};
+    if (message.BroadcastTxRefundMsg) {
+      obj.BroadcastTxRefundMsg = message.BroadcastTxRefundMsg.map((e) =>
+        e ? MsgBroadcastTxRefund.toJSON(e) : undefined
+      );
+    } else {
+      obj.BroadcastTxRefundMsg = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllResponse>, I>>(
+    object: I,
+  ): QueryBroadcastTxRefundAllResponse {
+    const message = createBaseQueryBroadcastTxRefundAllResponse();
+    message.BroadcastTxRefundMsg = object.BroadcastTxRefundMsg?.map((e) => MsgBroadcastTxRefund.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseQueryProposeRefundHashAllRequest(): QueryProposeRefundHashAllRequest {
   return {};
 }
@@ -1472,7 +1593,7 @@ export const QueryUnsignedTxSweepResponse = {
 };
 
 function createBaseQueryUnsignedTxRefundRequest(): QueryUnsignedTxRefundRequest {
-  return { reserveId: 0, judgeAddress: "" };
+  return { reserveId: 0, judgeAddress: "", btcTxPrefix: "" };
 }
 
 export const QueryUnsignedTxRefundRequest = {
@@ -1482,6 +1603,9 @@ export const QueryUnsignedTxRefundRequest = {
     }
     if (message.judgeAddress !== "") {
       writer.uint32(18).string(message.judgeAddress);
+    }
+    if (message.btcTxPrefix !== "") {
+      writer.uint32(26).string(message.btcTxPrefix);
     }
     return writer;
   },
@@ -1499,6 +1623,9 @@ export const QueryUnsignedTxRefundRequest = {
         case 2:
           message.judgeAddress = reader.string();
           break;
+        case 3:
+          message.btcTxPrefix = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1511,6 +1638,7 @@ export const QueryUnsignedTxRefundRequest = {
     return {
       reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      btcTxPrefix: isSet(object.btcTxPrefix) ? String(object.btcTxPrefix) : "",
     };
   },
 
@@ -1518,6 +1646,7 @@ export const QueryUnsignedTxRefundRequest = {
     const obj: any = {};
     message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.btcTxPrefix !== undefined && (obj.btcTxPrefix = message.btcTxPrefix);
     return obj;
   },
 
@@ -1525,6 +1654,7 @@ export const QueryUnsignedTxRefundRequest = {
     const message = createBaseQueryUnsignedTxRefundRequest();
     message.reserveId = object.reserveId ?? 0;
     message.judgeAddress = object.judgeAddress ?? "";
+    message.btcTxPrefix = object.btcTxPrefix ?? "";
     return message;
   },
 };
@@ -1798,22 +1928,40 @@ export const QueryUnsignedTxRefundAllResponse = {
   },
 };
 
-function createBaseQueryBroadcastTxRefundAllRequest(): QueryBroadcastTxRefundAllRequest {
-  return {};
+function createBaseQueryProposeSweepAddressRequest(): QueryProposeSweepAddressRequest {
+  return { reserveId: 0, judgeAddress: "", btcAddress: "" };
 }
 
-export const QueryBroadcastTxRefundAllRequest = {
-  encode(_: QueryBroadcastTxRefundAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryProposeSweepAddressRequest = {
+  encode(message: QueryProposeSweepAddressRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== 0) {
+      writer.uint32(8).uint64(message.reserveId);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(18).string(message.judgeAddress);
+    }
+    if (message.btcAddress !== "") {
+      writer.uint32(26).string(message.btcAddress);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeSweepAddressRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBroadcastTxRefundAllRequest();
+    const message = createBaseQueryProposeSweepAddressRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.judgeAddress = reader.string();
+          break;
+        case 3:
+          message.btcAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1822,36 +1970,153 @@ export const QueryBroadcastTxRefundAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryBroadcastTxRefundAllRequest {
-    return {};
+  fromJSON(object: any): QueryProposeSweepAddressRequest {
+    return {
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      btcAddress: isSet(object.btcAddress) ? String(object.btcAddress) : "",
+    };
   },
 
-  toJSON(_: QueryBroadcastTxRefundAllRequest): unknown {
+  toJSON(message: QueryProposeSweepAddressRequest): unknown {
     const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.btcAddress !== undefined && (obj.btcAddress = message.btcAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllRequest>, I>>(
-    _: I,
-  ): QueryBroadcastTxRefundAllRequest {
-    const message = createBaseQueryBroadcastTxRefundAllRequest();
+  fromPartial<I extends Exact<DeepPartial<QueryProposeSweepAddressRequest>, I>>(
+    object: I,
+  ): QueryProposeSweepAddressRequest {
+    const message = createBaseQueryProposeSweepAddressRequest();
+    message.reserveId = object.reserveId ?? 0;
+    message.judgeAddress = object.judgeAddress ?? "";
+    message.btcAddress = object.btcAddress ?? "";
     return message;
   },
 };
 
-function createBaseQueryBroadcastTxRefundAllResponse(): QueryBroadcastTxRefundAllResponse {
-  return {};
+function createBaseQueryProposeSweepAddressResponse(): QueryProposeSweepAddressResponse {
+  return { proposeSweepAddressMsg: undefined };
 }
 
-export const QueryBroadcastTxRefundAllResponse = {
-  encode(_: QueryBroadcastTxRefundAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const QueryProposeSweepAddressResponse = {
+  encode(message: QueryProposeSweepAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.proposeSweepAddressMsg !== undefined) {
+      MsgProposeSweepAddress.encode(message.proposeSweepAddressMsg, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBroadcastTxRefundAllResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeSweepAddressResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryBroadcastTxRefundAllResponse();
+    const message = createBaseQueryProposeSweepAddressResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.proposeSweepAddressMsg = MsgProposeSweepAddress.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryProposeSweepAddressResponse {
+    return {
+      proposeSweepAddressMsg: isSet(object.proposeSweepAddressMsg)
+        ? MsgProposeSweepAddress.fromJSON(object.proposeSweepAddressMsg)
+        : undefined,
+    };
+  },
+
+  toJSON(message: QueryProposeSweepAddressResponse): unknown {
+    const obj: any = {};
+    message.proposeSweepAddressMsg !== undefined && (obj.proposeSweepAddressMsg = message.proposeSweepAddressMsg
+      ? MsgProposeSweepAddress.toJSON(message.proposeSweepAddressMsg)
+      : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryProposeSweepAddressResponse>, I>>(
+    object: I,
+  ): QueryProposeSweepAddressResponse {
+    const message = createBaseQueryProposeSweepAddressResponse();
+    message.proposeSweepAddressMsg =
+      (object.proposeSweepAddressMsg !== undefined && object.proposeSweepAddressMsg !== null)
+        ? MsgProposeSweepAddress.fromPartial(object.proposeSweepAddressMsg)
+        : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryProposeSweepAddressesAllRequest(): QueryProposeSweepAddressesAllRequest {
+  return { limit: 0 };
+}
+
+export const QueryProposeSweepAddressesAllRequest = {
+  encode(message: QueryProposeSweepAddressesAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== 0) {
+      writer.uint32(8).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeSweepAddressesAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProposeSweepAddressesAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.limit = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryProposeSweepAddressesAllRequest {
+    return { limit: isSet(object.limit) ? Number(object.limit) : 0 };
+  },
+
+  toJSON(message: QueryProposeSweepAddressesAllRequest): unknown {
+    const obj: any = {};
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryProposeSweepAddressesAllRequest>, I>>(
+    object: I,
+  ): QueryProposeSweepAddressesAllRequest {
+    const message = createBaseQueryProposeSweepAddressesAllRequest();
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryProposeSweepAddressesAllResponse(): QueryProposeSweepAddressesAllResponse {
+  return {};
+}
+
+export const QueryProposeSweepAddressesAllResponse = {
+  encode(_: QueryProposeSweepAddressesAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryProposeSweepAddressesAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProposeSweepAddressesAllResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1863,19 +2128,19 @@ export const QueryBroadcastTxRefundAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryBroadcastTxRefundAllResponse {
+  fromJSON(_: any): QueryProposeSweepAddressesAllResponse {
     return {};
   },
 
-  toJSON(_: QueryBroadcastTxRefundAllResponse): unknown {
+  toJSON(_: QueryProposeSweepAddressesAllResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBroadcastTxRefundAllResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryProposeSweepAddressesAllResponse>, I>>(
     _: I,
-  ): QueryBroadcastTxRefundAllResponse {
-    const message = createBaseQueryBroadcastTxRefundAllResponse();
+  ): QueryProposeSweepAddressesAllResponse {
+    const message = createBaseQueryProposeSweepAddressesAllResponse();
     return message;
   },
 };
@@ -1926,6 +2191,12 @@ export interface Query {
   UnsignedTxRefundAll(request: QueryUnsignedTxRefundAllRequest): Promise<QueryUnsignedTxRefundAllResponse>;
   /** Queries a list of BroadcastTxRefundAll items. */
   BroadcastTxRefundAll(request: QueryBroadcastTxRefundAllRequest): Promise<QueryBroadcastTxRefundAllResponse>;
+  /** Queries a list of ProposeSweepAddress items. */
+  ProposeSweepAddress(request: QueryProposeSweepAddressRequest): Promise<QueryProposeSweepAddressResponse>;
+  /** Queries a list of ProposeSweepAddressesAll items. */
+  ProposeSweepAddressesAll(
+    request: QueryProposeSweepAddressesAllRequest,
+  ): Promise<QueryProposeSweepAddressesAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1949,6 +2220,8 @@ export class QueryClientImpl implements Query {
     this.UnsignedTxSweepAll = this.UnsignedTxSweepAll.bind(this);
     this.UnsignedTxRefundAll = this.UnsignedTxRefundAll.bind(this);
     this.BroadcastTxRefundAll = this.BroadcastTxRefundAll.bind(this);
+    this.ProposeSweepAddress = this.ProposeSweepAddress.bind(this);
+    this.ProposeSweepAddressesAll = this.ProposeSweepAddressesAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2070,6 +2343,20 @@ export class QueryClientImpl implements Query {
     const data = QueryBroadcastTxRefundAllRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "BroadcastTxRefundAll", data);
     return promise.then((data) => QueryBroadcastTxRefundAllResponse.decode(new _m0.Reader(data)));
+  }
+
+  ProposeSweepAddress(request: QueryProposeSweepAddressRequest): Promise<QueryProposeSweepAddressResponse> {
+    const data = QueryProposeSweepAddressRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "ProposeSweepAddress", data);
+    return promise.then((data) => QueryProposeSweepAddressResponse.decode(new _m0.Reader(data)));
+  }
+
+  ProposeSweepAddressesAll(
+    request: QueryProposeSweepAddressesAllRequest,
+  ): Promise<QueryProposeSweepAddressesAllResponse> {
+    const data = QueryProposeSweepAddressesAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Query", "ProposeSweepAddressesAll", data);
+    return promise.then((data) => QueryProposeSweepAddressesAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

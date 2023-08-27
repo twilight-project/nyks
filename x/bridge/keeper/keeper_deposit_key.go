@@ -595,9 +595,8 @@ func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]typ
 
 // SetProposeSweepAddress sets the propose sweep address message for btc chain using btcAddress, btcScript, reserveId and judgeAddress
 func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress types.BtcAddress, btcScript string, reserveId uint64, judgeAddress sdk.AccAddress) error {
-	btcScriptPrefix := btcScript[:10]
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
+	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcAddress.BtcAddress)
 
 	proposeSweepAddress := &types.MsgProposeSweepAddress{
 		BtcAddress:   btcAddress.BtcAddress,
@@ -610,9 +609,9 @@ func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress types.BtcAddr
 }
 
 // GetProposeSweepAddress returns the propose sweep address message for btc chain using reserveId and judgeAddress
-func (k Keeper) GetProposeSweepAddress(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcScriptPrefix string) (*types.MsgProposeSweepAddress, bool) {
+func (k Keeper) GetProposeSweepAddress(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcAddress types.BtcAddress) (*types.MsgProposeSweepAddress, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcScriptPrefix)
+	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcAddress.BtcAddress)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -646,6 +645,30 @@ func (k Keeper) IterateRegisteredProposeSweepAddressMsgs(ctx sdk.Context, cb fun
 			return
 		}
 	}
+}
+
+// GetAllProposedSweepAddresses returns all proposed sweep addresses for btc chain
+func (k Keeper) GetAllProposedSweepAddresses(ctx sdk.Context, limit uint64) ([]types.MsgProposeSweepAddress, error) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.ProposeSweepAddressMsg
+	iter := store.Iterator(prefixRange(prefix))
+	defer iter.Close()
+
+	var proposeSweepAddress []types.MsgProposeSweepAddress
+	var count uint64 = 0
+	for ; iter.Valid() && count < limit; iter.Next() {
+		res := types.MsgProposeSweepAddress{
+			BtcAddress:   "",
+			BtcScript:    "",
+			ReserveId:    0,
+			JudgeAddress: "",
+		}
+
+		k.cdc.MustUnmarshal(iter.Value(), &res)
+		proposeSweepAddress = append(proposeSweepAddress, res)
+		count++
+	}
+	return proposeSweepAddress, nil
 }
 
 /////////////////////////////

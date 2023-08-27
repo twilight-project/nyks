@@ -57,6 +57,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdBroadcastTxRefundAll())
 
+	cmd.AddCommand(CmdProposeSweepAddressQuery())
+
+	cmd.AddCommand(CmdProposeSweepAddressesAll())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd

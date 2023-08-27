@@ -177,7 +177,7 @@ message MsgUnsignedTxRefundResponse {}
 message MsgProposeSweepAddress {
   string btcAddress   = 1;
   string btcScript    = 2;
-  uint64  reserveId    = 3;
+  uint64 reserveId    = 3;
   string judgeAddress = 4;
 }
 

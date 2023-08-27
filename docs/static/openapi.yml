@@ -27454,6 +27454,112 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{judgeAddress}/{btcAddress}:
+    get:
+      summary: Queries a list of ProposeSweepAddress items.
+      operationId: TwilightprojectNyksBridgeProposeSweepAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              proposeSweepAddressMsg:
+                type: object
+                properties:
+                  btcAddress:
+                    type: string
+                  btcScript:
+                    type: string
+                  reserveId:
+                    type: string
+                    format: uint64
+                  judgeAddress:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: judgeAddress
+          in: path
+          required: true
+          type: string
+        - name: btcAddress
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/propose_sweep_addresses_all/{limit}:
+    get:
+      summary: Queries a list of ProposeSweepAddressesAll items.
+      operationId: TwilightprojectNyksBridgeProposeSweepAddressesAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              proposeSweepAddressMsgs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    btcAddress:
+                      type: string
+                    btcScript:
+                      type: string
+                    reserveId:
+                      type: string
+                      format: uint64
+                    judgeAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: limit
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/bridge/registered_btc_deposit_address/{depositAddress}:
     get:
       summary: Queries a list of RegisteredBtcDepositAddress items.
@@ -48146,6 +48252,18 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgProposeRefundHashResponse:
     type: object
+  twilightproject.nyks.bridge.MsgProposeSweepAddress:
+    type: object
+    properties:
+      btcAddress:
+        type: string
+      btcScript:
+        type: string
+      reserveId:
+        type: string
+        format: uint64
+      judgeAddress:
+        type: string
   twilightproject.nyks.bridge.MsgProposeSweepAddressResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
@@ -48291,6 +48409,38 @@ definitions:
           properties:
             refundHash:
               type: string
+            judgeAddress:
+              type: string
+  twilightproject.nyks.bridge.QueryProposeSweepAddressResponse:
+    type: object
+    properties:
+      proposeSweepAddressMsg:
+        type: object
+        properties:
+          btcAddress:
+            type: string
+          btcScript:
+            type: string
+          reserveId:
+            type: string
+            format: uint64
+          judgeAddress:
+            type: string
+  twilightproject.nyks.bridge.QueryProposeSweepAddressesAllResponse:
+    type: object
+    properties:
+      proposeSweepAddressMsgs:
+        type: array
+        items:
+          type: object
+          properties:
+            btcAddress:
+              type: string
+            btcScript:
+              type: string
+            reserveId:
+              type: string
+              format: uint64
             judgeAddress:
               type: string
   twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressByTwilightAddressResponse:

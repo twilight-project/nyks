@@ -16,9 +16,12 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
-	btcScriptPrefix := msg.BtcScript[:10]
+	btcAddr, e1 := types.NewBtcAddress(msg.BtcAddress)
+	if e1 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
+	}
 
-	_, foundDuplicate := k.GetProposeSweepAddress(ctx, msg.ReserveId, judgeAddress, btcScriptPrefix)
+	_, foundDuplicate := k.GetProposeSweepAddress(ctx, msg.ReserveId, judgeAddress, *btcAddr)
 	if foundDuplicate != false {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
 	}
@@ -28,10 +31,6 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
-	btcAddr, e1 := types.NewBtcAddress(msg.BtcAddress)
-	if e1 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
-	}
 	// set propose sweep address
 	errSet := k.SetProposeSweepAddress(ctx, *btcAddr, msg.BtcScript, msg.ReserveId, judgeAddress)
 	if errSet != nil {

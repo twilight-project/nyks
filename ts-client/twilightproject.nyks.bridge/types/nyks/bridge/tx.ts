@@ -163,7 +163,6 @@ export interface MsgUnsignedTxRefundResponse {
 }
 
 export interface MsgProposeSweepAddress {
-  creator: string;
   btcAddress: string;
   btcScript: string;
   reserveId: number;
@@ -2005,25 +2004,22 @@ export const MsgUnsignedTxRefundResponse = {
 };
 
 function createBaseMsgProposeSweepAddress(): MsgProposeSweepAddress {
-  return { creator: "", btcAddress: "", btcScript: "", reserveId: 0, judgeAddress: "" };
+  return { btcAddress: "", btcScript: "", reserveId: 0, judgeAddress: "" };
 }
 
 export const MsgProposeSweepAddress = {
   encode(message: MsgProposeSweepAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.btcAddress !== "") {
-      writer.uint32(18).string(message.btcAddress);
+      writer.uint32(10).string(message.btcAddress);
     }
     if (message.btcScript !== "") {
-      writer.uint32(26).string(message.btcScript);
+      writer.uint32(18).string(message.btcScript);
     }
     if (message.reserveId !== 0) {
-      writer.uint32(32).int32(message.reserveId);
+      writer.uint32(24).uint64(message.reserveId);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(42).string(message.judgeAddress);
+      writer.uint32(34).string(message.judgeAddress);
     }
     return writer;
   },
@@ -2036,18 +2032,15 @@ export const MsgProposeSweepAddress = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.btcAddress = reader.string();
           break;
-        case 3:
+        case 2:
           message.btcScript = reader.string();
           break;
-        case 4:
-          message.reserveId = reader.int32();
+        case 3:
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
-        case 5:
+        case 4:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -2060,7 +2053,6 @@ export const MsgProposeSweepAddress = {
 
   fromJSON(object: any): MsgProposeSweepAddress {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
       btcAddress: isSet(object.btcAddress) ? String(object.btcAddress) : "",
       btcScript: isSet(object.btcScript) ? String(object.btcScript) : "",
       reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
@@ -2070,7 +2062,6 @@ export const MsgProposeSweepAddress = {
 
   toJSON(message: MsgProposeSweepAddress): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.btcAddress !== undefined && (obj.btcAddress = message.btcAddress);
     message.btcScript !== undefined && (obj.btcScript = message.btcScript);
     message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
@@ -2080,7 +2071,6 @@ export const MsgProposeSweepAddress = {
 
   fromPartial<I extends Exact<DeepPartial<MsgProposeSweepAddress>, I>>(object: I): MsgProposeSweepAddress {
     const message = createBaseMsgProposeSweepAddress();
-    message.creator = object.creator ?? "";
     message.btcAddress = object.btcAddress ?? "";
     message.btcScript = object.btcScript ?? "";
     message.reserveId = object.reserveId ?? 0;
