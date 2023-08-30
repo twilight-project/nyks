@@ -112,7 +112,7 @@ message MsgWithdrawTxFinalResponse {}
 
 message MsgSignRefund {
   string reserveAddress   = 1;
-  string signerAddress    = 2;
+  string signerPublicKey   = 2;
   string refundSignature  = 3;
   string btcOracleAddress = 4;
 }
@@ -120,9 +120,9 @@ message MsgSignRefund {
 message MsgSignRefundResponse {}
 
 message MsgSignSweep {
-  string reserveAddress   = 1;
-  string signerAddress    = 2;
-  string sweepSignature   = 3;
+  string reserveAddress = 1;
+  string signerPublicKey = 2;
+  repeated string sweepSignature = 3;
   string btcOracleAddress = 4;
 }
 

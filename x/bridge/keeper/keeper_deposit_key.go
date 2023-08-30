@@ -1,6 +1,10 @@
 package keeper
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -231,8 +235,8 @@ func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]
 	}
 }
 
-// GetBtcSignRefundMsg returns the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
-func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) (*types.MsgSignRefund, bool) {
+// GetBtcSignRefundMsg returns the signed refund message for btc chain using btcOracleAddress, reserveAddress, singerPublicKey and refundSignature
+func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerPublicKey string, refundSignature string) (*types.MsgSignRefund, bool) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
 	if !store.Has(aKey) {
@@ -246,15 +250,15 @@ func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAdd
 	return &signRefund, true
 }
 
-// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveAddress, signerAddress and refundSignature
-func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, refundSignature string) error {
+// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveAddress, singerPublicKey and refundSignature
+func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, refundSignature string) error {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
 
 	signRefund := &types.MsgSignRefund{
 		BtcOracleAddress: btcOracleAddress.String(),
 		ReserveAddress:   reserveAddress.BtcAddress,
-		SignerAddress:    signerAddress.BtcAddress,
+		SignerPublicKey:  singerPublicKey,
 		RefundSignature:  refundSignature,
 	}
 	store.Set(aKey, k.cdc.MustMarshal(signRefund))
@@ -271,7 +275,7 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgSignRefund{
 			ReserveAddress:   "",
-			SignerAddress:    "",
+			SignerPublicKey:  "",
 			RefundSignature:  "",
 			BtcOracleAddress: "",
 		}
@@ -285,10 +289,14 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 	}
 }
 
-// GetBtcSignSweepMsg returns the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
-func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) (*types.MsgSignSweep, bool) {
+// GetBtcSignSweepMsg returns the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerPublicKey and sweepSignature
+func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, sweepSignatures []string) (*types.MsgSignSweep, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
+
+	// Create a hash of the concatenated sweepSignatures to use as part of the key
+	signatureHash := hashSignatures(sweepSignatures)
+
+	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, signatureHash)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -300,15 +308,18 @@ func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddr
 	return &signSweep, true
 }
 
-// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerAddress and sweepSignature
-func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerAddress types.BtcAddress, sweepSignature string) error {
+// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerPublicKey and sweepSignature
+func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, sweepSignatures []string) error {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, sweepSignature)
+
+	// Create a hash of the concatenated sweepSignatures to use as part of the key
+	signatureHash := hashSignatures(sweepSignatures)
+	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, signatureHash)
 
 	signSweep := &types.MsgSignSweep{
 		ReserveAddress:   reserveAddress.BtcAddress,
-		SignerAddress:    signerAddress.BtcAddress,
-		SweepSignature:   sweepSignature,
+		SignerPublicKey:  singerPublicKey,
+		SweepSignature:   sweepSignatures,
 		BtcOracleAddress: btcOracleAddress.String(),
 	}
 	store.Set(aKey, k.cdc.MustMarshal(signSweep))
@@ -325,8 +336,8 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgSignSweep{
 			ReserveAddress:   "",
-			SignerAddress:    "",
-			SweepSignature:   "",
+			SignerPublicKey:  "",
+			SweepSignature:   []string{},
 			BtcOracleAddress: "",
 		}
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -712,4 +723,11 @@ func prefixRange(prefix []byte) ([]byte, []byte) {
 		end = nil
 	}
 	return prefix, end
+}
+
+// hashSignatures hashes the concatenated signatures to create a unique identifier
+func hashSignatures(signatures []string) string {
+	concatenated := strings.Join(signatures, "|")
+	hash := sha256.Sum256([]byte(concatenated))
+	return hex.EncodeToString(hash[:])
 }

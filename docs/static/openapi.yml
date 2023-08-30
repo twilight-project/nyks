@@ -27833,7 +27833,7 @@ paths:
                   properties:
                     reserveAddress:
                       type: string
-                    signerAddress:
+                    signerPublicKey:
                       type: string
                     refundSignature:
                       type: string
@@ -27876,10 +27876,12 @@ paths:
                   properties:
                     reserveAddress:
                       type: string
-                    signerAddress:
+                    signerPublicKey:
                       type: string
                     sweepSignature:
-                      type: string
+                      type: array
+                      items:
+                        type: string
                     btcOracleAddress:
                       type: string
         default:
@@ -48300,7 +48302,7 @@ definitions:
     properties:
       reserveAddress:
         type: string
-      signerAddress:
+      signerPublicKey:
         type: string
       refundSignature:
         type: string
@@ -48313,10 +48315,12 @@ definitions:
     properties:
       reserveAddress:
         type: string
-      signerAddress:
+      signerPublicKey:
         type: string
       sweepSignature:
-        type: string
+        type: array
+        items:
+          type: string
       btcOracleAddress:
         type: string
   twilightproject.nyks.bridge.MsgSignSweepResponse:
@@ -48532,7 +48536,7 @@ definitions:
           properties:
             reserveAddress:
               type: string
-            signerAddress:
+            signerPublicKey:
               type: string
             refundSignature:
               type: string
@@ -48548,10 +48552,12 @@ definitions:
           properties:
             reserveAddress:
               type: string
-            signerAddress:
+            signerPublicKey:
               type: string
             sweepSignature:
-              type: string
+              type: array
+              items:
+                type: string
             btcOracleAddress:
               type: string
   twilightproject.nyks.bridge.QueryUnsignedTxRefundAllResponse:

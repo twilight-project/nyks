@@ -78,6 +78,19 @@ func IsValidSignature(signature string) bool {
 	return true
 }
 
+// ValidateSignatures handles multiple signature validation at once
+func ValidateSignatures(signatures []string) bool {
+	for _, signature := range signatures {
+		// Validate the signature
+		// If any validation logic fails, return false
+		isValid := IsValidSignature(signature)
+		if !isValid {
+			return false
+		}
+	}
+	return true
+}
+
 // Returns the contained PublicKey as a string
 func (ea BtcScript) GetBtcReserveScript() string {
 	return ea.BtcScript

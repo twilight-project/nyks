@@ -19,7 +19,7 @@ func CmdSignRefund() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReserveAddress := args[0]
-			argSignerAddress := args[1]
+			argSignerPublicKey := args[1]
 			argRefundSignature := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -29,7 +29,7 @@ func CmdSignRefund() *cobra.Command {
 
 			msg := types.NewMsgSignRefund(
 				argReserveAddress,
-				argSignerAddress,
+				argSignerPublicKey,
 				argRefundSignature,
 				clientCtx.GetFromAddress().String(),
 			)

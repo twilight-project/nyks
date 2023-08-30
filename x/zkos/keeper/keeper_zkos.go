@@ -74,7 +74,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	}
 
 	// Check if there is enough balance in the reserves
-	if msg.BtcValue > totalBalance {
+	if msg.BtcValue >= totalBalance {
 		return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInReserves, msg.TwilightAddress)
 	}
 
@@ -150,13 +150,6 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		// Save the updated reserve
 		k.VoltKeeper.SetBtcReserve(ctx, reserve)
 	}
-
-	// newBalance := sdk.NewCoin("sats", sdk.NewIntFromUint64(bankBalance))
-	// // Set the new balance
-	// errSet := k.BankKeeper.SetBalance(ctx, twilightAddress, newBalance)
-	// if errSet != nil {
-	// 	return sdkerrors.Wrap(err, "failed to set new balance")
-	// }
 
 	// Save the updated clearing account
 	k.VoltKeeper.SetClearingAccount(ctx, twilightAddress, account)
