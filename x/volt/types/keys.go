@@ -35,6 +35,9 @@ var (
 
 	// LastRegisteredReserveKey indexes the reserve LastRegisteredReserveKey
 	LastRegisteredReserveKey = forkstypes.HashString("LastRegisteredReserveKey")
+
+	// WithdrawPoolKey indexes the reserve ReserveWithdrawPool
+	WithdrawPoolKey = forkstypes.HashString("WithdrawPoolKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -59,4 +62,15 @@ func GetReserveKey(reserveId uint64) []byte {
 		panic("Failed to convert uint64 to bytes")
 	}
 	return forkstypes.AppendBytes(BtcReserveKey, reserveBufBytes.Bytes())
+}
+
+// GetWithdrawPoolKey returns the following key format
+// prefix reserve-key
+func GetWithdrawPoolKey(reserveId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(WithdrawPoolKey, reserveBufBytes.Bytes())
 }

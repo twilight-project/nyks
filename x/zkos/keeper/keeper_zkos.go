@@ -43,6 +43,12 @@ func (k Keeper) GetTransferTx(ctx sdk.Context, txId string) (types.MsgTransferTx
 
 // SetMintOrBurnTradingBtc mints or burns quisquis btc
 func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnTradingBtc) error {
+
+	// Check if this QqAccount has already been used
+	// if k.HasUsedQqAccount(ctx, msg.QqAccount) {
+	// 	return sdkerrors.Wrap(types.ErrInvalidInput, "this QuisQuis account has already been used")
+	// }
+
 	twilightAddress, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if err != nil {
 		return sdkerrors.Wrap(types.ErrInvalidTwilightAddress, msg.TwilightAddress)
@@ -74,8 +80,12 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	}
 
 	// Check if there is enough balance in the reserves
-	if msg.BtcValue >= totalBalance {
-		return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInReserves, msg.TwilightAddress)
+	// We don't keep track of private values in the clearing account, so we just check if a user has enough balance in the case of mint
+	// Burn case is handled by the ZkOS
+	if msg.MintOrBurn {
+		if msg.BtcValue > totalBalance {
+			return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInReserves, msg.TwilightAddress)
+		}
 	}
 
 	// Distribute the btc value across the reserves
@@ -155,8 +165,11 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	k.VoltKeeper.SetClearingAccount(ctx, twilightAddress, account)
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.EncryptScalar)
+	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.QqAccount)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
+
+	// Mark this QqAccount as used
+	k.MarkQqAccountAsUsed(ctx, msg.QqAccount)
 
 	return nil
 }
@@ -187,6 +200,20 @@ func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string)
 	}
 
 	return results, true
+}
+
+// MarkQqAccountAsUsed saves the used Qqaccount in a new KV store to avoid being reused
+func (k Keeper) MarkQqAccountAsUsed(ctx sdk.Context, QqAccount string) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUsedQqAccountKey(QqAccount)
+	store.Set(aKey, []byte{1}) // 1 indicates that this QqAccount has been used
+}
+
+// HasUsedQqAccount checks if a QqAccount was used before
+func (k Keeper) HasUsedQqAccount(ctx sdk.Context, QqAccount string) bool {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetUsedQqAccountKey(QqAccount) // Create this function to generate a key for used QqAccounts
+	return store.Has(aKey)
 }
 
 func min(a, b uint64) uint64 {

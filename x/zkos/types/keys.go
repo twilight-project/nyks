@@ -22,7 +22,11 @@ var (
 	// KeyTransferTx indexes the zkos transfer txs according to the tx id
 	KeyTransferTx = forkstypes.HashString("KeyTransferTx")
 
+	// KeyMintOrBurnTradingBtc indexes the mint or burn trading messages
 	KeyMintOrBurnTradingBtc = forkstypes.HashString("KeyMintOrBurnTradingBtc")
+
+	// KeyUsedQqAccount indexes the used QqAccounts
+	KeyUsedQqAccount = forkstypes.HashString("KeyUsedQqAccount")
 )
 
 func KeyPrefix(p string) []byte {
@@ -39,6 +43,12 @@ func GetTransferTxKey(txId string) []byte {
 // GetMintOrBurnTradingBtcKey returns the following key format
 // prefix twilightAddress
 // [HashString("KeyMintOrBurnTradingBtc")][1]
-func GetMintOrBurnTradingBtcKey(twilightAddress string, encryptScalar string) []byte {
-	return forkstypes.AppendBytes(KeyMintOrBurnTradingBtc, []byte(twilightAddress), []byte(encryptScalar))
+func GetMintOrBurnTradingBtcKey(twilightAddress string, QqAccount string) []byte {
+	return forkstypes.AppendBytes(KeyMintOrBurnTradingBtc, []byte(twilightAddress), []byte(QqAccount))
+}
+
+// GetUsedQqAccountKey returns the following key format
+// [HashString("KeyUsedQqAccount")][QqAccount]
+func GetUsedQqAccountKey(QqAccount string) []byte {
+	return forkstypes.AppendBytes(KeyUsedQqAccount, []byte(QqAccount))
 }
