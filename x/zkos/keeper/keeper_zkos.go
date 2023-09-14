@@ -113,7 +113,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 			reserve.PublicValue -= deduct
 			reserve.PrivatePoolValue += deduct
 
-			// Increase the user's individual reserve balance
+			// Decrease the user's individual reserve balance
 			reserveBalance.Amount -= deduct
 			bankBalance -= deduct
 

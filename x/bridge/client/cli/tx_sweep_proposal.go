@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strconv"
 	"strings"
@@ -14,77 +15,48 @@ import (
 
 var _ = strconv.Itoa(0)
 
-type TwilightAddressWithValue struct {
-	Address string
-	Value   uint64
-}
-
-type TwilightAddressesArray []TwilightAddressWithValue
-
-func (ta *TwilightAddressesArray) Set(value string) error {
-	parts := strings.Split(value, ":")
-	if len(parts) != 2 {
-		return fmt.Errorf("Invalid format for twilight address and value. Expected format: address:value")
-	}
-
-	address := parts[0]
-	btcValue, err := strconv.ParseUint(parts[1], 10, 64)
-	if err != nil {
-		return fmt.Errorf("Invalid BTC value for twilight address: %s", err)
-	}
-
-	*ta = append(*ta, TwilightAddressWithValue{Address: address, Value: btcValue})
-	return nil
-}
-
-func (ta *TwilightAddressesArray) Type() string {
-	return "twilightAddressesArray"
-}
-
-func (ta *TwilightAddressesArray) String() string {
-	var result []string
-	for _, item := range *ta {
-		result = append(result, fmt.Sprintf("%s:%d", item.Address, item.Value))
-	}
-	return strings.Join(result, ", ")
-}
-
 func CmdSweepProposal() *cobra.Command {
-	var twilightAddresses TwilightAddressesArray
+	var withdrawIdentifiersStr string
 
 	cmd := &cobra.Command{
-		Use:   "sweep-proposal [reserve-id] [reserve-address] [btc-relay-capacity-value] [total-value] [private-pool-value] [public-value] [fee-pool] [btc-refund-tx] [btc-sweep-tx] [--twilight-address value]...",
+		Use:   "sweep-proposal [reserve-id] [new-reserve-address] [btc-block-number] [btc-relay-capacity-value] [btc-tx-hash] [unlock-height] [round-id]",
 		Short: "Broadcast message SweepProposal",
-		Args:  cobra.ExactArgs(9),
+		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
-			argReserveAddress := args[1]
-			argBtcRelayCapacityValue, err := strconv.ParseUint(args[2], 10, 64)
+			argNewReserveAddress := args[1]
+			argBtcBlockNumber, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
 				return err
 			}
-			argTotalValue, err := strconv.ParseUint(args[3], 10, 64)
+			argBtcRelayCapacityValue, err := strconv.ParseUint(args[3], 10, 64)
 			if err != nil {
 				return err
 			}
-			argPrivatePoolValue, err := strconv.ParseUint(args[4], 10, 64)
+			argBtcTxHash := args[4]
+			argUnlockHeight, err := strconv.ParseUint(args[5], 10, 64)
 			if err != nil {
 				return err
 			}
-			argPublicValue, err := strconv.ParseUint(args[5], 10, 64)
-			if err != nil {
-				return err
-			}
-			argFeePool, err := strconv.ParseUint(args[6], 10, 64)
+			argRoundId, err := strconv.ParseUint(args[6], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			argBtcRefundTx := args[7]
-			argBtcSweepTx := args[8]
+			// Parse withdrawIdentifiers
+			// Parse withdrawIdentifiers
+			withdrawIdentifiersStrs := strings.Split(withdrawIdentifiersStr, ",")
+			var withdrawIdentifiers [][]byte
+			for _, idStr := range withdrawIdentifiersStrs {
+				idBytes, err := hex.DecodeString(idStr)
+				if err != nil {
+					return fmt.Errorf("Invalid hex string for identifier: %s", err)
+				}
+				withdrawIdentifiers = append(withdrawIdentifiers, idBytes)
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -93,15 +65,14 @@ func CmdSweepProposal() *cobra.Command {
 
 			msg := types.NewMsgSweepProposal(
 				argReserveId,
-				argReserveAddress,
+				argNewReserveAddress,
 				clientCtx.GetFromAddress().String(),
+				argBtcBlockNumber,
 				argBtcRelayCapacityValue,
-				argTotalValue,
-				argPrivatePoolValue,
-				argPublicValue,
-				argFeePool,
-				argBtcRefundTx,
-				argBtcSweepTx,
+				argBtcTxHash,
+				argUnlockHeight,
+				argRoundId,
+				withdrawIdentifiers, // Add this to your NewMsgSweepProposal function
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -111,7 +82,7 @@ func CmdSweepProposal() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().VarP(&twilightAddresses, "twilight-address", "t", "Twilight Addresses")
+	cmd.Flags().StringVarP(&withdrawIdentifiersStr, "withdraw-identifiers", "w", "", "Comma-separated list of withdraw identifiers")
 
 	return cmd
 }

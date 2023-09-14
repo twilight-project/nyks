@@ -50,6 +50,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	coin := sdk.NewCoin(denom, mintAmount)
 
 	moduleAddr := a.keeper.accountKeeper.GetModuleAddress(types.ModuleName)
+	ctx.Logger().Error("ModuleAddr", "moduleAddr", moduleAddr)
 	preMintBalance := a.keeper.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
 
 	// Ensure that users are not bridging an impossible amount, only 2^256 - 1 (verify the logic if this check is necessary here)
@@ -93,21 +94,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
-		return sdkerrors.Wrapf(err, "could not send coins to the user %s", proposal.TwilightDepositAddress)
-	}
-
-	// SendCoins has a hook that goes to volt module and update clearing account of the user
-	// however, we need a reserveAddress to update the clearing account in the case of mint
-	// so we pass it in a separate function
-	err = a.keeper.VoltKeeper.UpdateMintInClearing(ctx, receiver, proposal.DepositAmount, proposal.ReserveAddress)
-	if err != nil {
-		hash, _ := proposal.ProposalHash()
-		a.keeper.logger(ctx).Error("Could not update the clearing account",
-			"cause", err.Error(),
-			"proposal type", proposal.GetType(),
-			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
-		)
-		return sdkerrors.Wrapf(err, "could not update the clearing account %s", proposal.TwilightDepositAddress)
 	}
 
 	// Update the reserve mapping with the new amount of coins
@@ -129,7 +115,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
 
 	// Update the reserve mapping with the values of the proposal
-	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.ReserveAddress, proposal.JudgeAddress, proposal.BtcRelayCapacityValue, proposal.TotalValue, proposal.PrivatePoolValue, proposal.PublicValue, proposal.FeePool)
+	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.NewReserveAddress, proposal.JudgeAddress, proposal.BtcBlockNumber, proposal.BtcRelayCapacityValue, proposal.BtcTxHash, proposal.UnlockHeight, proposal.RoundId, proposal.WithdrawIdentifiers)
 	if err != nil {
 		hash, _ := proposal.ProposalHash()
 		a.keeper.logger(ctx).Error("Could not update the reserve after sweep attestation",
@@ -137,7 +123,7 @@ func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridge
 			"proposal type", proposal.GetType(),
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
-		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.ReserveAddress)
+		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.NewReserveAddress)
 	}
 
 	return nil

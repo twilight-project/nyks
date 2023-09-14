@@ -32,6 +32,8 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 		PrivatePoolValue:      0,
 		PublicValue:           0,
 		FeePool:               0,
+		UnlockHeight:          0,
+		RoundId:               0,
 	}
 
 	// Set the reserve
@@ -108,7 +110,7 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 }
 
 // UpdateBtcReserveAfterSweepProposal based on the passed reserveId, the operation happens after a successful attestation of MsgSweepProposal
-func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64) error {
+func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers [][]byte) error {
 
 	// Get the reserve
 	reserve, err := k.GetBtcReserve(ctx, reserveId)
@@ -120,10 +122,8 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	reserve.ReserveAddress = reserveAddress
 	reserve.JudgeAddress = judgeAddress
 	reserve.BtcRelayCapacityValue = btcRelayCapacityValue
-	reserve.TotalValue = totalValue
-	reserve.PrivatePoolValue = privatePoolValue
-	reserve.PublicValue = publicValue
-	reserve.FeePool = feePool
+	reserve.UnlockHeight = unlockHeight
+	reserve.RoundId = roundId
 
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
@@ -166,6 +166,8 @@ func (k Keeper) GetBtcReserveIdByAddress(ctx sdk.Context, reserveAddress string)
 			PrivatePoolValue:      0,
 			PublicValue:           0,
 			FeePool:               0,
+			UnlockHeight:          0,
+			RoundId:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -213,6 +215,8 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 			PrivatePoolValue:      0,
 			PublicValue:           0,
 			FeePool:               0,
+			UnlockHeight:          0,
+			RoundId:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)

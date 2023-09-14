@@ -81,15 +81,14 @@ message MsgWithdrawBtcRequestResponse {}
 
 message MsgSweepProposal {
   uint64 reserveId             =  1;
-  string reserveAddress        =  2;
+  string newReserveAddress     =  2;
   string judgeAddress          =  3;
-  uint64 btcRelayCapacityValue =  4;
-  uint64 totalValue            =  5;
-  uint64 privatePoolValue      =  6;
-  uint64 publicValue           =  7;
-  uint64 feePool               =  8;
-  string btcRefundTx           =  9;
-  string btcSweepTx            = 10;
+  uint64 BtcBlockNumber = 4;
+  uint64 btcRelayCapacityValue =  5;
+  string btcTxHash = 6;
+  uint64 UnlockHeight = 7;
+  uint64 roundId = 8;
+  repeated bytes withdrawIdentifiers = 9;
 }
 
 message MsgSweepProposalResponse {}

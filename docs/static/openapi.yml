@@ -29245,6 +29245,9 @@ paths:
                     UnlockHeight:
                       type: string
                       format: uint64
+                    RoundId:
+                      type: string
+                      format: uint64
                   title: >-
                     BtcReserve is a mapping of a validator address to a reserve
                     ID
@@ -49147,6 +49150,9 @@ definitions:
       UnlockHeight:
         type: string
         format: uint64
+      RoundId:
+        type: string
+        format: uint64
     title: >-
       BtcReserve is a mapping of a validator address to a reserve ID
 
@@ -49188,6 +49194,9 @@ definitions:
               type: string
               format: uint64
             UnlockHeight:
+              type: string
+              format: uint64
+            RoundId:
               type: string
               format: uint64
           title: >-
