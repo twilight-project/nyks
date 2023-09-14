@@ -102,6 +102,9 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 		})
 	}
 
+	// Save the updated clearing account
+	k.SetClearingAccount(ctx, twilightAddress, clearingAccount)
+	// Save the reserve
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
@@ -128,6 +131,9 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
+
+	// Set the last unlocked reserve id, it is used in burning of tokens during MintOrBurnTradingBtc logic
+	k.setLastUnlockedReserve(ctx, reserveId)
 
 	return nil
 
@@ -226,6 +232,24 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 			return
 		}
 	}
+}
+
+// setLastUnlockedReserve sets the latest unlocked reserve id after the attestation of MsgSweepProposal
+func (k Keeper) setLastUnlockedReserve(ctx sdk.Context, reserveId uint64) {
+	store := ctx.KVStore(k.storeKey)
+
+	store.Set(types.LastUnlockedReserveKey, forkstypes.UInt64Bytes(reserveId))
+}
+
+// GetLastUnlockedReserve returns the latest unlocked reserve id
+func (k Keeper) GetLastUnlockedReserve(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	bytes := store.Get(types.LastUnlockedReserveKey)
+
+	if len(bytes) == 0 {
+		return 0
+	}
+	return forkstypes.UInt64FromBytes(bytes)
 }
 
 func prefixRange(prefix []byte) ([]byte, []byte) {

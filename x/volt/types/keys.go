@@ -38,6 +38,9 @@ var (
 
 	// WithdrawPoolKey indexes the reserve ReserveWithdrawPool
 	WithdrawPoolKey = forkstypes.HashString("WithdrawPoolKey")
+
+	// LastUnlockedReserveKey indexes the reserve LastUnlockedReserveKey
+	LastUnlockedReserveKey = forkstypes.HashString("LastUnlockedReserveKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -54,7 +57,7 @@ func GetClearingAccountKey(twilightAddress sdk.AccAddress) []byte {
 }
 
 // GetReserveKey returns the following key format
-// prefix reserve-key, reserve-address
+// prefix [LastRegisteredReserveKey][1]
 func GetReserveKey(reserveId uint64) []byte {
 	reserveBufBytes := new(bytes.Buffer)
 	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)

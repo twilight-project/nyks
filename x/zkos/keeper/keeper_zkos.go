@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 	"github.com/twilight-project/nyks/x/zkos/types"
 )
 
@@ -82,30 +83,29 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	// Check if there is enough balance in the reserves
 	// We don't keep track of private values in the clearing account, so we just check if a user has enough balance in the case of mint
 	// Burn case is handled by the ZkOS
-	if msg.MintOrBurn {
+	if msg.MintOrBurn { // Mint
 		if msg.BtcValue > totalBalance {
 			return sdkerrors.Wrap(types.ErrNotEnoughUserBalanceInReserves, msg.TwilightAddress)
 		}
-	}
 
-	// Distribute the btc value across the reserves
-	remaining := msg.BtcValue
-	for i, reserveBalance := range account.ReserveAccountBalances {
-		if remaining == 0 {
-			break
-		}
+		// Find the btc value across the reserves
+		remaining := msg.BtcValue
+		for i, reserveBalance := range account.ReserveAccountBalances {
+			if remaining == 0 {
+				break
+			}
 
-		// Fetch the reserve
-		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, reserveBalance.ReserveId)
-		if err != nil {
-			return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while minting or burning quisquis btc")
-		}
+			// Fetch the reserve
+			reserve, err := k.VoltKeeper.GetBtcReserve(ctx, reserveBalance.ReserveId)
+			if err != nil {
+				return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while minting quisquis btc")
+			}
 
-		// Calculate the amount to deduct from this reserve
-		deduct := min(remaining, reserveBalance.Amount)
+			// Calculate the amount to deduct from this reserve
+			deduct := min(remaining, reserveBalance.Amount)
 
-		// Update the reserve and clearing account balance
-		if msg.MintOrBurn {
+			// Update the reserve and clearing account balance
+			//if msg.MintOrBurn {
 			// Mint: Deduct from public and add to private
 			if reserve.PublicValue < deduct {
 				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPublic, strconv.FormatUint(reserveBalance.ReserveId, 10))
@@ -118,8 +118,8 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 			bankBalance -= deduct
 
 			// Send coins to the module account before burning
-			err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
-			if err != nil {
+			errBank := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
+			if errBank != nil {
 				return sdkerrors.Wrap(err, "failed to send coins to module account")
 			}
 
@@ -128,34 +128,67 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 			if errBurn != nil {
 				return sdkerrors.Wrap(err, "failed to burn coins")
 			}
-		} else {
-			// Burn: Deduct from private and add to public
-			if reserve.PrivatePoolValue < deduct {
-				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(reserveBalance.ReserveId, 10))
-			}
-			reserve.PrivatePoolValue -= deduct
-			reserve.PublicValue += deduct
 
-			// Decrease the user's individual reserve balance
-			reserveBalance.Amount += deduct
-			bankBalance -= deduct
+			account.ReserveAccountBalances[i] = reserveBalance
 
-			// Update the bank balance
-			err := k.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
-			if err != nil {
-				return sdkerrors.Wrap(err, "failed to mint new coins")
-			}
+			remaining -= deduct
 
-			// Send coins from the module account to the user's account
-			err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(deduct))))
-			if err != nil {
-				return sdkerrors.Wrap(err, "failed to send coins to user account")
+			// Save the updated reserve
+			k.VoltKeeper.SetBtcReserve(ctx, reserve)
+		}
+	} else { // Burn
+
+		// Find the last unlocked reserve
+		reserveId := k.VoltKeeper.GetLastUnlockedReserve(ctx)
+
+		// N+1 to find next unlocking reserve
+		nextReserveUnlockingId := reserveId + 1
+
+		// Fetch the reserve
+		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, nextReserveUnlockingId)
+		if err != nil {
+			return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while burning quisquis btc")
+		}
+
+		addBack := msg.BtcValue
+		// Burn: Deduct from private and add to public
+		if reserve.PrivatePoolValue < addBack {
+			return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(nextReserveUnlockingId, 10))
+		}
+		reserve.PrivatePoolValue -= addBack
+		reserve.PublicValue += addBack
+
+		// Update the clearing account
+		// Check if the reserve id already exists in the ReserveAccountBalances slice
+		found = false
+		for _, balance := range account.ReserveAccountBalances {
+			if balance.ReserveId == nextReserveUnlockingId {
+				// If it does, add the minted value to the existing balance
+				balance.Amount += addBack
+				found = true
+				break
 			}
 		}
 
-		account.ReserveAccountBalances[i] = reserveBalance
+		if !found {
+			// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
+			account.ReserveAccountBalances = append(account.ReserveAccountBalances, &volttypes.IndividualTwilightReserveAccountBalance{
+				ReserveId: reserveId,
+				Amount:    addBack,
+			})
+		}
 
-		remaining -= deduct
+		// Update the bank balance
+		errBank := k.BankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(addBack))))
+		if errBank != nil {
+			return sdkerrors.Wrap(err, "failed to mint new coins")
+		}
+
+		// Send coins from the module account to the user's account
+		err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(addBack))))
+		if err != nil {
+			return sdkerrors.Wrap(err, "failed to send coins to user account")
+		}
 
 		// Save the updated reserve
 		k.VoltKeeper.SetBtcReserve(ctx, reserve)
@@ -165,6 +198,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	k.VoltKeeper.SetClearingAccount(ctx, twilightAddress, account)
 
 	store := ctx.KVStore(k.storeKey)
+
 	aKey := types.GetMintOrBurnTradingBtcKey(msg.TwilightAddress, msg.QqAccount)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
 
