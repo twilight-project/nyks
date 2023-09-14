@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"encoding/hex"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -47,16 +45,7 @@ func CmdSweepProposal() *cobra.Command {
 			}
 
 			// Parse withdrawIdentifiers
-			// Parse withdrawIdentifiers
-			withdrawIdentifiersStrs := strings.Split(withdrawIdentifiersStr, ",")
-			var withdrawIdentifiers [][]byte
-			for _, idStr := range withdrawIdentifiersStrs {
-				idBytes, err := hex.DecodeString(idStr)
-				if err != nil {
-					return fmt.Errorf("Invalid hex string for identifier: %s", err)
-				}
-				withdrawIdentifiers = append(withdrawIdentifiers, idBytes)
-			}
+			withdrawIdentifiers := strings.Split(withdrawIdentifiersStr, ",")
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

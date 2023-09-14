@@ -2,11 +2,13 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepProposal) (*types.MsgSweepProposalResponse, error) {
@@ -35,6 +37,12 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 
 	if err := sdk.VerifyAddressFormat(valAddr); err != nil {
 		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
+	}
+
+	// Check if reserve exists before accepting the sweep proposal
+	_, resErr := k.VoltKeeper.GetBtcReserve(ctx, msg.ReserveId)
+	if resErr != nil {
+		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
 	err = k.NyksKeeper.ClaimHandlerCommon(ctx, any, valAddr, msg)

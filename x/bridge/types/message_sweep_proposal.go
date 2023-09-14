@@ -13,7 +13,7 @@ const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers [][]byte) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) *MsgSweepProposal {
 	return &MsgSweepProposal{
 		ReserveId:             reserveId,
 		NewReserveAddress:     reserveAddress,
@@ -64,8 +64,8 @@ func (msg *MsgSweepProposal) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid reserve id (%d)", msg.ReserveId)
 	}
 
-	err = ValidateBtcTransaction(msg.BtcTxHash)
-	if err != nil {
+	valid := IsValidBtcTxHash(msg.BtcTxHash)
+	if !valid {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid btc refund tx (%s)", err)
 	}
 
