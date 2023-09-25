@@ -64,6 +64,9 @@ var (
 
 	// ProposeSweepAddressMsg is the key for the propose sweep address
 	ProposeSweepAddressMsg = forkstypes.HashString("ProposeSweepAddressMsg")
+
+	// UserDepositKey is the key for the user deposit
+	UserDepositKey = forkstypes.HashString("UserDepositKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -202,4 +205,14 @@ func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64,
 	}
 
 	return forkstypes.AppendBytes(ProposeSweepAddressMsg, judgeAddress.Bytes(), reserveIdBuf.Bytes(), []byte(btcAddress))
+}
+
+// GetUserDepositKey returns the following key format
+// [HashString("UserDepositKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetUserDepositKey(twilightAddress sdk.AccAddress) []byte {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid twilight address"))
+	}
+
+	return forkstypes.AppendBytes(UserDepositKey, twilightAddress.Bytes())
 }

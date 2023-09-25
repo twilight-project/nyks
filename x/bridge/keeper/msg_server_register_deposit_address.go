@@ -34,6 +34,15 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcAddress)
 	}
 
+	// Convert msg.DepositAmount into sdk.Coins from uint64
+	depositAmount := sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(msg.SatoshiTestAmount)))
+
+	// Transfer the staking amount from the user's account to a module account
+	errTakeStake := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, depositAmount)
+	if errTakeStake != nil {
+		return nil, errTakeStake
+	}
+
 	errSetting := k.VoltKeeper.SetBtcAddressForClearingAccount(ctx, twilightAddress, *btcAddr)
 	if errSetting != nil {
 		return nil, errSetting

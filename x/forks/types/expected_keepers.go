@@ -18,7 +18,7 @@ type AccountKeeper interface {
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	//SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
@@ -49,6 +49,7 @@ type VoltKeeper interface {
 }
 
 type BridgeKeeper interface {
-	GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.AccAddress, error)
+	//GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.AccAddress, error)
+	CheckandConfirmUserDeposit(ctx sdk.Context, twilightAddress sdk.AccAddress) error
 	// Add other required methods
 }

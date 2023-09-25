@@ -30,6 +30,7 @@ type (
 		NyksKeeper    *nykskeeper.Keeper
 		VoltKeeper    *voltkeeper.Keeper
 		accountKeeper *authkeeper.AccountKeeper
+		BankKeeper    types.BankKeeper
 	}
 )
 
@@ -42,6 +43,7 @@ func NewKeeper(
 	nyksKeeper *nykskeeper.Keeper,
 	voltKeeper *voltkeeper.Keeper,
 	accKeeper *authkeeper.AccountKeeper,
+	bankKeeper types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -59,6 +61,7 @@ func NewKeeper(
 		NyksKeeper:    nyksKeeper,
 		accountKeeper: accKeeper,
 		VoltKeeper:    voltKeeper,
+		BankKeeper:    bankKeeper,
 	}
 }
 

@@ -141,8 +141,14 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		// Find the last unlocked reserve
 		reserveId := k.VoltKeeper.GetLastUnlockedReserve(ctx)
 
-		// n+1 to find next unlocking reserve
-		nextReserveUnlockingId := reserveId + 1
+		nextReserveUnlockingId := uint64(0)
+		if reserveId < volttypes.BtcReserveMaxLimit {
+			// n+1 to find next unlocking reserve
+			nextReserveUnlockingId = reserveId + 1
+		} else {
+			// reset to 1
+			nextReserveUnlockingId = 1
+		}
 
 		// Fetch the reserve
 		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, nextReserveUnlockingId)

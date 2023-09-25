@@ -29293,8 +29293,18 @@ paths:
                     type: string
                   BtcDepositAddress:
                     type: string
+                  depositAddressId:
+                    type: array
+                    items:
+                      type: string
+                      format: byte
                   BtcWithdrawAddress:
                     type: string
+                  withdrawAddressId:
+                    type: array
+                    items:
+                      type: string
+                      format: byte
                   ReserveAccountBalances:
                     type: array
                     items:
@@ -48658,6 +48668,16 @@ definitions:
             Amount:
               type: string
               format: uint64
+      depositAddressId:
+        type: array
+        items:
+          type: string
+          format: byte
+      withdrawAddressId:
+        type: array
+        items:
+          type: string
+          format: byte
     title: >-
       ClearingAccount is used to keep a mapping of how a user's addresses and
       its reserve account balances
@@ -49216,8 +49236,18 @@ definitions:
             type: string
           BtcDepositAddress:
             type: string
+          depositAddressId:
+            type: array
+            items:
+              type: string
+              format: byte
           BtcWithdrawAddress:
             type: string
+          withdrawAddressId:
+            type: array
+            items:
+              type: string
+              format: byte
           ReserveAccountBalances:
             type: array
             items:

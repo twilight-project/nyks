@@ -437,6 +437,7 @@ func New(
 		&app.nyksKeeper,
 		&app.VoltKeeper,
 		&app.AccountKeeper,
+		&app.BankKeeper,
 	)
 	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper, app.nyksKeeper, app.VoltKeeper)
 
