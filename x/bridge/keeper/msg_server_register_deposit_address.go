@@ -8,6 +8,10 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
+// const (
+// 	StakeAcctAddr = sdk.AccAddress(crypto.AddressHash([]byte(stakeAccountName)))
+// )
+
 // RegisterDepositAddress registers a bitcoin address along with a client's twilight address (a mapping) so that later on we can
 // identify an incoming btc deposit.
 func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.MsgRegisterBtcDepositAddress) (*types.MsgRegisterBtcDepositAddressResponse, error) {
@@ -35,18 +39,27 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 	}
 
 	// Convert msg.DepositAmount into sdk.Coins from uint64
-	depositAmount := sdk.NewCoins(sdk.NewCoin("sats", sdk.NewIntFromUint64(msg.SatoshiTestAmount)))
+	depositAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(msg.DepositAmount))
+
+	// Get the account's balance in nyks
+	balance := k.BankKeeper.GetBalance(ctx, twilightAddress, "nyks")
+
+	// Check if the balance is sufficient
+	if balance.IsLT(depositAmount) {
+		return nil, sdkerrors.Wrapf(types.ErrInsufficientBalanceInBank, "insufficient funds: %s < %s", balance, depositAmount)
+	}
 
 	// Transfer the staking amount from the user's account to a module account
-	errTakeStake := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, depositAmount)
+	errTakeStake := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(depositAmount))
 	if errTakeStake != nil {
 		return nil, errTakeStake
 	}
-
-	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.SatoshiTestAmount)
+	ctx.Logger().Error("SendFromModuleToAccount", depositAmount)
+	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.DepositAmount)
 	if errSetting != nil {
 		return nil, errSetting
 	}
+	ctx.Logger().Error("btcAddr: ", btcAddr)
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventRegisterBtcDepositAddress{

@@ -9,11 +9,11 @@ const TypeMsgRegisterBtcDepositAddress = "register_btc_deposit_address"
 
 var _ sdk.Msg = &MsgRegisterBtcDepositAddress{}
 
-func NewMsgRegisterBtcDepositAddress(depositAddress string, twilightDepositAddress string, satoshiTestAmount uint64) *MsgRegisterBtcDepositAddress {
+func NewMsgRegisterBtcDepositAddress(depositAddress string, twilightDepositAddress string, depositAmount uint64) *MsgRegisterBtcDepositAddress {
 	return &MsgRegisterBtcDepositAddress{
 		DepositAddress:         depositAddress,
 		TwilightDepositAddress: twilightDepositAddress,
-		SatoshiTestAmount:      satoshiTestAmount,
+		DepositAmount:          depositAmount,
 	}
 }
 
@@ -51,7 +51,7 @@ func (msg *MsgRegisterBtcDepositAddress) ValidateBasic() error {
 	}
 
 	// Validate the deposit amount
-	if msg.SatoshiTestAmount <= 0 {
+	if msg.DepositAmount <= 0 {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid deposit amount: must be greater than zero")
 	}
 	return nil

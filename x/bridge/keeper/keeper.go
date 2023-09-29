@@ -68,3 +68,13 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+// GetBankKeeper returns the bank keeper.
+func (k Keeper) GetBankKeeper() types.BankKeeper {
+	return k.BankKeeper
+}
+
+// GetAccountKeeper returns the account keeper.
+func (k Keeper) GetAccountKeeper() types.AccountKeeper {
+	return *k.accountKeeper
+}

@@ -46,7 +46,7 @@ message MsgConfirmBtcDepositResponse {
 message MsgRegisterBtcDepositAddress {
   string depositAddress         = 1;
   string twilightDepositAddress = 2;
-  uint64 satoshiTestAmount      = 3;
+  uint64 DepositAmount      = 3;
 }
 
 message MsgRegisterBtcDepositAddressResponse {}

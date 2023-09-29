@@ -179,6 +179,7 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		bridgemoduletypes.ModuleName:   nil,
 		zkosmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -691,6 +692,19 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 
 	// Add the module account to the x/auth store
 	app.AccountKeeper.SetModuleAccount(ctx, minterModuleAcc)
+
+	// Initialize or normalize the bridge module account (used for userdeposit staking)
+	normalizeModuleAccount(ctx, app.AccountKeeper, bridgemoduletypes.ModuleName)
+
+	// Fetch or create the bridge module account
+	bridgeModuleAcc := app.AccountKeeper.GetModuleAccount(ctx, bridgemoduletypes.ModuleName)
+	if bridgeModuleAcc == nil {
+		// Create a new module account (this should not happen if normalizeModuleAccount is working correctly)
+		bridgeModuleAcc = authtypes.NewEmptyModuleAccount(bridgemoduletypes.ModuleName)
+	}
+
+	// Add the module account to the x/auth store
+	app.AccountKeeper.SetModuleAccount(ctx, bridgeModuleAcc)
 
 	return res
 }

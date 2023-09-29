@@ -17,5 +17,6 @@ var (
 	ErrValidatorAddressNotFound    = sdkerrors.Register(ModuleName, 7, "validator address not found")
 	ErrJudgeValidatorNotFound      = sdkerrors.Register(ModuleName, 8, "validator for the judge not found")
 	ErrInsufficientBalance         = sdkerrors.Register(ModuleName, 9, "insufficient user balance in reserve")
-	ErrClearingAccountDoesNotExist = sdkerrors.Register(ModuleName, 10, "clearing account does not exist")
+	ErrInsufficientBalanceInBank   = sdkerrors.Register(ModuleName, 10, "insufficient balance in bank")
+	ErrClearingAccountDoesNotExist = sdkerrors.Register(ModuleName, 11, "clearing account does not exist")
 )
