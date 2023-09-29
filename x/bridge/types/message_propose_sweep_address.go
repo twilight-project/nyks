@@ -5,17 +5,19 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 const TypeMsgProposeSweepAddress = "propose_sweep_address"
 
 var _ sdk.Msg = &MsgProposeSweepAddress{}
 
-func NewMsgProposeSweepAddress(btcAddress string, btcScript string, reserveId uint64, judgeAddress string) *MsgProposeSweepAddress {
+func NewMsgProposeSweepAddress(btcAddress string, btcScript string, reserveId uint64, roundId uint64, judgeAddress string) *MsgProposeSweepAddress {
 	return &MsgProposeSweepAddress{
 		BtcAddress:   btcAddress,
 		BtcScript:    btcScript,
 		ReserveId:    reserveId,
+		RoundId:      roundId,
 		JudgeAddress: judgeAddress,
 	}
 }
@@ -60,9 +62,13 @@ func (msg *MsgProposeSweepAddress) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Invalid BTC script length")
 	}
 
-	// Validate Reserve ID
-	if msg.ReserveId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Reserve ID cannot be zero")
+	// Validate reserveId (it should be a positive number)
+	if msg.ReserveId <= 1 && msg.ReserveId >= volttypes.BtcReserveMaxLimit {
+		return sdkerrors.Wrapf(ErrInvalid, "invalid reserveId")
+	}
+
+	if msg.RoundId < 1 {
+		return sdkerrors.Wrapf(ErrInvalid, "invalid roundId")
 	}
 
 	// Validate Judge Address

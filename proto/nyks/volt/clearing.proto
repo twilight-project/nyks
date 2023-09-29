@@ -7,15 +7,14 @@ option go_package = "github.com/twilight-project/nyks/x/volt/types";
 message IndividualTwilightReserveAccountBalance {
     uint64 ReserveId = 1;
     uint64 Amount = 2;
-    
 }
 
 // ClearingAccount is used to keep a mapping of how a user's addresses and its reserve account balances
 message ClearingAccount {
     string TwilightAddress = 1;
     string BtcDepositAddress = 2;
-    repeated bytes depositAddressId = 3; 
+    uint32 depositIdentifier = 3; 
     string BtcWithdrawAddress = 4;
-    repeated bytes withdrawAddressId = 5;
+    uint32 withdrawIdentifier = 5;
     repeated IndividualTwilightReserveAccountBalance ReserveAccountBalances = 6;
 }

@@ -7,16 +7,19 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 const TypeMsgUnsignedTxSweep = "unsigned_tx_sweep"
 
 var _ sdk.Msg = &MsgUnsignedTxSweep{}
 
-func NewMsgUnsignedTxSweep(txId string, btcUnsignedSweepTx string, judgeAddress string) *MsgUnsignedTxSweep {
+func NewMsgUnsignedTxSweep(txId string, btcUnsignedSweepTx string, reserveId uint64, roundId uint64, judgeAddress string) *MsgUnsignedTxSweep {
 	return &MsgUnsignedTxSweep{
 		TxId:               txId,
 		BtcUnsignedSweepTx: btcUnsignedSweepTx,
+		ReserveId:          reserveId,
+		RoundId:            roundId,
 		JudgeAddress:       judgeAddress,
 	}
 }
@@ -46,6 +49,15 @@ func (msg *MsgUnsignedTxSweep) ValidateBasic() error {
 	// Validate txId (Cosmos transaction ID)
 	if !isValidTxId(msg.TxId) {
 		return errors.New("invalid txId format")
+	}
+
+	// Validate reserveId (it should be a positive number)
+	if msg.ReserveId <= 1 && msg.ReserveId >= volttypes.BtcReserveMaxLimit {
+		return sdkerrors.Wrapf(ErrInvalid, "invalid reserveId")
+	}
+
+	if msg.RoundId < 1 {
+		return sdkerrors.Wrapf(ErrInvalid, "invalid roundId")
 	}
 
 	// Validate judgeAddress (Cosmos address)

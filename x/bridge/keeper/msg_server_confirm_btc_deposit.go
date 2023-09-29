@@ -33,7 +33,11 @@ func (k msgServer) ConfirmBtcDeposit(goCtx context.Context, msg *types.MsgConfir
 
 	_, found := k.VoltKeeper.GetClearingAccount(ctx, sdk.AccAddress(twilightDepositAddress))
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrClearingAccountDoesNotExist, "Clearing account for given twilight address doesn't exist")
+		// check GetBtcDepositAddressByTwilightAddress to see if it exists in uncofirmed deposits
+		_, found := k.VoltKeeper.GetBtcDepositAddressByTwilightAddress(ctx, sdk.AccAddress(twilightDepositAddress))
+		if !found {
+			return nil, sdkerrors.Wrap(types.ErrClearingAccountDoesNotExist, "Clearing account for given twilight address doesn't exist")
+		}
 	}
 
 	any, err := codectypes.NewAnyWithValue(msg)

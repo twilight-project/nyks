@@ -161,15 +161,18 @@ message MsgConfirmBtcWithdrawResponse {}
 message MsgUnsignedTxSweep {
   string txId               = 1;
   string btcUnsignedSweepTx = 2;
-  string judgeAddress       = 3;
+  uint64 reserveId         = 3;
+  uint64 roundId            = 4;
+  string judgeAddress       = 5;
 }
 
 message MsgUnsignedTxSweepResponse {}
 
 message MsgUnsignedTxRefund {
   uint64 reserveId           = 1;
-  string btcUnsignedRefundTx = 2;
-  string judgeAddress        = 3;
+  uint64 roundId             = 2;
+  string btcUnsignedRefundTx = 3;
+  string judgeAddress        = 4;
 }
 
 message MsgUnsignedTxRefundResponse {}
@@ -178,7 +181,8 @@ message MsgProposeSweepAddress {
   string btcAddress   = 1;
   string btcScript    = 2;
   uint64 reserveId    = 3;
-  string judgeAddress = 4;
+  uint64 roundId      = 4;
+  string judgeAddress = 5;
 }
 
 message MsgProposeSweepAddressResponse {}

@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsignedTxSweep) (*types.MsgUnsignedTxSweepResponse, error) {
@@ -26,8 +28,14 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
+	// Check that reserve exists
+	_, errRes := k.VoltKeeper.GetBtcReserve(ctx, msg.ReserveId)
+	if errRes != nil {
+		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
+	}
+
 	// set unsigned tx sweep
-	errSet := k.SetUnsignedTxSweepMsg(ctx, msg.TxId, msg.BtcUnsignedSweepTx, judgeAddress)
+	errSet := k.SetUnsignedTxSweepMsg(ctx, msg.TxId, msg.BtcUnsignedSweepTx, msg.ReserveId, msg.RoundId, judgeAddress)
 	if errSet != nil {
 		return nil, sdkerrors.Wrap(errSet, "Could not set the transaction sweep")
 	}
@@ -36,6 +44,8 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		&types.EventUnsignedTxSweep{
 			Message:         msg.Type(),
 			TxId:            msg.TxId,
+			ReserveId:       msg.ReserveId,
+			RoundId:         msg.RoundId,
 			UnsignedSweepTx: msg.BtcUnsignedSweepTx,
 			JudgeAddress:    msg.JudgeAddress,
 		},

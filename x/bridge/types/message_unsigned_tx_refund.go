@@ -1,8 +1,6 @@
 package types
 
 import (
-	"errors"
-
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,9 +11,10 @@ const TypeMsgUnsignedTxRefund = "unsigned_tx_refund"
 
 var _ sdk.Msg = &MsgUnsignedTxRefund{}
 
-func NewMsgUnsignedTxRefund(reserveId uint64, btcUnsignedRefundTx string, judgeAddress string) *MsgUnsignedTxRefund {
+func NewMsgUnsignedTxRefund(reserveId uint64, roundId uint64, btcUnsignedRefundTx string, judgeAddress string) *MsgUnsignedTxRefund {
 	return &MsgUnsignedTxRefund{
 		ReserveId:           reserveId,
+		RoundId:             roundId,
 		BtcUnsignedRefundTx: btcUnsignedRefundTx,
 		JudgeAddress:        judgeAddress,
 	}
@@ -45,12 +44,16 @@ func (msg *MsgUnsignedTxRefund) GetSignBytes() []byte {
 func (msg *MsgUnsignedTxRefund) ValidateBasic() error {
 	// Validate reserveId (it should be a positive number)
 	if msg.ReserveId <= 1 && msg.ReserveId >= volttypes.BtcReserveMaxLimit {
-		return errors.New("invalid reserveId")
+		return sdkerrors.Wrapf(ErrInvalid, "invalid reserveId")
+	}
+
+	if msg.RoundId < 1 {
+		return sdkerrors.Wrapf(ErrInvalid, "invalid roundId")
 	}
 
 	// Validate judgeAddress (Cosmos address)
 	if _, err := types.AccAddressFromBech32(msg.JudgeAddress); err != nil {
-		return errors.New("invalid judgeAddress format")
+		return sdkerrors.Wrapf(ErrInvalid, "invalid judgeAddress format")
 	}
 
 	// Validate BtcUnsignedRefundTx (Bitcoin transaction)

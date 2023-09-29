@@ -28,10 +28,10 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
-	address, foundExistingBtcAddress := k.VoltKeeper.GetBtcAddressByTwilightAddress(ctx, twilightAddress)
+	address, foundExistingBtcAddress := k.VoltKeeper.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
 
 	if foundExistingBtcAddress {
-		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcAddress)
+		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.DepositAddress)
 	}
 
 	// Convert msg.DepositAmount into sdk.Coins from uint64
@@ -43,10 +43,11 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, errTakeStake
 	}
 
-	errSetting := k.VoltKeeper.SetBtcAddressForClearingAccount(ctx, twilightAddress, *btcAddr)
+	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.SatoshiTestAmount)
 	if errSetting != nil {
 		return nil, errSetting
 	}
+
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventRegisterBtcDepositAddress{
 			Message:        msg.Type(),

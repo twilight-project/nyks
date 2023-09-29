@@ -27474,6 +27474,9 @@ paths:
                   reserveId:
                     type: string
                     format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
                   judgeAddress:
                     type: string
         default:
@@ -27530,6 +27533,9 @@ paths:
                     btcScript:
                       type: string
                     reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
                       type: string
                       format: uint64
                     judgeAddress:
@@ -27657,8 +27663,18 @@ paths:
                       type: string
                     BtcDepositAddress:
                       type: string
+                    depositAddressId:
+                      type: array
+                      items:
+                        type: string
+                        format: byte
                     BtcWithdrawAddress:
                       type: string
+                    withdrawAddressId:
+                      type: array
+                      items:
+                        type: string
+                        format: byte
                     ReserveAccountBalances:
                       type: array
                       items:
@@ -27920,6 +27936,9 @@ paths:
                   reserveId:
                     type: string
                     format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
                   btcUnsignedRefundTx:
                     type: string
                   judgeAddress:
@@ -27976,6 +27995,9 @@ paths:
                     reserveId:
                       type: string
                       format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
                     btcUnsignedRefundTx:
                       type: string
                     judgeAddress:
@@ -28023,6 +28045,12 @@ paths:
                     type: string
                   btcUnsignedSweepTx:
                     type: string
+                  reserveId:
+                    type: string
+                    format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
                   judgeAddress:
                     type: string
         default:
@@ -28073,6 +28101,12 @@ paths:
                       type: string
                     btcUnsignedSweepTx:
                       type: string
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
                     judgeAddress:
                       type: string
         default:
@@ -29293,18 +29327,14 @@ paths:
                     type: string
                   BtcDepositAddress:
                     type: string
-                  depositAddressId:
-                    type: array
-                    items:
-                      type: string
-                      format: byte
+                  depositIdentifier:
+                    type: integer
+                    format: int64
                   BtcWithdrawAddress:
                     type: string
-                  withdrawAddressId:
-                    type: array
-                    items:
-                      type: string
-                      format: byte
+                  withdrawIdentifier:
+                    type: integer
+                    format: int64
                   ReserveAccountBalances:
                     type: array
                     items:
@@ -48280,6 +48310,9 @@ definitions:
       reserveId:
         type: string
         format: uint64
+      roundId:
+        type: string
+        format: uint64
       judgeAddress:
         type: string
   twilightproject.nyks.bridge.MsgProposeSweepAddressResponse:
@@ -48349,6 +48382,9 @@ definitions:
       reserveId:
         type: string
         format: uint64
+      roundId:
+        type: string
+        format: uint64
       btcUnsignedRefundTx:
         type: string
       judgeAddress:
@@ -48362,6 +48398,12 @@ definitions:
         type: string
       btcUnsignedSweepTx:
         type: string
+      reserveId:
+        type: string
+        format: uint64
+      roundId:
+        type: string
+        format: uint64
       judgeAddress:
         type: string
   twilightproject.nyks.bridge.MsgUnsignedTxSweepResponse:
@@ -48444,6 +48486,9 @@ definitions:
           reserveId:
             type: string
             format: uint64
+          roundId:
+            type: string
+            format: uint64
           judgeAddress:
             type: string
   twilightproject.nyks.bridge.QueryProposeSweepAddressesAllResponse:
@@ -48459,6 +48504,9 @@ definitions:
             btcScript:
               type: string
             reserveId:
+              type: string
+              format: uint64
+            roundId:
               type: string
               format: uint64
             judgeAddress:
@@ -48489,8 +48537,18 @@ definitions:
               type: string
             BtcDepositAddress:
               type: string
+            depositAddressId:
+              type: array
+              items:
+                type: string
+                format: byte
             BtcWithdrawAddress:
               type: string
+            withdrawAddressId:
+              type: array
+              items:
+                type: string
+                format: byte
             ReserveAccountBalances:
               type: array
               items:
@@ -48587,6 +48645,9 @@ definitions:
             reserveId:
               type: string
               format: uint64
+            roundId:
+              type: string
+              format: uint64
             btcUnsignedRefundTx:
               type: string
             judgeAddress:
@@ -48598,6 +48659,9 @@ definitions:
         type: object
         properties:
           reserveId:
+            type: string
+            format: uint64
+          roundId:
             type: string
             format: uint64
           btcUnsignedRefundTx:
@@ -48616,6 +48680,12 @@ definitions:
               type: string
             btcUnsignedSweepTx:
               type: string
+            reserveId:
+              type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
             judgeAddress:
               type: string
   twilightproject.nyks.bridge.QueryUnsignedTxSweepResponse:
@@ -48628,6 +48698,12 @@ definitions:
             type: string
           btcUnsignedSweepTx:
             type: string
+          reserveId:
+            type: string
+            format: uint64
+          roundId:
+            type: string
+            format: uint64
           judgeAddress:
             type: string
   twilightproject.nyks.bridge.QueryWithdrawBtcRequestAllResponse:
@@ -48655,8 +48731,18 @@ definitions:
         type: string
       BtcDepositAddress:
         type: string
+      depositAddressId:
+        type: array
+        items:
+          type: string
+          format: byte
       BtcWithdrawAddress:
         type: string
+      withdrawAddressId:
+        type: array
+        items:
+          type: string
+          format: byte
       ReserveAccountBalances:
         type: array
         items:
@@ -48668,16 +48754,12 @@ definitions:
             Amount:
               type: string
               format: uint64
-      depositAddressId:
-        type: array
-        items:
-          type: string
-          format: byte
-      withdrawAddressId:
-        type: array
-        items:
-          type: string
-          format: byte
+      depositIdentifier:
+        type: integer
+        format: int64
+      withdrawIdentifier:
+        type: integer
+        format: int64
     title: >-
       ClearingAccount is used to keep a mapping of how a user's addresses and
       its reserve account balances
@@ -49236,18 +49318,14 @@ definitions:
             type: string
           BtcDepositAddress:
             type: string
-          depositAddressId:
-            type: array
-            items:
-              type: string
-              format: byte
+          depositIdentifier:
+            type: integer
+            format: int64
           BtcWithdrawAddress:
             type: string
-          withdrawAddressId:
-            type: array
-            items:
-              type: string
-              format: byte
+          withdrawIdentifier:
+            type: integer
+            format: int64
           ReserveAccountBalances:
             type: array
             items:

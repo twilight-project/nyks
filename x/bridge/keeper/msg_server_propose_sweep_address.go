@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProposeSweepAddress) (*types.MsgProposeSweepAddressResponse, error) {
@@ -31,8 +33,14 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
+	// Check that reserve exists
+	_, errRes := k.VoltKeeper.GetBtcReserve(ctx, msg.ReserveId)
+	if errRes != nil {
+		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
+	}
+
 	// set propose sweep address
-	errSet := k.SetProposeSweepAddress(ctx, *btcAddr, msg.BtcScript, msg.ReserveId, judgeAddress)
+	errSet := k.SetProposeSweepAddress(ctx, *btcAddr, msg.BtcScript, msg.ReserveId, msg.RoundId, judgeAddress)
 	if errSet != nil {
 		return nil, sdkerrors.Wrap(errSet, "Could not set the propose sweep address")
 	}

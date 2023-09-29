@@ -79,7 +79,27 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 	// Get the clearing account
 	clearingAccount, found := k.GetClearingAccount(ctx, twilightAddress)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		// The case where user is depositing for the first time
+		// Fetch user's btc deposit address from GetBtcDepositAddressByTwilightAddress
+		btcDeposit, found := k.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
+		if !found {
+			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
+		}
+
+		// Fetch next unique deposit identifier from IncrementCounter
+		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
+
+		// Set the clearing account
+		errSetting := k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
+		if errSetting != nil {
+			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		}
+
+		// SetBtcDepositConfirmed sets the deposit as confirmed
+		errSetting = k.SetBtcDepositConfirmed(ctx, twilightAddress)
+		if errSetting != nil {
+			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		}
 	}
 
 	// Update the clearing account

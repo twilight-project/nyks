@@ -66,15 +66,18 @@ message EventProposeRefundHash {
 message EventUnsignedTxSweep {
     string message = 1;
     string txId = 2;
-    string unsignedSweepTx = 3;
-    string judgeAddress = 4;
+    uint64 reserveId = 3;
+    uint64 roundId = 4;
+    string unsignedSweepTx = 5;
+    string judgeAddress = 6;
 }
 
 message EventUnsignedTxRefund {
     string message = 1;
     uint64 reserveId = 2;
-    string unsignedRefundTx = 3;
-    string judgeAddress = 4;
+    uint64 roundId = 3;
+    string unsignedRefundTx = 4;
+    string judgeAddress = 5;
 }
 
 message EventProposeSweepAddress{

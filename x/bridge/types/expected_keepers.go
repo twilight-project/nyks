@@ -33,8 +33,8 @@ type NyksKeeper interface {
 type VoltKeeper interface {
 	GetBtcReserve(ctx sdk.Context, reserveId uint64) (*volttypes.BtcReserve, error)
 	RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, error)
-	SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr BtcAddress) error
-	GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *BtcAddress, found bool)
+	SetBtcDeposit(ctx sdk.Context, depositAddress BtcAddress, twilightDepositAddress sdk.AccAddress, satoshiTestAmount uint64) error
+	GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcDeposit *volttypes.BtcDepositAddress, found bool)
 	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
 	GetAllClearingAccounts(ctx sdk.Context) ([]volttypes.ClearingAccount, error)
 }

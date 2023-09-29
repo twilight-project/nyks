@@ -24,7 +24,7 @@ func (k Keeper) SetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddre
 }
 
 // SetBtcAddressForClearingAccount sets the btc address for a given twilight address
-func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr bridgetypes.BtcAddress) error {
+func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr string, depositIdentifer uint32) error {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
@@ -32,7 +32,8 @@ func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress
 	// Create a new ClearingAccount message
 	account := &types.ClearingAccount{
 		TwilightAddress:   twilightAddress.String(),
-		BtcDepositAddress: btcAddr.GetBtcAddress(),
+		BtcDepositAddress: btcAddr,
+		DepositIdentifier: depositIdentifer,
 		// Other fields will be empty
 	}
 
@@ -43,8 +44,8 @@ func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress
 	return nil
 }
 
-// GetBtcAddressByTwilightAddress returns the btc address for a given twilight address
-func (k Keeper) GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *bridgetypes.BtcAddress, found bool) {
+// GetBtcClearingAddressByTwilightAddress returns the btc address for a given twilight address
+func (k Keeper) GetBtcClearingAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *bridgetypes.BtcAddress, found bool) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetClearingAccountKey(twilightAddress)
 	if !store.Has(aKey) {
