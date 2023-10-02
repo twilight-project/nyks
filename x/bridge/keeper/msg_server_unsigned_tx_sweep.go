@@ -18,7 +18,7 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
-	_, foundDuplicate := k.GetUnsignedTxSweepMsg(ctx, msg.TxId, judgeAddress)
+	_, foundDuplicate := k.GetUnsignedTxSweepMsg(ctx, msg.ReserveId, msg.RoundId)
 	if foundDuplicate != false {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
 	}

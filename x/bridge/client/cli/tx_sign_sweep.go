@@ -15,13 +15,20 @@ var _ = strconv.Itoa(0)
 
 func CmdSignSweep() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sign-sweep [reserve-address] [signer-address] [sweep-signatures]",
+		Use:   "sign-sweep [reserve-id] [round-id] [signer-address] [sweep-signatures]",
 		Short: "Broadcast message SignSweep",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argReserveAddress := args[0]
-			argSignerPublicKey := args[1]
-			argSweepSignatures := strings.Split(args[2], ",")
+			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+			argRoundId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+			argSignerPublicKey := args[2]
+			argSweepSignatures := strings.Split(args[3], ",")
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -29,7 +36,8 @@ func CmdSignSweep() *cobra.Command {
 			}
 
 			msg := types.NewMsgSignSweep(
-				argReserveAddress,
+				argReserveId,
+				argRoundId,
 				argSignerPublicKey,
 				argSweepSignatures,
 				clientCtx.GetFromAddress().String(),

@@ -13,12 +13,18 @@ var _ = strconv.Itoa(0)
 
 func CmdQueryUnsignedTxSweep() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unsigned-tx-sweep [tx-id] [judge-address]",
+		Use:   "unsigned-tx-sweep [reserve-id] [round-id]",
 		Short: "Query UnsignedTxSweep",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqTxId := args[0]
-			reqJudgeAddress := args[1]
+			reqReserveId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+			reqRoundId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -28,9 +34,8 @@ func CmdQueryUnsignedTxSweep() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QueryUnsignedTxSweepRequest{
-
-				TxId:         reqTxId,
-				JudgeAddress: reqJudgeAddress,
+				ReserveId: reqReserveId,
+				RoundId:   reqRoundId,
 			}
 
 			res, err := queryClient.UnsignedTxSweep(cmd.Context(), params)

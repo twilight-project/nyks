@@ -113,23 +113,43 @@ func GetBtcWithdrawRequestKey(twilightAddress sdk.AccAddress, reserveAddress Btc
 }
 
 // GetBtcSignRefundMsgKey returns the following key format
-// [HashString("BtcSignRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
-func GetBtcSignRefundMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAddress, refundSignature string) []byte {
-	if err := sdk.VerifyAddressFormat(btcOracleAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid btc oracle address"))
+// [HashString("BtcSignRefundMsgKey")][1][1]
+func GetBtcSignRefundMsgKey(reserveId uint64, roundId uint64) []byte {
+
+	// Convert reserveId to bytes
+	reserveIdBuf := new(bytes.Buffer)
+	err := binary.Write(reserveIdBuf, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(BtcSignRefundMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(refundSignature))
+	roundIdBuf := new(bytes.Buffer)
+	err = binary.Write(roundIdBuf, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(BtcSignRefundMsgKey, reserveIdBuf.Bytes(), roundIdBuf.Bytes())
 }
 
 // GetBtcSignSweepMsgKey returns the following key format
-// [HashString("BtcSignSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd][3045022100a6fbb0b1a49b65789e2c33a76c12488f66e12edf24a6ddacbe6a4e4e44f4d79f02205ad4c7e0bb27ae984e7f2cd9d41423f68b2a0c8aaee0f1c409bdd7e3f67d3c7d]
-func GetBtcSignSweepMsgKey(btcOracleAddress sdk.AccAddress, reserveAddress BtcAddress, sweepSignatures string) []byte {
-	if err := sdk.VerifyAddressFormat(btcOracleAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid btc oracle address"))
+// [HashString("BtcSignSweepMsgKey")][1][1]
+func GetBtcSignSweepMsgKey(reserveId uint64, roundId uint64) []byte {
+
+	// Convert reserveId to bytes
+	reserveIdBuf := new(bytes.Buffer)
+	err := binary.Write(reserveIdBuf, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(BtcSignSweepMsgKey, btcOracleAddress.Bytes(), []byte(reserveAddress.BtcAddress), []byte(sweepSignatures))
+	roundIdBuf := new(bytes.Buffer)
+	err = binary.Write(roundIdBuf, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(BtcSignSweepMsgKey, reserveIdBuf.Bytes(), roundIdBuf.Bytes())
 }
 
 // GetBtcBroadcastTxSweepMsgKey returns the following key format
@@ -163,21 +183,26 @@ func GetBtcProposeRefundHashMsgKey(judgeAddress sdk.AccAddress, refundHash strin
 }
 
 // GetUnsignedTxSweepMsgKey returns the following key format
-// [HashString("UnsignedTxSweepMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][4A5853994766261FC21283841EF51B740FBD9917CAEA4A1038663D216138294B]
-func GetUnsignedTxSweepMsgKey(judgeAddress sdk.AccAddress, txId string) []byte {
-	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid judge address"))
+// [HashString("UnsignedTxSweepMsgKey")][1][1]
+func GetUnsignedTxSweepMsgKey(reserveId uint64, roundId uint64) []byte {
+	reserveIdBuf := new(bytes.Buffer)
+	err := binary.Write(reserveIdBuf, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(UnsignedTxSweepMsgKey, judgeAddress.Bytes(), []byte(txId))
+	roundIdBuf := new(bytes.Buffer)
+	err = binary.Write(roundIdBuf, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(UnsignedTxSweepMsgKey, reserveIdBuf.Bytes(), roundIdBuf.Bytes())
 }
 
 // GetUnsignedTxRefundMsgKey returns the following key format
-// [HashString("UnsignedTxRefundMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1][bc1m]
-func GetUnsignedTxRefundMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, btcTxPrefix string) []byte {
-	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid judge address"))
-	}
+// [HashString("UnsignedTxRefundMsgKey")][1][1]
+func GetUnsignedTxRefundMsgKey(reserveId uint64, roundId uint64) []byte {
 
 	reserveIdBuf := new(bytes.Buffer)
 	err := binary.Write(reserveIdBuf, binary.LittleEndian, reserveId)
@@ -185,15 +210,18 @@ func GetUnsignedTxRefundMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, bt
 		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(UnsignedTxRefundMsgKey, judgeAddress.Bytes(), reserveIdBuf.Bytes(), []byte(btcTxPrefix))
+	roundIdBuf := new(bytes.Buffer)
+	err = binary.Write(roundIdBuf, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(UnsignedTxRefundMsgKey, reserveIdBuf.Bytes(), roundIdBuf.Bytes())
 }
 
 // GetProposeSweepAddressMsgKey returns the following key format
-// [HashString("ProposeSweepAddressMsgKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd]
-func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64, btcAddress string) []byte {
-	if err := sdk.VerifyAddressFormat(judgeAddress); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid judge address"))
-	}
+// [HashString("ProposeSweepAddressMsgKey")][1][1]
+func GetProposeSweepAddressMsgKey(reserveId uint64, roundId uint64) []byte {
 
 	reserveIdBuf := new(bytes.Buffer)
 	err := binary.Write(reserveIdBuf, binary.LittleEndian, reserveId)
@@ -201,5 +229,11 @@ func GetProposeSweepAddressMsgKey(judgeAddress sdk.AccAddress, reserveId uint64,
 		panic("Failed to convert uint64 to bytes")
 	}
 
-	return forkstypes.AppendBytes(ProposeSweepAddressMsg, judgeAddress.Bytes(), reserveIdBuf.Bytes(), []byte(btcAddress))
+	roundIdBuf := new(bytes.Buffer)
+	err = binary.Write(roundIdBuf, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(ProposeSweepAddressMsg, reserveIdBuf.Bytes(), roundIdBuf.Bytes())
 }

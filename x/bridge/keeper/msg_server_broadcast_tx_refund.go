@@ -28,7 +28,7 @@ func (k msgServer) BroadcastTxRefund(goCtx context.Context, msg *types.MsgBroadc
 	}
 
 	// set broadcast refund message
-	errSet := k.SetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
+	errSet := k.SetBtcBroadcastTxRefundMsg(ctx, msg.ReserveId, msg.RoundId, judgeAddress, msg.SignedRefundTx)
 	if errSet != nil {
 		return nil, errSet
 	}
@@ -36,6 +36,8 @@ func (k msgServer) BroadcastTxRefund(goCtx context.Context, msg *types.MsgBroadc
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventBroadcastTxRefund{
 			Message:        msg.Type(),
+			ReserveId:      msg.ReserveId,
+			RoundId:        msg.RoundId,
 			SignedRefundTx: msg.SignedRefundTx,
 			JudgeAddress:   msg.JudgeAddress,
 		},

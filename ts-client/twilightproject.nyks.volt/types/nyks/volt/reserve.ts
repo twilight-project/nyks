@@ -18,6 +18,15 @@ export interface BtcReserve {
   PrivatePoolValue: number;
   PublicValue: number;
   FeePool: number;
+  UnlockHeight: number;
+  RoundId: number;
+}
+
+export interface ReserveWithdrawPool {
+  ReserveID: number;
+  RoundID: number;
+  /** vector of identifiers */
+  Identifiers: Uint8Array[];
 }
 
 function createBaseBtcReserve(): BtcReserve {
@@ -30,6 +39,8 @@ function createBaseBtcReserve(): BtcReserve {
     PrivatePoolValue: 0,
     PublicValue: 0,
     FeePool: 0,
+    UnlockHeight: 0,
+    RoundId: 0,
   };
 }
 
@@ -58,6 +69,12 @@ export const BtcReserve = {
     }
     if (message.FeePool !== 0) {
       writer.uint32(64).uint64(message.FeePool);
+    }
+    if (message.UnlockHeight !== 0) {
+      writer.uint32(72).uint64(message.UnlockHeight);
+    }
+    if (message.RoundId !== 0) {
+      writer.uint32(80).uint64(message.RoundId);
     }
     return writer;
   },
@@ -93,6 +110,12 @@ export const BtcReserve = {
         case 8:
           message.FeePool = longToNumber(reader.uint64() as Long);
           break;
+        case 9:
+          message.UnlockHeight = longToNumber(reader.uint64() as Long);
+          break;
+        case 10:
+          message.RoundId = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -111,6 +134,8 @@ export const BtcReserve = {
       PrivatePoolValue: isSet(object.PrivatePoolValue) ? Number(object.PrivatePoolValue) : 0,
       PublicValue: isSet(object.PublicValue) ? Number(object.PublicValue) : 0,
       FeePool: isSet(object.FeePool) ? Number(object.FeePool) : 0,
+      UnlockHeight: isSet(object.UnlockHeight) ? Number(object.UnlockHeight) : 0,
+      RoundId: isSet(object.RoundId) ? Number(object.RoundId) : 0,
     };
   },
 
@@ -125,6 +150,8 @@ export const BtcReserve = {
     message.PrivatePoolValue !== undefined && (obj.PrivatePoolValue = Math.round(message.PrivatePoolValue));
     message.PublicValue !== undefined && (obj.PublicValue = Math.round(message.PublicValue));
     message.FeePool !== undefined && (obj.FeePool = Math.round(message.FeePool));
+    message.UnlockHeight !== undefined && (obj.UnlockHeight = Math.round(message.UnlockHeight));
+    message.RoundId !== undefined && (obj.RoundId = Math.round(message.RoundId));
     return obj;
   },
 
@@ -138,6 +165,79 @@ export const BtcReserve = {
     message.PrivatePoolValue = object.PrivatePoolValue ?? 0;
     message.PublicValue = object.PublicValue ?? 0;
     message.FeePool = object.FeePool ?? 0;
+    message.UnlockHeight = object.UnlockHeight ?? 0;
+    message.RoundId = object.RoundId ?? 0;
+    return message;
+  },
+};
+
+function createBaseReserveWithdrawPool(): ReserveWithdrawPool {
+  return { ReserveID: 0, RoundID: 0, Identifiers: [] };
+}
+
+export const ReserveWithdrawPool = {
+  encode(message: ReserveWithdrawPool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ReserveID !== 0) {
+      writer.uint32(8).uint64(message.ReserveID);
+    }
+    if (message.RoundID !== 0) {
+      writer.uint32(16).uint64(message.RoundID);
+    }
+    for (const v of message.Identifiers) {
+      writer.uint32(26).bytes(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReserveWithdrawPool {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReserveWithdrawPool();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ReserveID = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.RoundID = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.Identifiers.push(reader.bytes());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ReserveWithdrawPool {
+    return {
+      ReserveID: isSet(object.ReserveID) ? Number(object.ReserveID) : 0,
+      RoundID: isSet(object.RoundID) ? Number(object.RoundID) : 0,
+      Identifiers: Array.isArray(object?.Identifiers) ? object.Identifiers.map((e: any) => bytesFromBase64(e)) : [],
+    };
+  },
+
+  toJSON(message: ReserveWithdrawPool): unknown {
+    const obj: any = {};
+    message.ReserveID !== undefined && (obj.ReserveID = Math.round(message.ReserveID));
+    message.RoundID !== undefined && (obj.RoundID = Math.round(message.RoundID));
+    if (message.Identifiers) {
+      obj.Identifiers = message.Identifiers.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
+    } else {
+      obj.Identifiers = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ReserveWithdrawPool>, I>>(object: I): ReserveWithdrawPool {
+    const message = createBaseReserveWithdrawPool();
+    message.ReserveID = object.ReserveID ?? 0;
+    message.RoundID = object.RoundID ?? 0;
+    message.Identifiers = object.Identifiers?.map((e) => e) || [];
     return message;
   },
 };
@@ -160,6 +260,31 @@ var globalThis: any = (() => {
   }
   throw "Unable to locate global object";
 })();
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if (globalThis.Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if (globalThis.Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

@@ -17,14 +17,9 @@ func (k Keeper) UnsignedTxSweep(goCtx context.Context, req *types.QueryUnsignedT
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	judgeAddress, err := sdk.AccAddressFromBech32(req.JudgeAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	unsignedTxSweep, found := k.GetUnsignedTxSweepMsg(ctx, req.TxId, judgeAddress)
+	unsignedTxSweep, found := k.GetUnsignedTxSweepMsg(ctx, req.ReserveId, req.RoundId)
 	if found != true {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "An unsignedTxSweep doesn't exist with the given txId or judgeAddress")
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "An unsignedTxSweep doesn't exist with the given reserve id and round id")
 	}
 
 	return &types.QueryUnsignedTxSweepResponse{UnsignedTxSweepMsg: *unsignedTxSweep}, nil

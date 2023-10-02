@@ -18,8 +18,7 @@ func (k msgServer) UnsignedTxRefund(goCtx context.Context, msg *types.MsgUnsigne
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
-	btcTxPrefix := msg.BtcUnsignedRefundTx[:10]
-	_, foundDuplicate := k.GetUnsignedTxRefundMsg(ctx, msg.ReserveId, judgeAddress, btcTxPrefix)
+	_, foundDuplicate := k.GetUnsignedTxRefundMsg(ctx, msg.ReserveId, msg.RoundId)
 	if foundDuplicate != false {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxRefund already exists!")
 	}

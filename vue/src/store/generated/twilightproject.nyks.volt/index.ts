@@ -2,11 +2,13 @@ import { Client, registry, MissingWalletError } from 'twilight-project-nyks-clie
 
 import { IndividualTwilightReserveAccountBalance } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { ClearingAccount } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { BtcDepositAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { BtcReserve } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { ReserveWithdrawPool } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 
 
-export { IndividualTwilightReserveAccountBalance, ClearingAccount, Params, BtcReserve };
+export { IndividualTwilightReserveAccountBalance, ClearingAccount, BtcDepositAddress, Params, BtcReserve, ReserveWithdrawPool };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -44,8 +46,10 @@ const getDefaultState = () => {
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
 						ClearingAccount: getStructure(ClearingAccount.fromPartial({})),
+						BtcDepositAddress: getStructure(BtcDepositAddress.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						BtcReserve: getStructure(BtcReserve.fromPartial({})),
+						ReserveWithdrawPool: getStructure(ReserveWithdrawPool.fromPartial({})),
 						
 		},
 		_Registry: registry,

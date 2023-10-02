@@ -30,28 +30,34 @@ export interface EventWithdrawBtcRequest {
 
 export interface EventSignRefund {
   message: string;
-  reserveAddress: string;
-  signerAddress: string;
+  reserveId: number;
+  roundId: number;
+  signerPublicKey: string;
   refundSignature: string;
   btcOracleAddress: string;
 }
 
 export interface EventSignSweep {
   message: string;
-  reserveAddress: string;
-  signerAddress: string;
-  sweepSignature: string;
+  reserveId: number;
+  roundId: number;
+  signerPublicKey: string;
+  sweepSignature: string[];
   btcOracleAddress: string;
 }
 
 export interface EventBroadcastTxSweep {
   message: string;
+  reserveId: number;
+  roundId: number;
   signedSweepTx: string;
   judgeAddress: string;
 }
 
 export interface EventBroadcastTxRefund {
   message: string;
+  reserveId: number;
+  roundId: number;
   signedRefundTx: string;
   judgeAddress: string;
 }
@@ -65,6 +71,8 @@ export interface EventProposeRefundHash {
 export interface EventUnsignedTxSweep {
   message: string;
   txId: string;
+  reserveId: number;
+  roundId: number;
   unsignedSweepTx: string;
   judgeAddress: string;
 }
@@ -72,6 +80,7 @@ export interface EventUnsignedTxSweep {
 export interface EventUnsignedTxRefund {
   message: string;
   reserveId: number;
+  roundId: number;
   unsignedRefundTx: string;
   judgeAddress: string;
 }
@@ -355,7 +364,7 @@ export const EventWithdrawBtcRequest = {
 };
 
 function createBaseEventSignRefund(): EventSignRefund {
-  return { message: "", reserveAddress: "", signerAddress: "", refundSignature: "", btcOracleAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, signerPublicKey: "", refundSignature: "", btcOracleAddress: "" };
 }
 
 export const EventSignRefund = {
@@ -363,17 +372,20 @@ export const EventSignRefund = {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
-    if (message.reserveAddress !== "") {
-      writer.uint32(18).string(message.reserveAddress);
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
     }
-    if (message.signerAddress !== "") {
-      writer.uint32(26).string(message.signerAddress);
+    if (message.roundId !== 0) {
+      writer.uint32(24).uint64(message.roundId);
+    }
+    if (message.signerPublicKey !== "") {
+      writer.uint32(34).string(message.signerPublicKey);
     }
     if (message.refundSignature !== "") {
-      writer.uint32(34).string(message.refundSignature);
+      writer.uint32(42).string(message.refundSignature);
     }
     if (message.btcOracleAddress !== "") {
-      writer.uint32(42).string(message.btcOracleAddress);
+      writer.uint32(50).string(message.btcOracleAddress);
     }
     return writer;
   },
@@ -389,15 +401,18 @@ export const EventSignRefund = {
           message.message = reader.string();
           break;
         case 2:
-          message.reserveAddress = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.signerAddress = reader.string();
+          message.roundId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
-          message.refundSignature = reader.string();
+          message.signerPublicKey = reader.string();
           break;
         case 5:
+          message.refundSignature = reader.string();
+          break;
+        case 6:
           message.btcOracleAddress = reader.string();
           break;
         default:
@@ -411,8 +426,9 @@ export const EventSignRefund = {
   fromJSON(object: any): EventSignRefund {
     return {
       message: isSet(object.message) ? String(object.message) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
-      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
+      signerPublicKey: isSet(object.signerPublicKey) ? String(object.signerPublicKey) : "",
       refundSignature: isSet(object.refundSignature) ? String(object.refundSignature) : "",
       btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
     };
@@ -421,8 +437,9 @@ export const EventSignRefund = {
   toJSON(message: EventSignRefund): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
-    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
+    message.signerPublicKey !== undefined && (obj.signerPublicKey = message.signerPublicKey);
     message.refundSignature !== undefined && (obj.refundSignature = message.refundSignature);
     message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
     return obj;
@@ -431,8 +448,9 @@ export const EventSignRefund = {
   fromPartial<I extends Exact<DeepPartial<EventSignRefund>, I>>(object: I): EventSignRefund {
     const message = createBaseEventSignRefund();
     message.message = object.message ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
-    message.signerAddress = object.signerAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
+    message.signerPublicKey = object.signerPublicKey ?? "";
     message.refundSignature = object.refundSignature ?? "";
     message.btcOracleAddress = object.btcOracleAddress ?? "";
     return message;
@@ -440,7 +458,7 @@ export const EventSignRefund = {
 };
 
 function createBaseEventSignSweep(): EventSignSweep {
-  return { message: "", reserveAddress: "", signerAddress: "", sweepSignature: "", btcOracleAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, signerPublicKey: "", sweepSignature: [], btcOracleAddress: "" };
 }
 
 export const EventSignSweep = {
@@ -448,17 +466,20 @@ export const EventSignSweep = {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
-    if (message.reserveAddress !== "") {
-      writer.uint32(18).string(message.reserveAddress);
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
     }
-    if (message.signerAddress !== "") {
-      writer.uint32(26).string(message.signerAddress);
+    if (message.roundId !== 0) {
+      writer.uint32(24).uint64(message.roundId);
     }
-    if (message.sweepSignature !== "") {
-      writer.uint32(34).string(message.sweepSignature);
+    if (message.signerPublicKey !== "") {
+      writer.uint32(34).string(message.signerPublicKey);
+    }
+    for (const v of message.sweepSignature) {
+      writer.uint32(42).string(v!);
     }
     if (message.btcOracleAddress !== "") {
-      writer.uint32(42).string(message.btcOracleAddress);
+      writer.uint32(50).string(message.btcOracleAddress);
     }
     return writer;
   },
@@ -474,15 +495,18 @@ export const EventSignSweep = {
           message.message = reader.string();
           break;
         case 2:
-          message.reserveAddress = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.signerAddress = reader.string();
+          message.roundId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
-          message.sweepSignature = reader.string();
+          message.signerPublicKey = reader.string();
           break;
         case 5:
+          message.sweepSignature.push(reader.string());
+          break;
+        case 6:
           message.btcOracleAddress = reader.string();
           break;
         default:
@@ -496,9 +520,10 @@ export const EventSignSweep = {
   fromJSON(object: any): EventSignSweep {
     return {
       message: isSet(object.message) ? String(object.message) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
-      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
-      sweepSignature: isSet(object.sweepSignature) ? String(object.sweepSignature) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
+      signerPublicKey: isSet(object.signerPublicKey) ? String(object.signerPublicKey) : "",
+      sweepSignature: Array.isArray(object?.sweepSignature) ? object.sweepSignature.map((e: any) => String(e)) : [],
       btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
     };
   },
@@ -506,9 +531,14 @@ export const EventSignSweep = {
   toJSON(message: EventSignSweep): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
-    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
-    message.sweepSignature !== undefined && (obj.sweepSignature = message.sweepSignature);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
+    message.signerPublicKey !== undefined && (obj.signerPublicKey = message.signerPublicKey);
+    if (message.sweepSignature) {
+      obj.sweepSignature = message.sweepSignature.map((e) => e);
+    } else {
+      obj.sweepSignature = [];
+    }
     message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
     return obj;
   },
@@ -516,16 +546,17 @@ export const EventSignSweep = {
   fromPartial<I extends Exact<DeepPartial<EventSignSweep>, I>>(object: I): EventSignSweep {
     const message = createBaseEventSignSweep();
     message.message = object.message ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
-    message.signerAddress = object.signerAddress ?? "";
-    message.sweepSignature = object.sweepSignature ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
+    message.signerPublicKey = object.signerPublicKey ?? "";
+    message.sweepSignature = object.sweepSignature?.map((e) => e) || [];
     message.btcOracleAddress = object.btcOracleAddress ?? "";
     return message;
   },
 };
 
 function createBaseEventBroadcastTxSweep(): EventBroadcastTxSweep {
-  return { message: "", signedSweepTx: "", judgeAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, signedSweepTx: "", judgeAddress: "" };
 }
 
 export const EventBroadcastTxSweep = {
@@ -533,11 +564,17 @@ export const EventBroadcastTxSweep = {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(24).uint64(message.roundId);
+    }
     if (message.signedSweepTx !== "") {
-      writer.uint32(18).string(message.signedSweepTx);
+      writer.uint32(34).string(message.signedSweepTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(26).string(message.judgeAddress);
+      writer.uint32(42).string(message.judgeAddress);
     }
     return writer;
   },
@@ -553,9 +590,15 @@ export const EventBroadcastTxSweep = {
           message.message = reader.string();
           break;
         case 2:
-          message.signedSweepTx = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
+          message.roundId = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.signedSweepTx = reader.string();
+          break;
+        case 5:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -569,6 +612,8 @@ export const EventBroadcastTxSweep = {
   fromJSON(object: any): EventBroadcastTxSweep {
     return {
       message: isSet(object.message) ? String(object.message) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
       signedSweepTx: isSet(object.signedSweepTx) ? String(object.signedSweepTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -577,6 +622,8 @@ export const EventBroadcastTxSweep = {
   toJSON(message: EventBroadcastTxSweep): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     message.signedSweepTx !== undefined && (obj.signedSweepTx = message.signedSweepTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -585,6 +632,8 @@ export const EventBroadcastTxSweep = {
   fromPartial<I extends Exact<DeepPartial<EventBroadcastTxSweep>, I>>(object: I): EventBroadcastTxSweep {
     const message = createBaseEventBroadcastTxSweep();
     message.message = object.message ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
     message.signedSweepTx = object.signedSweepTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
@@ -592,7 +641,7 @@ export const EventBroadcastTxSweep = {
 };
 
 function createBaseEventBroadcastTxRefund(): EventBroadcastTxRefund {
-  return { message: "", signedRefundTx: "", judgeAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, signedRefundTx: "", judgeAddress: "" };
 }
 
 export const EventBroadcastTxRefund = {
@@ -600,11 +649,17 @@ export const EventBroadcastTxRefund = {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(24).uint64(message.roundId);
+    }
     if (message.signedRefundTx !== "") {
-      writer.uint32(18).string(message.signedRefundTx);
+      writer.uint32(34).string(message.signedRefundTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(26).string(message.judgeAddress);
+      writer.uint32(42).string(message.judgeAddress);
     }
     return writer;
   },
@@ -620,9 +675,15 @@ export const EventBroadcastTxRefund = {
           message.message = reader.string();
           break;
         case 2:
-          message.signedRefundTx = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
+          message.roundId = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.signedRefundTx = reader.string();
+          break;
+        case 5:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -636,6 +697,8 @@ export const EventBroadcastTxRefund = {
   fromJSON(object: any): EventBroadcastTxRefund {
     return {
       message: isSet(object.message) ? String(object.message) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
       signedRefundTx: isSet(object.signedRefundTx) ? String(object.signedRefundTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -644,6 +707,8 @@ export const EventBroadcastTxRefund = {
   toJSON(message: EventBroadcastTxRefund): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     message.signedRefundTx !== undefined && (obj.signedRefundTx = message.signedRefundTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -652,6 +717,8 @@ export const EventBroadcastTxRefund = {
   fromPartial<I extends Exact<DeepPartial<EventBroadcastTxRefund>, I>>(object: I): EventBroadcastTxRefund {
     const message = createBaseEventBroadcastTxRefund();
     message.message = object.message ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
     message.signedRefundTx = object.signedRefundTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
@@ -726,7 +793,7 @@ export const EventProposeRefundHash = {
 };
 
 function createBaseEventUnsignedTxSweep(): EventUnsignedTxSweep {
-  return { message: "", txId: "", unsignedSweepTx: "", judgeAddress: "" };
+  return { message: "", txId: "", reserveId: 0, roundId: 0, unsignedSweepTx: "", judgeAddress: "" };
 }
 
 export const EventUnsignedTxSweep = {
@@ -737,11 +804,17 @@ export const EventUnsignedTxSweep = {
     if (message.txId !== "") {
       writer.uint32(18).string(message.txId);
     }
+    if (message.reserveId !== 0) {
+      writer.uint32(24).uint64(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(32).uint64(message.roundId);
+    }
     if (message.unsignedSweepTx !== "") {
-      writer.uint32(26).string(message.unsignedSweepTx);
+      writer.uint32(42).string(message.unsignedSweepTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(34).string(message.judgeAddress);
+      writer.uint32(50).string(message.judgeAddress);
     }
     return writer;
   },
@@ -760,9 +833,15 @@ export const EventUnsignedTxSweep = {
           message.txId = reader.string();
           break;
         case 3:
-          message.unsignedSweepTx = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
+          message.roundId = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.unsignedSweepTx = reader.string();
+          break;
+        case 6:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -777,6 +856,8 @@ export const EventUnsignedTxSweep = {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       txId: isSet(object.txId) ? String(object.txId) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
       unsignedSweepTx: isSet(object.unsignedSweepTx) ? String(object.unsignedSweepTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -786,6 +867,8 @@ export const EventUnsignedTxSweep = {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.txId !== undefined && (obj.txId = message.txId);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     message.unsignedSweepTx !== undefined && (obj.unsignedSweepTx = message.unsignedSweepTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -795,6 +878,8 @@ export const EventUnsignedTxSweep = {
     const message = createBaseEventUnsignedTxSweep();
     message.message = object.message ?? "";
     message.txId = object.txId ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
     message.unsignedSweepTx = object.unsignedSweepTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
@@ -802,7 +887,7 @@ export const EventUnsignedTxSweep = {
 };
 
 function createBaseEventUnsignedTxRefund(): EventUnsignedTxRefund {
-  return { message: "", reserveId: 0, unsignedRefundTx: "", judgeAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, unsignedRefundTx: "", judgeAddress: "" };
 }
 
 export const EventUnsignedTxRefund = {
@@ -813,11 +898,14 @@ export const EventUnsignedTxRefund = {
     if (message.reserveId !== 0) {
       writer.uint32(16).uint64(message.reserveId);
     }
+    if (message.roundId !== 0) {
+      writer.uint32(24).uint64(message.roundId);
+    }
     if (message.unsignedRefundTx !== "") {
-      writer.uint32(26).string(message.unsignedRefundTx);
+      writer.uint32(34).string(message.unsignedRefundTx);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(34).string(message.judgeAddress);
+      writer.uint32(42).string(message.judgeAddress);
     }
     return writer;
   },
@@ -836,9 +924,12 @@ export const EventUnsignedTxRefund = {
           message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.unsignedRefundTx = reader.string();
+          message.roundId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
+          message.unsignedRefundTx = reader.string();
+          break;
+        case 5:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -853,6 +944,7 @@ export const EventUnsignedTxRefund = {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
       unsignedRefundTx: isSet(object.unsignedRefundTx) ? String(object.unsignedRefundTx) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
@@ -862,6 +954,7 @@ export const EventUnsignedTxRefund = {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     message.unsignedRefundTx !== undefined && (obj.unsignedRefundTx = message.unsignedRefundTx);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
@@ -871,6 +964,7 @@ export const EventUnsignedTxRefund = {
     const message = createBaseEventUnsignedTxRefund();
     message.message = object.message ?? "";
     message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
     message.unsignedRefundTx = object.unsignedRefundTx ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     return message;

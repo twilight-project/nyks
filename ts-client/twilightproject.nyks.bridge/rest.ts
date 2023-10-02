@@ -10,6 +10,11 @@
  */
 
 export interface BridgeMsgBroadcastTxRefund {
+  /** @format uint64 */
+  reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
   signedRefundTx?: string;
   judgeAddress?: string;
 }
@@ -17,6 +22,11 @@ export interface BridgeMsgBroadcastTxRefund {
 export type BridgeMsgBroadcastTxRefundResponse = object;
 
 export interface BridgeMsgBroadcastTxSweep {
+  /** @format uint64 */
+  reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
   signedSweepTx?: string;
   judgeAddress?: string;
 }
@@ -42,6 +52,9 @@ export interface BridgeMsgProposeSweepAddress {
 
   /** @format uint64 */
   reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
   judgeAddress?: string;
 }
 
@@ -69,8 +82,12 @@ export interface BridgeMsgRegisterReserveAddressResponse {
 }
 
 export interface BridgeMsgSignRefund {
-  reserveAddress?: string;
-  signerAddress?: string;
+  /** @format uint64 */
+  reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
+  signerPublicKey?: string;
   refundSignature?: string;
   btcOracleAddress?: string;
 }
@@ -78,9 +95,13 @@ export interface BridgeMsgSignRefund {
 export type BridgeMsgSignRefundResponse = object;
 
 export interface BridgeMsgSignSweep {
-  reserveAddress?: string;
-  signerAddress?: string;
-  sweepSignature?: string;
+  /** @format uint64 */
+  reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
+  signerPublicKey?: string;
+  sweepSignature?: string[];
   btcOracleAddress?: string;
 }
 
@@ -91,6 +112,9 @@ export type BridgeMsgSweepProposalResponse = object;
 export interface BridgeMsgUnsignedTxRefund {
   /** @format uint64 */
   reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
   btcUnsignedRefundTx?: string;
   judgeAddress?: string;
 }
@@ -100,6 +124,12 @@ export type BridgeMsgUnsignedTxRefundResponse = object;
 export interface BridgeMsgUnsignedTxSweep {
   txId?: string;
   btcUnsignedSweepTx?: string;
+
+  /** @format uint64 */
+  reserveId?: string;
+
+  /** @format uint64 */
+  roundId?: string;
   judgeAddress?: string;
 }
 
@@ -149,7 +179,9 @@ export interface BridgeQueryProposeSweepAddressResponse {
   proposeSweepAddressMsg?: BridgeMsgProposeSweepAddress;
 }
 
-export type BridgeQueryProposeSweepAddressesAllResponse = object;
+export interface BridgeQueryProposeSweepAddressesAllResponse {
+  proposeSweepAddressMsgs?: BridgeMsgProposeSweepAddress[];
+}
 
 export interface BridgeQueryRegisteredBtcDepositAddressByTwilightAddressResponse {
   depositAddress?: string;
@@ -162,7 +194,7 @@ export interface BridgeQueryRegisteredBtcDepositAddressResponse {
 }
 
 export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
-  accounts?: VoltClearingAccount[];
+  addresses?: VoltBtcDepositAddress[];
 }
 
 export interface BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse {
@@ -183,9 +215,13 @@ export interface BridgeQuerySignRefundAllResponse {
   signRefundMsg?: BridgeMsgSignRefund[];
 }
 
+export type BridgeQuerySignRefundResponse = object;
+
 export interface BridgeQuerySignSweepAllResponse {
   signSweepMsg?: BridgeMsgSignSweep[];
 }
+
+export type BridgeQuerySignSweepResponse = object;
 
 export interface BridgeQueryUnsignedTxRefundAllResponse {
   unsignedTxRefundMsgs?: BridgeMsgUnsignedTxRefund[];
@@ -218,19 +254,13 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
-export interface VoltClearingAccount {
-  TwilightAddress?: string;
-  BtcDepositAddress?: string;
-  BtcWithdrawAddress?: string;
-  ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
-}
-
-export interface VoltIndividualTwilightReserveAccountBalance {
-  /** @format uint64 */
-  ReserveId?: string;
+export interface VoltBtcDepositAddress {
+  depositAddress?: string;
+  twilightDepositAddress?: string;
 
   /** @format uint64 */
-  Amount?: string;
+  depositTestAmount?: string;
+  isConfirmed?: boolean;
 }
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
@@ -428,16 +458,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryProposeSweepAddress
    * @summary Queries a list of ProposeSweepAddress items.
-   * @request GET:/twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{judgeAddress}/{btcAddress}
+   * @request GET:/twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{roundId}
    */
-  queryProposeSweepAddress = (
-    reserveId: string,
-    judgeAddress: string,
-    btcAddress: string,
-    params: RequestParams = {},
-  ) =>
+  queryProposeSweepAddress = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryProposeSweepAddressResponse, RpcStatus>({
-      path: `/twilight-project/nyks/bridge/propose_sweep_address/${reserveId}/${judgeAddress}/${btcAddress}`,
+      path: `/twilight-project/nyks/bridge/propose_sweep_address/${reserveId}/${roundId}`,
       method: "GET",
       format: "json",
       ...params,
@@ -451,7 +476,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of ProposeSweepAddressesAll items.
    * @request GET:/twilight-project/nyks/bridge/propose_sweep_addresses_all/{limit}
    */
-  queryProposeSweepAddressesAll = (limit: number, params: RequestParams = {}) =>
+  queryProposeSweepAddressesAll = (limit: string, params: RequestParams = {}) =>
     this.request<BridgeQueryProposeSweepAddressesAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/propose_sweep_addresses_all/${limit}`,
       method: "GET",
@@ -559,6 +584,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
+   * @name QuerySignRefund
+   * @summary Queries a list of SignRefund items.
+   * @request GET:/twilight-project/nyks/bridge/sign_refund/{reserveId}/{roundId}
+   */
+  querySignRefund = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<BridgeQuerySignRefundResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/sign_refund/${reserveId}/${roundId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
    * @name QuerySignRefundAll
    * @summary Queries a list of SignRefundAll items.
    * @request GET:/twilight-project/nyks/bridge/sign_refund_all
@@ -566,6 +607,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   querySignRefundAll = (params: RequestParams = {}) =>
     this.request<BridgeQuerySignRefundAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/sign_refund_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySignSweep
+   * @summary Queries a list of SignSweep items.
+   * @request GET:/twilight-project/nyks/bridge/sign_sweep/{reserveId}/{roundId}
+   */
+  querySignSweep = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<BridgeQuerySignSweepResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/sign_sweep/${reserveId}/${roundId}`,
       method: "GET",
       format: "json",
       ...params,
@@ -593,18 +650,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryUnsignedTxRefund
    * @summary Queries a list of UnsignedTxRefund items.
-   * @request GET:/twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{judgeAddress}
+   * @request GET:/twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{roundId}
    */
-  queryUnsignedTxRefund = (
-    reserveId: string,
-    judgeAddress: string,
-    query?: { btcTxPrefix?: string },
-    params: RequestParams = {},
-  ) =>
+  queryUnsignedTxRefund = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryUnsignedTxRefundResponse, RpcStatus>({
-      path: `/twilight-project/nyks/bridge/unsigned_tx_refund/${reserveId}/${judgeAddress}`,
+      path: `/twilight-project/nyks/bridge/unsigned_tx_refund/${reserveId}/${roundId}`,
       method: "GET",
-      query: query,
       format: "json",
       ...params,
     });
@@ -632,13 +683,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @tags Query
    * @name QueryUnsignedTxSweep
    * @summary Queries a list of UnsignedTxSweep items.
-   * @request GET:/twilight-project/nyks/bridge/unsigned_tx_sweep/{txId}
+   * @request GET:/twilight-project/nyks/bridge/unsigned_tx_sweep/{reserveId}/{roundId}
    */
-  queryUnsignedTxSweep = (txId: string, query?: { judgeAddress?: string }, params: RequestParams = {}) =>
+  queryUnsignedTxSweep = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryUnsignedTxSweepResponse, RpcStatus>({
-      path: `/twilight-project/nyks/bridge/unsigned_tx_sweep/${txId}`,
+      path: `/twilight-project/nyks/bridge/unsigned_tx_sweep/${reserveId}/${roundId}`,
       method: "GET",
-      query: query,
       format: "json",
       ...params,
     });

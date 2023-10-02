@@ -92,13 +92,13 @@ service Query {
   
   // Queries a list of UnsignedTxSweep items.
   rpc UnsignedTxSweep (QueryUnsignedTxSweepRequest) returns (QueryUnsignedTxSweepResponse) {
-    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_sweep/{txId}";
+    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_sweep/{reserveId}/{roundId}";
   
   }
   
   // Queries a list of UnsignedTxRefund items.
   rpc UnsignedTxRefund (QueryUnsignedTxRefundRequest) returns (QueryUnsignedTxRefundResponse) {
-    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{judgeAddress}";
+    option (google.api.http).get = "/twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{roundId}";
   
   }
   
@@ -122,13 +122,25 @@ service Query {
   
   // Queries a list of ProposeSweepAddress items.
   rpc ProposeSweepAddress (QueryProposeSweepAddressRequest) returns (QueryProposeSweepAddressResponse) {
-    option (google.api.http).get = "/twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{judgeAddress}/{btcAddress}";
+    option (google.api.http).get = "/twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{roundId}";
   
   }
   
   // Queries a list of ProposeSweepAddressesAll items.
   rpc ProposeSweepAddressesAll (QueryProposeSweepAddressesAllRequest) returns (QueryProposeSweepAddressesAllResponse) {
     option (google.api.http).get = "/twilight-project/nyks/bridge/propose_sweep_addresses_all/{limit}";
+  
+  }
+  
+  // Queries a list of SignRefund items.
+  rpc SignRefund (QuerySignRefundRequest) returns (QuerySignRefundResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/sign_refund/{reserveId}/{roundId}";
+  
+  }
+  
+  // Queries a list of SignSweep items.
+  rpc SignSweep (QuerySignSweepRequest) returns (QuerySignSweepResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/sign_sweep/{reserveId}/{roundId}";
   
   }
 }
@@ -195,18 +207,6 @@ message QueryWithdrawBtcRequestAllResponse {
   repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
 }
 
-message QuerySignRefundAllRequest {}
-
-message QuerySignRefundAllResponse {
-  repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
-}
-
-message QuerySignSweepAllRequest {}
-
-message QuerySignSweepAllResponse {
-  repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
-}
-
 message QueryBroadcastTxSweepAllRequest {}
 
 message QueryBroadcastTxSweepAllResponse {
@@ -225,45 +225,11 @@ message QueryProposeRefundHashAllResponse {
   repeated MsgProposeRefundHash proposeRefundHashMsg = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryUnsignedTxSweepRequest {
-  string txId         = 1;
-  string judgeAddress = 2;
-}
-
-message QueryUnsignedTxSweepResponse {
-  MsgUnsignedTxSweep unsignedTxSweepMsg = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryUnsignedTxRefundRequest {
-  uint64 reserveId    = 1;
-  string judgeAddress = 2;
-  string btcTxPrefix  = 3;
-}
-
-message QueryUnsignedTxRefundResponse {
-  MsgUnsignedTxRefund unsignedTxRefundMsg = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryUnsignedTxSweepAllRequest {
-  uint64 limit = 1;
-}
-
-message QueryUnsignedTxSweepAllResponse {
-  repeated MsgUnsignedTxSweep unsignedTxSweepMsgs = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryUnsignedTxRefundAllRequest {
-  uint64 limit = 1;
-}
-
-message QueryUnsignedTxRefundAllResponse {
-  repeated MsgUnsignedTxRefund unsignedTxRefundMsgs = 1 [(gogoproto.nullable) = false];
-}
-
+// Sweep Queries
+// 1. ProposeSweepAddress
 message QueryProposeSweepAddressRequest {
-  uint64 reserveId    = 1;
-  string judgeAddress = 2;
-  string btcAddress   = 3;
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
 }
 
 message QueryProposeSweepAddressResponse {
@@ -276,5 +242,73 @@ message QueryProposeSweepAddressesAllRequest {
 
 message QueryProposeSweepAddressesAllResponse {
   repeated MsgProposeSweepAddress proposeSweepAddressMsgs = 1 [(gogoproto.nullable) = false];
+}
+
+// 2. UnsignedTxSweep
+message QueryUnsignedTxSweepRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryUnsignedTxSweepResponse {
+  MsgUnsignedTxSweep unsignedTxSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUnsignedTxSweepAllRequest {
+  uint64 limit = 1;
+}
+
+message QueryUnsignedTxSweepAllResponse {
+  repeated MsgUnsignedTxSweep unsignedTxSweepMsgs = 1 [(gogoproto.nullable) = false];
+}
+
+// 3. UnsignedTxRefund
+message QueryUnsignedTxRefundRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryUnsignedTxRefundResponse {
+  MsgUnsignedTxRefund unsignedTxRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUnsignedTxRefundAllRequest {
+  uint64 limit = 1;
+}
+
+message QueryUnsignedTxRefundAllResponse {
+  repeated MsgUnsignedTxRefund unsignedTxRefundMsgs = 1 [(gogoproto.nullable) = false];
+}
+
+// 4. SignRefund
+message QuerySignRefundRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QuerySignRefundResponse {
+  MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySignRefundAllRequest {}
+
+message QuerySignRefundAllResponse {
+  repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+// 5. SignSweep
+message QuerySignSweepRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QuerySignSweepResponse {
+  MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySignSweepAllRequest {}
+
+message QuerySignSweepAllResponse {
+  repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 

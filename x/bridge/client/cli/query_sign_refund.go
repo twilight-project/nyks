@@ -11,10 +11,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdProposeSweepAddressQuery() *cobra.Command {
+func CmdSignRefundQuery() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "propose-sweep-address [reserve-id] [round-id]",
-		Short: "Query ProposeSweepAddress",
+		Use:   "sign-refund [reserve-id] [round-id]",
+		Short: "Query SignRefund",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqReserveId, err := strconv.ParseUint(args[0], 10, 64)
@@ -33,13 +33,12 @@ func CmdProposeSweepAddressQuery() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryProposeSweepAddressRequest{
-
+			params := &types.QuerySignRefundRequest{
 				ReserveId: reqReserveId,
 				RoundId:   reqRoundId,
 			}
 
-			res, err := queryClient.ProposeSweepAddress(cmd.Context(), params)
+			res, err := queryClient.SignRefund(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

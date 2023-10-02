@@ -23,7 +23,7 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	}
 
-	_, foundDuplicate := k.GetProposeSweepAddress(ctx, msg.ReserveId, judgeAddress, *btcAddr)
+	_, foundDuplicate := k.GetProposeSweepAddress(ctx, msg.ReserveId, msg.RoundId)
 	if foundDuplicate != false {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
 	}

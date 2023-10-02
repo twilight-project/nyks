@@ -17,19 +17,9 @@ func (k Keeper) ProposeSweepAddress(goCtx context.Context, req *types.QueryPropo
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	judgeAddress, err := sdk.AccAddressFromBech32(req.JudgeAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	btcAddr, e1 := types.NewBtcAddress(req.BtcAddress)
-	if e1 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
-	}
-
-	proposedSweepAddress, found := k.GetProposeSweepAddress(ctx, req.ReserveId, judgeAddress, *btcAddr)
+	proposedSweepAddress, found := k.GetProposeSweepAddress(ctx, req.ReserveId, req.RoundId)
 	if found != true {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "An ProposeSweepAddress msg doesn't exist with the given reserve id, btc address and judge address combination")
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "A ProposeSweepAddress msg doesn't exist with the given reserve id and round id")
 	}
 
 	return &types.QueryProposeSweepAddressResponse{ProposeSweepAddressMsg: *proposedSweepAddress}, nil

@@ -10,8 +10,10 @@ import { Api } from "./rest";
 
 import { IndividualTwilightReserveAccountBalance as typeIndividualTwilightReserveAccountBalance} from "./types"
 import { ClearingAccount as typeClearingAccount} from "./types"
+import { BtcDepositAddress as typeBtcDepositAddress} from "./types"
 import { Params as typeParams} from "./types"
 import { BtcReserve as typeBtcReserve} from "./types"
+import { ReserveWithdrawPool as typeReserveWithdrawPool} from "./types"
 
 export {  };
 
@@ -71,8 +73,10 @@ class SDKModule {
 		this.structure =  {
 						IndividualTwilightReserveAccountBalance: getStructure(typeIndividualTwilightReserveAccountBalance.fromPartial({})),
 						ClearingAccount: getStructure(typeClearingAccount.fromPartial({})),
+						BtcDepositAddress: getStructure(typeBtcDepositAddress.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						BtcReserve: getStructure(typeBtcReserve.fromPartial({})),
+						ReserveWithdrawPool: getStructure(typeReserveWithdrawPool.fromPartial({})),
 						
 		};
 		client.on('signer-changed',(signer) => {			

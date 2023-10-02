@@ -40,12 +40,24 @@ export interface VoltBtcReserve {
 
   /** @format uint64 */
   FeePool?: string;
+
+  /** @format uint64 */
+  UnlockHeight?: string;
+
+  /** @format uint64 */
+  RoundId?: string;
 }
 
 export interface VoltClearingAccount {
   TwilightAddress?: string;
   BtcDepositAddress?: string;
+
+  /** @format int64 */
+  BtcDepositAddressIdentifier?: number;
   BtcWithdrawAddress?: string;
+
+  /** @format int64 */
+  BtcWithdrawAddressIdentifier?: number;
   ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
 }
 

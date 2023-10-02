@@ -27316,10 +27316,17 @@ paths:
                 items:
                   type: object
                   properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
                     signedSweepTx:
                       type: string
                     judgeAddress:
                       type: string
+                  title: 7. MsgBroadcastSweep
         default:
           description: An unexpected error response.
           schema:
@@ -27355,10 +27362,17 @@ paths:
                 items:
                   type: object
                   properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
                     signedRefundTx:
                       type: string
                     judgeAddress:
                       type: string
+                  title: 6. MsgBroadcastRefund
         default:
           description: An unexpected error response.
           schema:
@@ -27454,7 +27468,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{judgeAddress}/{btcAddress}:
+  /twilight-project/nyks/bridge/propose_sweep_address/{reserveId}/{roundId}:
     get:
       summary: Queries a list of ProposeSweepAddress items.
       operationId: TwilightprojectNyksBridgeProposeSweepAddress
@@ -27479,6 +27493,9 @@ paths:
                     format: uint64
                   judgeAddress:
                     type: string
+                title: |-
+                  Sweep messages in order
+                  1. MsgProposeSweepAddress
         default:
           description: An unexpected error response.
           schema:
@@ -27503,14 +27520,11 @@ paths:
           required: true
           type: string
           format: uint64
-        - name: judgeAddress
+        - name: roundId
           in: path
           required: true
           type: string
-        - name: btcAddress
-          in: path
-          required: true
-          type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/bridge/propose_sweep_addresses_all/{limit}:
@@ -27540,6 +27554,9 @@ paths:
                       format: uint64
                     judgeAddress:
                       type: string
+                  title: |-
+                    Sweep messages in order
+                    1. MsgProposeSweepAddress
         default:
           description: An unexpected error response.
           schema:
@@ -27663,7 +27680,7 @@ paths:
                       type: string
                     twilightDepositAddress:
                       type: string
-                    satoshiTestAmount:
+                    depositTestAmount:
                       type: string
                       format: uint64
                     isConfirmed:
@@ -27811,10 +27828,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /twilight-project/nyks/bridge/sign_refund_all:
+  /twilight-project/nyks/bridge/sign_refund/{reserveId}/{roundId}:
     get:
-      summary: Queries a list of SignRefundAll items.
-      operationId: TwilightprojectNyksBridgeSignRefundAll
+      summary: Queries a list of SignRefund items.
+      operationId: TwilightprojectNyksBridgeSignRefund
       responses:
         '200':
           description: A successful response.
@@ -27822,94 +27839,6 @@ paths:
             type: object
             properties:
               signRefundMsg:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    reserveAddress:
-                      type: string
-                    signerPublicKey:
-                      type: string
-                    refundSignature:
-                      type: string
-                    btcOracleAddress:
-                      type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /twilight-project/nyks/bridge/sign_sweep_all:
-    get:
-      summary: Queries a list of SignSweepAll items.
-      operationId: TwilightprojectNyksBridgeSignSweepAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              signSweepMsg:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    reserveAddress:
-                      type: string
-                    signerPublicKey:
-                      type: string
-                    sweepSignature:
-                      type: array
-                      items:
-                        type: string
-                    btcOracleAddress:
-                      type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{judgeAddress}:
-    get:
-      summary: Queries a list of UnsignedTxRefund items.
-      operationId: TwilightprojectNyksBridgeUnsignedTxRefund
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              unsignedTxRefundMsg:
                 type: object
                 properties:
                   reserveId:
@@ -27918,10 +27847,13 @@ paths:
                   roundId:
                     type: string
                     format: uint64
-                  btcUnsignedRefundTx:
+                  signerPublicKey:
                     type: string
-                  judgeAddress:
+                  refundSignature:
                     type: string
+                  btcOracleAddress:
+                    type: string
+                title: 4. MsgSignRefund
         default:
           description: An unexpected error response.
           schema:
@@ -27946,14 +27878,223 @@ paths:
           required: true
           type: string
           format: uint64
-        - name: judgeAddress
+        - name: roundId
           in: path
           required: true
           type: string
-        - name: btcTxPrefix
-          in: query
-          required: false
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/sign_refund_all:
+    get:
+      summary: Queries a list of SignRefundAll items.
+      operationId: TwilightprojectNyksBridgeSignRefundAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              signRefundMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    refundSignature:
+                      type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 4. MsgSignRefund
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/sign_sweep/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of SignSweep items.
+      operationId: TwilightprojectNyksBridgeSignSweep
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              signSweepMsg:
+                type: object
+                properties:
+                  reserveId:
+                    type: string
+                    format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
+                  signerPublicKey:
+                    type: string
+                  sweepSignature:
+                    type: array
+                    items:
+                      type: string
+                  btcOracleAddress:
+                    type: string
+                title: 5. MsgSignSweep
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
           type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/sign_sweep_all:
+    get:
+      summary: Queries a list of SignSweepAll items.
+      operationId: TwilightprojectNyksBridgeSignSweepAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              signSweepMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    sweepSignature:
+                      type: array
+                      items:
+                        type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 5. MsgSignSweep
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/unsigned_tx_refund/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of UnsignedTxRefund items.
+      operationId: TwilightprojectNyksBridgeUnsignedTxRefund
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              unsignedTxRefundMsg:
+                type: object
+                properties:
+                  reserveId:
+                    type: string
+                    format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
+                  btcUnsignedRefundTx:
+                    type: string
+                  judgeAddress:
+                    type: string
+                title: 3. MsgUnsignedTxRefund
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/bridge/unsigned_tx_refund_all:
@@ -27981,6 +28122,7 @@ paths:
                       type: string
                     judgeAddress:
                       type: string
+                  title: 3. MsgUnsignedTxRefund
         default:
           description: An unexpected error response.
           schema:
@@ -28007,7 +28149,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /twilight-project/nyks/bridge/unsigned_tx_sweep/{txId}:
+  /twilight-project/nyks/bridge/unsigned_tx_sweep/{reserveId}/{roundId}:
     get:
       summary: Queries a list of UnsignedTxSweep items.
       operationId: TwilightprojectNyksBridgeUnsignedTxSweep
@@ -28032,6 +28174,7 @@ paths:
                     format: uint64
                   judgeAddress:
                     type: string
+                title: 2. MsgUnsignedTxSweep
         default:
           description: An unexpected error response.
           schema:
@@ -28051,14 +28194,16 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: txId
+        - name: reserveId
           in: path
           required: true
           type: string
-        - name: judgeAddress
-          in: query
-          required: false
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
           type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/bridge/unsigned_tx_sweep_all:
@@ -28088,6 +28233,7 @@ paths:
                       format: uint64
                     judgeAddress:
                       type: string
+                  title: 2. MsgUnsignedTxSweep
         default:
           description: An unexpected error response.
           schema:
@@ -48248,19 +48394,33 @@ definitions:
   twilightproject.nyks.bridge.MsgBroadcastTxRefund:
     type: object
     properties:
+      reserveId:
+        type: string
+        format: uint64
+      roundId:
+        type: string
+        format: uint64
       signedRefundTx:
         type: string
       judgeAddress:
         type: string
+    title: 6. MsgBroadcastRefund
   twilightproject.nyks.bridge.MsgBroadcastTxRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgBroadcastTxSweep:
     type: object
     properties:
+      reserveId:
+        type: string
+        format: uint64
+      roundId:
+        type: string
+        format: uint64
       signedSweepTx:
         type: string
       judgeAddress:
         type: string
+    title: 7. MsgBroadcastSweep
   twilightproject.nyks.bridge.MsgBroadcastTxSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse:
@@ -48294,6 +48454,9 @@ definitions:
         format: uint64
       judgeAddress:
         type: string
+    title: |-
+      Sweep messages in order
+      1. MsgProposeSweepAddress
   twilightproject.nyks.bridge.MsgProposeSweepAddressResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
@@ -48328,21 +48491,30 @@ definitions:
   twilightproject.nyks.bridge.MsgSignRefund:
     type: object
     properties:
-      reserveAddress:
+      reserveId:
         type: string
+        format: uint64
+      roundId:
+        type: string
+        format: uint64
       signerPublicKey:
         type: string
       refundSignature:
         type: string
       btcOracleAddress:
         type: string
+    title: 4. MsgSignRefund
   twilightproject.nyks.bridge.MsgSignRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgSignSweep:
     type: object
     properties:
-      reserveAddress:
+      reserveId:
         type: string
+        format: uint64
+      roundId:
+        type: string
+        format: uint64
       signerPublicKey:
         type: string
       sweepSignature:
@@ -48351,6 +48523,7 @@ definitions:
           type: string
       btcOracleAddress:
         type: string
+    title: 5. MsgSignSweep
   twilightproject.nyks.bridge.MsgSignSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgSweepProposalResponse:
@@ -48368,6 +48541,7 @@ definitions:
         type: string
       judgeAddress:
         type: string
+    title: 3. MsgUnsignedTxRefund
   twilightproject.nyks.bridge.MsgUnsignedTxRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgUnsignedTxSweep:
@@ -48385,6 +48559,7 @@ definitions:
         format: uint64
       judgeAddress:
         type: string
+    title: 2. MsgUnsignedTxSweep
   twilightproject.nyks.bridge.MsgUnsignedTxSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
@@ -48417,10 +48592,17 @@ definitions:
         items:
           type: object
           properties:
+            reserveId:
+              type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
             signedRefundTx:
               type: string
             judgeAddress:
               type: string
+          title: 6. MsgBroadcastRefund
   twilightproject.nyks.bridge.QueryBroadcastTxSweepAllResponse:
     type: object
     properties:
@@ -48429,10 +48611,17 @@ definitions:
         items:
           type: object
           properties:
+            reserveId:
+              type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
             signedSweepTx:
               type: string
             judgeAddress:
               type: string
+          title: 7. MsgBroadcastSweep
   twilightproject.nyks.bridge.QueryParamsResponse:
     type: object
     properties:
@@ -48470,6 +48659,9 @@ definitions:
             format: uint64
           judgeAddress:
             type: string
+        title: |-
+          Sweep messages in order
+          1. MsgProposeSweepAddress
   twilightproject.nyks.bridge.QueryProposeSweepAddressesAllResponse:
     type: object
     properties:
@@ -48490,6 +48682,9 @@ definitions:
               format: uint64
             judgeAddress:
               type: string
+          title: |-
+            Sweep messages in order
+            1. MsgProposeSweepAddress
   twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressByTwilightAddressResponse:
     type: object
     properties:
@@ -48516,7 +48711,7 @@ definitions:
               type: string
             twilightDepositAddress:
               type: string
-            satoshiTestAmount:
+            depositTestAmount:
               type: string
               format: uint64
             isConfirmed:
@@ -48566,14 +48761,38 @@ definitions:
         items:
           type: object
           properties:
-            reserveAddress:
+            reserveId:
               type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
             signerPublicKey:
               type: string
             refundSignature:
               type: string
             btcOracleAddress:
               type: string
+          title: 4. MsgSignRefund
+  twilightproject.nyks.bridge.QuerySignRefundResponse:
+    type: object
+    properties:
+      signRefundMsg:
+        type: object
+        properties:
+          reserveId:
+            type: string
+            format: uint64
+          roundId:
+            type: string
+            format: uint64
+          signerPublicKey:
+            type: string
+          refundSignature:
+            type: string
+          btcOracleAddress:
+            type: string
+        title: 4. MsgSignRefund
   twilightproject.nyks.bridge.QuerySignSweepAllResponse:
     type: object
     properties:
@@ -48582,8 +48801,12 @@ definitions:
         items:
           type: object
           properties:
-            reserveAddress:
+            reserveId:
               type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
             signerPublicKey:
               type: string
             sweepSignature:
@@ -48592,6 +48815,28 @@ definitions:
                 type: string
             btcOracleAddress:
               type: string
+          title: 5. MsgSignSweep
+  twilightproject.nyks.bridge.QuerySignSweepResponse:
+    type: object
+    properties:
+      signSweepMsg:
+        type: object
+        properties:
+          reserveId:
+            type: string
+            format: uint64
+          roundId:
+            type: string
+            format: uint64
+          signerPublicKey:
+            type: string
+          sweepSignature:
+            type: array
+            items:
+              type: string
+          btcOracleAddress:
+            type: string
+        title: 5. MsgSignSweep
   twilightproject.nyks.bridge.QueryUnsignedTxRefundAllResponse:
     type: object
     properties:
@@ -48610,6 +48855,7 @@ definitions:
               type: string
             judgeAddress:
               type: string
+          title: 3. MsgUnsignedTxRefund
   twilightproject.nyks.bridge.QueryUnsignedTxRefundResponse:
     type: object
     properties:
@@ -48626,6 +48872,7 @@ definitions:
             type: string
           judgeAddress:
             type: string
+        title: 3. MsgUnsignedTxRefund
   twilightproject.nyks.bridge.QueryUnsignedTxSweepAllResponse:
     type: object
     properties:
@@ -48646,6 +48893,7 @@ definitions:
               format: uint64
             judgeAddress:
               type: string
+          title: 2. MsgUnsignedTxSweep
   twilightproject.nyks.bridge.QueryUnsignedTxSweepResponse:
     type: object
     properties:
@@ -48664,6 +48912,7 @@ definitions:
             format: uint64
           judgeAddress:
             type: string
+        title: 2. MsgUnsignedTxSweep
   twilightproject.nyks.bridge.QueryWithdrawBtcRequestAllResponse:
     type: object
     properties:
@@ -48689,7 +48938,7 @@ definitions:
         type: string
       twilightDepositAddress:
         type: string
-      satoshiTestAmount:
+      depositTestAmount:
         type: string
         format: uint64
       isConfirmed:

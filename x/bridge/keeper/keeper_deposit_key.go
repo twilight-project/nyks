@@ -235,10 +235,10 @@ func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]
 	}
 }
 
-// GetBtcSignRefundMsg returns the signed refund message for btc chain using btcOracleAddress, reserveAddress, singerPublicKey and refundSignature
-func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, signerPublicKey string, refundSignature string) (*types.MsgSignRefund, bool) {
+// GetBtcSignRefundMsg returns the signed refund message for btc chain using reserveId and roundId
+func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgSignRefund, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
+	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -250,16 +250,17 @@ func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAdd
 	return &signRefund, true
 }
 
-// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveAddress, singerPublicKey and refundSignature
-func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, refundSignature string) error {
+// SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveId, roundId, singerPublicKey and refundSignature
+func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, refundSignature string) error {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(btcOracleAddress, reserveAddress, refundSignature)
+	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId)
 
 	signRefund := &types.MsgSignRefund{
-		BtcOracleAddress: btcOracleAddress.String(),
-		ReserveAddress:   reserveAddress.BtcAddress,
+		ReserveId:        reserveId,
+		RoundId:          roundId,
 		SignerPublicKey:  singerPublicKey,
 		RefundSignature:  refundSignature,
+		BtcOracleAddress: btcOracleAddress.String(),
 	}
 	store.Set(aKey, k.cdc.MustMarshal(signRefund))
 	return nil
@@ -274,7 +275,8 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgSignRefund{
-			ReserveAddress:   "",
+			ReserveId:        0,
+			RoundId:          0,
 			SignerPublicKey:  "",
 			RefundSignature:  "",
 			BtcOracleAddress: "",
@@ -289,14 +291,11 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 	}
 }
 
-// GetBtcSignSweepMsg returns the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerPublicKey and sweepSignature
-func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, sweepSignatures []string) (*types.MsgSignSweep, bool) {
+// GetBtcSignSweepMsg returns the signed sweep message for btc chain using reserveId and roundId
+func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgSignSweep, bool) {
 	store := ctx.KVStore(k.storeKey)
 
-	// Create a hash of the concatenated sweepSignatures to use as part of the key
-	signatureHash := hashSignatures(sweepSignatures)
-
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, signatureHash)
+	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -308,16 +307,15 @@ func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddr
 	return &signSweep, true
 }
 
-// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveAddress, signerPublicKey and sweepSignature
-func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveAddress types.BtcAddress, singerPublicKey string, sweepSignatures []string) error {
+// SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveId, roundId, signerPublicKey and sweepSignature
+func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, sweepSignatures []string) error {
 	store := ctx.KVStore(k.storeKey)
 
-	// Create a hash of the concatenated sweepSignatures to use as part of the key
-	signatureHash := hashSignatures(sweepSignatures)
-	aKey := types.GetBtcSignSweepMsgKey(btcOracleAddress, reserveAddress, signatureHash)
+	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId)
 
 	signSweep := &types.MsgSignSweep{
-		ReserveAddress:   reserveAddress.BtcAddress,
+		ReserveId:        reserveId,
+		RoundId:          roundId,
 		SignerPublicKey:  singerPublicKey,
 		SweepSignature:   sweepSignatures,
 		BtcOracleAddress: btcOracleAddress.String(),
@@ -335,7 +333,8 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgSignSweep{
-			ReserveAddress:   "",
+			ReserveId:        0,
+			RoundId:          0,
 			SignerPublicKey:  "",
 			SweepSignature:   []string{},
 			BtcOracleAddress: "",
@@ -349,12 +348,14 @@ func (k Keeper) IterateRegisteredSignSweepMsgs(ctx sdk.Context, cb func([]byte, 
 	}
 }
 
-// SetBtcBroadcastTxSweepMsg sets the broadcast refund message for btc chain using judgeAddress and SignedSweepTx
-func (k Keeper) SetBtcBroadcastTxSweepMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedSweepTx string) error {
+// SetBtcBroadcastTxSweepMsg sets the broadcast refund message for btc chain using reserveId, roundId, judgeAddress and SignedSweepTx
+func (k Keeper) SetBtcBroadcastTxSweepMsg(ctx sdk.Context, reserveId uint64, roundId uint64, judgeAddress sdk.AccAddress, SignedSweepTx string) error {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcBroadcastTxSweepMsgKey(judgeAddress, SignedSweepTx)
 
 	BroadcastTxSweep := &types.MsgBroadcastTxSweep{
+		ReserveId:     reserveId,
+		RoundId:       roundId,
 		SignedSweepTx: SignedSweepTx,
 		JudgeAddress:  judgeAddress.String(),
 	}
@@ -386,6 +387,8 @@ func (k Keeper) IterateRegisteredBroadcastTxSweepMsgs(ctx sdk.Context, cb func([
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgBroadcastTxSweep{
+			ReserveId:     0,
+			RoundId:       0,
 			SignedSweepTx: "",
 			JudgeAddress:  "",
 		}
@@ -399,12 +402,14 @@ func (k Keeper) IterateRegisteredBroadcastTxSweepMsgs(ctx sdk.Context, cb func([
 	}
 }
 
-// SetBtcBroadcastTxRefundMsg sets the broadcast refund message for btc chain using judgeAddress and SignedSweepTx
-func (k Keeper) SetBtcBroadcastTxRefundMsg(ctx sdk.Context, judgeAddress sdk.AccAddress, SignedRefundTx string) error {
+// SetBtcBroadcastTxRefundMsg sets the broadcast refund message for btc chain using reserveId, roundId, judgeAddress and SignedSweepTx
+func (k Keeper) SetBtcBroadcastTxRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64, judgeAddress sdk.AccAddress, SignedRefundTx string) error {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetBtcBroadcastTxRefundMsgKey(judgeAddress, SignedRefundTx)
 
 	BroadcastTxSweep := &types.MsgBroadcastTxRefund{
+		ReserveId:      reserveId,
+		RoundId:        roundId,
 		SignedRefundTx: SignedRefundTx,
 		JudgeAddress:   judgeAddress.String(),
 	}
@@ -436,6 +441,8 @@ func (k Keeper) IterateRegisteredBroadcastTxRefundMsgs(ctx sdk.Context, cb func(
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgBroadcastTxRefund{
+			ReserveId:      0,
+			RoundId:        0,
 			SignedRefundTx: "",
 			JudgeAddress:   "",
 		}
@@ -502,7 +509,7 @@ func (k Keeper) IterateRegisteredProposeRefundHashMsgs(ctx sdk.Context, cb func(
 // SetUnsignedTxSweepMsg sets the unsigned sweep message for btc chain
 func (k Keeper) SetUnsignedTxSweepMsg(ctx sdk.Context, txId string, unsignedSweepTx string, reserveId uint64, roundId uint64, judgeAddress sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxSweepMsgKey(judgeAddress, txId)
+	aKey := types.GetUnsignedTxSweepMsgKey(reserveId, roundId)
 
 	unsignedTxSweep := &types.MsgUnsignedTxSweep{
 		TxId:               txId,
@@ -516,9 +523,9 @@ func (k Keeper) SetUnsignedTxSweepMsg(ctx sdk.Context, txId string, unsignedSwee
 }
 
 // GetUnsignedTxSweepMsg returns the unsigned sweep message for btc chain using txId, unsignedSweepTx and judgeAddress
-func (k Keeper) GetUnsignedTxSweepMsg(ctx sdk.Context, txId string, judgeAddress sdk.AccAddress) (*types.MsgUnsignedTxSweep, bool) {
+func (k Keeper) GetUnsignedTxSweepMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgUnsignedTxSweep, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxSweepMsgKey(judgeAddress, txId)
+	aKey := types.GetUnsignedTxSweepMsgKey(reserveId, roundId)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -555,11 +562,10 @@ func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]type
 	return unsignedTxSweep, nil
 }
 
-// SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, btcUnsignedRefundTx and judgeAddress
+// SetUnsignedTxRefundMsg sets the unsigned refund message for btc chain using reserveId, roundId, btcUnsignedRefundTx and judgeAddress
 func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64, btcUnsignedRefundTx string, judgeAddress sdk.AccAddress) error {
-	btcTxPrefix := btcUnsignedRefundTx[:10]
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId, btcTxPrefix)
+	aKey := types.GetUnsignedTxRefundMsgKey(reserveId, roundId)
 
 	unsignedTxRefund := &types.MsgUnsignedTxRefund{
 		ReserveId:           reserveId,
@@ -571,10 +577,10 @@ func (k Keeper) SetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, roundI
 	return nil
 }
 
-// GetUnsignedTxRefundMsg returns the unsigned refund message for btc chain using reserveId and judgeAddress
-func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcTxPrefix string) (*types.MsgUnsignedTxRefund, bool) {
+// GetUnsignedTxRefundMsg returns the unsigned refund message for btc chain using reserveId and roundId
+func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgUnsignedTxRefund, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetUnsignedTxRefundMsgKey(judgeAddress, reserveId, btcTxPrefix)
+	aKey := types.GetUnsignedTxRefundMsgKey(reserveId, roundId)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -612,7 +618,7 @@ func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]typ
 // SetProposeSweepAddress sets the propose sweep address message for btc chain using btcAddress, btcScript, reserveId, roundId and judgeAddress
 func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress types.BtcAddress, btcScript string, reserveId uint64, roundId uint64, judgeAddress sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcAddress.BtcAddress)
+	aKey := types.GetProposeSweepAddressMsgKey(reserveId, roundId)
 
 	proposeSweepAddress := &types.MsgProposeSweepAddress{
 		BtcAddress:   btcAddress.BtcAddress,
@@ -625,10 +631,10 @@ func (k Keeper) SetProposeSweepAddress(ctx sdk.Context, btcAddress types.BtcAddr
 	return nil
 }
 
-// GetProposeSweepAddress returns the propose sweep address message for btc chain using reserveId and judgeAddress
-func (k Keeper) GetProposeSweepAddress(ctx sdk.Context, reserveId uint64, judgeAddress sdk.AccAddress, btcAddress types.BtcAddress) (*types.MsgProposeSweepAddress, bool) {
+// GetProposeSweepAddress returns the propose sweep address message for btc chain using reserveId and roundId
+func (k Keeper) GetProposeSweepAddress(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgProposeSweepAddress, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetProposeSweepAddressMsgKey(judgeAddress, reserveId, btcAddress.BtcAddress)
+	aKey := types.GetProposeSweepAddressMsgKey(reserveId, roundId)
 	if !store.Has(aKey) {
 		return nil, false
 	}

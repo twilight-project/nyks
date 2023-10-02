@@ -13,17 +13,18 @@ var _ = strconv.Itoa(0)
 
 func CmdQueryUnsignedTxRefund() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unsigned-tx-refund [reserve-id] [judge-address] [btc-tx-prefix]",
+		Use:   "unsigned-tx-refund [reserve-id] [round-id]",
 		Short: "Query UnsignedTxRefund",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqReserveId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
-			reqJudgeAddress := args[1]
-
-			reqBtcPrefix := args[2]
+			reqRoundId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -33,10 +34,8 @@ func CmdQueryUnsignedTxRefund() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			params := &types.QueryUnsignedTxRefundRequest{
-
-				ReserveId:    reqReserveId,
-				JudgeAddress: reqJudgeAddress,
-				BtcTxPrefix:  reqBtcPrefix,
+				ReserveId: reqReserveId,
+				RoundId:   reqRoundId,
 			}
 
 			res, err := queryClient.UnsignedTxRefund(cmd.Context(), params)

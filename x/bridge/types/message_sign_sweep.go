@@ -5,15 +5,17 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/twilight-project/nyks/x/forks/types"
 )
 
 const TypeMsgSignSweep = "sign_sweep"
 
 var _ sdk.Msg = &MsgSignSweep{}
 
-func NewMsgSignSweep(reserveAddress string, signerPublicKey string, sweepSignatures []string, btcOracleAddress string) *MsgSignSweep {
+func NewMsgSignSweep(reserveId uint64, roundId uint64, signerPublicKey string, sweepSignatures []string, btcOracleAddress string) *MsgSignSweep {
 	return &MsgSignSweep{
-		ReserveAddress:   reserveAddress,
+		ReserveId:        reserveId,
+		RoundId:          roundId,
 		SignerPublicKey:  signerPublicKey,
 		SweepSignature:   sweepSignatures,
 		BtcOracleAddress: btcOracleAddress,
@@ -42,13 +44,19 @@ func (msg *MsgSignSweep) GetSignBytes() []byte {
 }
 
 func (msg *MsgSignSweep) ValidateBasic() error {
+	// Validate ReserveId
+	if msg.ReserveId == 0 {
+		return sdkerrors.Wrapf(types.ErrInvalid, "Reserve address cannot be empty")
+	}
+
+	// Validate RoundId
+	if msg.RoundId == 0 {
+		return sdkerrors.Wrapf(types.ErrInvalid, "Round ID cannot be empty")
+	}
+
 	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid btcOracleAddress address (%s)", err)
-	}
-
-	if err := ValidateBtcAddress(msg.ReserveAddress); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "reserveAddress is not valid")
 	}
 
 	// Validate signerPublicKey (BTC public key)
