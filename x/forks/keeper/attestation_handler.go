@@ -50,7 +50,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	coin := sdk.NewCoin(denom, mintAmount)
 
 	moduleAddr := a.keeper.accountKeeper.GetModuleAddress(types.ModuleName)
-	ctx.Logger().Error("ModuleAddr", "moduleAddr", moduleAddr)
 	preMintBalance := a.keeper.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
 
 	// Ensure that users are not bridging an impossible amount, only 2^256 - 1 (verify the logic if this check is necessary here)
@@ -70,7 +69,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 	if err := a.keeper.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
 		return sdkerrors.Wrapf(err, "unable to mint cosmos originated coins %v", coins)
 	}
-
 	postMintBalance := a.keeper.bankKeeper.GetBalance(ctx, moduleAddr, coin.Denom)
 	if !postMintBalance.Sub(preMintBalance).Amount.Equal(sdk.NewIntFromUint64(proposal.DepositAmount)) {
 		panic(fmt.Sprintf(
@@ -87,7 +85,6 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 
 	err = a.keeper.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, coins)
 	if err != nil {
-		// someone attempted to send tokens to a blacklisted user from Ethereum, log and send to Community pool
 		hash, _ := proposal.ProposalHash()
 		a.keeper.logger(ctx).Error("Could not send coins to the account",
 			"cause", err.Error(),
@@ -95,7 +92,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
 	}
-
+	ctx.Logger().Error("SendFromModuleToAccount", coins)
 	// Update the reserve mapping with the new amount of coins
 	err = a.keeper.VoltKeeper.UpdateBtcReserveAfterMint(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 )
 
 // SetBtcDeposit sets a btc deposit address given the BtcDepositAddress type
-func (k Keeper) SetBtcDeposit(ctx sdk.Context, depositAddress bridgetypes.BtcAddress, twilightDepositAddress sdk.AccAddress, satoshiTestAmount uint64) error {
+func (k Keeper) SetBtcDeposit(ctx sdk.Context, depositAddress bridgetypes.BtcAddress, twilightDepositAddress sdk.AccAddress, depositTestAmount uint64) error {
 	if err := sdk.VerifyAddressFormat(twilightDepositAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
@@ -16,7 +16,7 @@ func (k Keeper) SetBtcDeposit(ctx sdk.Context, depositAddress bridgetypes.BtcAdd
 	btcDepositAddress := &types.BtcDepositAddress{
 		DepositAddress:         depositAddress.BtcAddress,
 		TwilightDepositAddress: twilightDepositAddress.String(),
-		SatoshiTestAmount:      satoshiTestAmount,
+		DepositTestAmount:      depositTestAmount,
 		IsConfirmed:            false,
 	}
 
@@ -60,4 +60,23 @@ func (k Keeper) GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightD
 	k.cdc.MustUnmarshal(bz, &BtcDepositAddress)
 
 	return &BtcDepositAddress, true
+}
+
+// GetAllConfirmedBtcRegisteredDepositAddresses returns all the btc deposit addresses
+func (k Keeper) GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []types.BtcDepositAddress) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.BtcDepositKey)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var btcDepositAddress types.BtcDepositAddress
+		k.cdc.MustUnmarshal(iterator.Value(), &btcDepositAddress)
+
+		if btcDepositAddress.IsConfirmed {
+			btcDepositAddresses = append(btcDepositAddresses, btcDepositAddress)
+		}
+	}
+
+	return btcDepositAddresses
 }

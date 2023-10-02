@@ -85,21 +85,23 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 		if !found {
 			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
 		}
-
+		ctx.Logger().Error("btcDeposit", btcDeposit)
 		// Fetch next unique deposit identifier from IncrementCounter
 		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
 
 		// Set the clearing account
-		errSetting := k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
-		if errSetting != nil {
+		clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
+		if err != nil {
 			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
 		}
 
 		// SetBtcDepositConfirmed sets the deposit as confirmed
-		errSetting = k.SetBtcDepositConfirmed(ctx, twilightAddress)
-		if errSetting != nil {
+		err = k.SetBtcDepositConfirmed(ctx, twilightAddress)
+		if err != nil {
 			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
 		}
+		ctx.Logger().Error("SetBtcDepositConfirmed", twilightAddress)
+
 	}
 
 	// Update the clearing account
@@ -113,6 +115,7 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			break
 		}
 	}
+	ctx.Logger().Error("found", found)
 
 	if !found {
 		// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
@@ -121,9 +124,11 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			Amount:    mintedValue,
 		})
 	}
+	ctx.Logger().Error("ReserveAccountBalances", clearingAccount.ReserveAccountBalances)
 
 	// Save the updated clearing account
 	k.SetClearingAccount(ctx, twilightAddress, clearingAccount)
+	ctx.Logger().Error("SetClearingAccount", clearingAccount)
 	// Save the reserve
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)

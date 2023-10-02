@@ -54,7 +54,7 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 	if errTakeStake != nil {
 		return nil, errTakeStake
 	}
-	ctx.Logger().Error("SendFromModuleToAccount", depositAmount)
+
 	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.DepositAmount)
 	if errSetting != nil {
 		return nil, errSetting

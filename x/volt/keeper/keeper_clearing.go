@@ -24,16 +24,16 @@ func (k Keeper) SetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddre
 }
 
 // SetBtcAddressForClearingAccount sets the btc address for a given twilight address
-func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr string, depositIdentifer uint32) error {
+func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr string, depositIdentifer uint32) (*types.ClearingAccount, error) {
 	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
 	// Create a new ClearingAccount message
 	account := &types.ClearingAccount{
-		TwilightAddress:   twilightAddress.String(),
-		BtcDepositAddress: btcAddr,
-		DepositIdentifier: depositIdentifer,
+		TwilightAddress:             twilightAddress.String(),
+		BtcDepositAddress:           btcAddr,
+		BtcDepositAddressIdentifier: depositIdentifer,
 		// Other fields will be empty
 	}
 
@@ -41,7 +41,7 @@ func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress
 	aKey := types.GetClearingAccountKey(twilightAddress)
 	store.Set(aKey, k.cdc.MustMarshal(account))
 
-	return nil
+	return account, nil
 }
 
 // GetBtcClearingAddressByTwilightAddress returns the btc address for a given twilight address

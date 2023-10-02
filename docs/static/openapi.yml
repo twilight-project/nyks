@@ -27654,41 +27654,20 @@ paths:
           schema:
             type: object
             properties:
-              accounts:
+              addresses:
                 type: array
                 items:
                   type: object
                   properties:
-                    TwilightAddress:
+                    depositAddress:
                       type: string
-                    BtcDepositAddress:
+                    twilightDepositAddress:
                       type: string
-                    depositAddressId:
-                      type: array
-                      items:
-                        type: string
-                        format: byte
-                    BtcWithdrawAddress:
+                    satoshiTestAmount:
                       type: string
-                    withdrawAddressId:
-                      type: array
-                      items:
-                        type: string
-                        format: byte
-                    ReserveAccountBalances:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          ReserveId:
-                            type: string
-                            format: uint64
-                          Amount:
-                            type: string
-                            format: uint64
-                  title: >-
-                    ClearingAccount is used to keep a mapping of how a user's
-                    addresses and its reserve account balances
+                      format: uint64
+                    isConfirmed:
+                      type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -29327,12 +29306,12 @@ paths:
                     type: string
                   BtcDepositAddress:
                     type: string
-                  depositIdentifier:
+                  BtcDepositAddressIdentifier:
                     type: integer
                     format: int64
                   BtcWithdrawAddress:
                     type: string
-                  withdrawIdentifier:
+                  BtcWithdrawAddressIdentifier:
                     type: integer
                     format: int64
                   ReserveAccountBalances:
@@ -48528,41 +48507,20 @@ definitions:
   twilightproject.nyks.bridge.QueryRegisteredBtcDepositAddressesResponse:
     type: object
     properties:
-      accounts:
+      addresses:
         type: array
         items:
           type: object
           properties:
-            TwilightAddress:
+            depositAddress:
               type: string
-            BtcDepositAddress:
+            twilightDepositAddress:
               type: string
-            depositAddressId:
-              type: array
-              items:
-                type: string
-                format: byte
-            BtcWithdrawAddress:
+            satoshiTestAmount:
               type: string
-            withdrawAddressId:
-              type: array
-              items:
-                type: string
-                format: byte
-            ReserveAccountBalances:
-              type: array
-              items:
-                type: object
-                properties:
-                  ReserveId:
-                    type: string
-                    format: uint64
-                  Amount:
-                    type: string
-                    format: uint64
-          title: >-
-            ClearingAccount is used to keep a mapping of how a user's addresses
-            and its reserve account balances
+              format: uint64
+            isConfirmed:
+              type: boolean
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
@@ -48724,54 +48682,18 @@ definitions:
             twilightAddress:
               type: string
           title: 'this line is used by starport scaffolding # proto/tx/message'
-  twilightproject.nyks.volt.ClearingAccount:
+  twilightproject.nyks.volt.BtcDepositAddress:
     type: object
     properties:
-      TwilightAddress:
+      depositAddress:
         type: string
-      BtcDepositAddress:
+      twilightDepositAddress:
         type: string
-      depositAddressId:
-        type: array
-        items:
-          type: string
-          format: byte
-      BtcWithdrawAddress:
-        type: string
-      withdrawAddressId:
-        type: array
-        items:
-          type: string
-          format: byte
-      ReserveAccountBalances:
-        type: array
-        items:
-          type: object
-          properties:
-            ReserveId:
-              type: string
-              format: uint64
-            Amount:
-              type: string
-              format: uint64
-      depositIdentifier:
-        type: integer
-        format: int64
-      withdrawIdentifier:
-        type: integer
-        format: int64
-    title: >-
-      ClearingAccount is used to keep a mapping of how a user's addresses and
-      its reserve account balances
-  twilightproject.nyks.volt.IndividualTwilightReserveAccountBalance:
-    type: object
-    properties:
-      ReserveId:
+      satoshiTestAmount:
         type: string
         format: uint64
-      Amount:
-        type: string
-        format: uint64
+      isConfirmed:
+        type: boolean
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:
@@ -49262,6 +49184,44 @@ definitions:
 
       value, private pool value, public pool value, and the btc relay capacity
       value
+  twilightproject.nyks.volt.ClearingAccount:
+    type: object
+    properties:
+      TwilightAddress:
+        type: string
+      BtcDepositAddress:
+        type: string
+      BtcDepositAddressIdentifier:
+        type: integer
+        format: int64
+      BtcWithdrawAddress:
+        type: string
+      BtcWithdrawAddressIdentifier:
+        type: integer
+        format: int64
+      ReserveAccountBalances:
+        type: array
+        items:
+          type: object
+          properties:
+            ReserveId:
+              type: string
+              format: uint64
+            Amount:
+              type: string
+              format: uint64
+    title: >-
+      ClearingAccount is used to keep a mapping of how a user's addresses and
+      its reserve account balances
+  twilightproject.nyks.volt.IndividualTwilightReserveAccountBalance:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      Amount:
+        type: string
+        format: uint64
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -49318,12 +49278,12 @@ definitions:
             type: string
           BtcDepositAddress:
             type: string
-          depositIdentifier:
+          BtcDepositAddressIdentifier:
             type: integer
             format: int64
           BtcWithdrawAddress:
             type: string
-          withdrawIdentifier:
+          BtcWithdrawAddressIdentifier:
             type: integer
             format: int64
           ReserveAccountBalances:
