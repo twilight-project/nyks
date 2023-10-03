@@ -92,7 +92,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
 	}
-	ctx.Logger().Error("SendFromModuleToAccount", coins)
+
 	// Update the reserve mapping with the new amount of coins
 	err = a.keeper.VoltKeeper.UpdateBtcReserveAfterMint(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
 	if err != nil {

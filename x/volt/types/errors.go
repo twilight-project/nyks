@@ -17,4 +17,5 @@ var (
 	ErrCouldNotMarshalWithdrawPool = sdkerrors.Register(ModuleName, 7, "Could not marshal withdraw pool")
 	ErrBtcDepositAddressNotFound   = sdkerrors.Register(ModuleName, 8, "Btc deposit address not found")
 	ErrCouldNotSetClearingAccount  = sdkerrors.Register(ModuleName, 9, "Could not set clearing account")
+	ErrCouldNotReturnUserDeposit   = sdkerrors.Register(ModuleName, 10, "Could not return user deposit")
 )
