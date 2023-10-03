@@ -27326,7 +27326,7 @@ paths:
                       type: string
                     judgeAddress:
                       type: string
-                  title: 7. MsgBroadcastSweep
+                  title: 7. MsgBroadcastTxSweep
         default:
           description: An unexpected error response.
           schema:
@@ -27345,6 +27345,61 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of BroadcastTxRefund items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxRefund
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              broadcastRefundMsg:
+                type: object
+                properties:
+                  reserveId:
+                    type: string
+                    format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
+                  signedRefundTx:
+                    type: string
+                  judgeAddress:
+                    type: string
+                title: 6. MsgBroadcastTxRefund
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/bridge/broadcast_tx_refund_all:
@@ -27372,7 +27427,7 @@ paths:
                       type: string
                     judgeAddress:
                       type: string
-                  title: 6. MsgBroadcastRefund
+                  title: 6. MsgBroadcastTxRefund
         default:
           description: An unexpected error response.
           schema:
@@ -27391,6 +27446,61 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/broadcast_tx_sweep/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of BroadcastTxSweep items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxSweep
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              broadcastSweepMsg:
+                type: object
+                properties:
+                  reserveId:
+                    type: string
+                    format: uint64
+                  roundId:
+                    type: string
+                    format: uint64
+                  signedSweepTx:
+                    type: string
+                  judgeAddress:
+                    type: string
+                title: 7. MsgBroadcastTxSweep
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/bridge/params:
@@ -48404,7 +48514,7 @@ definitions:
         type: string
       judgeAddress:
         type: string
-    title: 6. MsgBroadcastRefund
+    title: 6. MsgBroadcastTxRefund
   twilightproject.nyks.bridge.MsgBroadcastTxRefundResponse:
     type: object
   twilightproject.nyks.bridge.MsgBroadcastTxSweep:
@@ -48420,7 +48530,7 @@ definitions:
         type: string
       judgeAddress:
         type: string
-    title: 7. MsgBroadcastSweep
+    title: 7. MsgBroadcastTxSweep
   twilightproject.nyks.bridge.MsgBroadcastTxSweepResponse:
     type: object
   twilightproject.nyks.bridge.MsgConfirmBtcDepositResponse:
@@ -48602,7 +48712,24 @@ definitions:
               type: string
             judgeAddress:
               type: string
-          title: 6. MsgBroadcastRefund
+          title: 6. MsgBroadcastTxRefund
+  twilightproject.nyks.bridge.QueryBroadcastTxRefundResponse:
+    type: object
+    properties:
+      broadcastRefundMsg:
+        type: object
+        properties:
+          reserveId:
+            type: string
+            format: uint64
+          roundId:
+            type: string
+            format: uint64
+          signedRefundTx:
+            type: string
+          judgeAddress:
+            type: string
+        title: 6. MsgBroadcastTxRefund
   twilightproject.nyks.bridge.QueryBroadcastTxSweepAllResponse:
     type: object
     properties:
@@ -48621,7 +48748,24 @@ definitions:
               type: string
             judgeAddress:
               type: string
-          title: 7. MsgBroadcastSweep
+          title: 7. MsgBroadcastTxSweep
+  twilightproject.nyks.bridge.QueryBroadcastTxSweepResponse:
+    type: object
+    properties:
+      broadcastSweepMsg:
+        type: object
+        properties:
+          reserveId:
+            type: string
+            format: uint64
+          roundId:
+            type: string
+            format: uint64
+          signedSweepTx:
+            type: string
+          judgeAddress:
+            type: string
+        title: 7. MsgBroadcastTxSweep
   twilightproject.nyks.bridge.QueryParamsResponse:
     type: object
     properties:

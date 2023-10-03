@@ -17,7 +17,7 @@ func (k msgServer) BroadcastTxSweep(goCtx context.Context, msg *types.MsgBroadca
 	}
 
 	// check if this broadcast sweep message is already registered
-	_, foundDuplicate := k.GetBtcBroadcastTxSweepMsg(ctx, judgeAddress, msg.SignedSweepTx)
+	_, foundDuplicate := k.GetBtcBroadcastTxSweepMsg(ctx, msg.ReserveId, msg.RoundId)
 	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast sweep request")
 	}

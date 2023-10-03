@@ -155,7 +155,7 @@ export interface MsgSignSweep {
 export interface MsgSignSweepResponse {
 }
 
-/** 6. MsgBroadcastRefund */
+/** 6. MsgBroadcastTxRefund */
 export interface MsgBroadcastTxRefund {
   reserveId: number;
   roundId: number;
@@ -166,7 +166,7 @@ export interface MsgBroadcastTxRefund {
 export interface MsgBroadcastTxRefundResponse {
 }
 
-/** 7. MsgBroadcastSweep */
+/** 7. MsgBroadcastTxSweep */
 export interface MsgBroadcastTxSweep {
   reserveId: number;
   roundId: number;

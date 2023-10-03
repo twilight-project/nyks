@@ -168,7 +168,7 @@ message MsgSignSweep {
 
 message MsgSignSweepResponse {}
 
-// 6. MsgBroadcastRefund
+// 6. MsgBroadcastTxRefund
 message MsgBroadcastTxRefund {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
@@ -178,7 +178,7 @@ message MsgBroadcastTxRefund {
 
 message MsgBroadcastTxRefundResponse {}
 
-// 7. MsgBroadcastSweep
+// 7. MsgBroadcastTxSweep
 message MsgBroadcastTxSweep {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;

@@ -67,6 +67,8 @@ const getDefaultState = () => {
 				ProposeSweepAddressesAll: {},
 				SignRefund: {},
 				SignSweep: {},
+				BroadcastTxRefund: {},
+				BroadcastTxSweep: {},
 				
 				_Structure: {
 						EventRegisterBtcDepositAddress: getStructure(EventRegisterBtcDepositAddress.fromPartial({})),
@@ -235,6 +237,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.SignSweep[JSON.stringify(params)] ?? {}
+		},
+				getBroadcastTxRefund: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BroadcastTxRefund[JSON.stringify(params)] ?? {}
+		},
+				getBroadcastTxSweep: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BroadcastTxSweep[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -740,6 +754,50 @@ export default {
 		},
 		
 		
+		
+		
+		 		
+		
+		
+		async QueryBroadcastTxRefund({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksBridge.query.queryBroadcastTxRefund( key.reserveId,  key.roundId)).data
+				
+					
+				commit('QUERY', { query: 'BroadcastTxRefund', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBroadcastTxRefund', payload: { options: { all }, params: {...key},query }})
+				return getters['getBroadcastTxRefund']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBroadcastTxRefund API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryBroadcastTxSweep({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksBridge.query.queryBroadcastTxSweep( key.reserveId,  key.roundId)).data
+				
+					
+				commit('QUERY', { query: 'BroadcastTxSweep', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBroadcastTxSweep', payload: { options: { all }, params: {...key},query }})
+				return getters['getBroadcastTxSweep']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBroadcastTxSweep API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
 		async sendMsgBroadcastTxRefund({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -751,20 +809,6 @@ export default {
 					throw new Error('TxClient:MsgBroadcastTxRefund:Init Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new Error('TxClient:MsgBroadcastTxRefund:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterBtcDepositAddress({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -782,76 +826,6 @@ export default {
 				}
 			}
 		},
-		async sendMsgWithdrawBtcRequest({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawBtcRequest({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawBtcRequest:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgWithdrawBtcRequest:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgUnsignedTxRefund({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgUnsignedTxRefund({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgUnsignedTxRefund:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgUnsignedTxRefund:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgWithdrawTxFinal({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawTxFinal({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawTxFinal:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgWithdrawTxFinal:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgSweepProposal({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgSweepProposal({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgSweepProposal:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgRegisterJudge({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterJudge({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterJudge:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgRegisterJudge:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgSignSweep({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -866,59 +840,17 @@ export default {
 				}
 			}
 		},
-		async sendMsgSignRefund({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+		async sendMsgRegisterBtcDepositAddress({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
 				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgSignRefund({ value, fee: fullFee, memo })
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterBtcDepositAddress({ value, fee: fullFee, memo })
 				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSignRefund:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
 				}else{
-					throw new Error('TxClient:MsgSignRefund:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgUnsignedTxSweep({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgUnsignedTxSweep({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgUnsignedTxSweep:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgUnsignedTxSweep:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgWithdrawTxSigned({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawTxSigned({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawTxSigned:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgWithdrawTxSigned:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgConfirmBtcWithdraw({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgConfirmBtcWithdraw({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgConfirmBtcWithdraw:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgConfirmBtcWithdraw:Send Could not broadcast Tx: '+ e.message)
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -936,17 +868,17 @@ export default {
 				}
 			}
 		},
-		async sendMsgBroadcastTxSweep({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+		async sendMsgWithdrawTxSigned({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
 				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksBridge.tx.sendMsgBroadcastTxSweep({ value, fee: fullFee, memo })
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawTxSigned({ value, fee: fullFee, memo })
 				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgBroadcastTxSweep:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgWithdrawTxSigned:Init Could not initialize signing client. Wallet is required.')
 				}else{
-					throw new Error('TxClient:MsgBroadcastTxSweep:Send Could not broadcast Tx: '+ e.message)
+					throw new Error('TxClient:MsgWithdrawTxSigned:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -964,6 +896,118 @@ export default {
 				}
 			}
 		},
+		async sendMsgSweepProposal({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgSweepProposal({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSweepProposal:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgConfirmBtcWithdraw({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgConfirmBtcWithdraw({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgConfirmBtcWithdraw:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgConfirmBtcWithdraw:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgWithdrawTxFinal({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawTxFinal({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawTxFinal:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgWithdrawTxFinal:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgUnsignedTxRefund({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgUnsignedTxRefund({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgUnsignedTxRefund:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgUnsignedTxRefund:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgWithdrawBtcRequest({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgWithdrawBtcRequest({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawBtcRequest:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgWithdrawBtcRequest:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgBroadcastTxSweep({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgBroadcastTxSweep({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgBroadcastTxSweep:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgBroadcastTxSweep:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgRegisterJudge({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgRegisterJudge({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterJudge:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgRegisterJudge:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgSignRefund({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgSignRefund({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSignRefund:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSignRefund:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgProposeSweepAddress({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -975,6 +1019,20 @@ export default {
 					throw new Error('TxClient:MsgProposeSweepAddress:Init Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new Error('TxClient:MsgProposeSweepAddress:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgUnsignedTxSweep({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksBridge.tx.sendMsgUnsignedTxSweep({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgUnsignedTxSweep:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgUnsignedTxSweep:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -992,19 +1050,6 @@ export default {
 				}
 			}
 		},
-		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterBtcDepositAddress({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
-				}
-			}
-		},
 		async MsgRegisterReserveAddress({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -1015,71 +1060,6 @@ export default {
 					throw new Error('TxClient:MsgRegisterReserveAddress:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgRegisterReserveAddress:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgWithdrawBtcRequest({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawBtcRequest({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawBtcRequest:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgWithdrawBtcRequest:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgUnsignedTxRefund({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgUnsignedTxRefund({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgUnsignedTxRefund:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgUnsignedTxRefund:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgWithdrawTxFinal({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawTxFinal({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawTxFinal:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgWithdrawTxFinal:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgSweepProposal({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgSweepProposal({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgSweepProposal:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgRegisterJudge({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterJudge({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgRegisterJudge:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgRegisterJudge:Create Could not create message: ' + e.message)
 				}
 			}
 		},
@@ -1096,55 +1076,16 @@ export default {
 				}
 			}
 		},
-		async MsgSignRefund({ rootGetters }, { value }) {
+		async MsgRegisterBtcDepositAddress({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgSignRefund({value})
+				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterBtcDepositAddress({value})
 				return msg
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgSignRefund:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Init Could not initialize signing client. Wallet is required.')
 				} else{
-					throw new Error('TxClient:MsgSignRefund:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgUnsignedTxSweep({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgUnsignedTxSweep({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgUnsignedTxSweep:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgUnsignedTxSweep:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgWithdrawTxSigned({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawTxSigned({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWithdrawTxSigned:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgWithdrawTxSigned:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgConfirmBtcWithdraw({ rootGetters }, { value }) {
-			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgConfirmBtcWithdraw({value})
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgConfirmBtcWithdraw:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgConfirmBtcWithdraw:Create Could not create message: ' + e.message)
+					throw new Error('TxClient:MsgRegisterBtcDepositAddress:Create Could not create message: ' + e.message)
 				}
 			}
 		},
@@ -1161,16 +1102,16 @@ export default {
 				}
 			}
 		},
-		async MsgBroadcastTxSweep({ rootGetters }, { value }) {
+		async MsgWithdrawTxSigned({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksBridge.tx.msgBroadcastTxSweep({value})
+				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawTxSigned({value})
 				return msg
 			} catch (e) {
 				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgBroadcastTxSweep:Init Could not initialize signing client. Wallet is required.')
+					throw new Error('TxClient:MsgWithdrawTxSigned:Init Could not initialize signing client. Wallet is required.')
 				} else{
-					throw new Error('TxClient:MsgBroadcastTxSweep:Create Could not create message: ' + e.message)
+					throw new Error('TxClient:MsgWithdrawTxSigned:Create Could not create message: ' + e.message)
 				}
 			}
 		},
@@ -1187,6 +1128,110 @@ export default {
 				}
 			}
 		},
+		async MsgSweepProposal({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgSweepProposal({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSweepProposal:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSweepProposal:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgConfirmBtcWithdraw({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgConfirmBtcWithdraw({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgConfirmBtcWithdraw:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgConfirmBtcWithdraw:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgWithdrawTxFinal({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawTxFinal({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawTxFinal:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgWithdrawTxFinal:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgUnsignedTxRefund({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgUnsignedTxRefund({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgUnsignedTxRefund:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgUnsignedTxRefund:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgWithdrawBtcRequest({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgWithdrawBtcRequest({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgWithdrawBtcRequest:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgWithdrawBtcRequest:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgBroadcastTxSweep({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgBroadcastTxSweep({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgBroadcastTxSweep:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgBroadcastTxSweep:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgRegisterJudge({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgRegisterJudge({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgRegisterJudge:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgRegisterJudge:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSignRefund({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgSignRefund({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSignRefund:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSignRefund:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		async MsgProposeSweepAddress({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -1197,6 +1242,19 @@ export default {
 					throw new Error('TxClient:MsgProposeSweepAddress:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgProposeSweepAddress:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgUnsignedTxSweep({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksBridge.tx.msgUnsignedTxSweep({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgUnsignedTxSweep:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgUnsignedTxSweep:Create Could not create message: ' + e.message)
 				}
 			}
 		},

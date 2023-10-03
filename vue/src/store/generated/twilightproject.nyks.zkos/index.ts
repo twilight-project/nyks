@@ -186,20 +186,6 @@ export default {
 		},
 		
 		
-		async sendMsgTransferTx({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksZkos.tx.sendMsgTransferTx({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgTransferTx:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgTransferTx:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgMintBurnTradingBtc({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -214,20 +200,21 @@ export default {
 				}
 			}
 		},
-		
-		async MsgTransferTx({ rootGetters }, { value }) {
+		async sendMsgTransferTx({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksZkos.tx.msgTransferTx({value})
-				return msg
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksZkos.tx.sendMsgTransferTx({ value, fee: fullFee, memo })
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgTransferTx:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgTransferTx:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgTransferTx:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgMintBurnTradingBtc({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -238,6 +225,19 @@ export default {
 					throw new Error('TxClient:MsgMintBurnTradingBtc:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgMintBurnTradingBtc:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgTransferTx({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksZkos.tx.msgTransferTx({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgTransferTx:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgTransferTx:Create Could not create message: ' + e.message)
 				}
 			}
 		},

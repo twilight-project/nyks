@@ -143,6 +143,18 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/bridge/sign_sweep/{reserveId}/{roundId}";
   
   }
+  
+  // Queries a list of BroadcastTxRefund items.
+  rpc BroadcastTxRefund (QueryBroadcastTxRefundRequest) returns (QueryBroadcastTxRefundResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}";
+  
+  }
+  
+  // Queries a list of BroadcastTxSweep items.
+  rpc BroadcastTxSweep (QueryBroadcastTxSweepRequest) returns (QueryBroadcastTxSweepResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_sweep/{reserveId}/{roundId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -205,18 +217,6 @@ message QueryWithdrawBtcRequestAllRequest {}
 
 message QueryWithdrawBtcRequestAllResponse {
   repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryBroadcastTxSweepAllRequest {}
-
-message QueryBroadcastTxSweepAllResponse {
-  repeated MsgBroadcastTxSweep BroadcastTxSweepMsg = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryBroadcastTxRefundAllRequest {}
-
-message QueryBroadcastTxRefundAllResponse {
-  repeated MsgBroadcastTxRefund BroadcastTxRefundMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryProposeRefundHashAllRequest {}
@@ -312,3 +312,34 @@ message QuerySignSweepAllResponse {
   repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 
+// 6. BroadcastTxRefund
+message QueryBroadcastTxRefundRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryBroadcastTxRefundResponse {
+  MsgBroadcastTxRefund broadcastRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBroadcastTxRefundAllRequest {}
+
+message QueryBroadcastTxRefundAllResponse {
+  repeated MsgBroadcastTxRefund BroadcastTxRefundMsg = 1 [(gogoproto.nullable) = false];
+}
+
+// 7. BroadcastTxSweep
+message QueryBroadcastTxSweepRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryBroadcastTxSweepResponse {
+  MsgBroadcastTxSweep broadcastSweepMsg = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBroadcastTxSweepAllRequest {}
+
+message QueryBroadcastTxSweepAllResponse {
+  repeated MsgBroadcastTxSweep BroadcastTxSweepMsg = 1 [(gogoproto.nullable) = false];
+}

@@ -159,9 +159,13 @@ export interface BridgeQueryBroadcastTxRefundAllResponse {
   BroadcastTxRefundMsg?: BridgeMsgBroadcastTxRefund[];
 }
 
+export type BridgeQueryBroadcastTxRefundResponse = object;
+
 export interface BridgeQueryBroadcastTxSweepAllResponse {
   BroadcastTxSweepMsg?: BridgeMsgBroadcastTxSweep[];
 }
+
+export type BridgeQueryBroadcastTxSweepResponse = object;
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -215,13 +219,17 @@ export interface BridgeQuerySignRefundAllResponse {
   signRefundMsg?: BridgeMsgSignRefund[];
 }
 
-export type BridgeQuerySignRefundResponse = object;
+export interface BridgeQuerySignRefundResponse {
+  signRefundMsg?: BridgeMsgSignRefund;
+}
 
 export interface BridgeQuerySignSweepAllResponse {
   signSweepMsg?: BridgeMsgSignSweep[];
 }
 
-export type BridgeQuerySignSweepResponse = object;
+export interface BridgeQuerySignSweepResponse {
+  signSweepMsg?: BridgeMsgSignSweep;
+}
 
 export interface BridgeQueryUnsignedTxRefundAllResponse {
   unsignedTxRefundMsgs?: BridgeMsgUnsignedTxRefund[];
@@ -408,6 +416,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
+   * @name QueryBroadcastTxRefund
+   * @summary Queries a list of BroadcastTxRefund items.
+   * @request GET:/twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}
+   */
+  queryBroadcastTxRefund = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<BridgeQueryBroadcastTxRefundResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/broadcast_tx_refund/${reserveId}/${roundId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
    * @name QueryBroadcastTxRefundAll
    * @summary Queries a list of BroadcastTxRefundAll items.
    * @request GET:/twilight-project/nyks/bridge/broadcast_tx_refund_all
@@ -415,6 +439,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryBroadcastTxRefundAll = (params: RequestParams = {}) =>
     this.request<BridgeQueryBroadcastTxRefundAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/broadcast_tx_refund_all`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBroadcastTxSweep
+   * @summary Queries a list of BroadcastTxSweep items.
+   * @request GET:/twilight-project/nyks/bridge/broadcast_tx_sweep/{reserveId}/{roundId}
+   */
+  queryBroadcastTxSweep = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<BridgeQueryBroadcastTxSweepResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/broadcast_tx_sweep/${reserveId}/${roundId}`,
       method: "GET",
       format: "json",
       ...params,
@@ -588,7 +628,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of SignRefund items.
    * @request GET:/twilight-project/nyks/bridge/sign_refund/{reserveId}/{roundId}
    */
-  querySignRefund = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+  querySignRefund = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQuerySignRefundResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/sign_refund/${reserveId}/${roundId}`,
       method: "GET",
@@ -620,7 +660,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of SignSweep items.
    * @request GET:/twilight-project/nyks/bridge/sign_sweep/{reserveId}/{roundId}
    */
-  querySignSweep = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+  querySignSweep = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQuerySignSweepResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/sign_sweep/${reserveId}/${roundId}`,
       method: "GET",

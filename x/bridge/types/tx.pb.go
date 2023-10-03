@@ -1506,7 +1506,7 @@ func (m *MsgSignSweepResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSignSweepResponse proto.InternalMessageInfo
 
-// 6. MsgBroadcastRefund
+// 6. MsgBroadcastTxRefund
 type MsgBroadcastTxRefund struct {
 	ReserveId      uint64 `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
 	RoundId        uint64 `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
@@ -1611,7 +1611,7 @@ func (m *MsgBroadcastTxRefundResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBroadcastTxRefundResponse proto.InternalMessageInfo
 
-// 7. MsgBroadcastSweep
+// 7. MsgBroadcastTxSweep
 type MsgBroadcastTxSweep struct {
 	ReserveId     uint64 `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
 	RoundId       uint64 `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`

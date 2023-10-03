@@ -17,7 +17,7 @@ func (k msgServer) BroadcastTxRefund(goCtx context.Context, msg *types.MsgBroadc
 	}
 
 	// check if this broadcast refund message is already registered
-	_, foundDuplicate := k.GetBtcBroadcastTxRefundMsg(ctx, judgeAddress, msg.SignedRefundTx)
+	_, foundDuplicate := k.GetBtcBroadcastTxRefundMsg(ctx, msg.ReserveId, msg.RoundId)
 	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate broadcast refund request")
 	}
