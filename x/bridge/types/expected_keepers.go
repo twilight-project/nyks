@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	nykstypes "github.com/twilight-project/nyks/x/forks/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -16,7 +17,9 @@ type AccountKeeper interface {
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	//SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
 
@@ -29,7 +32,10 @@ type NyksKeeper interface {
 
 // VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
 type VoltKeeper interface {
-	SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error
-	SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr BtcAddress) error
-	GetBtcAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *BtcAddress, found bool)
+	GetBtcReserve(ctx sdk.Context, reserveId uint64) (*volttypes.BtcReserve, error)
+	RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, error)
+	SetBtcDeposit(ctx sdk.Context, depositAddress BtcAddress, twilightDepositAddress sdk.AccAddress, depositTestAmount uint64) error
+	GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcDeposit *volttypes.BtcDepositAddress, found bool)
+	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
+	GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []volttypes.BtcDepositAddress)
 }

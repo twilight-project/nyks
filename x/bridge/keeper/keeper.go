@@ -30,6 +30,7 @@ type (
 		NyksKeeper    *nykskeeper.Keeper
 		VoltKeeper    *voltkeeper.Keeper
 		accountKeeper *authkeeper.AccountKeeper
+		BankKeeper    types.BankKeeper
 	}
 )
 
@@ -42,6 +43,7 @@ func NewKeeper(
 	nyksKeeper *nykskeeper.Keeper,
 	voltKeeper *voltkeeper.Keeper,
 	accKeeper *authkeeper.AccountKeeper,
+	bankKeeper types.BankKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -59,9 +61,20 @@ func NewKeeper(
 		NyksKeeper:    nyksKeeper,
 		accountKeeper: accKeeper,
 		VoltKeeper:    voltKeeper,
+		BankKeeper:    bankKeeper,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// GetBankKeeper returns the bank keeper.
+func (k Keeper) GetBankKeeper() types.BankKeeper {
+	return k.BankKeeper
+}
+
+// GetAccountKeeper returns the account keeper.
+func (k Keeper) GetAccountKeeper() types.AccountKeeper {
+	return *k.accountKeeper
 }

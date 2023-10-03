@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	//voltkeeper "github.com/cosmos/cosmos-sdk/nyks/x/volt/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,6 +21,11 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 
 	// check the following, all should be validated in validate basic
 	judgeAddress, e1 := sdk.AccAddressFromBech32(msg.JudgeAddress)
+
+	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
+	if found == false {
+		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
+	}
 
 	// FOLLOWING DOES NOT CONTAIN ANY VALIDATION CHECK FOR THE SCRIPT - ITS KIND OF A PLACEHOLDER
 	reserveScript, e2 := types.NewBtcScript(msg.ReserveScript)
@@ -40,7 +46,7 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	//validatorAddress := k.VoltKeeper.GetValidatorAddressFromJudgeAddress(ctx, judgeAddress)
 
 	// set an empty reserve mapping for the judge address
-	errSettingRes := k.VoltKeeper.SetBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
+	reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}
@@ -52,5 +58,6 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		},
 	)
 
-	return &types.MsgRegisterReserveAddressResponse{ReserveAddress: msg.ReserveAddress}, nil
+	return &types.MsgRegisterReserveAddressResponse{ReserveId: strconv.FormatUint(reserveId, 10), ReserveAddress: msg.ReserveAddress}, nil
+
 }

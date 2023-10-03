@@ -60,10 +60,10 @@ func (k Keeper) ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, valA
 func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcChainTip) (*types.MsgSeenBtcChainTipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// err := k.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
-	// if err != nil {
-	// 	return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
-	// }
+	err := k.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
+	}
 
 	any, err := codectypes.NewAnyWithValue(msg)
 	if err != nil {

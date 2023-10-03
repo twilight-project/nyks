@@ -9,10 +9,11 @@ const TypeMsgRegisterBtcDepositAddress = "register_btc_deposit_address"
 
 var _ sdk.Msg = &MsgRegisterBtcDepositAddress{}
 
-func NewMsgRegisterBtcDepositAddress(depositAddress string, twilightDepositAddress string) *MsgRegisterBtcDepositAddress {
+func NewMsgRegisterBtcDepositAddress(depositAddress string, twilightDepositAddress string, depositAmount uint64) *MsgRegisterBtcDepositAddress {
 	return &MsgRegisterBtcDepositAddress{
 		DepositAddress:         depositAddress,
 		TwilightDepositAddress: twilightDepositAddress,
+		DepositAmount:          depositAmount,
 	}
 }
 
@@ -38,9 +39,20 @@ func (msg *MsgRegisterBtcDepositAddress) GetSignBytes() []byte {
 }
 
 func (msg *MsgRegisterBtcDepositAddress) ValidateBasic() error {
+	// Validate the BTC deposit address
+	if msg.DepositAddress == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid BTC deposit address: cannot be empty")
+	}
+
+	// Validate the twilight deposit address
 	_, err := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid twilight deposit address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid twilight deposit address")
+	}
+
+	// Validate the deposit amount
+	if msg.DepositAmount <= 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid deposit amount: must be greater than zero")
 	}
 	return nil
 }

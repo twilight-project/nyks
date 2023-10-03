@@ -14,11 +14,11 @@ var _ = strconv.Itoa(0)
 
 func CmdMsgConfirmBtcDeposit() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "msg-confirm-btc-deposit [deposit-address] [deposit-amount] [block-height] [block-hash] [twilight-deposit-address] [reserve-address]",
+		Use:   "msg-confirm-btc-deposit [reserve-address] [deposit-amount] [block-height] [block-hash] [twilight-deposit-address]",
 		Short: "Broadcast message MsgConfirmBtcDeposit",
 		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argDepositAddress := args[0]
+			argReserveAddress := args[0]
 			argDepositAmount, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
@@ -29,7 +29,6 @@ func CmdMsgConfirmBtcDeposit() *cobra.Command {
 			}
 			argBlockHash := args[3]
 			argTwilightDepositAddress := args[4]
-			argReserveAddress := args[5]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -37,12 +36,11 @@ func CmdMsgConfirmBtcDeposit() *cobra.Command {
 			}
 
 			msg := types.NewMsgConfirmBtcDeposit(
-				argDepositAddress,
+				argReserveAddress,
 				argDepositAmount,
 				argBlockHeight,
 				argBlockHash,
 				argTwilightDepositAddress,
-				argReserveAddress,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

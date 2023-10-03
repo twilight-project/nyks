@@ -2,6 +2,7 @@ package cli
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -14,13 +15,20 @@ var _ = strconv.Itoa(0)
 
 func CmdSignSweep() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sign-sweep [reserve-address] [signer-address] [sweep-signature]",
+		Use:   "sign-sweep [reserve-id] [round-id] [signer-address] [sweep-signatures]",
 		Short: "Broadcast message SignSweep",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argReserveAddress := args[0]
-			argSignerAddress := args[1]
-			argSweepSignature := args[2]
+			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+			argRoundId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+			argSignerPublicKey := args[2]
+			argSweepSignatures := strings.Split(args[3], ",")
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -28,9 +36,10 @@ func CmdSignSweep() *cobra.Command {
 			}
 
 			msg := types.NewMsgSignSweep(
-				argReserveAddress,
-				argSignerAddress,
-				argSweepSignature,
+				argReserveId,
+				argRoundId,
+				argSignerPublicKey,
+				argSweepSignatures,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

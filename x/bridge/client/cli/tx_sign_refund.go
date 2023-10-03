@@ -14,13 +14,21 @@ var _ = strconv.Itoa(0)
 
 func CmdSignRefund() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sign-refund [reserve-address] [signer-address] [refund-signature]",
+		Use:   "sign-refund [reserve-id] [round-id] [signer-public-key] [refund-signature]",
 		Short: "Broadcast message SignRefund",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argReserveAddress := args[0]
-			argSignerAddress := args[1]
-			argRefundSignature := args[2]
+			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+			argRoundId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			argSignerPublicKey := args[2]
+			argRefundSignature := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -28,8 +36,9 @@ func CmdSignRefund() *cobra.Command {
 			}
 
 			msg := types.NewMsgSignRefund(
-				argReserveAddress,
-				argSignerAddress,
+				argReserveId,
+				argRoundId,
+				argSignerPublicKey,
 				argRefundSignature,
 				clientCtx.GetFromAddress().String(),
 			)

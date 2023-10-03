@@ -18,7 +18,7 @@ type AccountKeeper interface {
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	//SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
@@ -43,11 +43,13 @@ type StakingKeeper interface {
 
 // VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
 type VoltKeeper interface {
-	UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error
-	UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64) error
+	UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error
+	UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) error
+	UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error
 }
 
 type BridgeKeeper interface {
-	GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.AccAddress, error)
+	//GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress sdk.AccAddress) (sdk.AccAddress, error)
+	CheckandConfirmUserDeposit(ctx sdk.Context, twilightAddress sdk.AccAddress) error
 	// Add other required methods
 }

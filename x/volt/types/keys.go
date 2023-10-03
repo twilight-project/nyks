@@ -35,6 +35,15 @@ var (
 
 	// LastRegisteredReserveKey indexes the reserve LastRegisteredReserveKey
 	LastRegisteredReserveKey = forkstypes.HashString("LastRegisteredReserveKey")
+
+	// WithdrawPoolKey indexes the reserve ReserveWithdrawPool
+	WithdrawPoolKey = forkstypes.HashString("WithdrawPoolKey")
+
+	// LastUnlockedReserveKey indexes the reserve LastUnlockedReserveKey
+	LastUnlockedReserveKey = forkstypes.HashString("LastUnlockedReserveKey")
+
+	// BtcDepositKey is the key for the user deposit
+	BtcDepositKey = forkstypes.HashString("BtcDepositKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -51,7 +60,7 @@ func GetClearingAccountKey(twilightAddress sdk.AccAddress) []byte {
 }
 
 // GetReserveKey returns the following key format
-// prefix reserve-key, reserve-address
+// prefix [LastRegisteredReserveKey][1]
 func GetReserveKey(reserveId uint64) []byte {
 	reserveBufBytes := new(bytes.Buffer)
 	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
@@ -59,4 +68,25 @@ func GetReserveKey(reserveId uint64) []byte {
 		panic("Failed to convert uint64 to bytes")
 	}
 	return forkstypes.AppendBytes(BtcReserveKey, reserveBufBytes.Bytes())
+}
+
+// GetWithdrawPoolKey returns the following key format
+// prefix reserve-key
+func GetWithdrawPoolKey(reserveId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(WithdrawPoolKey, reserveBufBytes.Bytes())
+}
+
+// GetBtcDepositKey returns the following key format
+// [HashString("BtcDepositKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetBtcDepositKey(twilightAddress sdk.AccAddress) []byte {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid twilight address"))
+	}
+
+	return forkstypes.AppendBytes(BtcDepositKey, twilightAddress.Bytes())
 }

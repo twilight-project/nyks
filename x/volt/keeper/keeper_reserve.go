@@ -9,8 +9,8 @@ import (
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
-// SetBtcReserve sets a reserve in the store
-func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) error {
+// RegisterNewBtcReserve sets a reserve in the store
+func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, error) {
 
 	// Get the latest reserve id
 	// We keep reserve ids in a separate store and keep track of it as a counter
@@ -19,7 +19,7 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 
 	// Check if the reserve limit has been reached
 	if (reserveId) > types.BtcReserveMaxLimit {
-		return sdkerrors.Wrapf(types.ErrBtcReserveMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
+		return 0, sdkerrors.Wrapf(types.ErrBtcReserveMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
 	}
 
 	// Create a new reserve
@@ -32,18 +32,33 @@ func (k Keeper) SetBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, rese
 		PrivatePoolValue:      0,
 		PublicValue:           0,
 		FeePool:               0,
+		UnlockHeight:          0,
+		RoundId:               0,
 	}
 
+	// Set the reserve
+	err := k.SetBtcReserve(ctx, res)
+	if err != nil {
+		return 0, sdkerrors.Wrapf(types.ErrCouldNotSetReserve, fmt.Sprint(reserveAddress))
+	} else {
+		k.setLastRegisteredBtcReserve(ctx, reserveId)
+	}
+
+	return reserveId, nil
+}
+
+// SetBtcReserve sets a reserve in the store
+func (k Keeper) SetBtcReserve(ctx sdk.Context, reserve *types.BtcReserve) error {
+
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetReserveKey(reserveId)
-	store.Set(aKey, k.cdc.MustMarshal(res))
-	k.setLastRegisteredBtcReserve(ctx, reserveId)
+	aKey := types.GetReserveKey(reserve.ReserveId)
+	store.Set(aKey, k.cdc.MustMarshal(reserve))
 
 	return nil
 }
 
 // UpdateBtcReserve updates a reserve in the store
-func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
+func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error {
 
 	// Get the reserve id
 	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
@@ -64,7 +79,29 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 	// Get the clearing account
 	clearingAccount, found := k.GetClearingAccount(ctx, twilightAddress)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		// The case where user is depositing for the first time
+		// Fetch user's btc deposit address from GetBtcDepositAddressByTwilightAddress
+		btcDeposit, found := k.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
+		if !found {
+			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
+		}
+		ctx.Logger().Error("btcDeposit", btcDeposit)
+		// Fetch next unique deposit identifier from IncrementCounter
+		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
+
+		// Set the clearing account
+		clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
+		if err != nil {
+			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		}
+
+		// SetBtcDepositConfirmed sets the deposit as confirmed
+		err = k.SetBtcDepositConfirmed(ctx, twilightAddress)
+		if err != nil {
+			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		}
+		ctx.Logger().Error("SetBtcDepositConfirmed", twilightAddress)
+
 	}
 
 	// Update the clearing account
@@ -78,6 +115,7 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 			break
 		}
 	}
+	ctx.Logger().Error("found", found)
 
 	if !found {
 		// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
@@ -86,7 +124,12 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 			Amount:    mintedValue,
 		})
 	}
+	ctx.Logger().Error("ReserveAccountBalances", clearingAccount.ReserveAccountBalances)
 
+	// Save the updated clearing account
+	k.SetClearingAccount(ctx, twilightAddress, clearingAccount)
+	ctx.Logger().Error("SetClearingAccount", clearingAccount)
+	// Save the reserve
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
@@ -95,7 +138,7 @@ func (k Keeper) UpdateBtcReserve(ctx sdk.Context, mintedValue uint64, twilightAd
 }
 
 // UpdateBtcReserveAfterSweepProposal based on the passed reserveId, the operation happens after a successful attestation of MsgSweepProposal
-func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64) error {
+func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) error {
 
 	// Get the reserve
 	reserve, err := k.GetBtcReserve(ctx, reserveId)
@@ -107,14 +150,15 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 	reserve.ReserveAddress = reserveAddress
 	reserve.JudgeAddress = judgeAddress
 	reserve.BtcRelayCapacityValue = btcRelayCapacityValue
-	reserve.TotalValue = totalValue
-	reserve.PrivatePoolValue = privatePoolValue
-	reserve.PublicValue = publicValue
-	reserve.FeePool = feePool
+	reserve.UnlockHeight = unlockHeight
+	reserve.RoundId = roundId
 
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
 	store.Set(aKey, k.cdc.MustMarshal(reserve))
+
+	// Set the last unlocked reserve id, it is used in burning of tokens during MintOrBurnTradingBtc logic
+	k.setLastUnlockedReserve(ctx, reserveId)
 
 	return nil
 
@@ -146,12 +190,15 @@ func (k Keeper) GetBtcReserveIdByAddress(ctx sdk.Context, reserveAddress string)
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
 			ReserveId:             0,
+			ReserveAddress:        "",
 			JudgeAddress:          "",
 			BtcRelayCapacityValue: 0,
 			TotalValue:            0,
 			PrivatePoolValue:      0,
 			PublicValue:           0,
 			FeePool:               0,
+			UnlockHeight:          0,
+			RoundId:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -192,12 +239,15 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 	for ; iter.Valid(); iter.Next() {
 		res := types.BtcReserve{
 			ReserveId:             0,
+			ReserveAddress:        "",
 			JudgeAddress:          "",
 			BtcRelayCapacityValue: 0,
 			TotalValue:            0,
 			PrivatePoolValue:      0,
 			PublicValue:           0,
 			FeePool:               0,
+			UnlockHeight:          0,
+			RoundId:               0,
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -207,6 +257,24 @@ func (k Keeper) IterateBtcReserves(ctx sdk.Context, cb func([]byte, types.BtcRes
 			return
 		}
 	}
+}
+
+// setLastUnlockedReserve sets the latest unlocked reserve id after the attestation of MsgSweepProposal
+func (k Keeper) setLastUnlockedReserve(ctx sdk.Context, reserveId uint64) {
+	store := ctx.KVStore(k.storeKey)
+
+	store.Set(types.LastUnlockedReserveKey, forkstypes.UInt64Bytes(reserveId))
+}
+
+// GetLastUnlockedReserve returns the latest unlocked reserve id
+func (k Keeper) GetLastUnlockedReserve(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	bytes := store.Get(types.LastUnlockedReserveKey)
+
+	if len(bytes) == 0 {
+		return 0
+	}
+	return forkstypes.UInt64FromBytes(bytes)
 }
 
 func prefixRange(prefix []byte) ([]byte, []byte) {

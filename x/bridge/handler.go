@@ -41,6 +41,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgBroadcastTxSweep:
 			res, err := msgServer.BroadcastTxSweep(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgBroadcastTxRefund:
+			res, err := msgServer.BroadcastTxRefund(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgProposeRefundHash:
 			res, err := msgServer.ProposeRefundHash(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
@@ -49,6 +52,15 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgConfirmBtcWithdraw:
 			res, err := msgServer.ConfirmBtcWithdraw(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUnsignedTxSweep:
+			res, err := msgServer.UnsignedTxSweep(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUnsignedTxRefund:
+			res, err := msgServer.UnsignedTxRefund(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgProposeSweepAddress:
+			res, err := msgServer.ProposeSweepAddress(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

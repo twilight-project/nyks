@@ -16,10 +16,7 @@ func (k Keeper) RegisteredBtcDepositAddresses(goCtx context.Context, req *types.
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	keys, err := k.GetBtcDepositKeys(ctx)
-	if err != nil {
-		return nil, err
-	}
+	addresses := k.VoltKeeper.GetAllConfirmedBtcRegisteredDepositAddresses(ctx)
 
-	return &types.QueryRegisteredBtcDepositAddressesResponse{Addresses: keys}, nil
+	return &types.QueryRegisteredBtcDepositAddressesResponse{Addresses: addresses}, nil
 }

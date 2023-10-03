@@ -106,6 +106,9 @@ import (
 	voltmodule "github.com/twilight-project/nyks/x/volt"
 	voltmodulekeeper "github.com/twilight-project/nyks/x/volt/keeper"
 	voltmoduletypes "github.com/twilight-project/nyks/x/volt/types"
+	zkosmodule "github.com/twilight-project/nyks/x/zkos"
+	zkosmodulekeeper "github.com/twilight-project/nyks/x/zkos/keeper"
+	zkosmoduletypes "github.com/twilight-project/nyks/x/zkos/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -162,6 +165,7 @@ var (
 		nyksmodule.AppModuleBasic{},
 		bridgemodule.AppModuleBasic{},
 		voltmodule.AppModuleBasic{},
+		zkosmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -175,6 +179,8 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		bridgemoduletypes.ModuleName:   nil,
+		zkosmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -213,7 +219,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
+	BankKeeper       bankkeeper.BaseKeeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -239,6 +245,8 @@ type App struct {
 	BridgeKeeper bridgemodulekeeper.Keeper
 
 	VoltKeeper voltmodulekeeper.Keeper
+
+	ZkosKeeper zkosmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -278,6 +286,7 @@ func New(
 		nyksmoduletypes.StoreKey,
 		bridgemoduletypes.StoreKey,
 		voltmoduletypes.StoreKey,
+		zkosmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -311,11 +320,25 @@ func New(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
-	bankKeeper := bankkeeper.NewBaseKeeper(
+	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
 	)
 
-	app.BankKeeper = bankKeeper
+	app.VoltKeeper = *voltmodulekeeper.NewKeeper(
+		appCodec,
+		keys[voltmoduletypes.StoreKey],
+		keys[voltmoduletypes.MemStoreKey],
+		app.GetSubspace(voltmoduletypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.BridgeKeeper,
+	)
+	// now hook voltkeeper hooks with the bankkeeper hooks
+	app.BankKeeper.SetHooks(
+		banktypes.NewMultiBankHooks(
+			app.VoltKeeper.Hooks(),
+		),
+	)
 
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
@@ -401,7 +424,7 @@ func New(
 		app.GetSubspace(nyksmoduletypes.ModuleName),
 		&stakingKeeper,
 		&app.AccountKeeper,
-		&bankKeeper,
+		&app.BankKeeper,
 		&app.VoltKeeper,
 	)
 	nyksModule := nyksmodule.NewAppModule(appCodec, app.nyksKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
@@ -415,18 +438,21 @@ func New(
 		&app.nyksKeeper,
 		&app.VoltKeeper,
 		&app.AccountKeeper,
+		&app.BankKeeper,
 	)
 	bridgeModule := bridgemodule.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper, app.nyksKeeper, app.VoltKeeper)
 
-	app.VoltKeeper = *voltmodulekeeper.NewKeeper(
-		appCodec,
-		keys[voltmoduletypes.StoreKey],
-		keys[voltmoduletypes.MemStoreKey],
-		app.GetSubspace(voltmoduletypes.ModuleName),
+	//voltModule := voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper)
 
-		app.BridgeKeeper,
+	app.ZkosKeeper = *zkosmodulekeeper.NewKeeper(
+		appCodec,
+		keys[zkosmoduletypes.StoreKey],
+		keys[zkosmoduletypes.MemStoreKey],
+		app.GetSubspace(zkosmoduletypes.ModuleName),
+		&app.VoltKeeper,
+		&app.BankKeeper,
 	)
-	voltModule := voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper)
+	zkosModule := zkosmodule.NewAppModule(appCodec, app.ZkosKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -470,7 +496,8 @@ func New(
 		monitoringModule,
 		nyksModule,
 		bridgeModule,
-		voltModule,
+		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
+		zkosModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -500,6 +527,7 @@ func New(
 		nyksmoduletypes.ModuleName,
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
+		zkosmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -525,6 +553,7 @@ func New(
 		nyksmoduletypes.ModuleName,
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
+		zkosmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -555,6 +584,7 @@ func New(
 		nyksmoduletypes.ModuleName,
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
+		zkosmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -580,7 +610,8 @@ func New(
 		monitoringModule,
 		nyksModule,
 		bridgeModule,
-		voltModule,
+		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
+		zkosModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -647,7 +678,35 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 		panic(err)
 	}
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
-	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+	res := app.mm.InitGenesis(ctx, app.appCodec, genesisState)
+
+	// Initialize or normalize the zkOSMinter module account
+	normalizeModuleAccount(ctx, app.AccountKeeper, zkosmoduletypes.ModuleName)
+
+	// Fetch or create the zkOSMinter module account
+	minterModuleAcc := app.AccountKeeper.GetModuleAccount(ctx, zkosmoduletypes.ModuleName)
+	if minterModuleAcc == nil {
+		// Create a new module account (this should not happen if normalizeModuleAccount is working correctly)
+		minterModuleAcc = authtypes.NewEmptyModuleAccount(zkosmoduletypes.ModuleName, authtypes.Minter, authtypes.Burner)
+	}
+
+	// Add the module account to the x/auth store
+	app.AccountKeeper.SetModuleAccount(ctx, minterModuleAcc)
+
+	// Initialize or normalize the bridge module account (used for userdeposit staking)
+	normalizeModuleAccount(ctx, app.AccountKeeper, bridgemoduletypes.ModuleName)
+
+	// Fetch or create the bridge module account
+	bridgeModuleAcc := app.AccountKeeper.GetModuleAccount(ctx, bridgemoduletypes.ModuleName)
+	if bridgeModuleAcc == nil {
+		// Create a new module account (this should not happen if normalizeModuleAccount is working correctly)
+		bridgeModuleAcc = authtypes.NewEmptyModuleAccount(bridgemoduletypes.ModuleName)
+	}
+
+	// Add the module account to the x/auth store
+	app.AccountKeeper.SetModuleAccount(ctx, bridgeModuleAcc)
+
+	return res
 }
 
 // LoadHeight loads a particular height
@@ -773,6 +832,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(nyksmoduletypes.ModuleName)
 	paramsKeeper.Subspace(bridgemoduletypes.ModuleName)
 	paramsKeeper.Subspace(voltmoduletypes.ModuleName)
+	paramsKeeper.Subspace(zkosmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
@@ -781,4 +841,21 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 // SimulationManager implements the SimulationApp interface
 func (app *App) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// normalizeModuleAccount ensures that the given account is a module account,
+// initializing or updating it if necessary. The account name must be listed in maccPerms.
+func normalizeModuleAccount(ctx sdk.Context, ak authkeeper.AccountKeeper, name string) {
+	addr := ak.GetModuleAddress(name)
+	acct := ak.GetAccount(ctx, addr)
+	if _, ok := acct.(authtypes.ModuleAccountI); ok {
+		return
+	}
+	perms := maccPerms[name]
+	newAcct := authtypes.NewEmptyModuleAccount(name, perms...)
+	if acct != nil {
+		newAcct.AccountNumber = acct.GetAccountNumber()
+		newAcct.Sequence = acct.GetSequence()
+	}
+	ak.SetModuleAccount(ctx, newAcct)
 }

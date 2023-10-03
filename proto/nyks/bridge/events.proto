@@ -31,29 +31,65 @@ message EventWithdrawBtcRequest {
 
 message EventSignRefund {
     string message = 1;
-    string reserveAddress = 2;
-    string signerAddress = 3;
-    string refundSignature = 4;
-    string btcOracleAddress = 5;
+    uint64 reserveId = 2;
+    uint64 roundId = 3;
+    string signerPublicKey = 4;
+    string refundSignature = 5;
+    string btcOracleAddress = 6;
 }
 
 message EventSignSweep {
     string message = 1;
-    string reserveAddress = 2;
-    string signerAddress = 3;
-    string sweepSignature = 4;
-    string btcOracleAddress = 5;
+    uint64 reserveId = 2;
+    uint64 roundId = 3;
+    string signerPublicKey = 4;
+    repeated string sweepSignature = 5;
+    string btcOracleAddress = 6;
 }
 
 message EventBroadcastTxSweep {
     string message = 1;
-    string signedRefundTx = 2;
-    string signedSweepTx = 3;
-    string judgeAddress = 4;
+    uint64 reserveId = 2;
+    uint64 roundId = 3;
+    string signedSweepTx = 4;
+    string judgeAddress = 5;
+}
+
+message EventBroadcastTxRefund {
+    string message = 1;
+    uint64 reserveId = 2;
+    uint64 roundId = 3;
+    string signedRefundTx = 4;
+    string judgeAddress = 5;
 }
 
 message EventProposeRefundHash {
     string message = 1;
     string refundHash = 2;
     string judgeAddress = 3;
+}
+
+message EventUnsignedTxSweep {
+    string message = 1;
+    string txId = 2;
+    uint64 reserveId = 3;
+    uint64 roundId = 4;
+    string unsignedSweepTx = 5;
+    string judgeAddress = 6;
+}
+
+message EventUnsignedTxRefund {
+    string message = 1;
+    uint64 reserveId = 2;
+    uint64 roundId = 3;
+    string unsignedRefundTx = 4;
+    string judgeAddress = 5;
+}
+
+message EventProposeSweepAddress{
+    string message = 1;      
+    string btcAddress = 2;   
+    string btcScript = 3;    
+    uint64 reserveId = 4;   
+    string judgeAddress = 5; 
 }

@@ -17,25 +17,15 @@ func (k Keeper) RegisteredBtcDepositAddressByTwilightAddress(goCtx context.Conte
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	keys, err := k.GetBtcDepositKeys(ctx)
-	if err != nil {
-		return nil, err
-	}
 	reqTwilightDepositAddress, err := sdk.AccAddressFromBech32(req.TwilightDepositAddress)
 	if err != nil {
 		return nil, err
 	}
-	for _, key := range keys {
-		keyTwilightDepositAddress, err := sdk.AccAddressFromBech32(key.TwilightDepositAddress)
-		// this should be impossible due to the validate basic on the set deposit address message
-		if err != nil {
-			panic("Invalid twilight deposit addr in store!")
-		}
-		if reqTwilightDepositAddress.Equals(keyTwilightDepositAddress) {
-			return &types.QueryRegisteredBtcDepositAddressByTwilightAddressResponse{DepositAddress: key.DepositAddress, TwilightDepositAddress: key.TwilightDepositAddress}, nil
-		}
 
+	acc, found := k.VoltKeeper.GetClearingAccount(ctx, sdk.AccAddress(reqTwilightDepositAddress))
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrInvalidTwilightAddress, "Given twilight address doesn't exist")
 	}
 
-	return nil, sdkerrors.Wrap(types.ErrInvalid, "Given twilightDepositAddress doesn't exist")
+	return &types.QueryRegisteredBtcDepositAddressByTwilightAddressResponse{DepositAddress: acc.BtcDepositAddress, TwilightDepositAddress: acc.TwilightAddress}, nil
 }

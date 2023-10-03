@@ -13,8 +13,8 @@ message IndividualTwilightReserveAccountBalance {
 message ClearingAccount {
     string TwilightAddress = 1;
     string BtcDepositAddress = 2;
-    string BtcWithdrawAddress = 3;
-    string QQDepositAddress = 4;
-    string QQWithdrawAddress = 5;
+    uint32 BtcDepositAddressIdentifier = 3; 
+    string BtcWithdrawAddress = 4;
+    uint32 BtcWithdrawAddressIdentifier = 5;
     repeated IndividualTwilightReserveAccountBalance ReserveAccountBalances = 6;
 }

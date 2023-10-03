@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package twilightproject.nyks.bridge;
 
-import "nyks/volt/reserve.proto";
+//import "nyks/volt/reserve.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -16,23 +16,26 @@ service Msg {
   rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc WithdrawBtcRequest (MsgWithdrawBtcRequest) returns (MsgWithdrawBtcRequestResponse);
-  rpc SweepProposal      (MsgSweepProposal     ) returns (MsgSweepProposalResponse     );
-  rpc WithdrawTxSigned   (MsgWithdrawTxSigned  ) returns (MsgWithdrawTxSignedResponse  );
-  rpc WithdrawTxFinal    (MsgWithdrawTxFinal   ) returns (MsgWithdrawTxFinalResponse   );
-  rpc SignRefund         (MsgSignRefund        ) returns (MsgSignRefundResponse        );
+  rpc WithdrawBtcRequest  (MsgWithdrawBtcRequest ) returns (MsgWithdrawBtcRequestResponse );
+  rpc SweepProposal       (MsgSweepProposal      ) returns (MsgSweepProposalResponse      );
+  rpc WithdrawTxSigned    (MsgWithdrawTxSigned   ) returns (MsgWithdrawTxSignedResponse   );
+  rpc WithdrawTxFinal     (MsgWithdrawTxFinal    ) returns (MsgWithdrawTxFinalResponse    );
+  rpc SignRefund          (MsgSignRefund         ) returns (MsgSignRefundResponse         );
   rpc BroadcastTxSweep    (MsgBroadcastTxSweep   ) returns (MsgBroadcastTxSweepResponse   );
-  rpc SignSweep          (MsgSignSweep         ) returns (MsgSignSweepResponse         );
-  rpc ProposeRefundHash  (MsgProposeRefundHash ) returns (MsgProposeRefundHashResponse );
-  rpc ConfirmBtcWithdraw    (MsgConfirmBtcWithdraw   ) returns (MsgConfirmBtcWithdrawResponse   );
+  rpc SignSweep           (MsgSignSweep          ) returns (MsgSignSweepResponse          );
+  rpc ProposeRefundHash   (MsgProposeRefundHash  ) returns (MsgProposeRefundHashResponse  );
+  rpc ConfirmBtcWithdraw  (MsgConfirmBtcWithdraw ) returns (MsgConfirmBtcWithdrawResponse );
+  rpc UnsignedTxSweep     (MsgUnsignedTxSweep    ) returns (MsgUnsignedTxSweepResponse    );
+  rpc UnsignedTxRefund    (MsgUnsignedTxRefund   ) returns (MsgUnsignedTxRefundResponse   );
+  rpc BroadcastTxRefund   (MsgBroadcastTxRefund  ) returns (MsgBroadcastTxRefundResponse  );
+  rpc ProposeSweepAddress (MsgProposeSweepAddress) returns (MsgProposeSweepAddressResponse);
 }
 message MsgConfirmBtcDeposit {
-  string depositAddress         = 1;
+  string reserveAddress         = 1;
   uint64 depositAmount          = 2;
   uint64 height                 = 3;
   string hash                   = 4;
   string twilightDepositAddress = 5;
-  string reserveAddress         = 6;
   string oracleAddress          = 7;
 }
 
@@ -43,6 +46,7 @@ message MsgConfirmBtcDepositResponse {
 message MsgRegisterBtcDepositAddress {
   string depositAddress         = 1;
   string twilightDepositAddress = 2;
+  uint64 DepositAmount      = 3;
 }
 
 message MsgRegisterBtcDepositAddressResponse {}
@@ -54,7 +58,8 @@ message MsgRegisterReserveAddress {
 }
 
 message MsgRegisterReserveAddressResponse {
-  string reserveAddress = 1;
+  string reserveId      = 1;
+  string reserveAddress = 2;
 }
 
 message MsgRegisterJudge {
@@ -75,21 +80,6 @@ message MsgWithdrawBtcRequest {
 
 message MsgWithdrawBtcRequestResponse {}
 
-message MsgSweepProposal {
-           uint64                                                     reserveId                        =  1;
-           string                                                     reserveAddress                   =  2;
-           string                                                     judgeAddress                     =  3;
-           uint64                                                     btcRelayCapacityValue            =  4;
-           uint64                                                     totalValue                       =  5;
-           uint64                                                     privatePoolValue                 =  6;
-           uint64                                                     publicValue                      =  7;
-           uint64                                                     feePool                          =  8;
-           string                                                     btcRefundTx                      =  9;
-           string                                                     btcSweepTx                       = 10;
-}
-
-message MsgSweepProposalResponse {}
-
 message MsgWithdrawTxSigned {
   string creator          = 1;
   string validatorAddress = 2;
@@ -106,33 +96,6 @@ message MsgWithdrawTxFinal {
 
 message MsgWithdrawTxFinalResponse {}
 
-message MsgSignRefund {
-  string reserveAddress   = 1;
-  string signerAddress    = 2;
-  string refundSignature  = 3;
-  string btcOracleAddress = 4;
-}
-
-message MsgSignRefundResponse {}
-
-message MsgSignSweep {
-  string reserveAddress   = 1;
-  string signerAddress    = 2;
-  string sweepSignature   = 3;
-  string btcOracleAddress = 4;
-}
-
-
-message MsgSignSweepResponse {}
-
-message MsgBroadcastTxSweep {
-  string signedRefundTx = 1;
-  string signedSweepTx = 2;
-  string judgeAddress = 3;
-}
-
-message MsgBroadcastTxSweepResponse {}
-
 message MsgProposeRefundHash {
   string refundHash   = 1;
   string judgeAddress = 2;
@@ -142,10 +105,100 @@ message MsgProposeRefundHashResponse {}
 
 message MsgConfirmBtcWithdraw {
   string txHash       = 1;
-  uint64  height       = 2;
+  uint64 height       = 2;
   string hash         = 3;
   string judgeAddress = 4;
 }
 
 message MsgConfirmBtcWithdrawResponse {}
 
+
+// Sweep messages in order
+// 1. MsgProposeSweepAddress
+message MsgProposeSweepAddress {
+  string btcAddress   = 1;
+  string btcScript    = 2;
+  uint64 reserveId    = 3;
+  uint64 roundId      = 4;
+  string judgeAddress = 5;
+}
+
+message MsgProposeSweepAddressResponse {}
+
+// 2. MsgUnsignedTxSweep
+message MsgUnsignedTxSweep {
+  string txId               = 1;
+  string btcUnsignedSweepTx = 2;
+  uint64 reserveId         = 3;
+  uint64 roundId            = 4;
+  string judgeAddress       = 5;
+}
+
+message MsgUnsignedTxSweepResponse {}
+
+// 3. MsgUnsignedTxRefund
+message MsgUnsignedTxRefund {
+  uint64 reserveId           = 1;
+  uint64 roundId             = 2;
+  string btcUnsignedRefundTx = 3;
+  string judgeAddress        = 4;
+}
+
+message MsgUnsignedTxRefundResponse {}
+
+// 4. MsgSignRefund
+message MsgSignRefund {
+  uint64 reserveId           = 1;
+  uint64 roundId             = 2;
+  string signerPublicKey   = 3;
+  string refundSignature  = 4;
+  string btcOracleAddress = 5;
+}
+
+message MsgSignRefundResponse {}
+
+// 5. MsgSignSweep
+message MsgSignSweep {
+  uint64 reserveId           = 1;
+  uint64 roundId             = 2;
+  string signerPublicKey = 3;
+  repeated string sweepSignature = 4;
+  string btcOracleAddress = 5;
+}
+
+message MsgSignSweepResponse {}
+
+// 6. MsgBroadcastTxRefund
+message MsgBroadcastTxRefund {
+  uint64 reserveId           = 1;
+  uint64 roundId             = 2;
+  string signedRefundTx = 3;
+  string judgeAddress   = 4;
+}
+
+message MsgBroadcastTxRefundResponse {}
+
+// 7. MsgBroadcastTxSweep
+message MsgBroadcastTxSweep {
+  uint64 reserveId           = 1;
+  uint64 roundId             = 2;
+  string signedSweepTx = 3;
+  string judgeAddress  = 4;
+}
+
+message MsgBroadcastTxSweepResponse {}
+
+// 8. MsgSweepProposal
+message MsgSweepProposal {
+  uint64 reserveId             =  1;
+  string newReserveAddress     =  2;
+  string judgeAddress          =  3;
+  uint64 BtcBlockNumber = 4;
+  uint64 btcRelayCapacityValue =  5;
+  string btcTxHash = 6;
+  uint64 UnlockHeight = 7;
+  uint64 roundId = 8;
+  repeated string withdrawIdentifiers = 9;
+}
+
+message MsgSweepProposalResponse {}

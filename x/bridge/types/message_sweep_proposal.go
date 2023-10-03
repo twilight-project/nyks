@@ -13,18 +13,17 @@ const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcRelayCapacityValue uint64, totalValue uint64, privatePoolValue uint64, publicValue uint64, feePool uint64, btcRefundTx string, btcSweepTx string) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) *MsgSweepProposal {
 	return &MsgSweepProposal{
 		ReserveId:             reserveId,
-		ReserveAddress:        reserveAddress,
+		NewReserveAddress:     reserveAddress,
 		JudgeAddress:          judgeAddress,
+		BtcBlockNumber:        btcBlockNumber,
 		BtcRelayCapacityValue: btcRelayCapacityValue,
-		TotalValue:            totalValue,
-		PrivatePoolValue:      privatePoolValue,
-		PublicValue:           publicValue,
-		FeePool:               feePool,
-		BtcRefundTx:           btcRefundTx,
-		BtcSweepTx:            btcSweepTx,
+		BtcTxHash:             BtcTxHash,
+		UnlockHeight:          unlockHeight,
+		RoundId:               roundId,
+		WithdrawIdentifiers:   withdrawIdentifiers,
 	}
 }
 
@@ -55,7 +54,7 @@ func (msg *MsgSweepProposal) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
 	}
 
-	err = ValidateBtcAddress(msg.ReserveAddress)
+	err = ValidateBtcAddress(msg.NewReserveAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid btc reserve address (%s)", err)
 	}
@@ -65,14 +64,20 @@ func (msg *MsgSweepProposal) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid reserve id (%d)", msg.ReserveId)
 	}
 
-	err = ValidateBtcTransaction(msg.BtcRefundTx)
-	if err != nil {
+	valid := IsValidBtcTxHash(msg.BtcTxHash)
+	if !valid {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid btc refund tx (%s)", err)
 	}
 
-	err = ValidateBtcTransaction(msg.BtcSweepTx)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid btc sweep tx (%s)", err)
+	// Validate withdrawIdentifiers
+	if len(msg.WithdrawIdentifiers) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "withdrawIdentifiers cannot be empty")
+	}
+	for _, identifier := range msg.WithdrawIdentifiers {
+		if len(identifier) == 0 {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid identifier: identifier cannot be empty")
+		}
+		// Add more validation for individual identifiers if needed
 	}
 
 	return nil
@@ -81,7 +86,7 @@ func (msg *MsgSweepProposal) ValidateBasic() error {
 func (msg MsgSweepProposal) GetProposarOrchestrator() sdk.AccAddress {
 	err := msg.ValidateBasic()
 	if err != nil {
-		panic("MsgSeenBtcChainTip failed ValidateBasic! Should have been handled earlier")
+		panic("MsgSweepProposal failed ValidateBasic! Should have been handled earlier")
 	}
 
 	val, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
@@ -98,7 +103,7 @@ func (msg *MsgSweepProposal) GetType() nykstypes.ProposalType {
 }
 
 func (msg *MsgSweepProposal) ProposalHash() ([]byte, error) {
-	path := fmt.Sprintf("%s", msg.BtcSweepTx)
+	path := fmt.Sprintf("%s", msg.BtcTxHash)
 	return tmhash.Sum([]byte(path)), nil
 }
 
