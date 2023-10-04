@@ -78,28 +78,21 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 	reserve.PublicValue = reserve.PublicValue + mintedValue
 
 	// Get the clearing account
-	clearingAccount, found := k.GetClearingAccount(ctx, twilightAddress)
-	if !found {
-		// The case where user is depositing for the first time
+	clearingAccount, foundClearing := k.GetClearingAccount(ctx, twilightAddress)
+	if !foundClearing || clearingAccount.BtcDepositAddress == "" {
+		// The case where user is depositing for the first time, we need to confirm the satoshi test
 		// Fetch user's btc deposit address from GetBtcDepositAddressByTwilightAddress
 		btcDeposit, found := k.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
 		if !found {
 			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
 		}
-		// Fetch next unique deposit identifier from IncrementCounter
-		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
 
-		// Set the clearing account
-		clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
-		if err != nil {
-			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+		// check btc satoshi test amount for the first deposit is equal to what user has sent
+		if btcDeposit.BtcSatoshiTestAmount != mintedValue {
+			return sdkerrors.Wrapf(types.ErrBtcSatoshiTestAmountNotEqual, fmt.Sprint(twilightAddress))
 		}
 
-		// err = k.BridgeKeeper.ReturnUserDepositAgainstBtcAddressRegistrations(ctx, twilightAddress, btcDeposit.DepositTestAmount)
-		// if err != nil {
-		// 	return sdkerrors.Wrapf(types.ErrCouldNotReturnUserDeposit, fmt.Sprint(twilightAddress))
-		// }
-		err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.DepositTestAmount))))
+		err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
 		if err != nil {
 			return err
 		}
@@ -110,21 +103,47 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
 		}
 
+		// Fetch next unique deposit identifier from IncrementCounter
+		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
+
+		// There are two use-cases here, clearing accounts are set by zkOS mint and by a user transferring to another as well
+		// However, in those two ways, you will have a clearing account but you will not have btc address in that clearing account
+		// As part of the satoshi test we are only concerned with checking and setting the btc address associated with a clearing account
+		// So below, we check if the clearing was not found at all, we create a new clearing account and set the btc address
+		if !foundClearing {
+			// Set the clearing account
+			clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.BtcDepositAddress, depositIdentifier)
+			if err != nil {
+				return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+			}
+		} else if clearingAccount.BtcDepositAddress == "" {
+			// In the other case, where you already had the clearing account but there was no btc address on it
+			// We update the btc address on the clearing account
+
+			// Set the clearing account
+			clearingAccount, err = k.SetBtcAddressForExistingClearingAccount(ctx, twilightAddress, btcDeposit.BtcDepositAddress, depositIdentifier)
+			if err != nil {
+				return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+			}
+			ctx.Logger().Error("finished")
+		}
+
 	}
+	ctx.Logger().Error("after the loop")
 
 	// Update the clearing account
 	// Check if the reserve id already exists in the ReserveAccountBalances slice
-	found = false
+	foundBalance := false
 	for _, balance := range clearingAccount.ReserveAccountBalances {
 		if balance.ReserveId == reserveId {
 			// If it does, add the minted value to the existing balance
 			balance.Amount += mintedValue
-			found = true
+			foundBalance = true
 			break
 		}
 	}
 
-	if !found {
+	if !foundBalance {
 		// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
 		clearingAccount.ReserveAccountBalances = append(clearingAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
 			ReserveId: reserveId,

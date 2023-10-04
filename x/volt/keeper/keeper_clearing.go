@@ -44,6 +44,28 @@ func (k Keeper) SetBtcAddressForClearingAccount(ctx sdk.Context, twilightAddress
 	return account, nil
 }
 
+// SetBtcAddressForExistingClearingAccount sets the btc address for a given twilight address
+func (k Keeper) SetBtcAddressForExistingClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, btcAddr string, depositIdentifer uint32) (*types.ClearingAccount, error) {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+
+	// Get the clearing account for the twilight address
+	account, found := k.GetClearingAccount(ctx, twilightAddress)
+	if !found {
+		return nil, sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+	}
+
+	// Update the btc address
+	account.BtcDepositAddress = btcAddr
+	account.BtcDepositAddressIdentifier = depositIdentifer
+
+	// Update the clearing account in the store
+	k.SetClearingAccount(ctx, twilightAddress, account)
+
+	return account, nil
+}
+
 // GetBtcClearingAddressByTwilightAddress returns the btc address for a given twilight address
 func (k Keeper) GetBtcClearingAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcAddress *bridgetypes.BtcAddress, found bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -97,7 +119,7 @@ func (k Keeper) GetAllClearingAccounts(ctx sdk.Context) ([]types.ClearingAccount
 
 // UpdateTransfersInClearing updates a clearing after a successful transfer of tokens from Send and Multisend in the bank module
 // This function is called from the bank module through hooks.go
-// This function blocks the transfers that are happening with mint as  we are directly handling mint in UpdateMintInClearing
+// This function blocks the transfers that are happening with mint as  we are directly handling mint in UpdateBtcReserveAfterMint
 func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, from, to sdk.AccAddress, amount sdk.Coins) error {
 	// Get the clearing accounts for the sender and recipient
 	fromAccount, fromExists := k.GetClearingAccount(ctx, from)
@@ -183,40 +205,40 @@ func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, from, to sdk.AccAddre
 }
 
 // UpdateMintInClearing updates the ClearingAccounts of the receiver
-func (k Keeper) UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error {
-	// Get the receiver's ClearingAccount
-	receiverAccount, found := k.GetClearingAccount(ctx, receiver)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(receiver))
-	}
+// func (k Keeper) UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error {
+// 	// Get the receiver's ClearingAccount
+// 	receiverAccount, found := k.GetClearingAccount(ctx, receiver)
+// 	if !found {
+// 		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(receiver))
+// 	}
 
-	// Get the reserve id
-	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
-	}
+// 	// Get the reserve id
+// 	reserveId, err := k.GetBtcReserveIdByAddress(ctx, reserveAddress)
+// 	if err != nil {
+// 		return sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+// 	}
 
-	// Add the transferred amount to the receiver's ReserveAccountBalances
-	found = false
-	for j, receiverBalance := range receiverAccount.ReserveAccountBalances {
-		if receiverBalance.ReserveId == reserveId {
-			receiverBalance.Amount += amount
-			receiverAccount.ReserveAccountBalances[j] = receiverBalance
-			found = true
-			break
-		}
-	}
+// 	// Add the transferred amount to the receiver's ReserveAccountBalances
+// 	found = false
+// 	for j, receiverBalance := range receiverAccount.ReserveAccountBalances {
+// 		if receiverBalance.ReserveId == reserveId {
+// 			receiverBalance.Amount += amount
+// 			receiverAccount.ReserveAccountBalances[j] = receiverBalance
+// 			found = true
+// 			break
+// 		}
+// 	}
 
-	// If the receiver doesn't have a balance for this reserve ID, create one
-	if !found {
-		receiverAccount.ReserveAccountBalances = append(receiverAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
-			ReserveId: reserveId,
-			Amount:    amount,
-		})
-	}
+// 	// If the receiver doesn't have a balance for this reserve ID, create one
+// 	if !found {
+// 		receiverAccount.ReserveAccountBalances = append(receiverAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
+// 			ReserveId: reserveId,
+// 			Amount:    amount,
+// 		})
+// 	}
 
-	// Update the ClearingAccounts in the store
-	k.SetClearingAccount(ctx, receiver, receiverAccount)
+// 	// Update the ClearingAccounts in the store
+// 	k.SetClearingAccount(ctx, receiver, receiverAccount)
 
-	return nil
-}
+// 	return nil
+// }

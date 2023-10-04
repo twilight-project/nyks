@@ -46,9 +46,9 @@ func (k Keeper) GetTransferTx(ctx sdk.Context, txId string) (types.MsgTransferTx
 func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnTradingBtc) error {
 
 	// Check if this QqAccount has already been used
-	// if k.HasUsedQqAccount(ctx, msg.QqAccount) {
-	// 	return sdkerrors.Wrap(types.ErrInvalidInput, "this QuisQuis account has already been used")
-	// }
+	if k.HasUsedQqAccount(ctx, msg.QqAccount) {
+		return sdkerrors.Wrap(types.ErrInvalidInput, "this QuisQuis account has already been used")
+	}
 
 	twilightAddress, err := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if err != nil {

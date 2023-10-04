@@ -8,21 +8,22 @@ import (
 )
 
 // SetBtcDeposit sets a btc deposit address given the BtcDepositAddress type
-func (k Keeper) SetBtcDeposit(ctx sdk.Context, depositAddress bridgetypes.BtcAddress, twilightDepositAddress sdk.AccAddress, depositTestAmount uint64) error {
-	if err := sdk.VerifyAddressFormat(twilightDepositAddress); err != nil {
+func (k Keeper) SetBtcDeposit(ctx sdk.Context, btcDepositAddress bridgetypes.BtcAddress, twilightAddress sdk.AccAddress, twilightStakingAmount uint64, btcSatoshiTestAmount uint64) error {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	btcDepositAddress := &types.BtcDepositAddress{
-		DepositAddress:         depositAddress.BtcAddress,
-		TwilightDepositAddress: twilightDepositAddress.String(),
-		DepositTestAmount:      depositTestAmount,
-		IsConfirmed:            false,
+	btcDepositAddr := &types.BtcDepositAddress{
+		BtcDepositAddress:     btcDepositAddress.BtcAddress,
+		BtcSatoshiTestAmount:  btcSatoshiTestAmount,
+		TwilightStakingAmount: twilightStakingAmount,
+		TwilightAddress:       twilightAddress.String(),
+		IsConfirmed:           false,
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcDepositKey(twilightDepositAddress)
-	store.Set(aKey, k.cdc.MustMarshal(btcDepositAddress))
+	aKey := types.GetBtcDepositKey(twilightAddress)
+	store.Set(aKey, k.cdc.MustMarshal(btcDepositAddr))
 
 	return nil
 }

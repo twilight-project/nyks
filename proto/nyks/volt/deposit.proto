@@ -5,8 +5,9 @@ package twilightproject.nyks.volt;
 option go_package = "github.com/twilight-project/nyks/x/volt/types";
 
 message BtcDepositAddress {
-    string depositAddress         = 1;
-    string twilightDepositAddress = 2;
-    uint64 depositTestAmount      = 3;
-    bool isConfirmed = 4;
+    string btcDepositAddress  = 1;
+    uint64 btcSatoshiTestAmount  = 2;
+    uint64 twilightStakingAmount  = 3; 
+    string twilightAddress  = 4;
+    bool isConfirmed = 5;
 }

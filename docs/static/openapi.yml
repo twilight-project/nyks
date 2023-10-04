@@ -27793,6 +27793,7 @@ paths:
                     depositTestAmount:
                       type: string
                       format: uint64
+                      title: nyks
                     isConfirmed:
                       type: boolean
         default:
@@ -48858,6 +48859,7 @@ definitions:
             depositTestAmount:
               type: string
               format: uint64
+              title: nyks
             isConfirmed:
               type: boolean
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
@@ -49085,6 +49087,7 @@ definitions:
       depositTestAmount:
         type: string
         format: uint64
+        title: nyks
       isConfirmed:
         type: boolean
   twilightproject.nyks.forks.Attestation:
