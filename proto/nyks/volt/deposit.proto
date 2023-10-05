@@ -7,7 +7,8 @@ option go_package = "github.com/twilight-project/nyks/x/volt/types";
 message BtcDepositAddress {
     string btcDepositAddress  = 1;
     uint64 btcSatoshiTestAmount  = 2;
-    uint64 twilightStakingAmount  = 3; 
+    uint64 twilightStakingAmount  = 3; // make it constant through gov proposal
     string twilightAddress  = 4;
     bool isConfirmed = 5;
+    //uint64 blockHeight = 6;
 }

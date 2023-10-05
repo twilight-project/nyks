@@ -32,10 +32,17 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
+	// check if a btc address is already registered against this twilight address
 	address, foundExistingBtcAddress := k.VoltKeeper.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
 
 	if foundExistingBtcAddress {
 		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcDepositAddress)
+	}
+
+	// check if a btc address is registered against *any other twilight address* as well
+	checkBtcAddress := k.VoltKeeper.CheckBtcAddress(ctx, twilightAddress, *btcAddr, msg.BtcSatoshiTestAmount)
+	if checkBtcAddress {
+		return nil, sdkerrors.Wrap(types.ErrBtcAddressAlreadyExists, btcAddr.GetBtcAddress())
 	}
 
 	// Convert msg.DepositAmount into sdk.Coins from uint64

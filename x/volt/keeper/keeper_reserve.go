@@ -87,12 +87,23 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
 		}
 
+		// check if this particular btc address has already passed the satoshi test in another account
+		btcAddr, err := bridgetypes.NewBtcAddress(btcDeposit.BtcDepositAddress)
+		if err != nil {
+			return sdkerrors.Wrapf(bridgetypes.ErrInvalid, fmt.Sprint(twilightAddress))
+		}
+		// at the time of confirmation its possible others have registered the same address as well
+		checkBtcAddress := k.CheckBtcAddress(ctx, twilightAddress, *btcAddr, btcDeposit.BtcSatoshiTestAmount)
+		if checkBtcAddress {
+			return sdkerrors.Wrap(bridgetypes.ErrBtcAddressAlreadyExists, btcAddr.GetBtcAddress())
+		}
+
 		// check btc satoshi test amount for the first deposit is equal to what user has sent
 		if btcDeposit.BtcSatoshiTestAmount != mintedValue {
 			return sdkerrors.Wrapf(types.ErrBtcSatoshiTestAmountNotEqual, fmt.Sprint(twilightAddress))
 		}
 
-		err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
+		err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
 		if err != nil {
 			return err
 		}
@@ -125,11 +136,9 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			if err != nil {
 				return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
 			}
-			ctx.Logger().Error("finished")
 		}
 
 	}
-	ctx.Logger().Error("after the loop")
 
 	// Update the clearing account
 	// Check if the reserve id already exists in the ReserveAccountBalances slice

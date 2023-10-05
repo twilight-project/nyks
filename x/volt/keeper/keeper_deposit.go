@@ -63,6 +63,36 @@ func (k Keeper) GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightD
 	return &BtcDepositAddress, true
 }
 
+// Check a btcAddress against all registered btcAddresses
+func (k Keeper) CheckBtcAddress(ctx sdk.Context, twilightAddress sdk.Address, btcAddress bridgetypes.BtcAddress, newSatoshiTestAmount uint64) bool {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.BtcDepositKey)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var btcDepositAddress types.BtcDepositAddress
+		k.cdc.MustUnmarshal(iterator.Value(), &btcDepositAddress)
+		// Skip if the twilight address of the stored record is the same as the caller's
+		if btcDepositAddress.TwilightAddress == twilightAddress.String() {
+			continue
+		}
+
+		// Check if the BTC address is the same and is confirmed
+		isSameAddressAndConfirmed := btcDepositAddress.BtcDepositAddress == btcAddress.BtcAddress && btcDepositAddress.IsConfirmed
+
+		// Check if the BTC address is the same and the satoshi test amount matches
+		isSameAddressAndMatchingSatoshiAmount := btcDepositAddress.BtcDepositAddress == btcAddress.BtcAddress && btcDepositAddress.BtcSatoshiTestAmount == newSatoshiTestAmount
+
+		// If either of the conditions is true, return true
+		if isSameAddressAndConfirmed || isSameAddressAndMatchingSatoshiAmount {
+			return true
+		}
+	}
+
+	return false
+}
+
 // GetAllConfirmedBtcRegisteredDepositAddresses returns all the btc deposit addresses
 func (k Keeper) GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []types.BtcDepositAddress) {
 	store := ctx.KVStore(k.storeKey)
