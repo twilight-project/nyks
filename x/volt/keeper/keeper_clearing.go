@@ -204,6 +204,28 @@ func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, from, to sdk.AccAddre
 	return nil
 }
 
+// GetAllClearingAccountsInaReserve returns all clearing accounts for a given reserve
+func (k Keeper) GetAllClearingAccountsInaReserve(ctx sdk.Context, reserveId uint64) ([]types.ClearingAccount, bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TwilightClearingAccountKey)
+
+	defer iterator.Close()
+	var clearingAccounts []types.ClearingAccount
+	for ; iterator.Valid(); iterator.Next() {
+		var clearingAccount types.ClearingAccount
+		k.cdc.MustUnmarshal(iterator.Value(), &clearingAccount)
+
+		for _, balance := range clearingAccount.ReserveAccountBalances {
+			if balance.ReserveId == reserveId {
+				clearingAccounts = append(clearingAccounts, clearingAccount)
+				break
+			}
+		}
+	}
+
+	return clearingAccounts, true
+}
+
 // UpdateMintInClearing updates the ClearingAccounts of the receiver
 // func (k Keeper) UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error {
 // 	// Get the receiver's ClearingAccount

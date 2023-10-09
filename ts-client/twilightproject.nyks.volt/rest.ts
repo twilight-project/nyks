@@ -90,6 +90,8 @@ export interface VoltQueryParamsResponse {
   params?: VoltParams;
 }
 
+export type VoltQueryReserveClearingAccountsAllResponse = object;
+
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
@@ -258,6 +260,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<VoltQueryParamsResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryReserveClearingAccountsAll
+   * @summary Queries a list of ReserveClearingAccountsAll items.
+   * @request GET:/twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}
+   */
+  queryReserveClearingAccountsAll = (reserveId: number, params: RequestParams = {}) =>
+    this.request<VoltQueryReserveClearingAccountsAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/reserve_clearing_accounts_all/${reserveId}`,
       method: "GET",
       format: "json",
       ...params,

@@ -35,6 +35,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/clearing_account/{twilightAddress}";
   
   }
+  
+  // Queries a list of ReserveClearingAccountsAll items.
+  rpc ReserveClearingAccountsAll (QueryReserveClearingAccountsAllRequest) returns (QueryReserveClearingAccountsAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -52,7 +58,6 @@ message QueryBtcReserveResponse {
   repeated BtcReserve BtcReserves = 1 [(gogoproto.nullable) = false];
 }
 
-
 // this line is used by starport scaffolding # 3
 message QueryClearingAccountRequest {
   string twilightAddress = 1;
@@ -60,5 +65,13 @@ message QueryClearingAccountRequest {
 
 message QueryClearingAccountResponse {
   ClearingAccount ClearingAccount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReserveClearingAccountsAllRequest {
+  uint64 reserveId = 1;
+}
+
+message QueryReserveClearingAccountsAllResponse {
+  repeated ClearingAccount ReserveClearingAccountsAll = 1 [(gogoproto.nullable) = false];
 }
 

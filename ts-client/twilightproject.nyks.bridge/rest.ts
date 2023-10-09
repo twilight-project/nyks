@@ -159,13 +159,17 @@ export interface BridgeQueryBroadcastTxRefundAllResponse {
   BroadcastTxRefundMsg?: BridgeMsgBroadcastTxRefund[];
 }
 
-export type BridgeQueryBroadcastTxRefundResponse = object;
+export interface BridgeQueryBroadcastTxRefundResponse {
+  broadcastRefundMsg?: BridgeMsgBroadcastTxRefund;
+}
 
 export interface BridgeQueryBroadcastTxSweepAllResponse {
   BroadcastTxSweepMsg?: BridgeMsgBroadcastTxSweep[];
 }
 
-export type BridgeQueryBroadcastTxSweepResponse = object;
+export interface BridgeQueryBroadcastTxSweepResponse {
+  broadcastSweepMsg?: BridgeMsgBroadcastTxSweep;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -263,11 +267,19 @@ export interface RpcStatus {
 }
 
 export interface VoltBtcDepositAddress {
-  depositAddress?: string;
-  twilightDepositAddress?: string;
+  btcDepositAddress?: string;
 
   /** @format uint64 */
-  depositTestAmount?: string;
+  btcSatoshiTestAmount?: string;
+
+  /**
+   * make it constant through gov proposal
+   * @format uint64
+   */
+  twilightStakingAmount?: string;
+  twilightAddress?: string;
+
+  /** uint64 blockHeight = 6; */
   isConfirmed?: boolean;
 }
 
@@ -420,7 +432,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of BroadcastTxRefund items.
    * @request GET:/twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}
    */
-  queryBroadcastTxRefund = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+  queryBroadcastTxRefund = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryBroadcastTxRefundResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/broadcast_tx_refund/${reserveId}/${roundId}`,
       method: "GET",
@@ -452,7 +464,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of BroadcastTxSweep items.
    * @request GET:/twilight-project/nyks/bridge/broadcast_tx_sweep/{reserveId}/{roundId}
    */
-  queryBroadcastTxSweep = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+  queryBroadcastTxSweep = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryBroadcastTxSweepResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/broadcast_tx_sweep/${reserveId}/${roundId}`,
       method: "GET",

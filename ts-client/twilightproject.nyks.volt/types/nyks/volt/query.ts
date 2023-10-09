@@ -32,6 +32,13 @@ export interface QueryClearingAccountResponse {
   ClearingAccount: ClearingAccount | undefined;
 }
 
+export interface QueryReserveClearingAccountsAllRequest {
+  reserveId: number;
+}
+
+export interface QueryReserveClearingAccountsAllResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -311,6 +318,96 @@ export const QueryClearingAccountResponse = {
   },
 };
 
+function createBaseQueryReserveClearingAccountsAllRequest(): QueryReserveClearingAccountsAllRequest {
+  return { reserveId: 0 };
+}
+
+export const QueryReserveClearingAccountsAllRequest = {
+  encode(message: QueryReserveClearingAccountsAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== 0) {
+      writer.uint32(8).int32(message.reserveId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryReserveClearingAccountsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReserveClearingAccountsAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveId = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReserveClearingAccountsAllRequest {
+    return { reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0 };
+  },
+
+  toJSON(message: QueryReserveClearingAccountsAllRequest): unknown {
+    const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryReserveClearingAccountsAllRequest>, I>>(
+    object: I,
+  ): QueryReserveClearingAccountsAllRequest {
+    const message = createBaseQueryReserveClearingAccountsAllRequest();
+    message.reserveId = object.reserveId ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryReserveClearingAccountsAllResponse(): QueryReserveClearingAccountsAllResponse {
+  return {};
+}
+
+export const QueryReserveClearingAccountsAllResponse = {
+  encode(_: QueryReserveClearingAccountsAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryReserveClearingAccountsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReserveClearingAccountsAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryReserveClearingAccountsAllResponse {
+    return {};
+  },
+
+  toJSON(_: QueryReserveClearingAccountsAllResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryReserveClearingAccountsAllResponse>, I>>(
+    _: I,
+  ): QueryReserveClearingAccountsAllResponse {
+    const message = createBaseQueryReserveClearingAccountsAllResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -319,6 +416,10 @@ export interface Query {
   BtcReserve(request: QueryBtcReserveRequest): Promise<QueryBtcReserveResponse>;
   /** Queries a list of ClearingAccount items. */
   ClearingAccount(request: QueryClearingAccountRequest): Promise<QueryClearingAccountResponse>;
+  /** Queries a list of ReserveClearingAccountsAll items. */
+  ReserveClearingAccountsAll(
+    request: QueryReserveClearingAccountsAllRequest,
+  ): Promise<QueryReserveClearingAccountsAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -328,6 +429,7 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.BtcReserve = this.BtcReserve.bind(this);
     this.ClearingAccount = this.ClearingAccount.bind(this);
+    this.ReserveClearingAccountsAll = this.ReserveClearingAccountsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -345,6 +447,14 @@ export class QueryClientImpl implements Query {
     const data = QueryClearingAccountRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.volt.Query", "ClearingAccount", data);
     return promise.then((data) => QueryClearingAccountResponse.decode(new _m0.Reader(data)));
+  }
+
+  ReserveClearingAccountsAll(
+    request: QueryReserveClearingAccountsAllRequest,
+  ): Promise<QueryReserveClearingAccountsAllResponse> {
+    const data = QueryReserveClearingAccountsAllRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "ReserveClearingAccountsAll", data);
+    return promise.then((data) => QueryReserveClearingAccountsAllResponse.decode(new _m0.Reader(data)));
   }
 }
 

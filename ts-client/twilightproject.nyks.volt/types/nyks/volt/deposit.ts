@@ -5,29 +5,41 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "twilightproject.nyks.volt";
 
 export interface BtcDepositAddress {
-  depositAddress: string;
-  twilightDepositAddress: string;
-  depositTestAmount: number;
+  btcDepositAddress: string;
+  btcSatoshiTestAmount: number;
+  /** make it constant through gov proposal */
+  twilightStakingAmount: number;
+  twilightAddress: string;
+  /** uint64 blockHeight = 6; */
   isConfirmed: boolean;
 }
 
 function createBaseBtcDepositAddress(): BtcDepositAddress {
-  return { depositAddress: "", twilightDepositAddress: "", depositTestAmount: 0, isConfirmed: false };
+  return {
+    btcDepositAddress: "",
+    btcSatoshiTestAmount: 0,
+    twilightStakingAmount: 0,
+    twilightAddress: "",
+    isConfirmed: false,
+  };
 }
 
 export const BtcDepositAddress = {
   encode(message: BtcDepositAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.depositAddress !== "") {
-      writer.uint32(10).string(message.depositAddress);
+    if (message.btcDepositAddress !== "") {
+      writer.uint32(10).string(message.btcDepositAddress);
     }
-    if (message.twilightDepositAddress !== "") {
-      writer.uint32(18).string(message.twilightDepositAddress);
+    if (message.btcSatoshiTestAmount !== 0) {
+      writer.uint32(16).uint64(message.btcSatoshiTestAmount);
     }
-    if (message.depositTestAmount !== 0) {
-      writer.uint32(24).uint64(message.depositTestAmount);
+    if (message.twilightStakingAmount !== 0) {
+      writer.uint32(24).uint64(message.twilightStakingAmount);
+    }
+    if (message.twilightAddress !== "") {
+      writer.uint32(34).string(message.twilightAddress);
     }
     if (message.isConfirmed === true) {
-      writer.uint32(32).bool(message.isConfirmed);
+      writer.uint32(40).bool(message.isConfirmed);
     }
     return writer;
   },
@@ -40,15 +52,18 @@ export const BtcDepositAddress = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.depositAddress = reader.string();
+          message.btcDepositAddress = reader.string();
           break;
         case 2:
-          message.twilightDepositAddress = reader.string();
+          message.btcSatoshiTestAmount = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.depositTestAmount = longToNumber(reader.uint64() as Long);
+          message.twilightStakingAmount = longToNumber(reader.uint64() as Long);
           break;
         case 4:
+          message.twilightAddress = reader.string();
+          break;
+        case 5:
           message.isConfirmed = reader.bool();
           break;
         default:
@@ -61,27 +76,31 @@ export const BtcDepositAddress = {
 
   fromJSON(object: any): BtcDepositAddress {
     return {
-      depositAddress: isSet(object.depositAddress) ? String(object.depositAddress) : "",
-      twilightDepositAddress: isSet(object.twilightDepositAddress) ? String(object.twilightDepositAddress) : "",
-      depositTestAmount: isSet(object.depositTestAmount) ? Number(object.depositTestAmount) : 0,
+      btcDepositAddress: isSet(object.btcDepositAddress) ? String(object.btcDepositAddress) : "",
+      btcSatoshiTestAmount: isSet(object.btcSatoshiTestAmount) ? Number(object.btcSatoshiTestAmount) : 0,
+      twilightStakingAmount: isSet(object.twilightStakingAmount) ? Number(object.twilightStakingAmount) : 0,
+      twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
       isConfirmed: isSet(object.isConfirmed) ? Boolean(object.isConfirmed) : false,
     };
   },
 
   toJSON(message: BtcDepositAddress): unknown {
     const obj: any = {};
-    message.depositAddress !== undefined && (obj.depositAddress = message.depositAddress);
-    message.twilightDepositAddress !== undefined && (obj.twilightDepositAddress = message.twilightDepositAddress);
-    message.depositTestAmount !== undefined && (obj.depositTestAmount = Math.round(message.depositTestAmount));
+    message.btcDepositAddress !== undefined && (obj.btcDepositAddress = message.btcDepositAddress);
+    message.btcSatoshiTestAmount !== undefined && (obj.btcSatoshiTestAmount = Math.round(message.btcSatoshiTestAmount));
+    message.twilightStakingAmount !== undefined
+      && (obj.twilightStakingAmount = Math.round(message.twilightStakingAmount));
+    message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
     message.isConfirmed !== undefined && (obj.isConfirmed = message.isConfirmed);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<BtcDepositAddress>, I>>(object: I): BtcDepositAddress {
     const message = createBaseBtcDepositAddress();
-    message.depositAddress = object.depositAddress ?? "";
-    message.twilightDepositAddress = object.twilightDepositAddress ?? "";
-    message.depositTestAmount = object.depositTestAmount ?? 0;
+    message.btcDepositAddress = object.btcDepositAddress ?? "";
+    message.btcSatoshiTestAmount = object.btcSatoshiTestAmount ?? 0;
+    message.twilightStakingAmount = object.twilightStakingAmount ?? 0;
+    message.twilightAddress = object.twilightAddress ?? "";
     message.isConfirmed = object.isConfirmed ?? false;
     return message;
   },

@@ -29646,6 +29646,73 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}:
+    get:
+      summary: Queries a list of ReserveClearingAccountsAll items.
+      operationId: TwilightprojectNyksVoltReserveClearingAccountsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveClearingAccountsAll:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    TwilightAddress:
+                      type: string
+                    BtcDepositAddress:
+                      type: string
+                    BtcDepositAddressIdentifier:
+                      type: integer
+                      format: int64
+                    BtcWithdrawAddress:
+                      type: string
+                    BtcWithdrawAddressIdentifier:
+                      type: integer
+                      format: int64
+                    ReserveAccountBalances:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          ReserveId:
+                            type: string
+                            format: uint64
+                          Amount:
+                            type: string
+                            format: uint64
+                  title: >-
+                    ClearingAccount is used to keep a mapping of how a user's
+                    addresses and its reserve account balances
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/zkos/mint_or_burn_trading_btc/{twilightAddress}:
     get:
       summary: Queries a list of MintOrBurnTradingBtc items.
@@ -49703,6 +49770,40 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.volt.QueryReserveClearingAccountsAllResponse:
+    type: object
+    properties:
+      ReserveClearingAccountsAll:
+        type: array
+        items:
+          type: object
+          properties:
+            TwilightAddress:
+              type: string
+            BtcDepositAddress:
+              type: string
+            BtcDepositAddressIdentifier:
+              type: integer
+              format: int64
+            BtcWithdrawAddress:
+              type: string
+            BtcWithdrawAddressIdentifier:
+              type: integer
+              format: int64
+            ReserveAccountBalances:
+              type: array
+              items:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  Amount:
+                    type: string
+                    format: uint64
+          title: >-
+            ClearingAccount is used to keep a mapping of how a user's addresses
+            and its reserve account balances
   twilightproject.nyks.zkos.MsgMintBurnTradingBtc:
     type: object
     properties:
