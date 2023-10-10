@@ -37,6 +37,6 @@ type VoltKeeper interface {
 	SetBtcDeposit(ctx sdk.Context, btcDepositAddress BtcAddress, twilightAddress sdk.AccAddress, twilightStakingAmount uint64, btcSatoshiTestAmount uint64) error
 	GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcDeposit *volttypes.BtcDepositAddress, found bool)
 	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
-	GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []volttypes.BtcDepositAddress)
+	GetAllBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []volttypes.BtcDepositAddress)
 	CheckBtcAddress(ctx sdk.Context, twilightAddress sdk.Address, btcAddress BtcAddress, newSatoshiTestAmount uint64) bool
 }

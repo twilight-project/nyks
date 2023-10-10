@@ -93,8 +93,8 @@ func (k Keeper) CheckBtcAddress(ctx sdk.Context, twilightAddress sdk.Address, bt
 	return false
 }
 
-// GetAllConfirmedBtcRegisteredDepositAddresses returns all the btc deposit addresses
-func (k Keeper) GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []types.BtcDepositAddress) {
+// GetAllBtcRegisteredDepositAddresses returns all the btc deposit addresses
+func (k Keeper) GetAllBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []types.BtcDepositAddress) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.BtcDepositKey)
 
@@ -104,9 +104,9 @@ func (k Keeper) GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (b
 		var btcDepositAddress types.BtcDepositAddress
 		k.cdc.MustUnmarshal(iterator.Value(), &btcDepositAddress)
 
-		if btcDepositAddress.IsConfirmed {
-			btcDepositAddresses = append(btcDepositAddresses, btcDepositAddress)
-		}
+		//if btcDepositAddress.IsConfirmed {
+		btcDepositAddresses = append(btcDepositAddresses, btcDepositAddress)
+		//}
 	}
 
 	return btcDepositAddresses
