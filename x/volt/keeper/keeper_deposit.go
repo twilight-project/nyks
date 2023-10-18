@@ -14,11 +14,12 @@ func (k Keeper) SetBtcDeposit(ctx sdk.Context, btcDepositAddress bridgetypes.Btc
 	}
 
 	btcDepositAddr := &types.BtcDepositAddress{
-		BtcDepositAddress:     btcDepositAddress.BtcAddress,
-		BtcSatoshiTestAmount:  btcSatoshiTestAmount,
-		TwilightStakingAmount: twilightStakingAmount,
-		TwilightAddress:       twilightAddress.String(),
-		IsConfirmed:           false,
+		BtcDepositAddress:           btcDepositAddress.BtcAddress,
+		BtcSatoshiTestAmount:        btcSatoshiTestAmount,
+		TwilightStakingAmount:       twilightStakingAmount,
+		TwilightAddress:             twilightAddress.String(),
+		IsConfirmed:                 false,
+		CreationTwilightBlockHeight: ctx.BlockHeight(),
 	}
 
 	store := ctx.KVStore(k.storeKey)

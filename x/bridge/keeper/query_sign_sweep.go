@@ -22,5 +22,5 @@ func (k Keeper) SignSweep(goCtx context.Context, req *types.QuerySignSweepReques
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "A BtcSignSweepMsg doesn't exist with the given reserveId or roundId")
 	}
 
-	return &types.QuerySignSweepResponse{SignSweepMsg: *signSweepMsg}, nil
+	return &types.QuerySignSweepResponse{SignSweepMsg: signSweepMsg}, nil
 }

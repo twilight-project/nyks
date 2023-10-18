@@ -303,7 +303,7 @@ message QuerySignSweepRequest {
 }
 
 message QuerySignSweepResponse {
-  MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
+  repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySignSweepAllRequest {}

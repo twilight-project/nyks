@@ -292,26 +292,33 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 }
 
 // GetBtcSignSweepMsg returns the signed sweep message for btc chain using reserveId and roundId
-func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgSignSweep, bool) {
+func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, reserveId uint64, roundId uint64) ([]types.MsgSignSweep, bool) {
 	store := ctx.KVStore(k.storeKey)
 
-	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId)
-	if !store.Has(aKey) {
+	// Construct a prefix for the iterator
+	prefix := types.GetBtcSignSweepMsgPrefix(reserveId, roundId)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	var signSweepMsgs []types.MsgSignSweep
+	for ; iterator.Valid(); iterator.Next() {
+		var signSweep types.MsgSignSweep
+		k.cdc.MustUnmarshal(iterator.Value(), &signSweep)
+		signSweepMsgs = append(signSweepMsgs, signSweep)
+	}
+
+	if len(signSweepMsgs) == 0 {
 		return nil, false
 	}
 
-	bz := store.Get(aKey)
-	var signSweep types.MsgSignSweep
-	k.cdc.MustUnmarshal(bz, &signSweep)
-
-	return &signSweep, true
+	return signSweepMsgs, true
 }
 
 // SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveId, roundId, signerPublicKey and sweepSignature
 func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, sweepSignatures []string) error {
 	store := ctx.KVStore(k.storeKey)
 
-	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId)
+	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress.Bytes())
 
 	signSweep := &types.MsgSignSweep{
 		ReserveId:        reserveId,

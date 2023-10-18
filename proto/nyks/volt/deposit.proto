@@ -10,5 +10,5 @@ message BtcDepositAddress {
     uint64 twilightStakingAmount  = 3; // make it constant through gov proposal
     string twilightAddress  = 4;
     bool isConfirmed = 5;
-    //uint64 blockHeight = 6;
+    int64 CreationTwilightBlockHeight = 6;
 }

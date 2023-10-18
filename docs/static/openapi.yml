@@ -27786,16 +27786,22 @@ paths:
                 items:
                   type: object
                   properties:
-                    depositAddress:
+                    btcDepositAddress:
                       type: string
-                    twilightDepositAddress:
-                      type: string
-                    depositTestAmount:
+                    btcSatoshiTestAmount:
                       type: string
                       format: uint64
-                      title: nyks
+                    twilightStakingAmount:
+                      type: string
+                      format: uint64
+                      title: make it constant through gov proposal
+                    twilightAddress:
+                      type: string
                     isConfirmed:
                       type: boolean
+                    blockHeight:
+                      type: string
+                      format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -28055,23 +28061,25 @@ paths:
             type: object
             properties:
               signSweepMsg:
-                type: object
-                properties:
-                  reserveId:
-                    type: string
-                    format: uint64
-                  roundId:
-                    type: string
-                    format: uint64
-                  signerPublicKey:
-                    type: string
-                  sweepSignature:
-                    type: array
-                    items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
                       type: string
-                  btcOracleAddress:
-                    type: string
-                title: 5. MsgSignSweep
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    sweepSignature:
+                      type: array
+                      items:
+                        type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 5. MsgSignSweep
         default:
           description: An unexpected error response.
           schema:
@@ -48919,16 +48927,22 @@ definitions:
         items:
           type: object
           properties:
-            depositAddress:
+            btcDepositAddress:
               type: string
-            twilightDepositAddress:
-              type: string
-            depositTestAmount:
+            btcSatoshiTestAmount:
               type: string
               format: uint64
-              title: nyks
+            twilightStakingAmount:
+              type: string
+              format: uint64
+              title: make it constant through gov proposal
+            twilightAddress:
+              type: string
             isConfirmed:
               type: boolean
+            blockHeight:
+              type: string
+              format: uint64
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
@@ -49033,23 +49047,25 @@ definitions:
     type: object
     properties:
       signSweepMsg:
-        type: object
-        properties:
-          reserveId:
-            type: string
-            format: uint64
-          roundId:
-            type: string
-            format: uint64
-          signerPublicKey:
-            type: string
-          sweepSignature:
-            type: array
-            items:
+        type: array
+        items:
+          type: object
+          properties:
+            reserveId:
               type: string
-          btcOracleAddress:
-            type: string
-        title: 5. MsgSignSweep
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
+            signerPublicKey:
+              type: string
+            sweepSignature:
+              type: array
+              items:
+                type: string
+            btcOracleAddress:
+              type: string
+          title: 5. MsgSignSweep
   twilightproject.nyks.bridge.QueryUnsignedTxRefundAllResponse:
     type: object
     properties:
@@ -49147,16 +49163,22 @@ definitions:
   twilightproject.nyks.volt.BtcDepositAddress:
     type: object
     properties:
-      depositAddress:
+      btcDepositAddress:
         type: string
-      twilightDepositAddress:
-        type: string
-      depositTestAmount:
+      btcSatoshiTestAmount:
         type: string
         format: uint64
-        title: nyks
+      twilightStakingAmount:
+        type: string
+        format: uint64
+        title: make it constant through gov proposal
+      twilightAddress:
+        type: string
       isConfirmed:
         type: boolean
+      blockHeight:
+        type: string
+        format: uint64
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:
