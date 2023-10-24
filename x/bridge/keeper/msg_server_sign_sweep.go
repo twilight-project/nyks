@@ -33,7 +33,7 @@ func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*t
 	}
 
 	// check if this signed btc sweep msg is already registered
-	_, found := k.GetBtcSignSweepMsg(ctx, msg.ReserveId, msg.RoundId)
+	_, found := k.GetBtcSignSweepMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, btcOracleAddress)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate sweep Request")
 	}

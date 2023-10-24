@@ -314,11 +314,29 @@ func (k Keeper) GetBtcSignSweepMsg(ctx sdk.Context, reserveId uint64, roundId ui
 	return signSweepMsgs, true
 }
 
+// GetBtcSignSweepMsgWithOracleAddress checks if a given reserveId, roundId, btcOracleAddress mapping exists and returns the corresponding signed sweep message
+func (k Keeper) GetBtcSignSweepMsgWithOracleAddress(ctx sdk.Context, reserveId uint64, roundId uint64, btcOracleAddress sdk.AccAddress) (*types.MsgSignSweep, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	// Generate the exact key for this combination of reserveId, roundId, and btcOracleAddress
+	key := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress.Bytes())
+
+	if !store.Has(key) {
+		return nil, false
+	}
+
+	bz := store.Get(key)
+	var signSweep types.MsgSignSweep
+	k.cdc.MustUnmarshal(bz, &signSweep)
+
+	return &signSweep, true
+}
+
 // SetBtcSignSweepMsg sets the signed sweep message for btc chain using btcOracleAddress, reserveId, roundId, signerPublicKey and sweepSignature
 func (k Keeper) SetBtcSignSweepMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, sweepSignatures []string) error {
 	store := ctx.KVStore(k.storeKey)
 
-	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress.Bytes())
+	aKey := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress)
 
 	signSweep := &types.MsgSignSweep{
 		ReserveId:        reserveId,
