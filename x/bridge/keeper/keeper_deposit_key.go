@@ -236,9 +236,32 @@ func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]
 }
 
 // GetBtcSignRefundMsg returns the signed refund message for btc chain using reserveId and roundId
-func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.MsgSignRefund, bool) {
+func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64) ([]types.MsgSignRefund, bool) {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId)
+
+	// Construct a prefix for the iterator
+	prefix := types.GetBtcSignRefundMsgPrefix(reserveId, roundId)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	var signRefundMsgs []types.MsgSignRefund
+	for ; iterator.Valid(); iterator.Next() {
+		var signRefund types.MsgSignRefund
+		k.cdc.MustUnmarshal(iterator.Value(), &signRefund)
+		signRefundMsgs = append(signRefundMsgs, signRefund)
+	}
+
+	if len(signRefundMsgs) == 0 {
+		return nil, false
+	}
+
+	return signRefundMsgs, true
+}
+
+// GetBtcSignRefundMsg returns the signed refund message for btc chain using reserveId and roundId
+func (k Keeper) GetBtcSignRefundMsgWithOracleAddress(ctx sdk.Context, reserveId uint64, roundId uint64, btcOracleAddress sdk.AccAddress) (*types.MsgSignRefund, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId, btcOracleAddress)
 	if !store.Has(aKey) {
 		return nil, false
 	}
@@ -251,15 +274,15 @@ func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, reserveId uint64, roundId u
 }
 
 // SetBtcSignRefundMsg sets the signed refund message for btc chain using btcOracleAddress, reserveId, roundId, singerPublicKey and refundSignature
-func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, refundSignature string) error {
+func (k Keeper) SetBtcSignRefundMsg(ctx sdk.Context, btcOracleAddress sdk.AccAddress, reserveId uint64, roundId uint64, singerPublicKey string, refundSignatures []string) error {
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId)
+	aKey := types.GetBtcSignRefundMsgKey(reserveId, roundId, btcOracleAddress)
 
 	signRefund := &types.MsgSignRefund{
 		ReserveId:        reserveId,
 		RoundId:          roundId,
 		SignerPublicKey:  singerPublicKey,
-		RefundSignature:  refundSignature,
+		RefundSignature:  refundSignatures,
 		BtcOracleAddress: btcOracleAddress.String(),
 	}
 	store.Set(aKey, k.cdc.MustMarshal(signRefund))
@@ -278,7 +301,7 @@ func (k Keeper) IterateRegisteredSignRefundMsgs(ctx sdk.Context, cb func([]byte,
 			ReserveId:        0,
 			RoundId:          0,
 			SignerPublicKey:  "",
-			RefundSignature:  "",
+			RefundSignature:  []string{},
 			BtcOracleAddress: "",
 		}
 
@@ -319,7 +342,7 @@ func (k Keeper) GetBtcSignSweepMsgWithOracleAddress(ctx sdk.Context, reserveId u
 	store := ctx.KVStore(k.storeKey)
 
 	// Generate the exact key for this combination of reserveId, roundId, and btcOracleAddress
-	key := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress.Bytes())
+	key := types.GetBtcSignSweepMsgKey(reserveId, roundId, btcOracleAddress)
 
 	if !store.Has(key) {
 		return nil, false

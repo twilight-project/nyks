@@ -152,7 +152,7 @@ message MsgSignRefund {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
   string signerPublicKey   = 3;
-  string refundSignature  = 4;
+  repeated string refundSignature  = 4;
   string btcOracleAddress = 5;
 }
 

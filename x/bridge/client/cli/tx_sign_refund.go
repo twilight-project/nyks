@@ -2,6 +2,7 @@ package cli
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -14,7 +15,7 @@ var _ = strconv.Itoa(0)
 
 func CmdSignRefund() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sign-refund [reserve-id] [round-id] [signer-public-key] [refund-signature]",
+		Use:   "sign-refund [reserve-id] [round-id] [signer-public-key] [refund-signatures]",
 		Short: "Broadcast message SignRefund",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -28,7 +29,7 @@ func CmdSignRefund() *cobra.Command {
 			}
 
 			argSignerPublicKey := args[2]
-			argRefundSignature := args[3]
+			argRefundSignatures := strings.Split(args[3], ",")
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -39,7 +40,7 @@ func CmdSignRefund() *cobra.Command {
 				argReserveId,
 				argRoundId,
 				argSignerPublicKey,
-				argRefundSignature,
+				argRefundSignatures,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

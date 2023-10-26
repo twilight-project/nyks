@@ -287,7 +287,7 @@ message QuerySignRefundRequest {
 }
 
 message QuerySignRefundResponse {
-  MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
+  repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySignRefundAllRequest {}

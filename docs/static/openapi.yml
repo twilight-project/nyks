@@ -27799,9 +27799,9 @@ paths:
                       type: string
                     isConfirmed:
                       type: boolean
-                    blockHeight:
+                    CreationTwilightBlockHeight:
                       type: string
-                      format: uint64
+                      format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -27956,21 +27956,25 @@ paths:
             type: object
             properties:
               signRefundMsg:
-                type: object
-                properties:
-                  reserveId:
-                    type: string
-                    format: uint64
-                  roundId:
-                    type: string
-                    format: uint64
-                  signerPublicKey:
-                    type: string
-                  refundSignature:
-                    type: string
-                  btcOracleAddress:
-                    type: string
-                title: 4. MsgSignRefund
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    refundSignature:
+                      type: array
+                      items:
+                        type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 4. MsgSignRefund
         default:
           description: An unexpected error response.
           schema:
@@ -28026,7 +28030,9 @@ paths:
                     signerPublicKey:
                       type: string
                     refundSignature:
-                      type: string
+                      type: array
+                      items:
+                        type: string
                     btcOracleAddress:
                       type: string
                   title: 4. MsgSignRefund
@@ -48686,7 +48692,9 @@ definitions:
       signerPublicKey:
         type: string
       refundSignature:
-        type: string
+        type: array
+        items:
+          type: string
       btcOracleAddress:
         type: string
     title: 4. MsgSignRefund
@@ -48940,9 +48948,9 @@ definitions:
               type: string
             isConfirmed:
               type: boolean
-            blockHeight:
+            CreationTwilightBlockHeight:
               type: string
-              format: uint64
+              format: int64
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
@@ -48997,7 +49005,9 @@ definitions:
             signerPublicKey:
               type: string
             refundSignature:
-              type: string
+              type: array
+              items:
+                type: string
             btcOracleAddress:
               type: string
           title: 4. MsgSignRefund
@@ -49005,21 +49015,25 @@ definitions:
     type: object
     properties:
       signRefundMsg:
-        type: object
-        properties:
-          reserveId:
-            type: string
-            format: uint64
-          roundId:
-            type: string
-            format: uint64
-          signerPublicKey:
-            type: string
-          refundSignature:
-            type: string
-          btcOracleAddress:
-            type: string
-        title: 4. MsgSignRefund
+        type: array
+        items:
+          type: object
+          properties:
+            reserveId:
+              type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
+            signerPublicKey:
+              type: string
+            refundSignature:
+              type: array
+              items:
+                type: string
+            btcOracleAddress:
+              type: string
+          title: 4. MsgSignRefund
   twilightproject.nyks.bridge.QuerySignSweepAllResponse:
     type: object
     properties:
@@ -49176,9 +49190,9 @@ definitions:
         type: string
       isConfirmed:
         type: boolean
-      blockHeight:
+      CreationTwilightBlockHeight:
         type: string
-        format: uint64
+        format: int64
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:

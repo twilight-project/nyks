@@ -34,7 +34,7 @@ message EventSignRefund {
     uint64 reserveId = 2;
     uint64 roundId = 3;
     string signerPublicKey = 4;
-    string refundSignature = 5;
+    repeated string refundSignature = 5;
     string btcOracleAddress = 6;
 }
 

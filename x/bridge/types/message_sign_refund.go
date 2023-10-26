@@ -12,7 +12,7 @@ const TypeMsgSignRefund = "sign_refund"
 
 var _ sdk.Msg = &MsgSignRefund{}
 
-func NewMsgSignRefund(reserveId uint64, roundId uint64, signerPublicKey string, refundSignature string, btcOracleAddress string) *MsgSignRefund {
+func NewMsgSignRefund(reserveId uint64, roundId uint64, signerPublicKey string, refundSignature []string, btcOracleAddress string) *MsgSignRefund {
 	return &MsgSignRefund{
 		ReserveId:        reserveId,
 		RoundId:          roundId,
