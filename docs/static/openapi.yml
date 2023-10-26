@@ -27301,52 +27301,6 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /twilight-project/nyks/bridge/broadcast_refund_all:
-    get:
-      summary: Queries a list of BroadcastTxSweepAll items.
-      operationId: TwilightprojectNyksBridgeBroadcastTxSweepAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              BroadcastTxSweepMsg:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    reserveId:
-                      type: string
-                      format: uint64
-                    roundId:
-                      type: string
-                      format: uint64
-                    signedSweepTx:
-                      type: string
-                    judgeAddress:
-                      type: string
-                  title: 7. MsgBroadcastTxSweep
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}:
     get:
       summary: Queries a list of BroadcastTxRefund items.
@@ -27501,6 +27455,52 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/broadcast_tx_sweep_all:
+    get:
+      summary: Queries a list of BroadcastTxSweepAll items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxSweepAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BroadcastTxSweepMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signedSweepTx:
+                      type: string
+                    judgeAddress:
+                      type: string
+                  title: 7. MsgBroadcastTxSweep
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /twilight-project/nyks/bridge/params:

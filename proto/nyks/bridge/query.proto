@@ -80,7 +80,7 @@ service Query {
   
   // Queries a list of BroadcastTxSweepAll items.
   rpc BroadcastTxSweepAll (QueryBroadcastTxSweepAllRequest) returns (QueryBroadcastTxSweepAllResponse) {
-    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_refund_all";
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_sweep_all";
   
   }
   

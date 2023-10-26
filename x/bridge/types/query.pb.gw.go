@@ -2093,7 +2093,7 @@ var (
 
 	pattern_Query_SignSweepAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"twilight-project", "nyks", "bridge", "sign_sweep_all"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_BroadcastTxSweepAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"twilight-project", "nyks", "bridge", "broadcast_refund_all"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_BroadcastTxSweepAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"twilight-project", "nyks", "bridge", "broadcast_tx_sweep_all"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_ProposeRefundHashAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"twilight-project", "nyks", "bridge", "propose_refund_hash_all"}, "", runtime.AssumeColonVerbOpt(true)))
 
