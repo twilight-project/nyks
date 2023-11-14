@@ -55,7 +55,7 @@ message QueryParamsResponse {
 message QueryBtcReserveRequest {}
 
 message QueryBtcReserveResponse {
-  repeated BtcReserve BtcReserves = 1 [(gogoproto.nullable) = false];
+  repeated BtcReserve BtcReserves  = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3

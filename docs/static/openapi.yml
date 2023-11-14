@@ -28409,7 +28409,9 @@ paths:
                       format: uint64
                     twilightAddress:
                       type: string
-                  title: 'this line is used by starport scaffolding # proto/tx/message'
+                  title: |-
+                    Withdraw messages are in below order
+                    1. MsgWithdrawBtcRequest
         default:
           description: An unexpected error response.
           schema:
@@ -48768,7 +48770,9 @@ definitions:
         format: uint64
       twilightAddress:
         type: string
-    title: 'this line is used by starport scaffolding # proto/tx/message'
+    title: |-
+      Withdraw messages are in below order
+      1. MsgWithdrawBtcRequest
   twilightproject.nyks.bridge.MsgWithdrawBtcRequestResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
@@ -49173,7 +49177,9 @@ definitions:
               format: uint64
             twilightAddress:
               type: string
-          title: 'this line is used by starport scaffolding # proto/tx/message'
+          title: |-
+            Withdraw messages are in below order
+            1. MsgWithdrawBtcRequest
   twilightproject.nyks.volt.BtcDepositAddress:
     type: object
     properties:

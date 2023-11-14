@@ -45,6 +45,21 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 		k.setLastRegisteredBtcReserve(ctx, reserveId)
 	}
 
+	// After setting the BTC Reserve, set its corresponding withdraw pool
+	withdrawPool := &types.ReserveWithdrawPool{
+		ReserveID:                     reserveId,
+		RoundID:                       0, // Initialize with default values
+		ProcessingWithdrawIdentifiers: []uint32{},
+		QueuedWithdrawIdentifiers:     []uint32{},
+		CurrentProcessingIndex:        0,
+	}
+
+	// Set the withdraw pool using the SetWithdrawPool function
+	err = k.SetWithdrawPool(ctx, withdrawPool)
+	if err != nil {
+		return 0, sdkerrors.Wrap(types.ErrCouldNotSetWithdrawPool, err.Error())
+	}
+
 	return reserveId, nil
 }
 

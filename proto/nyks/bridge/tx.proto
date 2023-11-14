@@ -71,7 +71,17 @@ message MsgRegisterJudge {
 
 message MsgRegisterJudgeResponse {}
 
+message MsgProposeRefundHash {
+  string refundHash   = 1;
+  string judgeAddress = 2;
+}
+
+message MsgProposeRefundHashResponse {}
+
 // this line is used by starport scaffolding # proto/tx/message
+
+// Withdraw messages are in below order
+// 1. MsgWithdrawBtcRequest
 message MsgWithdrawBtcRequest {
   string withdrawAddress = 1;
   string reserveAddress  = 2;
@@ -81,6 +91,7 @@ message MsgWithdrawBtcRequest {
 
 message MsgWithdrawBtcRequestResponse {}
 
+// 2. MsgWithdrawTxSigned
 message MsgWithdrawTxSigned {
   string creator          = 1;
   string validatorAddress = 2;
@@ -89,6 +100,7 @@ message MsgWithdrawTxSigned {
 
 message MsgWithdrawTxSignedResponse {}
 
+// 3. MsgWithdrawTxFinal
 message MsgWithdrawTxFinal {
   string creator      = 1;
   string judgeAddress = 2;
@@ -97,13 +109,7 @@ message MsgWithdrawTxFinal {
 
 message MsgWithdrawTxFinalResponse {}
 
-message MsgProposeRefundHash {
-  string refundHash   = 1;
-  string judgeAddress = 2;
-}
-
-message MsgProposeRefundHashResponse {}
-
+// 4. MsgConfirmBtcWithdraw
 message MsgConfirmBtcWithdraw {
   string txHash       = 1;
   uint64 height       = 2;
