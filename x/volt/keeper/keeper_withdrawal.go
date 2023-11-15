@@ -1,8 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
@@ -65,15 +68,29 @@ func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 	}
 
 	withdrawCoin := sdk.NewCoin("sats", sdk.NewIntFromUint64(withdrawAmount))
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAddr, types.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAddr, forkstypes.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
 		return sdkerrors.Wrapf(err, "failed to deduct coins from user account %s", userAddr.String())
 	}
 
+	// Get pre-burn balance
+	preBurnBalance := k.BankKeeper.GetBalance(ctx, k.accountKeeper.GetModuleAddress(forkstypes.ModuleName), withdrawCoin.Denom)
+
 	// Reduce the supply of sats
-	if err := k.BankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
+	if err := k.BankKeeper.BurnCoins(ctx, forkstypes.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
 		return sdkerrors.Wrapf(err, "failed to burn coins %v", withdrawCoin)
 	}
 
+	// Get post-burn balance
+	postBurnBalance := k.BankKeeper.GetBalance(ctx, k.accountKeeper.GetModuleAddress(forkstypes.ModuleName), withdrawCoin.Denom)
+
+	// Check if the burn operation was successful
+	expectedPostBurnAmount := preBurnBalance.Amount.Sub(withdrawCoin.Amount)
+	if !postBurnBalance.Amount.Equal(expectedPostBurnAmount) {
+		panic(fmt.Sprintf(
+			"Burn operation failed! Pre-burn balance %v, Post-burn balance %v, Expected post-burn balance %v",
+			preBurnBalance.String(), postBurnBalance.String(), expectedPostBurnAmount.String()),
+		)
+	}
 	// Deduct the withdrawal amount from the user's clearing account
 	err = k.DeductFromClearingAccount(ctx, twilightAddress, reserveId, withdrawAmount)
 	if err != nil {
