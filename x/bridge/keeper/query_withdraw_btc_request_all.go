@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,11 +18,11 @@ func (k Keeper) WithdrawBtcRequestAll(goCtx context.Context, req *types.QueryWit
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var (
-		withdrawRequests []types.MsgWithdrawBtcRequest
+		withdrawRequests []volttypes.BtcWithdrawRequestInternal
 	)
 
-	k.IterateRegisteredWithdrawBtcRequests(ctx, func(_ []byte, res types.MsgWithdrawBtcRequest) (abort bool) {
-		withdrawRequests = append(withdrawRequests, res)
+	k.VoltKeeper.IterateBtcWithdrawRequests(ctx, func(_ []byte, res *volttypes.BtcWithdrawRequestInternal) (abort bool) {
+		withdrawRequests = append(withdrawRequests, *res)
 		return false
 	})
 

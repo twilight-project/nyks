@@ -117,6 +117,26 @@ func (k Keeper) GetAllClearingAccounts(ctx sdk.Context) ([]types.ClearingAccount
 	return clearingAccounts, nil
 }
 
+// CheckClearingAccountBalance checks if the clearing account has enough balance in the reserve
+func (k Keeper) CheckClearingAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, amount uint64) error {
+	// Get the clearing account for the twilight address
+	account, found := k.GetClearingAccount(ctx, twilightAddress)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+	}
+
+	// Check if the clearing account has enough balance in the reserve
+	for _, balance := range account.ReserveAccountBalances {
+		if balance.ReserveId == reserveId {
+			if balance.Amount < amount {
+				return sdkerrors.Wrapf(types.ErrInsufficientBalanceInReserve, fmt.Sprintf("Insufficient Balance: %d", balance.Amount))
+			}
+		}
+	}
+
+	return nil
+}
+
 // UpdateTransfersInClearing updates a clearing after a successful transfer of tokens from Send and Multisend in the bank module
 // This function is called from the bank module through hooks.go
 // This function blocks the transfers that are happening with mint as  we are directly handling mint in UpdateBtcReserveAfterMint
@@ -224,6 +244,30 @@ func (k Keeper) GetAllClearingAccountsInaReserve(ctx sdk.Context, reserveId uint
 	}
 
 	return clearingAccounts, true
+}
+
+// DeductFromClearingAccount deducts the amount from the clearing account during processing of a withdrawal request
+func (k Keeper) DeductFromClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, amount uint64) error {
+	// Get the clearing account for the twilight address
+	account, found := k.GetClearingAccount(ctx, twilightAddress)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+	}
+
+	// Deduct the amount from the clearing account
+	for _, balance := range account.ReserveAccountBalances {
+		if balance.ReserveId == reserveId {
+			if balance.Amount < amount {
+				return sdkerrors.Wrapf(types.ErrInsufficientBalanceInReserve, fmt.Sprintf("Insufficient Balance: %d", balance.Amount))
+			}
+			balance.Amount -= amount
+		}
+	}
+
+	// Update the clearing account in the store
+	k.SetClearingAccount(ctx, twilightAddress, account)
+
+	return nil
 }
 
 // UpdateMintInClearing updates the ClearingAccounts of the receiver

@@ -180,60 +180,60 @@ func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.M
 	}
 }
 
-// GetBtcWithdrawRequest returns the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) (*types.MsgWithdrawBtcRequest, bool) {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
-	if !store.Has(aKey) {
-		return nil, false
-	}
+// // GetBtcWithdrawRequest returns the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
+// func (k Keeper) GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) (*types.MsgWithdrawBtcRequest, bool) {
+// 	store := ctx.KVStore(k.storeKey)
+// 	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
+// 	if !store.Has(aKey) {
+// 		return nil, false
+// 	}
 
-	bz := store.Get(aKey)
-	var withdrawRequest types.MsgWithdrawBtcRequest
-	k.cdc.MustUnmarshal(bz, &withdrawRequest)
+// 	bz := store.Get(aKey)
+// 	var withdrawRequest types.MsgWithdrawBtcRequest
+// 	k.cdc.MustUnmarshal(bz, &withdrawRequest)
 
-	return &withdrawRequest, true
-}
+// 	return &withdrawRequest, true
+// }
 
-// SetBtcWithdrawRequest sets the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
-func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) error {
-	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
+// // SetBtcWithdrawRequest sets the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
+// func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveAddress types.BtcAddress, withdrawAddress types.BtcAddress, withdrawAmount uint64) error {
+// 	store := ctx.KVStore(k.storeKey)
+// 	aKey := types.GetBtcWithdrawRequestKey(twilightAddress, reserveAddress, withdrawAddress, withdrawAmount)
 
-	// After validation reforming the MsgWithdrawBtcRequest to avoid double loops while retreiving the data
-	withdrawRequest := &types.MsgWithdrawBtcRequest{
-		TwilightAddress: twilightAddress.String(),
-		ReserveAddress:  reserveAddress.BtcAddress,
-		WithdrawAddress: withdrawAddress.BtcAddress,
-		WithdrawAmount:  withdrawAmount,
-	}
-	store.Set(aKey, k.cdc.MustMarshal(withdrawRequest))
-	return nil
-}
+// 	// After validation reforming the MsgWithdrawBtcRequest to avoid double loops while retreiving the data
+// 	withdrawRequest := &types.MsgWithdrawBtcRequest{
+// 		TwilightAddress: twilightAddress.String(),
+// 		ReserveAddress:  reserveAddress.BtcAddress,
+// 		WithdrawAddress: withdrawAddress.BtcAddress,
+// 		WithdrawAmount:  withdrawAmount,
+// 	}
+// 	store.Set(aKey, k.cdc.MustMarshal(withdrawRequest))
+// 	return nil
+// }
 
-// IterateRegisteredWithdrawBtcRequests iterates through all of the registered withdraw btc requests
-func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]byte, types.MsgWithdrawBtcRequest) bool) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := types.BtcWithdrawRequestKey
-	iter := store.Iterator(prefixRange(prefix))
-	defer iter.Close()
+// // IterateRegisteredWithdrawBtcRequests iterates through all of the registered withdraw btc requests
+// func (k Keeper) IterateRegisteredWithdrawBtcRequests(ctx sdk.Context, cb func([]byte, types.MsgWithdrawBtcRequest) bool) {
+// 	store := ctx.KVStore(k.storeKey)
+// 	prefix := types.BtcWithdrawRequestKey
+// 	iter := store.Iterator(prefixRange(prefix))
+// 	defer iter.Close()
 
-	for ; iter.Valid(); iter.Next() {
-		res := types.MsgWithdrawBtcRequest{
-			TwilightAddress: "",
-			ReserveAddress:  "",
-			WithdrawAddress: "",
-			WithdrawAmount:  0,
-		}
+// 	for ; iter.Valid(); iter.Next() {
+// 		res := types.MsgWithdrawBtcRequest{
+// 			TwilightAddress: "",
+// 			ReserveAddress:  "",
+// 			WithdrawAddress: "",
+// 			WithdrawAmount:  0,
+// 		}
 
-		k.cdc.MustUnmarshal(iter.Value(), &res)
+// 		k.cdc.MustUnmarshal(iter.Value(), &res)
 
-		// cb returns true to stop early
-		if cb(iter.Key(), res) {
-			return
-		}
-	}
-}
+// 		// cb returns true to stop early
+// 		if cb(iter.Key(), res) {
+// 			return
+// 		}
+// 	}
+// }
 
 // GetBtcSignRefundMsg returns the signed refund message for btc chain using reserveId and roundId
 func (k Keeper) GetBtcSignRefundMsg(ctx sdk.Context, reserveId uint64, roundId uint64) ([]types.MsgSignRefund, bool) {

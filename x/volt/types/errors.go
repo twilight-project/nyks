@@ -19,4 +19,5 @@ var (
 	ErrCouldNotSetClearingAccount   = sdkerrors.Register(ModuleName, 9, "Could not set clearing account")
 	ErrCouldNotReturnUserDeposit    = sdkerrors.Register(ModuleName, 10, "Could not return user deposit")
 	ErrBtcSatoshiTestAmountNotEqual = sdkerrors.Register(ModuleName, 11, "Btc satoshi test amount not equal")
+	ErrInsufficientBalanceInReserve = sdkerrors.Register(ModuleName, 12, "Insufficient balance in reserve")
 )

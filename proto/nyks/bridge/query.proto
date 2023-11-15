@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "nyks/bridge/tx.proto";
 import "nyks/bridge/params.proto";
 import "nyks/volt/deposit.proto";
+import "nyks/volt/withdraw.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -216,7 +217,7 @@ message QueryRegisteredJudgesResponse {
 message QueryWithdrawBtcRequestAllRequest {}
 
 message QueryWithdrawBtcRequestAllResponse {
-  repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
+  repeated volt.BtcWithdrawRequestInternal withdrawRequest = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryProposeRefundHashAllRequest {}

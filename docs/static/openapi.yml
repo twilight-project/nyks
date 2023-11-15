@@ -28400,18 +28400,28 @@ paths:
                 items:
                   type: object
                   properties:
+                    withdrawIdentifier:
+                      type: integer
+                      format: int64
                     withdrawAddress:
                       type: string
-                    reserveAddress:
+                    withdrawReserveId:
                       type: string
+                      format: uint64
                     withdrawAmount:
                       type: string
                       format: uint64
+                      title: in satoshis
                     twilightAddress:
                       type: string
-                  title: |-
-                    Withdraw messages are in below order
-                    1. MsgWithdrawBtcRequest
+                    isConfirmed:
+                      type: boolean
+                    CreationTwilightBlockHeight:
+                      type: string
+                      format: int64
+                  title: >-
+                    Chain creates an internal mapping with identifier and bool
+                    confirmed
         default:
           description: An unexpected error response.
           schema:
@@ -48758,21 +48768,6 @@ definitions:
     title: 2. MsgUnsignedTxSweep
   twilightproject.nyks.bridge.MsgUnsignedTxSweepResponse:
     type: object
-  twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
-    type: object
-    properties:
-      withdrawAddress:
-        type: string
-      reserveAddress:
-        type: string
-      withdrawAmount:
-        type: string
-        format: uint64
-      twilightAddress:
-        type: string
-    title: |-
-      Withdraw messages are in below order
-      1. MsgWithdrawBtcRequest
   twilightproject.nyks.bridge.MsgWithdrawBtcRequestResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
@@ -49168,18 +49163,26 @@ definitions:
         items:
           type: object
           properties:
+            withdrawIdentifier:
+              type: integer
+              format: int64
             withdrawAddress:
               type: string
-            reserveAddress:
+            withdrawReserveId:
               type: string
+              format: uint64
             withdrawAmount:
               type: string
               format: uint64
+              title: in satoshis
             twilightAddress:
               type: string
-          title: |-
-            Withdraw messages are in below order
-            1. MsgWithdrawBtcRequest
+            isConfirmed:
+              type: boolean
+            CreationTwilightBlockHeight:
+              type: string
+              format: int64
+          title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.volt.BtcDepositAddress:
     type: object
     properties:
@@ -49199,6 +49202,29 @@ definitions:
       CreationTwilightBlockHeight:
         type: string
         format: int64
+  twilightproject.nyks.volt.BtcWithdrawRequestInternal:
+    type: object
+    properties:
+      withdrawIdentifier:
+        type: integer
+        format: int64
+      withdrawAddress:
+        type: string
+      withdrawReserveId:
+        type: string
+        format: uint64
+      withdrawAmount:
+        type: string
+        format: uint64
+        title: in satoshis
+      twilightAddress:
+        type: string
+      isConfirmed:
+        type: boolean
+      CreationTwilightBlockHeight:
+        type: string
+        format: int64
+    title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:

@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithdrawBtcRequest) (*types.MsgWithdrawBtcRequestResponse, error) {
@@ -25,20 +27,33 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
 
+	// Get the reserve id
+	reserveId, err := k.VoltKeeper.GetBtcReserveIdByAddress(ctx, reserveAddress.BtcAddress)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	}
+
 	// check if withdraw request is also already registered
-	_, found := k.GetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
+	_, found := k.VoltKeeper.GetBtcWithdrawRequest(ctx, twilightAddress, reserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Withdraw Request")
 	}
 
 	// check if withdraw address has enough balance in the reserve
-	// err := k.VoltKeeper.CheckIndividualTwilightReserveAccountBalance(ctx, twilightAddress, *&reserveAddress.BtcAddress, msg.WithdrawAmount)
-	// if err != nil {
-	// 	return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient Balance")
-	// }
+	err = k.VoltKeeper.CheckClearingAccountBalance(ctx, twilightAddress, reserveId, msg.WithdrawAmount)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient balance in clearing account")
+	}
+
+	// check user's bank balance
+	// a balance mismatch between clearingAccount and bank is not possible, this check is just to be sure
+	userBalance := k.BankKeeper.GetBalance(ctx, twilightAddress, "sats")
+	if userBalance.Amount.LT(sdk.NewIntFromUint64(msg.WithdrawAmount)) {
+		return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient balance in bank")
+	}
 
 	// set withdraw request
-	err := k.SetBtcWithdrawRequest(ctx, twilightAddress, *reserveAddress, *withdrawAddress, msg.WithdrawAmount)
+	err = k.VoltKeeper.SetBtcWithdrawRequest(ctx, twilightAddress, reserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
 	if err != nil {
 		return nil, err
 	}
