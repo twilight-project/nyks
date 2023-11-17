@@ -49,6 +49,17 @@ func NewKeeper(
 	}
 }
 
+// Store and Codec are used to access keeper in EndBlocker
+// Store returns the KVStore for the volt module
+func (k Keeper) Store(ctx sdk.Context) sdk.KVStore {
+	return ctx.KVStore(k.storeKey)
+}
+
+// Codec returns the codec for the volt module
+func (k Keeper) Codec() codec.BinaryCodec {
+	return k.cdc
+}
+
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

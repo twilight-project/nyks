@@ -50,6 +50,15 @@ var (
 
 	// ReserveWithdrawPoolKey is the key for the reserve withdraw pool
 	ReserveWithdrawPoolKey = forkstypes.HashString("ReserveWithdrawPoolKey")
+
+	// LastWithdrawSnapshotKey is the key for the last withdraw snapshot
+	LastWithdrawSnapshotKey = forkstypes.HashString("LastWithdrawSnapshotKey")
+
+	// NewSweepProposalReceivedKey is the key for the new sweep proposal received
+	NewSweepProposalReceivedKey = forkstypes.HashString("NewSweepProposalReceivedKey")
+
+	// LastRefundTxSnapshotKey is the key for the last refund tx snapshot
+	LastRefundTxSnapshotKey = forkstypes.HashString("LastRefundTxSnapshotKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -127,4 +136,70 @@ func GetReserveWithdrawPoolKey(reserveId uint64) []byte {
 		panic("Failed to convert uint64 to bytes")
 	}
 	return forkstypes.AppendBytes(ReserveWithdrawPoolKey, reserveBufBytes.Bytes())
+}
+
+// GetLastWithdrawSnapshotKey returns the following key format
+// [HashString("LastWithdrawSnapshotKey")][1][1][12456]
+func GetLastWithdrawSnapshotKey(reserveId uint64, roundId uint64, blockHeight int64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	roundBufBytes := new(bytes.Buffer)
+	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	blockHeightBufBytes := new(bytes.Buffer)
+	err = binary.Write(blockHeightBufBytes, binary.LittleEndian, blockHeight)
+	if err != nil {
+		panic("Failed to convert int64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(LastWithdrawSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes(), blockHeightBufBytes.Bytes())
+}
+
+// GetNewSweepProposalReceivedKey returns the following key format
+// [HashString("NewSweepProposalReceivedKey")][1][1]
+func GetNewSweepProposalReceivedKey(reserveId uint64, roundId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	roundBufBytes := new(bytes.Buffer)
+	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(NewSweepProposalReceivedKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
+}
+
+// GetLastRefundTxSnapshotKey returns the following key format
+// [HashString("LastRefundTxSnapshotKey")][1][1][12456]
+func GetLastRefundTxSnapshotKey(reserveId uint64, roundId uint64, blockHeight int64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	roundBufBytes := new(bytes.Buffer)
+	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	blockHeightBufBytes := new(bytes.Buffer)
+	err = binary.Write(blockHeightBufBytes, binary.LittleEndian, blockHeight)
+	if err != nil {
+		panic("Failed to convert int64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(LastRefundTxSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes(), blockHeightBufBytes.Bytes())
 }

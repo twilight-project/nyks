@@ -24,3 +24,18 @@ message ReserveWithdrawPool {
     uint32 currentProcessingIndex = 5;                 // Index of the last processed withdraw
     // You can use this to know where to start processing in the next sweep.
 }
+
+// WithdrawRequestSnap is a snapshot of the withdraw request
+message WithdrawRequestSnap {
+    uint32 withdrawIdentifier = 1;
+    string withdrawAddress  = 2;
+    uint64 withdrawAmount  = 3;
+}
+
+// LastReserveWithdrawSnapshot is a snapshot of the last reserve withdraw
+message LastReserveWithdrawSnapshot {
+    uint64 ReserveId = 1;
+    uint64 RoundId = 2;
+    repeated WithdrawRequestSnap withdrawRequests = 3;
+    int64 EndBlockerHeightTwilight = 4;
+}
