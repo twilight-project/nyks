@@ -73,6 +73,15 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	snapshotKey := types.GetLastWithdrawSnapshotKey(reserveId, roundId, ctx.BlockHeight())
 	store := k.Store(ctx)
 	store.Set(snapshotKey, k.Codec().MustMarshal(&snapshot))
+
+	ctx.EventManager().EmitTypedEvent(
+		&types.EventReserveWithdrawSnapshot{
+			Message:   "Reserve withdraw snapshot created",
+			ReserveId: reserveId,
+			RoundId:   roundId,
+		},
+	)
+
 }
 
 // generateRefundTxSnapshot generates a snapshot of refund transactions for the current round
@@ -91,6 +100,11 @@ func generateRefundTxSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 
 	// Iterate through all clearing accounts and create refund transaction snapshots
 	for _, account := range clearingAccounts {
+		// Skip accounts without a BtcDepositAddress set
+		if account.BtcDepositAddress == "" {
+			continue
+		}
+
 		for _, balance := range account.ReserveAccountBalances {
 			if balance.ReserveId != reserveId {
 				continue // Only process balances for the specified reserveId
@@ -116,4 +130,12 @@ func generateRefundTxSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	snapshotKey := types.GetLastRefundTxSnapshotKey(reserveId, roundId, ctx.BlockHeight())
 	store := k.Store(ctx)
 	store.Set(snapshotKey, k.Codec().MustMarshal(&snapshot))
+
+	ctx.EventManager().EmitTypedEvent(
+		&types.EventRefundTxSnapshot{
+			Message:   "Refund tx snapshot created",
+			ReserveId: reserveId,
+			RoundId:   roundId,
+		},
+	)
 }
