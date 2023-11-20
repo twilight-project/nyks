@@ -270,6 +270,21 @@ func (k Keeper) DeductFromClearingAccount(ctx sdk.Context, twilightAddress sdk.A
 	return nil
 }
 
+// GetRefundTxSnapshot returns the refund tx snapshot for a given reserveId and roundId
+func (k Keeper) GetRefundTxSnapshot(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.RefundTxSnapshot, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetRefundTxSnapshotKey(reserveId, roundId)
+	if !store.Has(aKey) {
+		return nil, false
+	}
+
+	bz := store.Get(aKey)
+	var refundTxSnapshot types.RefundTxSnapshot
+	k.cdc.MustUnmarshal(bz, &refundTxSnapshot)
+
+	return &refundTxSnapshot, true
+}
+
 // UpdateMintInClearing updates the ClearingAccounts of the receiver
 // func (k Keeper) UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error {
 // 	// Get the receiver's ClearingAccount

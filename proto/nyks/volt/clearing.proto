@@ -27,7 +27,7 @@ message RefundTxAccountSnap {
 }
 
 // LastRefundTxSnapshot is a snapshot of the last refund for this reserve id
-message LastRefundTxSnapshot {
+message RefundTxSnapshot {
     uint64 ReserveId = 1;
     uint64 RoundId = 2;
     repeated RefundTxAccountSnap refundAccounts = 3;

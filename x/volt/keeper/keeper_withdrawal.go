@@ -233,3 +233,19 @@ func (k Keeper) CheckForNewSweepProposal(ctx sdk.Context) (bool, uint64, uint64)
 
 	return false, 0, 0
 }
+
+// GetReserveWithdrawSnapshot returns the last withdraw snapshot for a specific reserve
+func (k Keeper) GetReserveWithdrawSnapshot(ctx sdk.Context, reserveId uint64, roundId uint64) (*types.ReserveWithdrawSnapshot, bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetReserveWithdrawSnapshotKey(reserveId, roundId)
+
+	if !store.Has(key) {
+		return nil, false // Snapshot not found
+	}
+
+	bz := store.Get(key)
+	var snapshot types.ReserveWithdrawSnapshot
+	k.cdc.MustUnmarshal(bz, &snapshot)
+
+	return &snapshot, true
+}

@@ -90,7 +90,13 @@ export interface VoltQueryParamsResponse {
   params?: VoltParams;
 }
 
-export type VoltQueryReserveClearingAccountsAllResponse = object;
+export type VoltQueryRefundTxSnapshotResponse = object;
+
+export interface VoltQueryReserveClearingAccountsAllResponse {
+  ReserveClearingAccountsAll?: VoltClearingAccount[];
+}
+
+export type VoltQueryReserveWithdrawSnapshotResponse = object;
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
 
@@ -269,13 +275,45 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
+   * @name QueryRefundTxSnapshot
+   * @summary Queries a list of RefundTxSnapshot items.
+   * @request GET:/twilight-project/nyks/volt/refund_tx_snapshot/{reserveId}/{roundId}
+   */
+  queryRefundTxSnapshot = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<VoltQueryRefundTxSnapshotResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/refund_tx_snapshot/${reserveId}/${roundId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
    * @name QueryReserveClearingAccountsAll
    * @summary Queries a list of ReserveClearingAccountsAll items.
    * @request GET:/twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}
    */
-  queryReserveClearingAccountsAll = (reserveId: number, params: RequestParams = {}) =>
+  queryReserveClearingAccountsAll = (reserveId: string, params: RequestParams = {}) =>
     this.request<VoltQueryReserveClearingAccountsAllResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/reserve_clearing_accounts_all/${reserveId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryReserveWithdrawSnapshot
+   * @summary Queries a list of ReserveWithdrawSnapshot items.
+   * @request GET:/twilight-project/nyks/volt/reserve_withdraw_snapshot/{reserveId}/{roundId}
+   */
+  queryReserveWithdrawSnapshot = (reserveId: number, roundId: number, params: RequestParams = {}) =>
+    this.request<VoltQueryReserveWithdrawSnapshotResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/reserve_withdraw_snapshot/${reserveId}/${roundId}`,
       method: "GET",
       format: "json",
       ...params,

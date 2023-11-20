@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { BtcDepositAddress } from "../volt/deposit";
+import { BtcWithdrawRequestInternal } from "../volt/withdraw";
 import { Params } from "./params";
 import {
   MsgBroadcastTxRefund,
@@ -14,7 +15,6 @@ import {
   MsgSignSweep,
   MsgUnsignedTxRefund,
   MsgUnsignedTxSweep,
-  MsgWithdrawBtcRequest,
 } from "./tx";
 
 export const protobufPackage = "twilightproject.nyks.bridge";
@@ -83,7 +83,7 @@ export interface QueryWithdrawBtcRequestAllRequest {
 }
 
 export interface QueryWithdrawBtcRequestAllResponse {
-  withdrawRequest: MsgWithdrawBtcRequest[];
+  withdrawRequest: BtcWithdrawRequestInternal[];
 }
 
 export interface QueryProposeRefundHashAllRequest {
@@ -157,7 +157,7 @@ export interface QuerySignRefundRequest {
 }
 
 export interface QuerySignRefundResponse {
-  signRefundMsg: MsgSignRefund | undefined;
+  signRefundMsg: MsgSignRefund[];
 }
 
 export interface QuerySignRefundAllRequest {
@@ -174,7 +174,7 @@ export interface QuerySignSweepRequest {
 }
 
 export interface QuerySignSweepResponse {
-  signSweepMsg: MsgSignSweep | undefined;
+  signSweepMsg: MsgSignSweep[];
 }
 
 export interface QuerySignSweepAllRequest {
@@ -992,7 +992,7 @@ function createBaseQueryWithdrawBtcRequestAllResponse(): QueryWithdrawBtcRequest
 export const QueryWithdrawBtcRequestAllResponse = {
   encode(message: QueryWithdrawBtcRequestAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.withdrawRequest) {
-      MsgWithdrawBtcRequest.encode(v!, writer.uint32(10).fork()).ldelim();
+      BtcWithdrawRequestInternal.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1005,7 +1005,7 @@ export const QueryWithdrawBtcRequestAllResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.withdrawRequest.push(MsgWithdrawBtcRequest.decode(reader, reader.uint32()));
+          message.withdrawRequest.push(BtcWithdrawRequestInternal.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1018,7 +1018,7 @@ export const QueryWithdrawBtcRequestAllResponse = {
   fromJSON(object: any): QueryWithdrawBtcRequestAllResponse {
     return {
       withdrawRequest: Array.isArray(object?.withdrawRequest)
-        ? object.withdrawRequest.map((e: any) => MsgWithdrawBtcRequest.fromJSON(e))
+        ? object.withdrawRequest.map((e: any) => BtcWithdrawRequestInternal.fromJSON(e))
         : [],
     };
   },
@@ -1026,7 +1026,7 @@ export const QueryWithdrawBtcRequestAllResponse = {
   toJSON(message: QueryWithdrawBtcRequestAllResponse): unknown {
     const obj: any = {};
     if (message.withdrawRequest) {
-      obj.withdrawRequest = message.withdrawRequest.map((e) => e ? MsgWithdrawBtcRequest.toJSON(e) : undefined);
+      obj.withdrawRequest = message.withdrawRequest.map((e) => e ? BtcWithdrawRequestInternal.toJSON(e) : undefined);
     } else {
       obj.withdrawRequest = [];
     }
@@ -1037,7 +1037,7 @@ export const QueryWithdrawBtcRequestAllResponse = {
     object: I,
   ): QueryWithdrawBtcRequestAllResponse {
     const message = createBaseQueryWithdrawBtcRequestAllResponse();
-    message.withdrawRequest = object.withdrawRequest?.map((e) => MsgWithdrawBtcRequest.fromPartial(e)) || [];
+    message.withdrawRequest = object.withdrawRequest?.map((e) => BtcWithdrawRequestInternal.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1868,13 +1868,13 @@ export const QuerySignRefundRequest = {
 };
 
 function createBaseQuerySignRefundResponse(): QuerySignRefundResponse {
-  return { signRefundMsg: undefined };
+  return { signRefundMsg: [] };
 }
 
 export const QuerySignRefundResponse = {
   encode(message: QuerySignRefundResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.signRefundMsg !== undefined) {
-      MsgSignRefund.encode(message.signRefundMsg, writer.uint32(10).fork()).ldelim();
+    for (const v of message.signRefundMsg) {
+      MsgSignRefund.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1887,7 +1887,7 @@ export const QuerySignRefundResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.signRefundMsg = MsgSignRefund.decode(reader, reader.uint32());
+          message.signRefundMsg.push(MsgSignRefund.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1898,21 +1898,26 @@ export const QuerySignRefundResponse = {
   },
 
   fromJSON(object: any): QuerySignRefundResponse {
-    return { signRefundMsg: isSet(object.signRefundMsg) ? MsgSignRefund.fromJSON(object.signRefundMsg) : undefined };
+    return {
+      signRefundMsg: Array.isArray(object?.signRefundMsg)
+        ? object.signRefundMsg.map((e: any) => MsgSignRefund.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: QuerySignRefundResponse): unknown {
     const obj: any = {};
-    message.signRefundMsg !== undefined
-      && (obj.signRefundMsg = message.signRefundMsg ? MsgSignRefund.toJSON(message.signRefundMsg) : undefined);
+    if (message.signRefundMsg) {
+      obj.signRefundMsg = message.signRefundMsg.map((e) => e ? MsgSignRefund.toJSON(e) : undefined);
+    } else {
+      obj.signRefundMsg = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QuerySignRefundResponse>, I>>(object: I): QuerySignRefundResponse {
     const message = createBaseQuerySignRefundResponse();
-    message.signRefundMsg = (object.signRefundMsg !== undefined && object.signRefundMsg !== null)
-      ? MsgSignRefund.fromPartial(object.signRefundMsg)
-      : undefined;
+    message.signRefundMsg = object.signRefundMsg?.map((e) => MsgSignRefund.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2070,13 +2075,13 @@ export const QuerySignSweepRequest = {
 };
 
 function createBaseQuerySignSweepResponse(): QuerySignSweepResponse {
-  return { signSweepMsg: undefined };
+  return { signSweepMsg: [] };
 }
 
 export const QuerySignSweepResponse = {
   encode(message: QuerySignSweepResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.signSweepMsg !== undefined) {
-      MsgSignSweep.encode(message.signSweepMsg, writer.uint32(10).fork()).ldelim();
+    for (const v of message.signSweepMsg) {
+      MsgSignSweep.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -2089,7 +2094,7 @@ export const QuerySignSweepResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.signSweepMsg = MsgSignSweep.decode(reader, reader.uint32());
+          message.signSweepMsg.push(MsgSignSweep.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -2100,21 +2105,26 @@ export const QuerySignSweepResponse = {
   },
 
   fromJSON(object: any): QuerySignSweepResponse {
-    return { signSweepMsg: isSet(object.signSweepMsg) ? MsgSignSweep.fromJSON(object.signSweepMsg) : undefined };
+    return {
+      signSweepMsg: Array.isArray(object?.signSweepMsg)
+        ? object.signSweepMsg.map((e: any) => MsgSignSweep.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: QuerySignSweepResponse): unknown {
     const obj: any = {};
-    message.signSweepMsg !== undefined
-      && (obj.signSweepMsg = message.signSweepMsg ? MsgSignSweep.toJSON(message.signSweepMsg) : undefined);
+    if (message.signSweepMsg) {
+      obj.signSweepMsg = message.signSweepMsg.map((e) => e ? MsgSignSweep.toJSON(e) : undefined);
+    } else {
+      obj.signSweepMsg = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QuerySignSweepResponse>, I>>(object: I): QuerySignSweepResponse {
     const message = createBaseQuerySignSweepResponse();
-    message.signSweepMsg = (object.signSweepMsg !== undefined && object.signSweepMsg !== null)
-      ? MsgSignSweep.fromPartial(object.signSweepMsg)
-      : undefined;
+    message.signSweepMsg = object.signSweepMsg?.map((e) => MsgSignSweep.fromPartial(e)) || [];
     return message;
   },
 };

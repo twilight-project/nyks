@@ -10,8 +10,8 @@ export interface BtcDepositAddress {
   /** make it constant through gov proposal */
   twilightStakingAmount: number;
   twilightAddress: string;
-  /** uint64 blockHeight = 6; */
   isConfirmed: boolean;
+  CreationTwilightBlockHeight: number;
 }
 
 function createBaseBtcDepositAddress(): BtcDepositAddress {
@@ -21,6 +21,7 @@ function createBaseBtcDepositAddress(): BtcDepositAddress {
     twilightStakingAmount: 0,
     twilightAddress: "",
     isConfirmed: false,
+    CreationTwilightBlockHeight: 0,
   };
 }
 
@@ -40,6 +41,9 @@ export const BtcDepositAddress = {
     }
     if (message.isConfirmed === true) {
       writer.uint32(40).bool(message.isConfirmed);
+    }
+    if (message.CreationTwilightBlockHeight !== 0) {
+      writer.uint32(48).int64(message.CreationTwilightBlockHeight);
     }
     return writer;
   },
@@ -66,6 +70,9 @@ export const BtcDepositAddress = {
         case 5:
           message.isConfirmed = reader.bool();
           break;
+        case 6:
+          message.CreationTwilightBlockHeight = longToNumber(reader.int64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -81,6 +88,9 @@ export const BtcDepositAddress = {
       twilightStakingAmount: isSet(object.twilightStakingAmount) ? Number(object.twilightStakingAmount) : 0,
       twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
       isConfirmed: isSet(object.isConfirmed) ? Boolean(object.isConfirmed) : false,
+      CreationTwilightBlockHeight: isSet(object.CreationTwilightBlockHeight)
+        ? Number(object.CreationTwilightBlockHeight)
+        : 0,
     };
   },
 
@@ -92,6 +102,8 @@ export const BtcDepositAddress = {
       && (obj.twilightStakingAmount = Math.round(message.twilightStakingAmount));
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
     message.isConfirmed !== undefined && (obj.isConfirmed = message.isConfirmed);
+    message.CreationTwilightBlockHeight !== undefined
+      && (obj.CreationTwilightBlockHeight = Math.round(message.CreationTwilightBlockHeight));
     return obj;
   },
 
@@ -102,6 +114,7 @@ export const BtcDepositAddress = {
     message.twilightStakingAmount = object.twilightStakingAmount ?? 0;
     message.twilightAddress = object.twilightAddress ?? "";
     message.isConfirmed = object.isConfirmed ?? false;
+    message.CreationTwilightBlockHeight = object.CreationTwilightBlockHeight ?? 0;
     return message;
   },
 };

@@ -19,6 +19,21 @@ export interface ClearingAccount {
   ReserveAccountBalances: IndividualTwilightReserveAccountBalance[];
 }
 
+/** RefundTxSnap is used to keep a mapping of the last refund transaction for a reserve */
+export interface RefundTxAccountSnap {
+  Amount: number;
+  BtcDepositAddress: string;
+  BtcDepositAddressIdentifier: number;
+}
+
+/** LastRefundTxSnapshot is a snapshot of the last refund for this reserve id */
+export interface LastRefundTxSnapshot {
+  ReserveId: number;
+  RoundId: number;
+  refundAccounts: RefundTxAccountSnap[];
+  EndBlockerHeightTwilight: number;
+}
+
 function createBaseIndividualTwilightReserveAccountBalance(): IndividualTwilightReserveAccountBalance {
   return { ReserveId: 0, Amount: 0 };
 }
@@ -191,6 +206,159 @@ export const ClearingAccount = {
     message.BtcWithdrawAddressIdentifier = object.BtcWithdrawAddressIdentifier ?? 0;
     message.ReserveAccountBalances =
       object.ReserveAccountBalances?.map((e) => IndividualTwilightReserveAccountBalance.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseRefundTxAccountSnap(): RefundTxAccountSnap {
+  return { Amount: 0, BtcDepositAddress: "", BtcDepositAddressIdentifier: 0 };
+}
+
+export const RefundTxAccountSnap = {
+  encode(message: RefundTxAccountSnap, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.Amount !== 0) {
+      writer.uint32(8).uint64(message.Amount);
+    }
+    if (message.BtcDepositAddress !== "") {
+      writer.uint32(18).string(message.BtcDepositAddress);
+    }
+    if (message.BtcDepositAddressIdentifier !== 0) {
+      writer.uint32(24).uint32(message.BtcDepositAddressIdentifier);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RefundTxAccountSnap {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRefundTxAccountSnap();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.Amount = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.BtcDepositAddress = reader.string();
+          break;
+        case 3:
+          message.BtcDepositAddressIdentifier = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RefundTxAccountSnap {
+    return {
+      Amount: isSet(object.Amount) ? Number(object.Amount) : 0,
+      BtcDepositAddress: isSet(object.BtcDepositAddress) ? String(object.BtcDepositAddress) : "",
+      BtcDepositAddressIdentifier: isSet(object.BtcDepositAddressIdentifier)
+        ? Number(object.BtcDepositAddressIdentifier)
+        : 0,
+    };
+  },
+
+  toJSON(message: RefundTxAccountSnap): unknown {
+    const obj: any = {};
+    message.Amount !== undefined && (obj.Amount = Math.round(message.Amount));
+    message.BtcDepositAddress !== undefined && (obj.BtcDepositAddress = message.BtcDepositAddress);
+    message.BtcDepositAddressIdentifier !== undefined
+      && (obj.BtcDepositAddressIdentifier = Math.round(message.BtcDepositAddressIdentifier));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<RefundTxAccountSnap>, I>>(object: I): RefundTxAccountSnap {
+    const message = createBaseRefundTxAccountSnap();
+    message.Amount = object.Amount ?? 0;
+    message.BtcDepositAddress = object.BtcDepositAddress ?? "";
+    message.BtcDepositAddressIdentifier = object.BtcDepositAddressIdentifier ?? 0;
+    return message;
+  },
+};
+
+function createBaseLastRefundTxSnapshot(): LastRefundTxSnapshot {
+  return { ReserveId: 0, RoundId: 0, refundAccounts: [], EndBlockerHeightTwilight: 0 };
+}
+
+export const LastRefundTxSnapshot = {
+  encode(message: LastRefundTxSnapshot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ReserveId !== 0) {
+      writer.uint32(8).uint64(message.ReserveId);
+    }
+    if (message.RoundId !== 0) {
+      writer.uint32(16).uint64(message.RoundId);
+    }
+    for (const v of message.refundAccounts) {
+      RefundTxAccountSnap.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.EndBlockerHeightTwilight !== 0) {
+      writer.uint32(32).int64(message.EndBlockerHeightTwilight);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LastRefundTxSnapshot {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLastRefundTxSnapshot();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ReserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.RoundId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.refundAccounts.push(RefundTxAccountSnap.decode(reader, reader.uint32()));
+          break;
+        case 4:
+          message.EndBlockerHeightTwilight = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LastRefundTxSnapshot {
+    return {
+      ReserveId: isSet(object.ReserveId) ? Number(object.ReserveId) : 0,
+      RoundId: isSet(object.RoundId) ? Number(object.RoundId) : 0,
+      refundAccounts: Array.isArray(object?.refundAccounts)
+        ? object.refundAccounts.map((e: any) => RefundTxAccountSnap.fromJSON(e))
+        : [],
+      EndBlockerHeightTwilight: isSet(object.EndBlockerHeightTwilight) ? Number(object.EndBlockerHeightTwilight) : 0,
+    };
+  },
+
+  toJSON(message: LastRefundTxSnapshot): unknown {
+    const obj: any = {};
+    message.ReserveId !== undefined && (obj.ReserveId = Math.round(message.ReserveId));
+    message.RoundId !== undefined && (obj.RoundId = Math.round(message.RoundId));
+    if (message.refundAccounts) {
+      obj.refundAccounts = message.refundAccounts.map((e) => e ? RefundTxAccountSnap.toJSON(e) : undefined);
+    } else {
+      obj.refundAccounts = [];
+    }
+    message.EndBlockerHeightTwilight !== undefined
+      && (obj.EndBlockerHeightTwilight = Math.round(message.EndBlockerHeightTwilight));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<LastRefundTxSnapshot>, I>>(object: I): LastRefundTxSnapshot {
+    const message = createBaseLastRefundTxSnapshot();
+    message.ReserveId = object.ReserveId ?? 0;
+    message.RoundId = object.RoundId ?? 0;
+    message.refundAccounts = object.refundAccounts?.map((e) => RefundTxAccountSnap.fromPartial(e)) || [];
+    message.EndBlockerHeightTwilight = object.EndBlockerHeightTwilight ?? 0;
     return message;
   },
 };

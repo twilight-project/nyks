@@ -62,7 +62,7 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	}
 
 	// Create the LastReserveWithdrawSnapshot
-	snapshot := types.LastReserveWithdrawSnapshot{
+	snapshot := types.ReserveWithdrawSnapshot{
 		ReserveId:                reserveId,
 		RoundId:                  roundId,
 		WithdrawRequests:         withdrawRequestSnaps,
@@ -70,7 +70,7 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	}
 
 	// Store the snapshot in the KVStore
-	snapshotKey := types.GetLastWithdrawSnapshotKey(reserveId, roundId, ctx.BlockHeight())
+	snapshotKey := types.GetReserveWithdrawSnapshotKey(reserveId, roundId)
 	store := k.Store(ctx)
 	store.Set(snapshotKey, k.Codec().MustMarshal(&snapshot))
 
@@ -119,7 +119,7 @@ func generateRefundTxSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	}
 
 	// Create the LastRefundTxSnapshot
-	snapshot := types.LastRefundTxSnapshot{
+	snapshot := types.RefundTxSnapshot{
 		ReserveId:                reserveId,
 		RoundId:                  roundId,
 		RefundAccounts:           refundTxSnaps,
@@ -127,7 +127,7 @@ func generateRefundTxSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 	}
 
 	// Store the snapshot in the KVStore
-	snapshotKey := types.GetLastRefundTxSnapshotKey(reserveId, roundId, ctx.BlockHeight())
+	snapshotKey := types.GetRefundTxSnapshotKey(reserveId, roundId)
 	store := k.Store(ctx)
 	store.Set(snapshotKey, k.Codec().MustMarshal(&snapshot))
 

@@ -29672,6 +29672,78 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/volt/refund_tx_snapshot/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of RefundTxSnapshot items.
+      operationId: TwilightprojectNyksVoltRefundTxSnapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              RefundTxSnapshot:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  RoundId:
+                    type: string
+                    format: uint64
+                  refundAccounts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Amount:
+                          type: string
+                          format: uint64
+                        BtcDepositAddress:
+                          type: string
+                        BtcDepositAddressIdentifier:
+                          type: integer
+                          format: int64
+                      title: >-
+                        RefundTxSnap is used to keep a mapping of the last
+                        refund transaction for a reserve
+                  EndBlockerHeightTwilight:
+                    type: string
+                    format: int64
+                title: >-
+                  LastRefundTxSnapshot is a snapshot of the last refund for this
+                  reserve id
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}:
     get:
       summary: Queries a list of ReserveClearingAccountsAll items.
@@ -29733,6 +29805,79 @@ paths:
                   additionalProperties: {}
       parameters:
         - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/reserve_withdraw_snapshot/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of ReserveWithdrawSnapshot items.
+      operationId: TwilightprojectNyksVoltReserveWithdrawSnapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveWithdrawSnapshot:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  RoundId:
+                    type: string
+                    format: uint64
+                  withdrawRequests:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        withdrawIdentifier:
+                          type: integer
+                          format: int64
+                        withdrawAddress:
+                          type: string
+                        withdrawAmount:
+                          type: string
+                          format: uint64
+                      title: >-
+                        WithdrawRequestSnap is a snapshot of the withdraw
+                        request
+                  EndBlockerHeightTwilight:
+                    type: string
+                    format: int64
+                title: >-
+                  ReserveWithdrawSnapshot is a snapshot of the reserve withdraw,
+                  its used in sweep to know which withdraws are currently being
+                  processed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
           in: path
           required: true
           type: string
@@ -49838,6 +49983,40 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.volt.QueryRefundTxSnapshotResponse:
+    type: object
+    properties:
+      RefundTxSnapshot:
+        type: object
+        properties:
+          ReserveId:
+            type: string
+            format: uint64
+          RoundId:
+            type: string
+            format: uint64
+          refundAccounts:
+            type: array
+            items:
+              type: object
+              properties:
+                Amount:
+                  type: string
+                  format: uint64
+                BtcDepositAddress:
+                  type: string
+                BtcDepositAddressIdentifier:
+                  type: integer
+                  format: int64
+              title: >-
+                RefundTxSnap is used to keep a mapping of the last refund
+                transaction for a reserve
+          EndBlockerHeightTwilight:
+            type: string
+            format: int64
+        title: >-
+          LastRefundTxSnapshot is a snapshot of the last refund for this reserve
+          id
   twilightproject.nyks.volt.QueryReserveClearingAccountsAllResponse:
     type: object
     properties:
@@ -49872,6 +50051,122 @@ definitions:
           title: >-
             ClearingAccount is used to keep a mapping of how a user's addresses
             and its reserve account balances
+  twilightproject.nyks.volt.QueryReserveWithdrawSnapshotResponse:
+    type: object
+    properties:
+      ReserveWithdrawSnapshot:
+        type: object
+        properties:
+          ReserveId:
+            type: string
+            format: uint64
+          RoundId:
+            type: string
+            format: uint64
+          withdrawRequests:
+            type: array
+            items:
+              type: object
+              properties:
+                withdrawIdentifier:
+                  type: integer
+                  format: int64
+                withdrawAddress:
+                  type: string
+                withdrawAmount:
+                  type: string
+                  format: uint64
+              title: WithdrawRequestSnap is a snapshot of the withdraw request
+          EndBlockerHeightTwilight:
+            type: string
+            format: int64
+        title: >-
+          ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its
+          used in sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.RefundTxAccountSnap:
+    type: object
+    properties:
+      Amount:
+        type: string
+        format: uint64
+      BtcDepositAddress:
+        type: string
+      BtcDepositAddressIdentifier:
+        type: integer
+        format: int64
+    title: >-
+      RefundTxSnap is used to keep a mapping of the last refund transaction for
+      a reserve
+  twilightproject.nyks.volt.RefundTxSnapshot:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      RoundId:
+        type: string
+        format: uint64
+      refundAccounts:
+        type: array
+        items:
+          type: object
+          properties:
+            Amount:
+              type: string
+              format: uint64
+            BtcDepositAddress:
+              type: string
+            BtcDepositAddressIdentifier:
+              type: integer
+              format: int64
+          title: >-
+            RefundTxSnap is used to keep a mapping of the last refund
+            transaction for a reserve
+      EndBlockerHeightTwilight:
+        type: string
+        format: int64
+    title: LastRefundTxSnapshot is a snapshot of the last refund for this reserve id
+  twilightproject.nyks.volt.ReserveWithdrawSnapshot:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      RoundId:
+        type: string
+        format: uint64
+      withdrawRequests:
+        type: array
+        items:
+          type: object
+          properties:
+            withdrawIdentifier:
+              type: integer
+              format: int64
+            withdrawAddress:
+              type: string
+            withdrawAmount:
+              type: string
+              format: uint64
+          title: WithdrawRequestSnap is a snapshot of the withdraw request
+      EndBlockerHeightTwilight:
+        type: string
+        format: int64
+    title: >-
+      ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in
+      sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.WithdrawRequestSnap:
+    type: object
+    properties:
+      withdrawIdentifier:
+        type: integer
+        format: int64
+      withdrawAddress:
+        type: string
+      withdrawAmount:
+        type: string
+        format: uint64
+    title: WithdrawRequestSnap is a snapshot of the withdraw request
   twilightproject.nyks.zkos.MsgMintBurnTradingBtc:
     type: object
     properties:

@@ -374,6 +374,198 @@ func (m *QueryReserveClearingAccountsAllResponse) GetReserveClearingAccountsAll(
 	return nil
 }
 
+type QueryReserveWithdrawSnapshotRequest struct {
+	ReserveId uint64 `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
+	RoundId   uint64 `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
+}
+
+func (m *QueryReserveWithdrawSnapshotRequest) Reset()         { *m = QueryReserveWithdrawSnapshotRequest{} }
+func (m *QueryReserveWithdrawSnapshotRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryReserveWithdrawSnapshotRequest) ProtoMessage()    {}
+func (*QueryReserveWithdrawSnapshotRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30511513d65993ee, []int{8}
+}
+func (m *QueryReserveWithdrawSnapshotRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryReserveWithdrawSnapshotRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryReserveWithdrawSnapshotRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryReserveWithdrawSnapshotRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryReserveWithdrawSnapshotRequest.Merge(m, src)
+}
+func (m *QueryReserveWithdrawSnapshotRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryReserveWithdrawSnapshotRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryReserveWithdrawSnapshotRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryReserveWithdrawSnapshotRequest proto.InternalMessageInfo
+
+func (m *QueryReserveWithdrawSnapshotRequest) GetReserveId() uint64 {
+	if m != nil {
+		return m.ReserveId
+	}
+	return 0
+}
+
+func (m *QueryReserveWithdrawSnapshotRequest) GetRoundId() uint64 {
+	if m != nil {
+		return m.RoundId
+	}
+	return 0
+}
+
+type QueryReserveWithdrawSnapshotResponse struct {
+	ReserveWithdrawSnapshot ReserveWithdrawSnapshot `protobuf:"bytes,1,opt,name=ReserveWithdrawSnapshot,proto3" json:"ReserveWithdrawSnapshot"`
+}
+
+func (m *QueryReserveWithdrawSnapshotResponse) Reset()         { *m = QueryReserveWithdrawSnapshotResponse{} }
+func (m *QueryReserveWithdrawSnapshotResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryReserveWithdrawSnapshotResponse) ProtoMessage()    {}
+func (*QueryReserveWithdrawSnapshotResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30511513d65993ee, []int{9}
+}
+func (m *QueryReserveWithdrawSnapshotResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryReserveWithdrawSnapshotResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryReserveWithdrawSnapshotResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryReserveWithdrawSnapshotResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryReserveWithdrawSnapshotResponse.Merge(m, src)
+}
+func (m *QueryReserveWithdrawSnapshotResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryReserveWithdrawSnapshotResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryReserveWithdrawSnapshotResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryReserveWithdrawSnapshotResponse proto.InternalMessageInfo
+
+func (m *QueryReserveWithdrawSnapshotResponse) GetReserveWithdrawSnapshot() ReserveWithdrawSnapshot {
+	if m != nil {
+		return m.ReserveWithdrawSnapshot
+	}
+	return ReserveWithdrawSnapshot{}
+}
+
+type QueryRefundTxSnapshotRequest struct {
+	ReserveId uint64 `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
+	RoundId   uint64 `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
+}
+
+func (m *QueryRefundTxSnapshotRequest) Reset()         { *m = QueryRefundTxSnapshotRequest{} }
+func (m *QueryRefundTxSnapshotRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRefundTxSnapshotRequest) ProtoMessage()    {}
+func (*QueryRefundTxSnapshotRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30511513d65993ee, []int{10}
+}
+func (m *QueryRefundTxSnapshotRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRefundTxSnapshotRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRefundTxSnapshotRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRefundTxSnapshotRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRefundTxSnapshotRequest.Merge(m, src)
+}
+func (m *QueryRefundTxSnapshotRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRefundTxSnapshotRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRefundTxSnapshotRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRefundTxSnapshotRequest proto.InternalMessageInfo
+
+func (m *QueryRefundTxSnapshotRequest) GetReserveId() uint64 {
+	if m != nil {
+		return m.ReserveId
+	}
+	return 0
+}
+
+func (m *QueryRefundTxSnapshotRequest) GetRoundId() uint64 {
+	if m != nil {
+		return m.RoundId
+	}
+	return 0
+}
+
+type QueryRefundTxSnapshotResponse struct {
+	RefundTxSnapshot RefundTxSnapshot `protobuf:"bytes,1,opt,name=RefundTxSnapshot,proto3" json:"RefundTxSnapshot"`
+}
+
+func (m *QueryRefundTxSnapshotResponse) Reset()         { *m = QueryRefundTxSnapshotResponse{} }
+func (m *QueryRefundTxSnapshotResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRefundTxSnapshotResponse) ProtoMessage()    {}
+func (*QueryRefundTxSnapshotResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_30511513d65993ee, []int{11}
+}
+func (m *QueryRefundTxSnapshotResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRefundTxSnapshotResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRefundTxSnapshotResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRefundTxSnapshotResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRefundTxSnapshotResponse.Merge(m, src)
+}
+func (m *QueryRefundTxSnapshotResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRefundTxSnapshotResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRefundTxSnapshotResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRefundTxSnapshotResponse proto.InternalMessageInfo
+
+func (m *QueryRefundTxSnapshotResponse) GetRefundTxSnapshot() RefundTxSnapshot {
+	if m != nil {
+		return m.RefundTxSnapshot
+	}
+	return RefundTxSnapshot{}
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "twilightproject.nyks.volt.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "twilightproject.nyks.volt.QueryParamsResponse")
@@ -383,50 +575,65 @@ func init() {
 	proto.RegisterType((*QueryClearingAccountResponse)(nil), "twilightproject.nyks.volt.QueryClearingAccountResponse")
 	proto.RegisterType((*QueryReserveClearingAccountsAllRequest)(nil), "twilightproject.nyks.volt.QueryReserveClearingAccountsAllRequest")
 	proto.RegisterType((*QueryReserveClearingAccountsAllResponse)(nil), "twilightproject.nyks.volt.QueryReserveClearingAccountsAllResponse")
+	proto.RegisterType((*QueryReserveWithdrawSnapshotRequest)(nil), "twilightproject.nyks.volt.QueryReserveWithdrawSnapshotRequest")
+	proto.RegisterType((*QueryReserveWithdrawSnapshotResponse)(nil), "twilightproject.nyks.volt.QueryReserveWithdrawSnapshotResponse")
+	proto.RegisterType((*QueryRefundTxSnapshotRequest)(nil), "twilightproject.nyks.volt.QueryRefundTxSnapshotRequest")
+	proto.RegisterType((*QueryRefundTxSnapshotResponse)(nil), "twilightproject.nyks.volt.QueryRefundTxSnapshotResponse")
 }
 
 func init() { proto.RegisterFile("nyks/volt/query.proto", fileDescriptor_30511513d65993ee) }
 
 var fileDescriptor_30511513d65993ee = []byte{
-	// 594 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0x3f, 0x6f, 0xd3, 0x40,
-	0x14, 0x8f, 0xa1, 0x44, 0xea, 0x65, 0xa8, 0x74, 0x94, 0x36, 0x98, 0xc8, 0x80, 0x05, 0x34, 0x44,
-	0x8a, 0x4f, 0x09, 0x12, 0x6c, 0x40, 0x82, 0x68, 0xc4, 0x50, 0x09, 0x32, 0x30, 0x74, 0x89, 0x1c,
-	0xe7, 0xe4, 0x18, 0x1c, 0x9f, 0xeb, 0xbb, 0x04, 0x42, 0xd5, 0x85, 0x81, 0x19, 0xa9, 0x23, 0x2b,
-	0x1f, 0xa6, 0x62, 0xaa, 0xc4, 0xc2, 0x84, 0x50, 0xc2, 0x27, 0xe0, 0x13, 0xa0, 0xdc, 0x3d, 0x63,
-	0x70, 0x1a, 0x87, 0xa8, 0x9b, 0x75, 0xef, 0xfd, 0xfe, 0xdd, 0xbd, 0x67, 0x74, 0x25, 0x18, 0xbf,
-	0xe6, 0x64, 0xc4, 0x7c, 0x41, 0x0e, 0x86, 0x34, 0x1a, 0x5b, 0x61, 0xc4, 0x04, 0xc3, 0x57, 0xc5,
-	0x1b, 0xcf, 0xf7, 0xdc, 0xbe, 0x08, 0x23, 0xf6, 0x8a, 0x3a, 0xc2, 0x9a, 0xb5, 0x59, 0xb3, 0x36,
-	0x7d, 0xd3, 0x65, 0x2e, 0x93, 0x5d, 0x64, 0xf6, 0xa5, 0x00, 0x7a, 0xc9, 0x65, 0xcc, 0xf5, 0x29,
-	0xb1, 0x43, 0x8f, 0xd8, 0x41, 0xc0, 0x84, 0x2d, 0x3c, 0x16, 0x70, 0xa8, 0x56, 0x1c, 0xc6, 0x07,
-	0x8c, 0x93, 0xae, 0xcd, 0xa9, 0xd2, 0x21, 0xa3, 0x5a, 0x97, 0x0a, 0xbb, 0x46, 0x42, 0xdb, 0xf5,
-	0x02, 0xd9, 0x0c, 0xbd, 0x5b, 0x89, 0xa3, 0xd0, 0x8e, 0xec, 0x41, 0xcc, 0x51, 0x4c, 0xce, 0x1d,
-	0x9f, 0xda, 0x91, 0x17, 0xb8, 0x50, 0xd9, 0x4e, 0x2a, 0x11, 0xe5, 0x34, 0x1a, 0x51, 0x55, 0x30,
-	0x37, 0x11, 0x7e, 0x31, 0x13, 0x7b, 0x2e, 0x79, 0xda, 0xf4, 0x60, 0x48, 0xb9, 0x30, 0x5f, 0xa2,
-	0xcb, 0xff, 0x9c, 0xf2, 0x90, 0x05, 0x9c, 0xe2, 0x47, 0x28, 0xaf, 0xf4, 0x8a, 0xda, 0x0d, 0xad,
-	0x5c, 0xa8, 0xdf, 0xb4, 0x16, 0xde, 0x81, 0xa5, 0xa0, 0xcd, 0xb5, 0x93, 0xef, 0xd7, 0x73, 0x6d,
-	0x80, 0x99, 0x45, 0xb4, 0x25, 0x79, 0x9b, 0xc2, 0x69, 0x2b, 0x1b, 0xb1, 0x62, 0x1f, 0x6d, 0xcf,
-	0x55, 0x40, 0x75, 0x0f, 0x15, 0x92, 0xd3, 0x99, 0xf4, 0xc5, 0x72, 0xa1, 0x7e, 0x3b, 0x43, 0x3a,
-	0xe9, 0x06, 0xf9, 0xbf, 0xf1, 0x66, 0x0b, 0x5d, 0x93, 0x4a, 0x4f, 0xe0, 0x86, 0x1a, 0x8e, 0xc3,
-	0x86, 0x81, 0x00, 0x23, 0xb8, 0x8c, 0x36, 0x62, 0xe6, 0x46, 0xaf, 0x17, 0x51, 0xae, 0xc2, 0xae,
-	0xb7, 0xd3, 0xc7, 0xe6, 0x3b, 0x54, 0x3a, 0x9b, 0x08, 0x7c, 0xef, 0xa3, 0x8d, 0x54, 0x09, 0xae,
-	0xad, 0x92, 0xe1, 0x3d, 0x85, 0x80, 0x00, 0x69, 0x22, 0x73, 0x17, 0xdd, 0x91, 0xda, 0x90, 0x2a,
-	0x55, 0xe6, 0x0d, 0xdf, 0x8f, 0xf3, 0x94, 0xd0, 0x3a, 0xbc, 0xf8, 0xb3, 0x9e, 0xd4, 0x5f, 0x6b,
-	0x27, 0x07, 0xe6, 0x27, 0x0d, 0xed, 0x2c, 0x25, 0x82, 0x3c, 0x21, 0xd2, 0x17, 0x77, 0xc1, 0xb3,
-	0xac, 0x1e, 0x2d, 0x83, 0xb3, 0xfe, 0x21, 0x8f, 0x2e, 0x49, 0x77, 0xf8, 0x58, 0x43, 0x79, 0x35,
-	0x51, 0xb8, 0x9a, 0x21, 0x31, 0x3f, 0xca, 0xba, 0xf5, 0xbf, 0xed, 0x2a, 0xa5, 0x59, 0x79, 0xff,
-	0xf5, 0xe7, 0xf1, 0x85, 0x5b, 0xd8, 0x24, 0x31, 0xae, 0x0a, 0x40, 0x92, 0xde, 0x3a, 0xfc, 0x59,
-	0x43, 0x28, 0x19, 0x2d, 0x5c, 0x5b, 0x26, 0x35, 0x37, 0xf6, 0x7a, 0x7d, 0x15, 0x08, 0x38, 0x24,
-	0xd2, 0xe1, 0x5d, 0xbc, 0x93, 0xe5, 0xb0, 0x2b, 0x9c, 0x0e, 0x3c, 0x33, 0xfe, 0xa2, 0xcd, 0x4d,
-	0x22, 0xbe, 0xbf, 0x4c, 0xf8, 0xec, 0xf5, 0xd0, 0x1f, 0xac, 0x8c, 0x03, 0xd7, 0xbb, 0xd2, 0xf5,
-	0x63, 0xfc, 0x30, 0xcb, 0x75, 0xfc, 0xd7, 0xea, 0xd8, 0x0a, 0x4d, 0x0e, 0x53, 0x4b, 0x77, 0x84,
-	0x7f, 0x69, 0x59, 0x63, 0x88, 0x1b, 0xcb, 0xfc, 0x2d, 0xdd, 0x18, 0xbd, 0x79, 0x1e, 0x0a, 0x48,
-	0xbb, 0x27, 0xd3, 0xb6, 0xf0, 0xd3, 0xac, 0xb4, 0xf0, 0x3e, 0x9d, 0x74, 0x6a, 0xde, 0xb1, 0x7d,
-	0x9f, 0x1c, 0xfe, 0xd9, 0xd2, 0xa3, 0x66, 0xeb, 0x64, 0x62, 0x68, 0xa7, 0x13, 0x43, 0xfb, 0x31,
-	0x31, 0xb4, 0x8f, 0x53, 0x23, 0x77, 0x3a, 0x35, 0x72, 0xdf, 0xa6, 0x46, 0x6e, 0xbf, 0xea, 0x7a,
-	0xa2, 0x3f, 0xec, 0x5a, 0x0e, 0x1b, 0x2c, 0x90, 0x7a, 0xab, 0xc4, 0xc4, 0x38, 0xa4, 0xbc, 0x9b,
-	0x97, 0x7f, 0xfd, 0x7b, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x1e, 0xad, 0x39, 0xc9, 0xd4, 0x06,
-	0x00, 0x00,
+	// 775 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0x4f, 0x4f, 0xd4, 0x4e,
+	0x18, 0xc7, 0xb7, 0xfc, 0xf8, 0x61, 0x18, 0x0e, 0x98, 0x11, 0x61, 0xad, 0xb8, 0x6a, 0x45, 0x41,
+	0x0c, 0x3b, 0x61, 0x4d, 0xc4, 0x13, 0xb8, 0xab, 0x42, 0x88, 0x92, 0xe8, 0x62, 0x30, 0x21, 0x21,
+	0x9b, 0x6e, 0x77, 0xec, 0x56, 0x4b, 0xa7, 0x74, 0x66, 0xf9, 0x23, 0xc1, 0x83, 0xaf, 0xc0, 0x84,
+	0x9b, 0x5e, 0x7d, 0x31, 0xc4, 0x83, 0x21, 0xe1, 0xe2, 0xc9, 0x18, 0xf0, 0x6e, 0xe2, 0x2b, 0x30,
+	0x3b, 0x7d, 0xea, 0x42, 0x4b, 0xdb, 0x5d, 0xf5, 0x06, 0xf3, 0x3c, 0xdf, 0xe7, 0xf9, 0x7e, 0x3a,
+	0xe5, 0x4b, 0xd1, 0x79, 0x67, 0xeb, 0x15, 0x27, 0xeb, 0xcc, 0x16, 0x64, 0xad, 0x41, 0xbd, 0xad,
+	0xbc, 0xeb, 0x31, 0xc1, 0xf0, 0x05, 0xb1, 0x61, 0xd9, 0x96, 0x59, 0x17, 0xae, 0xc7, 0x5e, 0x52,
+	0x43, 0xe4, 0x9b, 0x6d, 0xf9, 0x66, 0x9b, 0x3a, 0x60, 0x32, 0x93, 0xc9, 0x2e, 0xd2, 0xfc, 0xc9,
+	0x17, 0xa8, 0xc3, 0x26, 0x63, 0xa6, 0x4d, 0x89, 0xee, 0x5a, 0x44, 0x77, 0x1c, 0x26, 0x74, 0x61,
+	0x31, 0x87, 0x43, 0x75, 0xdc, 0x60, 0x7c, 0x95, 0x71, 0x52, 0xd5, 0x39, 0xf5, 0xf7, 0x90, 0xf5,
+	0xc9, 0x2a, 0x15, 0xfa, 0x24, 0x71, 0x75, 0xd3, 0x72, 0x64, 0x33, 0xf4, 0x0e, 0xb6, 0x1c, 0xb9,
+	0xba, 0xa7, 0xaf, 0x06, 0x33, 0xb2, 0xad, 0x73, 0xc3, 0xa6, 0xba, 0x67, 0x39, 0x26, 0x54, 0x86,
+	0x5a, 0x15, 0x8f, 0x72, 0xea, 0xad, 0xd3, 0xa8, 0x64, 0xc3, 0x12, 0xf5, 0x9a, 0xa7, 0x6f, 0xf8,
+	0x15, 0x6d, 0x00, 0xe1, 0xa7, 0x4d, 0x1b, 0x4f, 0xe4, 0x86, 0x32, 0x5d, 0x6b, 0x50, 0x2e, 0xb4,
+	0x25, 0x74, 0xee, 0xc4, 0x29, 0x77, 0x99, 0xc3, 0x29, 0x9e, 0x41, 0x3d, 0xbe, 0x93, 0xac, 0x72,
+	0x45, 0x19, 0xeb, 0x2b, 0x5c, 0xcd, 0xc7, 0x3e, 0x9d, 0xbc, 0x2f, 0x2d, 0x75, 0xef, 0x7d, 0xbd,
+	0x9c, 0x29, 0x83, 0x4c, 0xcb, 0xa2, 0x41, 0x39, 0xb7, 0x24, 0x8c, 0xb2, 0x6f, 0x30, 0xd8, 0x58,
+	0x47, 0x43, 0x91, 0x0a, 0x6c, 0x5d, 0x40, 0x7d, 0xad, 0xd3, 0xe6, 0xea, 0xff, 0xc6, 0xfa, 0x0a,
+	0xd7, 0x13, 0x56, 0xb7, 0xba, 0x61, 0xfd, 0x71, 0xbd, 0x36, 0x87, 0x2e, 0xca, 0x4d, 0xf7, 0xe1,
+	0xd9, 0x15, 0x0d, 0x83, 0x35, 0x1c, 0x01, 0x46, 0xf0, 0x18, 0xea, 0x0f, 0x26, 0x17, 0x6b, 0x35,
+	0x8f, 0x72, 0x1f, 0xb6, 0xb7, 0x1c, 0x3e, 0xd6, 0x5e, 0xa3, 0xe1, 0xd3, 0x07, 0x81, 0xef, 0x65,
+	0xd4, 0x1f, 0x2a, 0xc1, 0x63, 0x1b, 0x4f, 0xf0, 0x1e, 0x52, 0x00, 0x40, 0x78, 0x90, 0x36, 0x8b,
+	0x6e, 0xc8, 0xdd, 0x40, 0x15, 0x2a, 0xf3, 0xa2, 0x6d, 0x07, 0x3c, 0xc3, 0xa8, 0x17, 0xde, 0x85,
+	0xf9, 0x9a, 0xdc, 0xdf, 0x5d, 0x6e, 0x1d, 0x68, 0x1f, 0x14, 0x34, 0x9a, 0x3a, 0x08, 0x78, 0x5c,
+	0xa4, 0xc6, 0x77, 0xc1, 0xb5, 0x74, 0x8e, 0x96, 0x30, 0x53, 0x5b, 0x41, 0xd7, 0x8e, 0x9b, 0x7b,
+	0x0e, 0xaf, 0xee, 0xa2, 0xa3, 0xbb, 0xbc, 0xce, 0x44, 0x5b, 0x88, 0x38, 0x8b, 0xce, 0x78, 0xac,
+	0xe1, 0xd4, 0xe6, 0x6b, 0xd9, 0x2e, 0x59, 0x0b, 0x7e, 0xd5, 0xde, 0x2b, 0x68, 0x24, 0x79, 0x3e,
+	0x90, 0x7b, 0x68, 0x28, 0xa6, 0x05, 0x6e, 0xb4, 0x90, 0x80, 0x1d, 0xa3, 0x04, 0xfc, 0xb8, 0xc1,
+	0xda, 0x12, 0xbc, 0x5d, 0x65, 0xfa, 0xa2, 0xe1, 0xd4, 0x9e, 0x6d, 0xfe, 0x2b, 0xe8, 0x37, 0xe8,
+	0x52, 0xcc, 0x5c, 0x80, 0x5d, 0x41, 0x67, 0xc3, 0x35, 0xa0, 0xbc, 0x95, 0x48, 0x79, 0x52, 0x02,
+	0x78, 0x91, 0x51, 0x85, 0xcf, 0xbd, 0xe8, 0x7f, 0x69, 0x00, 0xef, 0x2a, 0xa8, 0xc7, 0x4f, 0x09,
+	0x3c, 0x91, 0x30, 0x39, 0x1a, 0x4f, 0x6a, 0xbe, 0xdd, 0x76, 0x1f, 0x49, 0x1b, 0x7f, 0x7b, 0xf0,
+	0x7d, 0xb7, 0x6b, 0x04, 0x6b, 0x24, 0xd0, 0x4d, 0x80, 0x90, 0x84, 0x33, 0x16, 0x7f, 0x54, 0x10,
+	0x6a, 0xc5, 0x05, 0x9e, 0x4c, 0x5b, 0x15, 0x89, 0x32, 0xb5, 0xd0, 0x89, 0x04, 0x1c, 0x12, 0xe9,
+	0xf0, 0x26, 0x1e, 0x4d, 0x72, 0x58, 0x15, 0x46, 0x05, 0xae, 0x18, 0x7f, 0x52, 0x22, 0xe9, 0x82,
+	0xef, 0xa4, 0x2d, 0x3e, 0x3d, 0xf2, 0xd4, 0xa9, 0x8e, 0x75, 0xe0, 0x7a, 0x56, 0xba, 0xbe, 0x87,
+	0xa7, 0x93, 0x5c, 0x07, 0xff, 0xa3, 0x2a, 0xba, 0xaf, 0x26, 0xdb, 0xa1, 0x20, 0xdd, 0xc1, 0x3f,
+	0x95, 0xa4, 0x68, 0xc1, 0xc5, 0x34, 0x7f, 0xa9, 0x29, 0xa8, 0x96, 0xfe, 0x66, 0x04, 0xd0, 0x2e,
+	0x48, 0xda, 0x39, 0xfc, 0x30, 0x89, 0x16, 0xee, 0xa7, 0x12, 0xa6, 0xe6, 0x15, 0xdd, 0xb6, 0xc9,
+	0xf6, 0xef, 0xbf, 0xd0, 0x1d, 0xfc, 0x43, 0x89, 0x4d, 0x15, 0x3c, 0xdd, 0xa6, 0xdd, 0x98, 0x44,
+	0x54, 0x67, 0xfe, 0x58, 0x0f, 0xac, 0x8b, 0x92, 0x75, 0x01, 0x3f, 0x6a, 0x87, 0x35, 0xf8, 0xa4,
+	0xa8, 0x70, 0x18, 0x73, 0x9c, 0x93, 0x6c, 0x43, 0xf2, 0xec, 0xe0, 0x03, 0x25, 0x1a, 0x2d, 0x78,
+	0x2a, 0xdd, 0xea, 0xa9, 0x01, 0xa8, 0xde, 0xed, 0x5c, 0x08, 0x70, 0x8f, 0x25, 0xdc, 0x2c, 0x7e,
+	0x90, 0x0c, 0xd7, 0x54, 0x57, 0xc4, 0x66, 0x0a, 0x55, 0x69, 0x6e, 0xef, 0x30, 0xa7, 0xec, 0x1f,
+	0xe6, 0x94, 0x6f, 0x87, 0x39, 0xe5, 0xdd, 0x51, 0x2e, 0xb3, 0x7f, 0x94, 0xcb, 0x7c, 0x39, 0xca,
+	0x65, 0x96, 0x27, 0x4c, 0x4b, 0xd4, 0x1b, 0xd5, 0xbc, 0xc1, 0x56, 0x63, 0x36, 0x6d, 0xfa, 0xbb,
+	0xc4, 0x96, 0x4b, 0x79, 0xb5, 0x47, 0x7e, 0x91, 0xdd, 0xfe, 0x15, 0x00, 0x00, 0xff, 0xff, 0x99,
+	0x57, 0xff, 0x38, 0x8a, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -449,6 +656,10 @@ type QueryClient interface {
 	ClearingAccount(ctx context.Context, in *QueryClearingAccountRequest, opts ...grpc.CallOption) (*QueryClearingAccountResponse, error)
 	// Queries a list of ReserveClearingAccountsAll items.
 	ReserveClearingAccountsAll(ctx context.Context, in *QueryReserveClearingAccountsAllRequest, opts ...grpc.CallOption) (*QueryReserveClearingAccountsAllResponse, error)
+	// Queries a list of ReserveWithdrawSnapshot items.
+	ReserveWithdrawSnapshot(ctx context.Context, in *QueryReserveWithdrawSnapshotRequest, opts ...grpc.CallOption) (*QueryReserveWithdrawSnapshotResponse, error)
+	// Queries a list of RefundTxSnapshot items.
+	RefundTxSnapshot(ctx context.Context, in *QueryRefundTxSnapshotRequest, opts ...grpc.CallOption) (*QueryRefundTxSnapshotResponse, error)
 }
 
 type queryClient struct {
@@ -495,6 +706,24 @@ func (c *queryClient) ReserveClearingAccountsAll(ctx context.Context, in *QueryR
 	return out, nil
 }
 
+func (c *queryClient) ReserveWithdrawSnapshot(ctx context.Context, in *QueryReserveWithdrawSnapshotRequest, opts ...grpc.CallOption) (*QueryReserveWithdrawSnapshotResponse, error) {
+	out := new(QueryReserveWithdrawSnapshotResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.volt.Query/ReserveWithdrawSnapshot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) RefundTxSnapshot(ctx context.Context, in *QueryRefundTxSnapshotRequest, opts ...grpc.CallOption) (*QueryRefundTxSnapshotResponse, error) {
+	out := new(QueryRefundTxSnapshotResponse)
+	err := c.cc.Invoke(ctx, "/twilightproject.nyks.volt.Query/RefundTxSnapshot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
@@ -505,6 +734,10 @@ type QueryServer interface {
 	ClearingAccount(context.Context, *QueryClearingAccountRequest) (*QueryClearingAccountResponse, error)
 	// Queries a list of ReserveClearingAccountsAll items.
 	ReserveClearingAccountsAll(context.Context, *QueryReserveClearingAccountsAllRequest) (*QueryReserveClearingAccountsAllResponse, error)
+	// Queries a list of ReserveWithdrawSnapshot items.
+	ReserveWithdrawSnapshot(context.Context, *QueryReserveWithdrawSnapshotRequest) (*QueryReserveWithdrawSnapshotResponse, error)
+	// Queries a list of RefundTxSnapshot items.
+	RefundTxSnapshot(context.Context, *QueryRefundTxSnapshotRequest) (*QueryRefundTxSnapshotResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -522,6 +755,12 @@ func (*UnimplementedQueryServer) ClearingAccount(ctx context.Context, req *Query
 }
 func (*UnimplementedQueryServer) ReserveClearingAccountsAll(ctx context.Context, req *QueryReserveClearingAccountsAllRequest) (*QueryReserveClearingAccountsAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReserveClearingAccountsAll not implemented")
+}
+func (*UnimplementedQueryServer) ReserveWithdrawSnapshot(ctx context.Context, req *QueryReserveWithdrawSnapshotRequest) (*QueryReserveWithdrawSnapshotResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReserveWithdrawSnapshot not implemented")
+}
+func (*UnimplementedQueryServer) RefundTxSnapshot(ctx context.Context, req *QueryRefundTxSnapshotRequest) (*QueryRefundTxSnapshotResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefundTxSnapshot not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -600,6 +839,42 @@ func _Query_ReserveClearingAccountsAll_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ReserveWithdrawSnapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryReserveWithdrawSnapshotRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ReserveWithdrawSnapshot(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.volt.Query/ReserveWithdrawSnapshot",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ReserveWithdrawSnapshot(ctx, req.(*QueryReserveWithdrawSnapshotRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_RefundTxSnapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRefundTxSnapshotRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RefundTxSnapshot(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/twilightproject.nyks.volt.Query/RefundTxSnapshot",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RefundTxSnapshot(ctx, req.(*QueryRefundTxSnapshotRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "twilightproject.nyks.volt.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -619,6 +894,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReserveClearingAccountsAll",
 			Handler:    _Query_ReserveClearingAccountsAll_Handler,
+		},
+		{
+			MethodName: "ReserveWithdrawSnapshot",
+			Handler:    _Query_ReserveWithdrawSnapshot_Handler,
+		},
+		{
+			MethodName: "RefundTxSnapshot",
+			Handler:    _Query_RefundTxSnapshot_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -869,6 +1152,138 @@ func (m *QueryReserveClearingAccountsAllResponse) MarshalToSizedBuffer(dAtA []by
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryReserveWithdrawSnapshotRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryReserveWithdrawSnapshotRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryReserveWithdrawSnapshotRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RoundId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.RoundId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.ReserveId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.ReserveId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryReserveWithdrawSnapshotResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryReserveWithdrawSnapshotResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryReserveWithdrawSnapshotResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ReserveWithdrawSnapshot.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRefundTxSnapshotRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRefundTxSnapshotRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRefundTxSnapshotRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RoundId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.RoundId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.ReserveId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.ReserveId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRefundTxSnapshotResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRefundTxSnapshotResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRefundTxSnapshotResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.RefundTxSnapshot.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -972,6 +1387,58 @@ func (m *QueryReserveClearingAccountsAllResponse) Size() (n int) {
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
+	return n
+}
+
+func (m *QueryReserveWithdrawSnapshotRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ReserveId != 0 {
+		n += 1 + sovQuery(uint64(m.ReserveId))
+	}
+	if m.RoundId != 0 {
+		n += 1 + sovQuery(uint64(m.RoundId))
+	}
+	return n
+}
+
+func (m *QueryReserveWithdrawSnapshotResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ReserveWithdrawSnapshot.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryRefundTxSnapshotRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ReserveId != 0 {
+		n += 1 + sovQuery(uint64(m.ReserveId))
+	}
+	if m.RoundId != 0 {
+		n += 1 + sovQuery(uint64(m.RoundId))
+	}
+	return n
+}
+
+func (m *QueryRefundTxSnapshotResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.RefundTxSnapshot.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
@@ -1542,6 +2009,348 @@ func (m *QueryReserveClearingAccountsAllResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.ReserveClearingAccountsAll = append(m.ReserveClearingAccountsAll, ClearingAccount{})
 			if err := m.ReserveClearingAccountsAll[len(m.ReserveClearingAccountsAll)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryReserveWithdrawSnapshotRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryReserveWithdrawSnapshotRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryReserveWithdrawSnapshotRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveId", wireType)
+			}
+			m.ReserveId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReserveId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoundId", wireType)
+			}
+			m.RoundId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoundId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryReserveWithdrawSnapshotResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryReserveWithdrawSnapshotResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryReserveWithdrawSnapshotResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveWithdrawSnapshot", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ReserveWithdrawSnapshot.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRefundTxSnapshotRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRefundTxSnapshotRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRefundTxSnapshotRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveId", wireType)
+			}
+			m.ReserveId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReserveId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoundId", wireType)
+			}
+			m.RoundId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RoundId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRefundTxSnapshotResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRefundTxSnapshotResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRefundTxSnapshotResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RefundTxSnapshot", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RefundTxSnapshot.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

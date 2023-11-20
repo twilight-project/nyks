@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ClearingAccount } from "./clearing";
 import { Params } from "./params";
@@ -37,6 +38,23 @@ export interface QueryReserveClearingAccountsAllRequest {
 }
 
 export interface QueryReserveClearingAccountsAllResponse {
+  ReserveClearingAccountsAll: ClearingAccount[];
+}
+
+export interface QueryReserveWithdrawSnapshotRequest {
+  reserveId: number;
+  roundId: number;
+}
+
+export interface QueryReserveWithdrawSnapshotResponse {
+}
+
+export interface QueryRefundTxSnapshotRequest {
+  reserveId: number;
+  roundId: number;
+}
+
+export interface QueryRefundTxSnapshotResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -325,7 +343,7 @@ function createBaseQueryReserveClearingAccountsAllRequest(): QueryReserveClearin
 export const QueryReserveClearingAccountsAllRequest = {
   encode(message: QueryReserveClearingAccountsAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.reserveId !== 0) {
-      writer.uint32(8).int32(message.reserveId);
+      writer.uint32(8).uint64(message.reserveId);
     }
     return writer;
   },
@@ -338,7 +356,7 @@ export const QueryReserveClearingAccountsAllRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.reserveId = reader.int32();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -368,11 +386,14 @@ export const QueryReserveClearingAccountsAllRequest = {
 };
 
 function createBaseQueryReserveClearingAccountsAllResponse(): QueryReserveClearingAccountsAllResponse {
-  return {};
+  return { ReserveClearingAccountsAll: [] };
 }
 
 export const QueryReserveClearingAccountsAllResponse = {
-  encode(_: QueryReserveClearingAccountsAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryReserveClearingAccountsAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.ReserveClearingAccountsAll) {
+      ClearingAccount.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -380,6 +401,123 @@ export const QueryReserveClearingAccountsAllResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryReserveClearingAccountsAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ReserveClearingAccountsAll.push(ClearingAccount.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReserveClearingAccountsAllResponse {
+    return {
+      ReserveClearingAccountsAll: Array.isArray(object?.ReserveClearingAccountsAll)
+        ? object.ReserveClearingAccountsAll.map((e: any) => ClearingAccount.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryReserveClearingAccountsAllResponse): unknown {
+    const obj: any = {};
+    if (message.ReserveClearingAccountsAll) {
+      obj.ReserveClearingAccountsAll = message.ReserveClearingAccountsAll.map((e) =>
+        e ? ClearingAccount.toJSON(e) : undefined
+      );
+    } else {
+      obj.ReserveClearingAccountsAll = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryReserveClearingAccountsAllResponse>, I>>(
+    object: I,
+  ): QueryReserveClearingAccountsAllResponse {
+    const message = createBaseQueryReserveClearingAccountsAllResponse();
+    message.ReserveClearingAccountsAll = object.ReserveClearingAccountsAll?.map((e) => ClearingAccount.fromPartial(e))
+      || [];
+    return message;
+  },
+};
+
+function createBaseQueryReserveWithdrawSnapshotRequest(): QueryReserveWithdrawSnapshotRequest {
+  return { reserveId: 0, roundId: 0 };
+}
+
+export const QueryReserveWithdrawSnapshotRequest = {
+  encode(message: QueryReserveWithdrawSnapshotRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== 0) {
+      writer.uint32(8).int32(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(16).int32(message.roundId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryReserveWithdrawSnapshotRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReserveWithdrawSnapshotRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveId = reader.int32();
+          break;
+        case 2:
+          message.roundId = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReserveWithdrawSnapshotRequest {
+    return {
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
+    };
+  },
+
+  toJSON(message: QueryReserveWithdrawSnapshotRequest): unknown {
+    const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryReserveWithdrawSnapshotRequest>, I>>(
+    object: I,
+  ): QueryReserveWithdrawSnapshotRequest {
+    const message = createBaseQueryReserveWithdrawSnapshotRequest();
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryReserveWithdrawSnapshotResponse(): QueryReserveWithdrawSnapshotResponse {
+  return {};
+}
+
+export const QueryReserveWithdrawSnapshotResponse = {
+  encode(_: QueryReserveWithdrawSnapshotResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryReserveWithdrawSnapshotResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReserveWithdrawSnapshotResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -391,19 +529,116 @@ export const QueryReserveClearingAccountsAllResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryReserveClearingAccountsAllResponse {
+  fromJSON(_: any): QueryReserveWithdrawSnapshotResponse {
     return {};
   },
 
-  toJSON(_: QueryReserveClearingAccountsAllResponse): unknown {
+  toJSON(_: QueryReserveWithdrawSnapshotResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryReserveClearingAccountsAllResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<QueryReserveWithdrawSnapshotResponse>, I>>(
     _: I,
-  ): QueryReserveClearingAccountsAllResponse {
-    const message = createBaseQueryReserveClearingAccountsAllResponse();
+  ): QueryReserveWithdrawSnapshotResponse {
+    const message = createBaseQueryReserveWithdrawSnapshotResponse();
+    return message;
+  },
+};
+
+function createBaseQueryRefundTxSnapshotRequest(): QueryRefundTxSnapshotRequest {
+  return { reserveId: 0, roundId: 0 };
+}
+
+export const QueryRefundTxSnapshotRequest = {
+  encode(message: QueryRefundTxSnapshotRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== 0) {
+      writer.uint32(8).int32(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(16).int32(message.roundId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRefundTxSnapshotRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryRefundTxSnapshotRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveId = reader.int32();
+          break;
+        case 2:
+          message.roundId = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRefundTxSnapshotRequest {
+    return {
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
+    };
+  },
+
+  toJSON(message: QueryRefundTxSnapshotRequest): unknown {
+    const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryRefundTxSnapshotRequest>, I>>(object: I): QueryRefundTxSnapshotRequest {
+    const message = createBaseQueryRefundTxSnapshotRequest();
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryRefundTxSnapshotResponse(): QueryRefundTxSnapshotResponse {
+  return {};
+}
+
+export const QueryRefundTxSnapshotResponse = {
+  encode(_: QueryRefundTxSnapshotResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRefundTxSnapshotResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryRefundTxSnapshotResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRefundTxSnapshotResponse {
+    return {};
+  },
+
+  toJSON(_: QueryRefundTxSnapshotResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryRefundTxSnapshotResponse>, I>>(_: I): QueryRefundTxSnapshotResponse {
+    const message = createBaseQueryRefundTxSnapshotResponse();
     return message;
   },
 };
@@ -420,6 +655,10 @@ export interface Query {
   ReserveClearingAccountsAll(
     request: QueryReserveClearingAccountsAllRequest,
   ): Promise<QueryReserveClearingAccountsAllResponse>;
+  /** Queries a list of ReserveWithdrawSnapshot items. */
+  ReserveWithdrawSnapshot(request: QueryReserveWithdrawSnapshotRequest): Promise<QueryReserveWithdrawSnapshotResponse>;
+  /** Queries a list of RefundTxSnapshot items. */
+  RefundTxSnapshot(request: QueryRefundTxSnapshotRequest): Promise<QueryRefundTxSnapshotResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -430,6 +669,8 @@ export class QueryClientImpl implements Query {
     this.BtcReserve = this.BtcReserve.bind(this);
     this.ClearingAccount = this.ClearingAccount.bind(this);
     this.ReserveClearingAccountsAll = this.ReserveClearingAccountsAll.bind(this);
+    this.ReserveWithdrawSnapshot = this.ReserveWithdrawSnapshot.bind(this);
+    this.RefundTxSnapshot = this.RefundTxSnapshot.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -456,11 +697,42 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request("twilightproject.nyks.volt.Query", "ReserveClearingAccountsAll", data);
     return promise.then((data) => QueryReserveClearingAccountsAllResponse.decode(new _m0.Reader(data)));
   }
+
+  ReserveWithdrawSnapshot(request: QueryReserveWithdrawSnapshotRequest): Promise<QueryReserveWithdrawSnapshotResponse> {
+    const data = QueryReserveWithdrawSnapshotRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "ReserveWithdrawSnapshot", data);
+    return promise.then((data) => QueryReserveWithdrawSnapshotResponse.decode(new _m0.Reader(data)));
+  }
+
+  RefundTxSnapshot(request: QueryRefundTxSnapshotRequest): Promise<QueryRefundTxSnapshotResponse> {
+    const data = QueryRefundTxSnapshotRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "RefundTxSnapshot", data);
+    return promise.then((data) => QueryRefundTxSnapshotResponse.decode(new _m0.Reader(data)));
+  }
 }
 
 interface Rpc {
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
@@ -472,6 +744,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

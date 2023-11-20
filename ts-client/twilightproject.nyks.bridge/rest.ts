@@ -88,7 +88,7 @@ export interface BridgeMsgSignRefund {
   /** @format uint64 */
   roundId?: string;
   signerPublicKey?: string;
-  refundSignature?: string;
+  refundSignature?: string[];
   btcOracleAddress?: string;
 }
 
@@ -134,15 +134,6 @@ export interface BridgeMsgUnsignedTxSweep {
 }
 
 export type BridgeMsgUnsignedTxSweepResponse = object;
-
-export interface BridgeMsgWithdrawBtcRequest {
-  withdrawAddress?: string;
-  reserveAddress?: string;
-
-  /** @format uint64 */
-  withdrawAmount?: string;
-  twilightAddress?: string;
-}
 
 export type BridgeMsgWithdrawBtcRequestResponse = object;
 
@@ -224,7 +215,7 @@ export interface BridgeQuerySignRefundAllResponse {
 }
 
 export interface BridgeQuerySignRefundResponse {
-  signRefundMsg?: BridgeMsgSignRefund;
+  signRefundMsg?: BridgeMsgSignRefund[];
 }
 
 export interface BridgeQuerySignSweepAllResponse {
@@ -232,7 +223,7 @@ export interface BridgeQuerySignSweepAllResponse {
 }
 
 export interface BridgeQuerySignSweepResponse {
-  signSweepMsg?: BridgeMsgSignSweep;
+  signSweepMsg?: BridgeMsgSignSweep[];
 }
 
 export interface BridgeQueryUnsignedTxRefundAllResponse {
@@ -252,7 +243,7 @@ export interface BridgeQueryUnsignedTxSweepResponse {
 }
 
 export interface BridgeQueryWithdrawBtcRequestAllResponse {
-  withdrawRequest?: BridgeMsgWithdrawBtcRequest[];
+  withdrawRequest?: VoltBtcWithdrawRequestInternal[];
 }
 
 export interface ProtobufAny {
@@ -278,9 +269,30 @@ export interface VoltBtcDepositAddress {
    */
   twilightStakingAmount?: string;
   twilightAddress?: string;
-
-  /** uint64 blockHeight = 6; */
   isConfirmed?: boolean;
+
+  /** @format int64 */
+  CreationTwilightBlockHeight?: string;
+}
+
+export interface VoltBtcWithdrawRequestInternal {
+  /** @format int64 */
+  withdrawIdentifier?: number;
+  withdrawAddress?: string;
+
+  /** @format uint64 */
+  withdrawReserveId?: string;
+
+  /**
+   * in satoshis
+   * @format uint64
+   */
+  withdrawAmount?: string;
+  twilightAddress?: string;
+  isConfirmed?: boolean;
+
+  /** @format int64 */
+  CreationTwilightBlockHeight?: string;
 }
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
@@ -412,22 +424,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
-   * @name QueryBroadcastTxSweepAll
-   * @summary Queries a list of BroadcastTxSweepAll items.
-   * @request GET:/twilight-project/nyks/bridge/broadcast_refund_all
-   */
-  queryBroadcastTxSweepAll = (params: RequestParams = {}) =>
-    this.request<BridgeQueryBroadcastTxSweepAllResponse, RpcStatus>({
-      path: `/twilight-project/nyks/bridge/broadcast_refund_all`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
-
-  /**
-   * No description
-   *
-   * @tags Query
    * @name QueryBroadcastTxRefund
    * @summary Queries a list of BroadcastTxRefund items.
    * @request GET:/twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}
@@ -467,6 +463,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryBroadcastTxSweep = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<BridgeQueryBroadcastTxSweepResponse, RpcStatus>({
       path: `/twilight-project/nyks/bridge/broadcast_tx_sweep/${reserveId}/${roundId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBroadcastTxSweepAll
+   * @summary Queries a list of BroadcastTxSweepAll items.
+   * @request GET:/twilight-project/nyks/bridge/broadcast_tx_sweep_all
+   */
+  queryBroadcastTxSweepAll = (params: RequestParams = {}) =>
+    this.request<BridgeQueryBroadcastTxSweepAllResponse, RpcStatus>({
+      path: `/twilight-project/nyks/bridge/broadcast_tx_sweep_all`,
       method: "GET",
       format: "json",
       ...params,

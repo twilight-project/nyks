@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "nyks/volt/params.proto";
 import "nyks/volt/clearing.proto";
 import "nyks/volt/reserve.proto";
+import "nyks/volt/withdraw.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -41,6 +42,18 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}";
   
   }
+  
+  // Queries a list of ReserveWithdrawSnapshot items.
+  rpc ReserveWithdrawSnapshot (QueryReserveWithdrawSnapshotRequest) returns (QueryReserveWithdrawSnapshotResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/reserve_withdraw_snapshot/{reserveId}/{roundId}";
+  
+  }
+  
+  // Queries a list of RefundTxSnapshot items.
+  rpc RefundTxSnapshot (QueryRefundTxSnapshotRequest) returns (QueryRefundTxSnapshotResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/refund_tx_snapshot/{reserveId}/{roundId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -55,7 +68,7 @@ message QueryParamsResponse {
 message QueryBtcReserveRequest {}
 
 message QueryBtcReserveResponse {
-  repeated BtcReserve BtcReserves  = 1 [(gogoproto.nullable) = false];
+  repeated BtcReserve BtcReserves = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3
@@ -73,5 +86,23 @@ message QueryReserveClearingAccountsAllRequest {
 
 message QueryReserveClearingAccountsAllResponse {
   repeated ClearingAccount ReserveClearingAccountsAll = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReserveWithdrawSnapshotRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryReserveWithdrawSnapshotResponse {
+  ReserveWithdrawSnapshot ReserveWithdrawSnapshot = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRefundTxSnapshotRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryRefundTxSnapshotResponse {
+  RefundTxSnapshot RefundTxSnapshot = 1 [(gogoproto.nullable) = false];
 }
 

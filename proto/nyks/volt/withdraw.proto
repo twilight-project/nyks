@@ -32,8 +32,8 @@ message WithdrawRequestSnap {
     uint64 withdrawAmount  = 3;
 }
 
-// LastReserveWithdrawSnapshot is a snapshot of the last reserve withdraw
-message LastReserveWithdrawSnapshot {
+// ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in sweep to know which withdraws are currently being processed
+message ReserveWithdrawSnapshot {
     uint64 ReserveId = 1;
     uint64 RoundId = 2;
     repeated WithdrawRequestSnap withdrawRequests = 3;
