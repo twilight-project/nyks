@@ -43,4 +43,6 @@ type VoltKeeper interface {
 	GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) (*volttypes.BtcWithdrawRequestInternal, bool)
 	IterateBtcWithdrawRequests(ctx sdk.Context, cb func([]byte, *volttypes.BtcWithdrawRequestInternal) bool)
 	CheckClearingAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, amount uint64) error
+	CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
+	CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
 }

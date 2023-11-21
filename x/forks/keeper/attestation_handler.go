@@ -123,6 +123,13 @@ func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridge
 		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.NewReserveAddress)
 	}
 
+	// Sweep was successful, now we will prune the snapshots for the reserve to save storage space
+	// Prune the Reserve Withdraw Snapshot
+	a.keeper.VoltKeeper.PruneReserveWithdrawSnapshot(ctx, proposal.ReserveId, proposal.RoundId)
+
+	// Prune the Refund Tx Snapshot
+	a.keeper.VoltKeeper.PruneRefundTxSnapshot(ctx, proposal.ReserveId, proposal.RoundId)
+
 	return nil
 }
 

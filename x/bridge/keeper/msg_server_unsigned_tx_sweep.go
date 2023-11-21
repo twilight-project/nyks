@@ -34,6 +34,16 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
+	// Compare the sweep tx outputs with the reserve withdraw snapshot
+	check, err := k.VoltKeeper.CheckReserveWithdrawSnapshot(ctx, msg.BtcUnsignedSweepTx, msg.ReserveId, msg.RoundId)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "Could not check reserve withdraw snapshot")
+	}
+
+	if check == false {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned sweep transaction is not valid")
+	}
+
 	// set unsigned tx sweep
 	errSet := k.SetUnsignedTxSweepMsg(ctx, msg.TxId, msg.BtcUnsignedSweepTx, msg.ReserveId, msg.RoundId, judgeAddress)
 	if errSet != nil {

@@ -3,6 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/txscript"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
@@ -248,4 +250,103 @@ func (k Keeper) GetReserveWithdrawSnapshot(ctx sdk.Context, reserveId uint64, ro
 	k.cdc.MustUnmarshal(bz, &snapshot)
 
 	return &snapshot, true
+}
+
+func CheckBtcTxAgainstSnapshot(BtcTxHex string, snapshot map[string]int64) (bool, error) {
+	// Decode the Bitcoin transaction
+	btcTx, err := forkstypes.CreateTxFromHex(BtcTxHex)
+	if err != nil {
+		return false, fmt.Errorf("error decoding btc transaction: %w", err)
+	}
+
+	// Verify the transaction outputs against the snapshot
+	for _, output := range btcTx.TxOut {
+		_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
+		if err != nil {
+			return false, fmt.Errorf("error extracting addresses from pkScript: %w", err)
+		}
+
+		if len(addresses) != 1 {
+			return false, fmt.Errorf("output does not contain exactly one address")
+		}
+
+		addrStr := addresses[0].String()
+		expectedAmount, exists := snapshot[addrStr]
+		if !exists {
+			return false, fmt.Errorf("unexpected address in outputs: %s", addrStr)
+		}
+
+		if output.Value != expectedAmount {
+			return false, fmt.Errorf("unexpected amount for address: %s, expected: %d, got: %d", addrStr, expectedAmount, output.Value)
+		}
+
+		// Remove the address from the snapshot to track that it's found
+		delete(snapshot, addrStr)
+	}
+
+	// Check if all expected addresses were found
+	if len(snapshot) != 0 {
+		return false, fmt.Errorf("not all expected outputs were found in the transaction")
+	}
+
+	return true, nil
+}
+
+func (k Keeper) CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error) {
+	// Retrieve the ReserveWithdrawSnapshot
+	snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
+	if !found {
+		return false, fmt.Errorf("reserve withdraw snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
+	}
+
+	// Create a map of expected addresses and amounts
+	expectedOutputs := make(map[string]int64)
+	for _, withdrawRequest := range snapshot.WithdrawRequests {
+		expectedOutputs[withdrawRequest.WithdrawAddress] = int64(withdrawRequest.WithdrawAmount)
+	}
+
+	// Decode the Bitcoin transaction
+	btcTx, err := forkstypes.CreateTxFromHex(btcTxHex)
+	if err != nil {
+		return false, fmt.Errorf("error decoding btc transaction: %w", err)
+	}
+
+	// Verify the transaction outputs
+	for _, output := range btcTx.TxOut {
+		_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
+		if err != nil {
+			return false, fmt.Errorf("error extracting addresses from pkScript: %w", err)
+		}
+
+		if len(addresses) != 1 {
+			return false, fmt.Errorf("output does not contain exactly one address")
+		}
+
+		addrStr := addresses[0].String()
+		expectedAmount, exists := expectedOutputs[addrStr]
+		if !exists {
+			return false, fmt.Errorf("unexpected address in outputs: %s", addrStr)
+		}
+
+		if output.Value != expectedAmount {
+			return false, fmt.Errorf("unexpected amount for address: %s, expected: %d, got: %d", addrStr, expectedAmount, output.Value)
+		}
+
+		// Remove the address from the map to track that it's found
+		delete(expectedOutputs, addrStr)
+	}
+
+	// Check if all expected addresses were found
+	if len(expectedOutputs) != 0 {
+		return false, fmt.Errorf("not all expected outputs were found in the transaction")
+	}
+
+	return true, nil
+}
+
+// PruneReserveWithdrawSnapshot deletes the ReserveWithdrawSnapshot for a given reserveId and roundId
+func (k Keeper) PruneReserveWithdrawSnapshot(ctx sdk.Context, reserveId uint64, roundId uint64) {
+	store := ctx.KVStore(k.storeKey)
+	key := types.GetReserveWithdrawSnapshotKey(reserveId, roundId)
+	store.Delete(key)
 }

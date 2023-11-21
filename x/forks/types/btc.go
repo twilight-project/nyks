@@ -6,6 +6,7 @@ import (
 	fmt "fmt"
 
 	btcec "github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/wire"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -86,4 +87,24 @@ func NewBtcPublicKeyFromBytes(publicKeyBytes []byte) (*BtcPublicKey, error) {
 	pk := BtcPublicKey{hex.EncodeToString(publicKeyBytes)}
 
 	return &pk, nil
+}
+
+// CreateTxFromHex creates a btc transaction object from a hex string
+func CreateTxFromHex(txHex string) (*wire.MsgTx, error) {
+	// Decode the transaction hex string
+	txBytes, err := hex.DecodeString(txHex)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode hex string: %v", err)
+	}
+
+	// Create a new transaction object
+	tx := wire.NewMsgTx(wire.TxVersion)
+
+	// Deserialize the transaction bytes
+	err = tx.Deserialize(bytes.NewReader(txBytes))
+	if err != nil {
+		return nil, fmt.Errorf("failed to deserialize transaction: %v", err)
+	}
+
+	return tx, nil
 }
