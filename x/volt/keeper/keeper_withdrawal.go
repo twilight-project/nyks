@@ -205,6 +205,80 @@ func (k Keeper) GetBtcWithdrawRequestByIdentifier(ctx sdk.Context, withdrawIdent
 	return nil, false // Request not found
 }
 
+// ConfirmWithdrawRequestsAfterSweepConfirmation confirms the withdraw requests after sweep confirmation
+func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, reserveId uint64, roundId uint64) error {
+	// Retrieve the ReserveWithdrawSnapshot
+	snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
+	if !found {
+		return fmt.Errorf("reserve withdraw snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
+	}
+
+	// Fetch the ReserveWithdrawPool for the specified reserveId
+	pool, found := k.GetReserveWithdrawPool(ctx, reserveId)
+	if !found {
+		return fmt.Errorf("ReserveWithdrawPool not found for reserveId %d", reserveId)
+	}
+
+	// Create a map for efficient lookup of processing identifiers
+	processingMap := make(map[uint32]struct{})
+	for _, id := range pool.ProcessingWithdrawIdentifiers {
+		processingMap[id] = struct{}{}
+	}
+
+	// Iterate through withdrawRequests in the snapshot
+	for _, withdrawSnap := range snapshot.WithdrawRequests {
+		withdrawRequest, found := k.GetBtcWithdrawRequestByIdentifier(ctx, withdrawSnap.WithdrawIdentifier)
+		if !found {
+			return fmt.Errorf("btc withdraw request not found for identifier %d", withdrawSnap.WithdrawIdentifier)
+		}
+
+		// Update isConfirmed to true
+		withdrawRequest.IsConfirmed = true
+
+		// Update the withdraw request in the store
+		err := k.SetBtcWithdrawRequestAfterSweepConfirmation(ctx, withdrawRequest)
+		if err != nil {
+			return fmt.Errorf("failed to update btc withdraw request: %w", err)
+		}
+
+		// Remove the identifier from processing map
+		delete(processingMap, withdrawSnap.WithdrawIdentifier)
+	}
+
+	// Update the processing identifiers list in the pool
+	newProcessingIdentifiers := make([]uint32, 0, len(processingMap))
+	for id := range processingMap {
+		newProcessingIdentifiers = append(newProcessingIdentifiers, id)
+	}
+	pool.ProcessingWithdrawIdentifiers = newProcessingIdentifiers
+
+	// Save the updated pool back to the store using existing SetWithdrawPool function
+	err := k.SetWithdrawPool(ctx, pool)
+	if err != nil {
+		return fmt.Errorf("failed to update reserve withdraw pool: %w", err)
+	}
+
+	return nil
+}
+
+// SetBtcWithdrawRequestAfterSweepConfirmation sets the btc withdraw request after sweep confirmation
+func (k Keeper) SetBtcWithdrawRequestAfterSweepConfirmation(ctx sdk.Context, withdrawRequest *types.BtcWithdrawRequestInternal) error {
+	store := ctx.KVStore(k.storeKey)
+
+	// Set up the key for storing the withdraw request
+	aKey := types.GetBtcWithdrawRequestKeyInternal(
+		sdk.AccAddress(withdrawRequest.TwilightAddress),
+		withdrawRequest.WithdrawReserveId,
+		withdrawRequest.WithdrawAddress,
+		withdrawRequest.WithdrawAmount,
+	)
+
+	// Marshal and store the withdraw request
+	store.Set(aKey, k.cdc.MustMarshal(withdrawRequest))
+
+	return nil
+}
+
 // SetNewSweepProposalReceived indicates a new sweep proposal has been received for a specific reserve and round
 // We store the block height to indicate when the proposal was made
 func (k Keeper) SetNewSweepProposalReceived(ctx sdk.Context, reserveId uint64, roundId uint64) {

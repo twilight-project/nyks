@@ -84,7 +84,7 @@ message MsgProposeRefundHashResponse {}
 // 1. MsgWithdrawBtcRequest
 message MsgWithdrawBtcRequest {
   string withdrawAddress = 1;
-  string reserveAddress  = 2;
+  uint64 reserveId  = 2;
   uint64 withdrawAmount  = 3;
   string twilightAddress = 4;
 }

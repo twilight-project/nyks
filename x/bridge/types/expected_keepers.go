@@ -45,4 +45,5 @@ type VoltKeeper interface {
 	CheckClearingAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, amount uint64) error
 	CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
 	CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
+	CheckBtcReserveExists(ctx sdk.Context, reserveId uint64) bool
 }

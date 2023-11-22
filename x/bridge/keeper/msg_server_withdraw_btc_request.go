@@ -20,27 +20,24 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 
 	// check if btc address is valid
 	withdrawAddress, e2 := types.NewBtcAddress(msg.WithdrawAddress)
-	reserveAddress, e3 := types.NewBtcAddress(msg.ReserveAddress)
 	if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
-	} else if e3 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
 
 	// Get the reserve id
-	reserveId, err := k.VoltKeeper.GetBtcReserveIdByAddress(ctx, reserveAddress.BtcAddress)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(reserveAddress))
+	found := k.VoltKeeper.CheckBtcReserveExists(ctx, msg.ReserveId)
+	if found == false {
+		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
 	// check if withdraw request is also already registered
-	_, found := k.VoltKeeper.GetBtcWithdrawRequest(ctx, twilightAddress, reserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
+	_, found = k.VoltKeeper.GetBtcWithdrawRequest(ctx, twilightAddress, msg.ReserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Withdraw Request")
 	}
 
 	// check if withdraw address has enough balance in the reserve
-	err = k.VoltKeeper.CheckClearingAccountBalance(ctx, twilightAddress, reserveId, msg.WithdrawAmount)
+	err := k.VoltKeeper.CheckClearingAccountBalance(ctx, twilightAddress, msg.ReserveId, msg.WithdrawAmount)
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrInsufficientBalance, "Insufficient balance in clearing account")
 	}
@@ -53,7 +50,7 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 	}
 
 	// set withdraw request
-	err = k.VoltKeeper.SetBtcWithdrawRequest(ctx, twilightAddress, reserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
+	err = k.VoltKeeper.SetBtcWithdrawRequest(ctx, twilightAddress, msg.ReserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +59,7 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 		&types.EventWithdrawBtcRequest{
 			Message:         msg.Type(),
 			TwilightAddress: msg.TwilightAddress,
-			ReserveAddress:  msg.ReserveAddress,
+			ReserveId:       msg.ReserveId,
 			WithdrawAddress: msg.WithdrawAddress,
 			WithdrawAmount:  msg.WithdrawAmount,
 		},

@@ -212,7 +212,7 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 
 }
 
-// GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
+// GetBtcReserve function that returns a reserve if passed a reserveId
 func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcReserve, error) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
@@ -226,6 +226,13 @@ func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcRese
 		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
 	}
 	return reserve, nil
+}
+
+// CheckBtcReserveExists checks if a Btc reserve exists for the given reserveId
+func (k Keeper) CheckBtcReserveExists(ctx sdk.Context, reserveId uint64) bool {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetReserveKey(reserveId)
+	return store.Has(aKey)
 }
 
 // GetBtcReserveIdByAddress returns a reserve id if passed an reserve address

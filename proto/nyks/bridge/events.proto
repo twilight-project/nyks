@@ -24,7 +24,7 @@ message EventRegisterJudgeAddress {
 message EventWithdrawBtcRequest {
     string message = 1;
     string twilightAddress = 2;
-    string reserveAddress = 3;
+    uint64 reserveId = 3;
     string withdrawAddress = 4;
     uint64 withdrawAmount = 5;
 }
