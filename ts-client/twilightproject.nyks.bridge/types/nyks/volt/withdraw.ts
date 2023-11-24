@@ -34,8 +34,8 @@ export interface WithdrawRequestSnap {
   withdrawAmount: number;
 }
 
-/** LastReserveWithdrawSnapshot is a snapshot of the last reserve withdraw */
-export interface LastReserveWithdrawSnapshot {
+/** ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in sweep to know which withdraws are currently being processed */
+export interface ReserveWithdrawSnapshot {
   ReserveId: number;
   RoundId: number;
   withdrawRequests: WithdrawRequestSnap[];
@@ -345,12 +345,12 @@ export const WithdrawRequestSnap = {
   },
 };
 
-function createBaseLastReserveWithdrawSnapshot(): LastReserveWithdrawSnapshot {
+function createBaseReserveWithdrawSnapshot(): ReserveWithdrawSnapshot {
   return { ReserveId: 0, RoundId: 0, withdrawRequests: [], EndBlockerHeightTwilight: 0 };
 }
 
-export const LastReserveWithdrawSnapshot = {
-  encode(message: LastReserveWithdrawSnapshot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ReserveWithdrawSnapshot = {
+  encode(message: ReserveWithdrawSnapshot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.ReserveId !== 0) {
       writer.uint32(8).uint64(message.ReserveId);
     }
@@ -366,10 +366,10 @@ export const LastReserveWithdrawSnapshot = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LastReserveWithdrawSnapshot {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReserveWithdrawSnapshot {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLastReserveWithdrawSnapshot();
+    const message = createBaseReserveWithdrawSnapshot();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -393,7 +393,7 @@ export const LastReserveWithdrawSnapshot = {
     return message;
   },
 
-  fromJSON(object: any): LastReserveWithdrawSnapshot {
+  fromJSON(object: any): ReserveWithdrawSnapshot {
     return {
       ReserveId: isSet(object.ReserveId) ? Number(object.ReserveId) : 0,
       RoundId: isSet(object.RoundId) ? Number(object.RoundId) : 0,
@@ -404,7 +404,7 @@ export const LastReserveWithdrawSnapshot = {
     };
   },
 
-  toJSON(message: LastReserveWithdrawSnapshot): unknown {
+  toJSON(message: ReserveWithdrawSnapshot): unknown {
     const obj: any = {};
     message.ReserveId !== undefined && (obj.ReserveId = Math.round(message.ReserveId));
     message.RoundId !== undefined && (obj.RoundId = Math.round(message.RoundId));
@@ -418,8 +418,8 @@ export const LastReserveWithdrawSnapshot = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LastReserveWithdrawSnapshot>, I>>(object: I): LastReserveWithdrawSnapshot {
-    const message = createBaseLastReserveWithdrawSnapshot();
+  fromPartial<I extends Exact<DeepPartial<ReserveWithdrawSnapshot>, I>>(object: I): ReserveWithdrawSnapshot {
+    const message = createBaseReserveWithdrawSnapshot();
     message.ReserveId = object.ReserveId ?? 0;
     message.RoundId = object.RoundId ?? 0;
     message.withdrawRequests = object.withdrawRequests?.map((e) => WithdrawRequestSnap.fromPartial(e)) || [];

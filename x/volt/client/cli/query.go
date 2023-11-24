@@ -35,6 +35,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdRefundTxSnapshot())
 
+	cmd.AddCommand(CmdBtcWithdrawRequest())
+
+	cmd.AddCommand(CmdReserveWithdrawPool())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd

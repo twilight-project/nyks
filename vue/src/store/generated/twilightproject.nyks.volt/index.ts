@@ -3,7 +3,7 @@ import { Client, registry, MissingWalletError } from 'twilight-project-nyks-clie
 import { IndividualTwilightReserveAccountBalance } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { ClearingAccount } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { RefundTxAccountSnap } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
-import { LastRefundTxSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { RefundTxSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { BtcDepositAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { EventReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { EventRefundTxSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
@@ -12,10 +12,10 @@ import { BtcReserve } from "twilight-project-nyks-client-ts/twilightproject.nyks
 import { BtcWithdrawRequestInternal } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { ReserveWithdrawPool } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { WithdrawRequestSnap } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
-import { LastReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { ReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 
 
-export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, LastRefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, LastReserveWithdrawSnapshot };
+export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, RefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, ReserveWithdrawSnapshot };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -52,12 +52,14 @@ const getDefaultState = () => {
 				ReserveClearingAccountsAll: {},
 				ReserveWithdrawSnapshot: {},
 				RefundTxSnapshot: {},
+				BtcWithdrawRequest: {},
+				ReserveWithdrawPool: {},
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
 						ClearingAccount: getStructure(ClearingAccount.fromPartial({})),
 						RefundTxAccountSnap: getStructure(RefundTxAccountSnap.fromPartial({})),
-						LastRefundTxSnapshot: getStructure(LastRefundTxSnapshot.fromPartial({})),
+						RefundTxSnapshot: getStructure(RefundTxSnapshot.fromPartial({})),
 						BtcDepositAddress: getStructure(BtcDepositAddress.fromPartial({})),
 						EventReserveWithdrawSnapshot: getStructure(EventReserveWithdrawSnapshot.fromPartial({})),
 						EventRefundTxSnapshot: getStructure(EventRefundTxSnapshot.fromPartial({})),
@@ -66,7 +68,7 @@ const getDefaultState = () => {
 						BtcWithdrawRequestInternal: getStructure(BtcWithdrawRequestInternal.fromPartial({})),
 						ReserveWithdrawPool: getStructure(ReserveWithdrawPool.fromPartial({})),
 						WithdrawRequestSnap: getStructure(WithdrawRequestSnap.fromPartial({})),
-						LastReserveWithdrawSnapshot: getStructure(LastReserveWithdrawSnapshot.fromPartial({})),
+						ReserveWithdrawSnapshot: getStructure(ReserveWithdrawSnapshot.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -130,6 +132,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.RefundTxSnapshot[JSON.stringify(params)] ?? {}
+		},
+				getBtcWithdrawRequest: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.BtcWithdrawRequest[JSON.stringify(params)] ?? {}
+		},
+				getReserveWithdrawPool: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.ReserveWithdrawPool[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -292,6 +306,50 @@ export default {
 				return getters['getRefundTxSnapshot']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryRefundTxSnapshot API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryBtcWithdrawRequest({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.queryBtcWithdrawRequest( key.twilightAddress)).data
+				
+					
+				commit('QUERY', { query: 'BtcWithdrawRequest', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBtcWithdrawRequest', payload: { options: { all }, params: {...key},query }})
+				return getters['getBtcWithdrawRequest']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryBtcWithdrawRequest API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryReserveWithdrawPool({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.queryReserveWithdrawPool( key.reserveId,  key.roundId)).data
+				
+					
+				commit('QUERY', { query: 'ReserveWithdrawPool', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryReserveWithdrawPool', payload: { options: { all }, params: {...key},query }})
+				return getters['getReserveWithdrawPool']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryReserveWithdrawPool API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

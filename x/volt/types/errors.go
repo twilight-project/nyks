@@ -21,4 +21,5 @@ var (
 	ErrBtcSatoshiTestAmountNotEqual = sdkerrors.Register(ModuleName, 11, "Btc satoshi test amount not equal")
 	ErrInsufficientBalanceInReserve = sdkerrors.Register(ModuleName, 12, "Insufficient balance in reserve")
 	ErrSnapshotNotFound             = sdkerrors.Register(ModuleName, 13, "Snapshot not found")
+	ErrInvalid                      = sdkerrors.Register(ModuleName, 14, "Invalid")
 )

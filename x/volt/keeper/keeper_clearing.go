@@ -307,34 +307,30 @@ func (k Keeper) CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveI
 		return false, fmt.Errorf("error decoding btc transaction: %w", err)
 	}
 
-	// Verify the transaction outputs
-	for _, output := range btcTx.TxOut {
+	// Check if the number of outputs matches the number of expected addresses
+	if len(btcTx.TxOut) != len(expectedOutputs) {
+		return false, fmt.Errorf("number of outputs in btc transaction does not match the number of expected addresses")
+	}
+
+	// Iterate through all the outputs of the Bitcoin transaction
+	for i, output := range btcTx.TxOut {
+		if i == 1 { // Skip the output reserved for the sweep
+			continue
+		}
+
 		_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
 		if err != nil {
 			return false, fmt.Errorf("error extracting addresses from pkScript: %w", err)
 		}
 
-		if len(addresses) != 1 {
-			return false, fmt.Errorf("output does not contain exactly one address")
+		for _, addr := range addresses {
+			addrStr := addr.String()
+			expectedAmount, exists := expectedOutputs[addrStr]
+			if !exists || output.Value != expectedAmount {
+				return false, fmt.Errorf("address output mismatch: %s", addrStr)
+			}
+			delete(expectedOutputs, addrStr)
 		}
-
-		addrStr := addresses[0].String()
-		expectedAmount, exists := expectedOutputs[addrStr]
-		if !exists {
-			return false, fmt.Errorf("unexpected address in outputs: %s", addrStr)
-		}
-
-		if output.Value != expectedAmount {
-			return false, fmt.Errorf("unexpected amount for address: %s, expected: %d, got: %d", addrStr, expectedAmount, output.Value)
-		}
-
-		// Remove the address from the map to track that it's found
-		delete(expectedOutputs, addrStr)
-	}
-
-	// Check if all expected addresses were found
-	if len(expectedOutputs) != 0 {
-		return false, fmt.Errorf("not all expected outputs were found in the transaction")
 	}
 
 	return true, nil

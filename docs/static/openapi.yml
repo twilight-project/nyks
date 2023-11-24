@@ -29572,6 +29572,80 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/volt/btc_withdraw_request/{twilightAddress}:
+    get:
+      summary: Queries a list of BtcWithdrawRequest items.
+      operationId: TwilightprojectNyksVoltBtcWithdrawRequest
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BtcWithdrawRequest:
+                type: object
+                properties:
+                  withdrawIdentifier:
+                    type: integer
+                    format: int64
+                  withdrawAddress:
+                    type: string
+                  withdrawReserveId:
+                    type: string
+                    format: uint64
+                  withdrawAmount:
+                    type: string
+                    format: uint64
+                    title: in satoshis
+                  twilightAddress:
+                    type: string
+                  isConfirmed:
+                    type: boolean
+                  CreationTwilightBlockHeight:
+                    type: string
+                    format: int64
+                title: >-
+                  Chain creates an internal mapping with identifier and bool
+                  confirmed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: twilightAddress
+          in: path
+          required: true
+          type: string
+        - name: reserveId
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: btcAddress
+          in: query
+          required: false
+          type: string
+        - name: withdrawAmount
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/volt/clearing_account/{twilightAddress}:
     get:
       summary: Queries a list of ClearingAccount items.
@@ -29785,6 +29859,67 @@ paths:
                   title: >-
                     ClearingAccount is used to keep a mapping of how a user's
                     addresses and its reserve account balances
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/reserve_withdraw_pool/{reserveId}:
+    get:
+      summary: Queries a list of ReserveWithdrawPool items.
+      operationId: TwilightprojectNyksVoltReserveWithdrawPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveWithdrawPool:
+                type: object
+                properties:
+                  ReserveID:
+                    type: string
+                    format: uint64
+                  RoundID:
+                    type: string
+                    format: uint64
+                  processingWithdrawIdentifiers:
+                    type: array
+                    items:
+                      type: integer
+                      format: int64
+                    title: Currently being processed
+                  queuedWithdrawIdentifiers:
+                    type: array
+                    items:
+                      type: integer
+                      format: int64
+                    title: Waiting to be processed
+                  currentProcessingIndex:
+                    type: integer
+                    format: int64
+                    title: Index of the last processed withdraw
         default:
           description: An unexpected error response.
           schema:
@@ -49944,6 +50079,32 @@ definitions:
 
             value, private pool value, public pool value, and the btc relay
             capacity value
+  twilightproject.nyks.volt.QueryBtcWithdrawRequestResponse:
+    type: object
+    properties:
+      BtcWithdrawRequest:
+        type: object
+        properties:
+          withdrawIdentifier:
+            type: integer
+            format: int64
+          withdrawAddress:
+            type: string
+          withdrawReserveId:
+            type: string
+            format: uint64
+          withdrawAmount:
+            type: string
+            format: uint64
+            title: in satoshis
+          twilightAddress:
+            type: string
+          isConfirmed:
+            type: boolean
+          CreationTwilightBlockHeight:
+            type: string
+            format: int64
+        title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.volt.QueryClearingAccountResponse:
     type: object
     properties:
@@ -50051,6 +50212,34 @@ definitions:
           title: >-
             ClearingAccount is used to keep a mapping of how a user's addresses
             and its reserve account balances
+  twilightproject.nyks.volt.QueryReserveWithdrawPoolResponse:
+    type: object
+    properties:
+      ReserveWithdrawPool:
+        type: object
+        properties:
+          ReserveID:
+            type: string
+            format: uint64
+          RoundID:
+            type: string
+            format: uint64
+          processingWithdrawIdentifiers:
+            type: array
+            items:
+              type: integer
+              format: int64
+            title: Currently being processed
+          queuedWithdrawIdentifiers:
+            type: array
+            items:
+              type: integer
+              format: int64
+            title: Waiting to be processed
+          currentProcessingIndex:
+            type: integer
+            format: int64
+            title: Index of the last processed withdraw
   twilightproject.nyks.volt.QueryReserveWithdrawSnapshotResponse:
     type: object
     properties:
@@ -50126,6 +50315,31 @@ definitions:
         type: string
         format: int64
     title: LastRefundTxSnapshot is a snapshot of the last refund for this reserve id
+  twilightproject.nyks.volt.ReserveWithdrawPool:
+    type: object
+    properties:
+      ReserveID:
+        type: string
+        format: uint64
+      RoundID:
+        type: string
+        format: uint64
+      processingWithdrawIdentifiers:
+        type: array
+        items:
+          type: integer
+          format: int64
+        title: Currently being processed
+      queuedWithdrawIdentifiers:
+        type: array
+        items:
+          type: integer
+          format: int64
+        title: Waiting to be processed
+      currentProcessingIndex:
+        type: integer
+        format: int64
+        title: Index of the last processed withdraw
   twilightproject.nyks.volt.ReserveWithdrawSnapshot:
     type: object
     properties:

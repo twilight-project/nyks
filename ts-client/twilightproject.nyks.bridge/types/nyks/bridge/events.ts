@@ -23,7 +23,7 @@ export interface EventRegisterJudgeAddress {
 export interface EventWithdrawBtcRequest {
   message: string;
   twilightAddress: string;
-  reserveAddress: string;
+  reserveId: number;
   withdrawAddress: string;
   withdrawAmount: number;
 }
@@ -279,7 +279,7 @@ export const EventRegisterJudgeAddress = {
 };
 
 function createBaseEventWithdrawBtcRequest(): EventWithdrawBtcRequest {
-  return { message: "", twilightAddress: "", reserveAddress: "", withdrawAddress: "", withdrawAmount: 0 };
+  return { message: "", twilightAddress: "", reserveId: 0, withdrawAddress: "", withdrawAmount: 0 };
 }
 
 export const EventWithdrawBtcRequest = {
@@ -290,8 +290,8 @@ export const EventWithdrawBtcRequest = {
     if (message.twilightAddress !== "") {
       writer.uint32(18).string(message.twilightAddress);
     }
-    if (message.reserveAddress !== "") {
-      writer.uint32(26).string(message.reserveAddress);
+    if (message.reserveId !== 0) {
+      writer.uint32(24).uint64(message.reserveId);
     }
     if (message.withdrawAddress !== "") {
       writer.uint32(34).string(message.withdrawAddress);
@@ -316,7 +316,7 @@ export const EventWithdrawBtcRequest = {
           message.twilightAddress = reader.string();
           break;
         case 3:
-          message.reserveAddress = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
           message.withdrawAddress = reader.string();
@@ -336,7 +336,7 @@ export const EventWithdrawBtcRequest = {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       withdrawAddress: isSet(object.withdrawAddress) ? String(object.withdrawAddress) : "",
       withdrawAmount: isSet(object.withdrawAmount) ? Number(object.withdrawAmount) : 0,
     };
@@ -346,7 +346,7 @@ export const EventWithdrawBtcRequest = {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.withdrawAddress !== undefined && (obj.withdrawAddress = message.withdrawAddress);
     message.withdrawAmount !== undefined && (obj.withdrawAmount = Math.round(message.withdrawAmount));
     return obj;
@@ -356,7 +356,7 @@ export const EventWithdrawBtcRequest = {
     const message = createBaseEventWithdrawBtcRequest();
     message.message = object.message ?? "";
     message.twilightAddress = object.twilightAddress ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.withdrawAddress = object.withdrawAddress ?? "";
     message.withdrawAmount = object.withdrawAmount ?? 0;
     return message;

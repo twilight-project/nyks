@@ -61,7 +61,7 @@ export interface MsgProposeRefundHashResponse {
  */
 export interface MsgWithdrawBtcRequest {
   withdrawAddress: string;
-  reserveAddress: string;
+  reserveId: number;
   withdrawAmount: number;
   twilightAddress: string;
 }
@@ -792,7 +792,7 @@ export const MsgProposeRefundHashResponse = {
 };
 
 function createBaseMsgWithdrawBtcRequest(): MsgWithdrawBtcRequest {
-  return { withdrawAddress: "", reserveAddress: "", withdrawAmount: 0, twilightAddress: "" };
+  return { withdrawAddress: "", reserveId: 0, withdrawAmount: 0, twilightAddress: "" };
 }
 
 export const MsgWithdrawBtcRequest = {
@@ -800,8 +800,8 @@ export const MsgWithdrawBtcRequest = {
     if (message.withdrawAddress !== "") {
       writer.uint32(10).string(message.withdrawAddress);
     }
-    if (message.reserveAddress !== "") {
-      writer.uint32(18).string(message.reserveAddress);
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
     }
     if (message.withdrawAmount !== 0) {
       writer.uint32(24).uint64(message.withdrawAmount);
@@ -823,7 +823,7 @@ export const MsgWithdrawBtcRequest = {
           message.withdrawAddress = reader.string();
           break;
         case 2:
-          message.reserveAddress = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
           message.withdrawAmount = longToNumber(reader.uint64() as Long);
@@ -842,7 +842,7 @@ export const MsgWithdrawBtcRequest = {
   fromJSON(object: any): MsgWithdrawBtcRequest {
     return {
       withdrawAddress: isSet(object.withdrawAddress) ? String(object.withdrawAddress) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       withdrawAmount: isSet(object.withdrawAmount) ? Number(object.withdrawAmount) : 0,
       twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
     };
@@ -851,7 +851,7 @@ export const MsgWithdrawBtcRequest = {
   toJSON(message: MsgWithdrawBtcRequest): unknown {
     const obj: any = {};
     message.withdrawAddress !== undefined && (obj.withdrawAddress = message.withdrawAddress);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.withdrawAmount !== undefined && (obj.withdrawAmount = Math.round(message.withdrawAmount));
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
     return obj;
@@ -860,7 +860,7 @@ export const MsgWithdrawBtcRequest = {
   fromPartial<I extends Exact<DeepPartial<MsgWithdrawBtcRequest>, I>>(object: I): MsgWithdrawBtcRequest {
     const message = createBaseMsgWithdrawBtcRequest();
     message.withdrawAddress = object.withdrawAddress ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.withdrawAmount = object.withdrawAmount ?? 0;
     message.twilightAddress = object.twilightAddress ?? "";
     return message;

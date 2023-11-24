@@ -27,7 +27,7 @@ export interface RefundTxAccountSnap {
 }
 
 /** LastRefundTxSnapshot is a snapshot of the last refund for this reserve id */
-export interface LastRefundTxSnapshot {
+export interface RefundTxSnapshot {
   ReserveId: number;
   RoundId: number;
   refundAccounts: RefundTxAccountSnap[];
@@ -280,12 +280,12 @@ export const RefundTxAccountSnap = {
   },
 };
 
-function createBaseLastRefundTxSnapshot(): LastRefundTxSnapshot {
+function createBaseRefundTxSnapshot(): RefundTxSnapshot {
   return { ReserveId: 0, RoundId: 0, refundAccounts: [], EndBlockerHeightTwilight: 0 };
 }
 
-export const LastRefundTxSnapshot = {
-  encode(message: LastRefundTxSnapshot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const RefundTxSnapshot = {
+  encode(message: RefundTxSnapshot, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.ReserveId !== 0) {
       writer.uint32(8).uint64(message.ReserveId);
     }
@@ -301,10 +301,10 @@ export const LastRefundTxSnapshot = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LastRefundTxSnapshot {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RefundTxSnapshot {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLastRefundTxSnapshot();
+    const message = createBaseRefundTxSnapshot();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -328,7 +328,7 @@ export const LastRefundTxSnapshot = {
     return message;
   },
 
-  fromJSON(object: any): LastRefundTxSnapshot {
+  fromJSON(object: any): RefundTxSnapshot {
     return {
       ReserveId: isSet(object.ReserveId) ? Number(object.ReserveId) : 0,
       RoundId: isSet(object.RoundId) ? Number(object.RoundId) : 0,
@@ -339,7 +339,7 @@ export const LastRefundTxSnapshot = {
     };
   },
 
-  toJSON(message: LastRefundTxSnapshot): unknown {
+  toJSON(message: RefundTxSnapshot): unknown {
     const obj: any = {};
     message.ReserveId !== undefined && (obj.ReserveId = Math.round(message.ReserveId));
     message.RoundId !== undefined && (obj.RoundId = Math.round(message.RoundId));
@@ -353,8 +353,8 @@ export const LastRefundTxSnapshot = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LastRefundTxSnapshot>, I>>(object: I): LastRefundTxSnapshot {
-    const message = createBaseLastRefundTxSnapshot();
+  fromPartial<I extends Exact<DeepPartial<RefundTxSnapshot>, I>>(object: I): RefundTxSnapshot {
+    const message = createBaseRefundTxSnapshot();
     message.ReserveId = object.ReserveId ?? 0;
     message.RoundId = object.RoundId ?? 0;
     message.refundAccounts = object.refundAccounts?.map((e) => RefundTxAccountSnap.fromPartial(e)) || [];
