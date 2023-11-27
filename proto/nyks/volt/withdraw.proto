@@ -22,7 +22,6 @@ message ReserveWithdrawPool {
     repeated uint32 processingWithdrawIdentifiers = 3; // Currently being processed
     repeated uint32 queuedWithdrawIdentifiers = 4;     // Waiting to be processed
     uint32 currentProcessingIndex = 5;                 // Index of the last processed withdraw
-    // You can use this to know where to start processing in the next sweep.
 }
 
 // WithdrawRequestSnap is a snapshot of the withdraw request
@@ -38,4 +37,11 @@ message ReserveWithdrawSnapshot {
     uint64 RoundId = 2;
     repeated WithdrawRequestSnap withdrawRequests = 3;
     int64 EndBlockerHeightTwilight = 4;
+}
+
+// NewSweepProposalReceivedInternal is an internal mapping for the sweep proposal to let Endblocker know that a new sweep proposal has been received
+message NewSweepProposalReceivedInternal {
+    uint64 reserveId = 1;
+    uint64 roundId = 2;
+    int64 creationTwilightBlockHeight = 6;
 }

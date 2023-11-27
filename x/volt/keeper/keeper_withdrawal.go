@@ -11,12 +11,12 @@ import (
 	"github.com/twilight-project/nyks/x/volt/types"
 )
 
-// SetWithdrawPool sets a withdrawal pool for a specific reserve in the store
-func (k Keeper) SetWithdrawPool(ctx sdk.Context, withdrawPool *types.ReserveWithdrawPool) error {
+// SetReserveWithdrawPool sets a withdrawal pool for a specific reserve in the store
+func (k Keeper) SetReserveWithdrawPool(ctx sdk.Context, withdrawPool *types.ReserveWithdrawPool) error {
 	store := ctx.KVStore(k.storeKey)
 
 	// Generate a key for the withdrawal pool based on ReserveID and RoundID
-	poolKey := types.GetWithdrawPoolKey(withdrawPool.ReserveID)
+	poolKey := types.GetReserveWithdrawPoolKey(withdrawPool.ReserveID)
 
 	// Marshal the ReserveWithdrawPool object into bytes
 	bz, err := k.cdc.Marshal(withdrawPool)
@@ -253,7 +253,7 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 	pool.ProcessingWithdrawIdentifiers = newProcessingIdentifiers
 
 	// Save the updated pool back to the store using existing SetWithdrawPool function
-	err := k.SetWithdrawPool(ctx, pool)
+	err := k.SetReserveWithdrawPool(ctx, pool)
 	if err != nil {
 		return fmt.Errorf("failed to update reserve withdraw pool: %w", err)
 	}
@@ -283,30 +283,33 @@ func (k Keeper) SetBtcWithdrawRequestAfterSweepConfirmation(ctx sdk.Context, wit
 // We store the block height to indicate when the proposal was made
 func (k Keeper) SetNewSweepProposalReceived(ctx sdk.Context, reserveId uint64, roundId uint64) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.GetNewSweepProposalReceivedKey(reserveId, roundId)
+	key := types.GetNewSweepProposalReceivedKey()
 
-	// Convert the block height to uint64 before encoding
-	blockHeight := uint64(ctx.BlockHeight())
-	store.Set(key, sdk.Uint64ToBigEndian(blockHeight))
+	proposalReceived := types.NewSweepProposalReceivedInternal{
+		ReserveId:                   reserveId,
+		RoundId:                     roundId,
+		CreationTwilightBlockHeight: ctx.BlockHeight(),
+	}
+
+	value := k.cdc.MustMarshal(&proposalReceived)
+	store.Set(key, value)
 }
 
 // CheckForNewSweepProposal checks if there is a new sweep proposal for a specific reserve and round
 func (k Keeper) CheckForNewSweepProposal(ctx sdk.Context) (bool, uint64, uint64) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.NewSweepProposalReceivedKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetNewSweepProposalReceivedKey())
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var reserveId, roundId uint64
+		var proposalReceived types.NewSweepProposalReceivedInternal
+		k.cdc.MustUnmarshal(iterator.Value(), &proposalReceived)
 
-		blockHeight := sdk.BigEndianToUint64(iterator.Value())
-		currentHeight := uint64(ctx.BlockHeight())
-		if blockHeight == currentHeight-1 {
+		if proposalReceived.CreationTwilightBlockHeight == ctx.BlockHeight()-1 {
 			// Found a new proposal made in the last block
-			return true, reserveId, roundId
+			return true, proposalReceived.ReserveId, proposalReceived.RoundId
 		}
 	}
-
 	return false, 0, 0
 }
 

@@ -55,9 +55,9 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 	}
 
 	// Set the withdraw pool using the SetWithdrawPool function
-	err = k.SetWithdrawPool(ctx, withdrawPool)
+	err = k.SetReserveWithdrawPool(ctx, withdrawPool)
 	if err != nil {
-		return 0, sdkerrors.Wrap(types.ErrCouldNotSetWithdrawPool, err.Error())
+		return 0, sdkerrors.Wrap(types.ErrCouldNotSetReserveWithdrawPool, err.Error())
 	}
 
 	return reserveId, nil

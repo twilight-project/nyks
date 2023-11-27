@@ -140,20 +140,8 @@ func GetReserveWithdrawPoolKey(reserveId uint64) []byte {
 
 // GetNewSweepProposalReceivedKey returns the following key format
 // [HashString("NewSweepProposalReceivedKey")][1][1]
-func GetNewSweepProposalReceivedKey(reserveId uint64, roundId uint64) []byte {
-	reserveBufBytes := new(bytes.Buffer)
-	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
-	if err != nil {
-		panic("Failed to convert uint64 to bytes")
-	}
-
-	roundBufBytes := new(bytes.Buffer)
-	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
-	if err != nil {
-		panic("Failed to convert uint64 to bytes")
-	}
-
-	return forkstypes.AppendBytes(NewSweepProposalReceivedKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
+func GetNewSweepProposalReceivedKey() []byte {
+	return NewSweepProposalReceivedKey
 }
 
 // GetReserveWithdrawSnapshotKey returns the following key format
@@ -191,3 +179,5 @@ func GetRefundTxSnapshotKey(reserveId uint64, roundId uint64) []byte {
 
 	return forkstypes.AppendBytes(RefundTxSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
 }
+
+// GetNewSweepProposalReceivedKey

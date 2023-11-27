@@ -13,9 +13,9 @@ var _ = strconv.Itoa(0)
 
 func CmdBtcWithdrawRequest() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "btc-withdraw-request [twilight-address]",
+		Use:   "btc-withdraw-request [twilight-address] [reserve-id] [btc-address] [withdraw-amount]]",
 		Short: "Query BtcWithdrawRequest",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqTwilightAddress := args[0]
 
