@@ -373,7 +373,7 @@ func (k Keeper) CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, r
 	// Retrieve the ReserveWithdrawSnapshot
 	snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
 	if !found {
-		return false, fmt.Errorf("reserve withdraw snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "reserve withdraw snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
 	}
 
 	// Create a map of expected addresses and amounts
@@ -385,38 +385,32 @@ func (k Keeper) CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, r
 	// Decode the Bitcoin transaction
 	btcTx, err := forkstypes.CreateTxFromHex(btcTxHex)
 	if err != nil {
-		return false, fmt.Errorf("error decoding btc transaction: %w", err)
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "error decoding btc transaction")
 	}
 
 	// Check if the number of outputs (excluding the reserved sweep output) matches the snapshot
 	if len(btcTx.TxOut)-1 != len(expectedOutputs) {
-		return false, fmt.Errorf("number of outputs in btc transaction does not match the snapshot")
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "number of outputs in btc transaction does not match the snapshot")
 	}
 
 	// Iterate through all the outputs of the Bitcoin transaction
 	for i, output := range btcTx.TxOut {
-		if i == 1 { // Skip the output reserved for the sweep
+		if i == 0 { // Skip the output reserved for the sweep
 			continue
 		}
 
 		_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
 		if err != nil {
-			return false, fmt.Errorf("error extracting addresses from pkScript: %w", err)
+			return false, sdkerrors.Wrapf(types.ErrInvalid, "btcUnsignedSweepTx is invalid")
 		}
-
 		for _, addr := range addresses {
 			addrStr := addr.String()
 			expectedAmount, exists := expectedOutputs[addrStr]
 			if !exists || output.Value != expectedAmount {
-				return false, fmt.Errorf("address output mismatch: %s", addrStr)
+				return false, sdkerrors.Wrapf(types.ErrInvalid, "btc tx outputs did not match with the snapshot")
 			}
 			delete(expectedOutputs, addrStr)
 		}
-	}
-
-	// If there are addresses left in expectedOutputs, it means they were not found in the BTC transaction
-	if len(expectedOutputs) > 0 {
-		return false, fmt.Errorf("some expected outputs were not found in the BTC transaction")
 	}
 
 	return true, nil

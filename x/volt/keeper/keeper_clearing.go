@@ -292,7 +292,7 @@ func (k Keeper) CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveI
 	// Retrieve the RefundTxSnapshot
 	refundTxSnapshot, found := k.GetRefundTxSnapshot(ctx, reserveId, roundId)
 	if !found {
-		return false, fmt.Errorf("refund tx snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "refund tx snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
 	}
 
 	// Create a map of expected addresses and amounts
@@ -304,30 +304,26 @@ func (k Keeper) CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveI
 	// Decode the Bitcoin transaction
 	btcTx, err := forkstypes.CreateTxFromHex(btcTxHex)
 	if err != nil {
-		return false, fmt.Errorf("error decoding btc transaction: %w", err)
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "error decoding btc transaction")
 	}
 
 	// Check if the number of outputs matches the number of expected addresses
 	if len(btcTx.TxOut) != len(expectedOutputs) {
-		return false, fmt.Errorf("number of outputs in btc transaction does not match the number of expected addresses")
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "number of outputs in btc transaction does not match the number of expected addresses")
 	}
 
 	// Iterate through all the outputs of the Bitcoin transaction
-	for i, output := range btcTx.TxOut {
-		if i == 1 { // Skip the output reserved for the sweep
-			continue
-		}
+	for _, output := range btcTx.TxOut {
 
 		_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
 		if err != nil {
-			return false, fmt.Errorf("error extracting addresses from pkScript: %w", err)
+			return false, sdkerrors.Wrapf(types.ErrInvalid, "error extracting addresses from pkScript")
 		}
-
 		for _, addr := range addresses {
 			addrStr := addr.String()
 			expectedAmount, exists := expectedOutputs[addrStr]
 			if !exists || output.Value != expectedAmount {
-				return false, fmt.Errorf("address output mismatch: %s", addrStr)
+				return false, sdkerrors.Wrapf(types.ErrInvalid, "address output mismatch")
 			}
 			delete(expectedOutputs, addrStr)
 		}
