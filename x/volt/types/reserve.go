@@ -5,5 +5,5 @@ const (
 	BtcReserveMaxLimit = 25
 
 	// MaxOutgoingBtcOutputs is the number of outputs we can create in a btc request
-	MaxOutgoingBtcOutputs = 100
+	MaxOutgoingBtcOutputs = 2
 )

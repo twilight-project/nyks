@@ -25,12 +25,6 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64, roundId uint64) {
 	logger := k.Logger(ctx)
 
-	// Check if there is a new MsgProposeSweepAddress
-	newSweepDetected, reserveId, roundId := k.CheckForNewSweepProposal(ctx)
-	if !newSweepDetected {
-		return // No new sweep proposal, so nothing to do
-	}
-
 	// Fetch the ReserveWithdrawPool for the specified reserveId
 	pool, found := k.GetReserveWithdrawPool(ctx, reserveId)
 	if !found {
@@ -38,27 +32,38 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 		return
 	}
 
-	// Prepare to collect withdrawal requests
 	var withdrawRequestSnaps []*types.WithdrawRequestSnap
-	count := 0
+	var processingIdentifiers []uint32
 
 	// Iterate through queued withdraw identifiers, up to maxOutgoingBtcOutputs
-	for _, identifier := range pool.QueuedWithdrawIdentifiers {
+	for count, identifier := range pool.QueuedWithdrawIdentifiers {
 		if count >= types.MaxOutgoingBtcOutputs {
 			break
 		}
+
 		withdrawRequest, found := k.GetBtcWithdrawRequestByIdentifier(ctx, identifier)
 		if !found {
 			logger.Error("WithdrawRequest not found", "identifier", identifier)
 			continue
 		}
+
 		snap := &types.WithdrawRequestSnap{
 			WithdrawIdentifier: withdrawRequest.WithdrawIdentifier,
 			WithdrawAddress:    withdrawRequest.WithdrawAddress,
 			WithdrawAmount:     withdrawRequest.WithdrawAmount,
 		}
 		withdrawRequestSnaps = append(withdrawRequestSnaps, snap)
-		count++
+		processingIdentifiers = append(processingIdentifiers, identifier)
+	}
+
+	// Update ReserveWithdrawPool
+	pool.ProcessingWithdrawIdentifiers = append(pool.ProcessingWithdrawIdentifiers, processingIdentifiers...)
+	pool.QueuedWithdrawIdentifiers = pool.QueuedWithdrawIdentifiers[len(processingIdentifiers):]
+	pool.CurrentProcessingIndex = processingIdentifiers[len(processingIdentifiers)-1]
+	err := k.SetReserveWithdrawPool(ctx, pool)
+	if err != nil {
+		logger.Error("Failed to set ReserveWithdrawPool", "error", err)
+		return
 	}
 
 	// Create the LastReserveWithdrawSnapshot
@@ -81,7 +86,6 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 			RoundId:   roundId,
 		},
 	)
-
 }
 
 // generateRefundTxSnapshot generates a snapshot of refund transactions for the current round
@@ -106,7 +110,7 @@ func generateRefundTxSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 		}
 
 		for _, balance := range account.ReserveAccountBalances {
-			if balance.ReserveId != reserveId {
+			if balance.ReserveId != reserveId || balance.Amount == 0 {
 				continue // Only process balances for the specified reserveId
 			}
 			snap := &types.RefundTxAccountSnap{
