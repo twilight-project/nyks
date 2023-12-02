@@ -89,7 +89,9 @@ message MsgWithdrawBtcRequest {
   string twilightAddress = 4;
 }
 
-message MsgWithdrawBtcRequestResponse {}
+message MsgWithdrawBtcRequestResponse {
+  uint32 withdrawIdentifer = 1;
+}
 
 // 2. MsgWithdrawTxSigned
 message MsgWithdrawTxSigned {

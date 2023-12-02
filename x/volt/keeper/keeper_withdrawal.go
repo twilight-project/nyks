@@ -49,7 +49,7 @@ func (k Keeper) GetReserveWithdrawPool(ctx sdk.Context, reserveId uint64) (*type
 // SetBtcWithdrawRequest sets the btc withdraw request for a given twilight address, reserve address, withdraw address, and withdraw amount
 // This is to track the btc requests, once user sends a request, we add additional parameters in it such as withdrawIdentifier
 // that is essentially a counter and a isConfirmed boolean along with the creation block height
-func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) error {
+func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) (*uint32, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	// Generate a new withdrawIdentifier
@@ -75,19 +75,19 @@ func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 	// Add to the ReserveWithdrawPool
 	err := k.AddToReserveWithdrawPool(ctx, reserveId, withdrawIdentifier)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Now we will take the balance from the user's account as well and will burn it
 	// Deduct the withdrawal amount from the user's bank balance
 	userAddr, err := sdk.AccAddressFromBech32(twilightAddress.String())
 	if err != nil {
-		return sdkerrors.Wrapf(err, "invalid user address %s", twilightAddress.String())
+		return nil, sdkerrors.Wrapf(err, "invalid user address %s", twilightAddress.String())
 	}
 
 	withdrawCoin := sdk.NewCoin("sats", sdk.NewIntFromUint64(withdrawAmount))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAddr, forkstypes.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
-		return sdkerrors.Wrapf(err, "failed to deduct coins from user account %s", userAddr.String())
+		return nil, sdkerrors.Wrapf(err, "failed to deduct coins from user account %s", userAddr.String())
 	}
 
 	// Get pre-burn balance
@@ -95,7 +95,7 @@ func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 
 	// Reduce the supply of sats
 	if err := k.BankKeeper.BurnCoins(ctx, forkstypes.ModuleName, sdk.NewCoins(withdrawCoin)); err != nil {
-		return sdkerrors.Wrapf(err, "failed to burn coins %v", withdrawCoin)
+		return nil, sdkerrors.Wrapf(err, "failed to burn coins %v", withdrawCoin)
 	}
 
 	// Get post-burn balance
@@ -104,18 +104,15 @@ func (k Keeper) SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAd
 	// Check if the burn operation was successful
 	expectedPostBurnAmount := preBurnBalance.Amount.Sub(withdrawCoin.Amount)
 	if !postBurnBalance.Amount.Equal(expectedPostBurnAmount) {
-		panic(fmt.Sprintf(
-			"Burn operation failed! Pre-burn balance %v, Post-burn balance %v, Expected post-burn balance %v",
-			preBurnBalance.String(), postBurnBalance.String(), expectedPostBurnAmount.String()),
-		)
+		return nil, sdkerrors.Wrapf(err, "failed to burn coins %v", withdrawCoin)
 	}
 	// Deduct the withdrawal amount from the user's clearing account
 	err = k.DeductFromClearingAccount(ctx, twilightAddress, reserveId, withdrawAmount)
 	if err != nil {
-		return sdkerrors.Wrapf(err, "failed to deduct from ClearingAccount")
+		return nil, sdkerrors.Wrapf(err, "failed to deduct from ClearingAccount")
 	}
 
-	return nil
+	return &withdrawIdentifier, nil
 }
 
 // AddToReserveWithdrawPool adds a new withdrawIdentifier to the queue of a specific reserve in the store
@@ -216,6 +213,7 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 	// Fetch the ReserveWithdrawPool for the specified reserveId
 	pool, found := k.GetReserveWithdrawPool(ctx, reserveId)
 	if !found {
+		ctx.Logger().Error("ReserveWithdrawPool not found", "reserveId", reserveId)
 		return fmt.Errorf("ReserveWithdrawPool not found for reserveId %d", reserveId)
 	}
 
@@ -229,6 +227,7 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 	for _, withdrawSnap := range snapshot.WithdrawRequests {
 		withdrawRequest, found := k.GetBtcWithdrawRequestByIdentifier(ctx, withdrawSnap.WithdrawIdentifier)
 		if !found {
+			ctx.Logger().Error("btc withdraw request not found for identifier", "identifier", withdrawSnap.WithdrawIdentifier)
 			return fmt.Errorf("btc withdraw request not found for identifier %d", withdrawSnap.WithdrawIdentifier)
 		}
 
@@ -238,6 +237,7 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 		// Update the withdraw request in the store
 		err := k.SetBtcWithdrawRequestAfterSweepConfirmation(ctx, withdrawRequest)
 		if err != nil {
+			ctx.Logger().Error("failed to update btc withdraw request", "error", err)
 			return fmt.Errorf("failed to update btc withdraw request: %w", err)
 		}
 
@@ -255,6 +255,7 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 	// Save the updated pool back to the store using existing SetWithdrawPool function
 	err := k.SetReserveWithdrawPool(ctx, pool)
 	if err != nil {
+		ctx.Logger().Error("failed to update reserve withdraw pool", "error", err)
 		return fmt.Errorf("failed to update reserve withdraw pool: %w", err)
 	}
 
@@ -265,9 +266,13 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 func (k Keeper) SetBtcWithdrawRequestAfterSweepConfirmation(ctx sdk.Context, withdrawRequest *types.BtcWithdrawRequestInternal) error {
 	store := ctx.KVStore(k.storeKey)
 
+	twilightAddr, err := sdk.AccAddressFromBech32(withdrawRequest.TwilightAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(err, "invalid twilight address: %s", withdrawRequest.TwilightAddress)
+	}
 	// Set up the key for storing the withdraw request
 	aKey := types.GetBtcWithdrawRequestKeyInternal(
-		sdk.AccAddress(withdrawRequest.TwilightAddress),
+		twilightAddr,
 		withdrawRequest.WithdrawReserveId,
 		withdrawRequest.WithdrawAddress,
 		withdrawRequest.WithdrawAmount,

@@ -50,7 +50,7 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 	}
 
 	// set withdraw request
-	err = k.VoltKeeper.SetBtcWithdrawRequest(ctx, twilightAddress, msg.ReserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
+	withdrawIdentifier, err := k.VoltKeeper.SetBtcWithdrawRequest(ctx, twilightAddress, msg.ReserveId, withdrawAddress.BtcAddress, msg.WithdrawAmount)
 	if err != nil {
 		return nil, err
 	}
@@ -65,5 +65,5 @@ func (k msgServer) WithdrawBtcRequest(goCtx context.Context, msg *types.MsgWithd
 		},
 	)
 
-	return &types.MsgWithdrawBtcRequestResponse{}, nil
+	return &types.MsgWithdrawBtcRequestResponse{WithdrawIdentifer: *withdrawIdentifier}, nil
 }

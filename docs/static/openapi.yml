@@ -49050,6 +49050,10 @@ definitions:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawBtcRequestResponse:
     type: object
+    properties:
+      withdrawIdentifer:
+        type: integer
+        format: int64
   twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxSignedResponse:
