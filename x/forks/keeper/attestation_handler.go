@@ -112,7 +112,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
 
 	// Update the reserve mapping with the values of the proposal
-	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.NewReserveAddress, proposal.JudgeAddress, proposal.BtcBlockNumber, proposal.BtcRelayCapacityValue, proposal.BtcTxHash, proposal.UnlockHeight, proposal.RoundId, proposal.WithdrawIdentifiers)
+	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.NewReserveAddress, proposal.JudgeAddress, proposal.BtcBlockNumber, proposal.BtcRelayCapacityValue, proposal.BtcTxHash, proposal.UnlockHeight, proposal.RoundId)
 	if err != nil {
 		hash, _ := proposal.ProposalHash()
 		a.keeper.logger(ctx).Error("Could not update the reserve after sweep attestation",

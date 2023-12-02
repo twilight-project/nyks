@@ -13,7 +13,7 @@ const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64) *MsgSweepProposal {
 	return &MsgSweepProposal{
 		ReserveId:             reserveId,
 		NewReserveAddress:     reserveAddress,
@@ -23,7 +23,6 @@ func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress s
 		BtcTxHash:             BtcTxHash,
 		UnlockHeight:          unlockHeight,
 		RoundId:               roundId,
-		WithdrawIdentifiers:   withdrawIdentifiers,
 	}
 }
 
@@ -67,17 +66,6 @@ func (msg *MsgSweepProposal) ValidateBasic() error {
 	valid := IsValidBtcTxHash(msg.BtcTxHash)
 	if !valid {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid btc refund tx (%s)", err)
-	}
-
-	// Validate withdrawIdentifiers
-	if len(msg.WithdrawIdentifiers) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "withdrawIdentifiers cannot be empty")
-	}
-	for _, identifier := range msg.WithdrawIdentifiers {
-		if len(identifier) == 0 {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid identifier: identifier cannot be empty")
-		}
-		// Add more validation for individual identifiers if needed
 	}
 
 	return nil

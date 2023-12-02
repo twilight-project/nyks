@@ -2,7 +2,6 @@ package cli
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -14,7 +13,6 @@ import (
 var _ = strconv.Itoa(0)
 
 func CmdSweepProposal() *cobra.Command {
-	var withdrawIdentifiersStr string
 
 	cmd := &cobra.Command{
 		Use:   "sweep-proposal [reserve-id] [new-reserve-address] [btc-block-number] [btc-relay-capacity-value] [btc-tx-hash] [unlock-height] [round-id]",
@@ -44,9 +42,6 @@ func CmdSweepProposal() *cobra.Command {
 				return err
 			}
 
-			// Parse withdrawIdentifiers
-			withdrawIdentifiers := strings.Split(withdrawIdentifiersStr, ",")
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -61,7 +56,6 @@ func CmdSweepProposal() *cobra.Command {
 				argBtcTxHash,
 				argUnlockHeight,
 				argRoundId,
-				withdrawIdentifiers, // Add this to your NewMsgSweepProposal function
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -69,9 +63,6 @@ func CmdSweepProposal() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().StringVarP(&withdrawIdentifiersStr, "withdraw-identifiers", "w", "", "Comma-separated list of withdraw identifiers")
-
 	return cmd
 }

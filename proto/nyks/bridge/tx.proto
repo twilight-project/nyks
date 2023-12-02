@@ -207,7 +207,6 @@ message MsgSweepProposal {
   string btcTxHash = 6;
   uint64 UnlockHeight = 7;
   uint64 roundId = 8;
-  repeated string withdrawIdentifiers = 9;
 }
 
 message MsgSweepProposalResponse {}
