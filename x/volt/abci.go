@@ -32,6 +32,12 @@ func generateWithdrawSnapshot(ctx sdk.Context, k keeper.Keeper, reserveId uint64
 		return
 	}
 
+	// Check if there are any QueuedWithdrawIdentifiers to process
+	if len(pool.QueuedWithdrawIdentifiers) == 0 {
+		logger.Info("No queued withdraw identifiers to process", "reserveId", reserveId)
+		return
+	}
+
 	var withdrawRequestSnaps []*types.WithdrawRequestSnap
 	var processingIdentifiers []uint32
 

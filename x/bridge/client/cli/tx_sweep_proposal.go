@@ -10,8 +10,6 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdSweepProposal() *cobra.Command {
 
 	cmd := &cobra.Command{
