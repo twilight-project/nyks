@@ -1,0 +1,72 @@
+.gradientIcon {
+  position: absolute;
+  bottom: -4.11em;
+  left: 0em;
+  width: 74.28em;
+  height: 32.39em;
+  object-fit: cover;
+  display: none;
+}
+.lineIcon {
+  position: absolute;
+  right: -0.17em;
+  bottom: -0.5em;
+  width: 29.78em;
+  height: 28.39em;
+  object-fit: cover;
+}
+.text4 {
+  position: absolute;
+  top: 2em;
+  left: 1.25em;
+  font-size: 1.78em;
+  letter-spacing: -0.01em;
+  line-height: 120%;
+  display: inline-block;
+  width: 15.5em;
+}
+.text3 {
+  position: absolute;
+  height: 28.69%;
+  width: 93.06%;
+  top: 12.55%;
+  right: 6.94%;
+  bottom: 58.76%;
+  left: 0%;
+}
+.text5 {
+  position: absolute;
+  top: -0.33em;
+  left: 0em;
+  font-size: 1em;
+  letter-spacing: -0.02em;
+  line-height: 140%;
+  text-transform: uppercase;
+  display: inline-block;
+  width: 27.56em;
+}
+.title {
+  position: absolute;
+  height: 4.98%;
+  width: 43.34%;
+  top: 13.94%;
+  right: 49.16%;
+  bottom: 81.08%;
+  left: 7.5%;
+  overflow: hidden;
+  font-family: "Andale Mono";
+}
+.mint {
+  position: absolute;
+  height: 39.62%;
+  width: 30.84%;
+  top: 40.33%;
+  right: 2.31%;
+  bottom: 20.05%;
+  left: 66.84%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  text-align: left;
+  color: #fff;
+  font-family: "Atlas Grotesk";
+}

@@ -1,0 +1,108 @@
+.backgroundGradientIcon {
+  position: absolute;
+  top: 0.72em;
+  left: 0em;
+  width: 96em;
+  height: 87.78em;
+  object-fit: cover;
+}
+.scrollbar1 {
+  position: absolute;
+  top: 0.33em;
+  left: 93.17em;
+  border-radius: 2000px;
+  background-color: #ed55ca;
+  width: 0.39em;
+  height: 4.11em;
+}
+.inOrderTo3 {
+  position: relative;
+  font-size: 6.89em;
+  line-height: 110%;
+  font-weight: 300;
+  display: inline-block;
+  width: 7.69em;
+}
+.text1 {
+  position: relative;
+  font-size: 0.89em;
+  letter-spacing: -0.01em;
+  line-height: 130%;
+}
+.button1 {
+  position: absolute;
+  top: 0em;
+  left: calc(50% - 109.5px);
+  border-radius: 2000px;
+  border: 1px solid #fff;
+  display: flex;
+  flex-direction: row;
+  padding: 0.83em 2.22em 0.72em;
+  align-items: center;
+  justify-content: center;
+}
+.button {
+  align-self: stretch;
+  position: relative;
+  height: 2.61em;
+  text-align: center;
+  font-family: "Atlas Grotesk";
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.56em;
+}
+.arrowIcon {
+  position: relative;
+  width: 76.06em;
+  height: 2.78em;
+  object-fit: cover;
+}
+.inOrderTo4 {
+  position: relative;
+  font-size: 3.11em;
+  line-height: 120%;
+  font-weight: 300;
+  display: inline-block;
+  width: 17.02em;
+}
+.inOrderTo5 {
+  position: relative;
+  font-size: 1em;
+  letter-spacing: -0.01em;
+  line-height: 130%;
+  font-family: "Atlas Grotesk";
+  display: inline-block;
+  width: 28.61em;
+  opacity: 0.8;
+}
+.content1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.94em;
+  text-align: center;
+}
+.section11 {
+  position: absolute;
+  top: 10.56em;
+  left: calc(50% - 864px);
+  display: flex;
+  flex-direction: column;
+  padding: 0em 9.94em;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.22em;
+}
+.section1 {
+  position: relative;
+  width: 96em;
+  height: 55.06em;
+  text-align: left;
+  color: #fff;
+  font-family: "Manner Pro";
+}

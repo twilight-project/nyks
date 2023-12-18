@@ -1,0 +1,55 @@
+.technicalElementIcon1 {
+  position: relative;
+  width: 1.78em;
+  height: 1.98em;
+  object-fit: cover;
+}
+.arrowChild {
+  position: absolute;
+  top: 1.39em;
+  left: -0.06em;
+  background-color: #fff;
+  width: 73.33em;
+  height: 0.06em;
+}
+.arrowIcon1 {
+  position: absolute;
+  top: calc(50% - 25px);
+  right: 0em;
+  width: 2.78em;
+  height: 2.78em;
+  object-fit: cover;
+}
+.inOrderTo1 {
+  position: absolute;
+  top: 1.5em;
+  left: calc(50% + 371.5px);
+  font-size: 0.67em;
+  line-height: 120%;
+  text-transform: uppercase;
+  display: inline-block;
+  width: 21.25em;
+}
+.arrow {
+  position: relative;
+  width: 76.06em;
+  height: 2.78em;
+}
+.section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5.11em;
+}
+.backTopTop1 {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 4.78em 2.11em;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: right;
+  color: #fff;
+  font-family: "Andale Mono";
+}

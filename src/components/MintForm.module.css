@@ -1,0 +1,24 @@
+.arrowne1Icon1 {
+  position: relative;
+  width: 0.89em;
+  height: 2.39em;
+  overflow: hidden;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.leadIcon {
+  height: 1.61em;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.56em;
+}
+.navItems {
+  width: 15em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1.33em;
+}

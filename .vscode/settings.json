@@ -1,0 +1,21 @@
+{
+  "detectedConfig": {
+    "typescript": false,
+    "naming": "Pascal Case",
+    "unit": "em",
+    "framework": "html-css",
+    "styling": "CSS Modules"
+  },
+  "locofyConfig": {
+    "project_name": "Twilight",
+    "id": "655f16f30c699d00be644e2a",
+    "framework": "react",
+    "typescript": false,
+    "path": "public/",
+    "componentsPath": "/Users/hammadtariq/go/src/github.com/hammadtq/nyks/src/components",
+    "screensPath": "/Users/hammadtariq/go/src/github.com/hammadtq/nyks/src/pages",
+    "styling": "CSS Modules",
+    "unit": "em",
+    "naming": "Pascal Case"
+  }
+}

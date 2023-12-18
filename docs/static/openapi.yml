@@ -30123,6 +30123,9 @@ paths:
                     type: string
                   txByteCode:
                     type: string
+                  txFee:
+                    type: string
+                    format: uint64
                   zkOracleAddress:
                     type: string
         default:
@@ -50408,6 +50411,9 @@ definitions:
         type: string
       txByteCode:
         type: string
+      txFee:
+        type: string
+        format: uint64
       zkOracleAddress:
         type: string
   twilightproject.nyks.zkos.MsgTransferTxResponse:
@@ -50451,5 +50457,8 @@ definitions:
             type: string
           txByteCode:
             type: string
+          txFee:
+            type: string
+            format: uint64
           zkOracleAddress:
             type: string

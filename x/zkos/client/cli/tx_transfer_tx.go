@@ -14,12 +14,16 @@ var _ = strconv.Itoa(0)
 
 func CmdTransferTx() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-tx [tx-id] [tx-byte-code]",
+		Use:   "transfer-tx [tx-id] [tx-byte-code] [tx-fee]",
 		Short: "Broadcast message TransferTx",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argTxId := args[0]
 			argTxByteCode := args[1]
+			argTxFee, err := strconv.ParseUint(args[2], 10, 64)
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -29,6 +33,7 @@ func CmdTransferTx() *cobra.Command {
 			msg := types.NewMsgTransferTx(
 				argTxId,
 				argTxByteCode,
+				argTxFee,
 				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {

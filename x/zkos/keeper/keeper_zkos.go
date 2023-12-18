@@ -11,7 +11,7 @@ import (
 )
 
 // SetTransferTx sets the transfer tx
-func (k Keeper) SetTransferTx(ctx sdk.Context, txId string, txByteCode string, zkOracleAddress string) {
+func (k Keeper) SetTransferTx(ctx sdk.Context, txId string, txByteCode string, txFee uint64, zkOracleAddress string) {
 
 	// ADD VALIDATION HERE
 
@@ -19,6 +19,7 @@ func (k Keeper) SetTransferTx(ctx sdk.Context, txId string, txByteCode string, z
 	ttx := &types.MsgTransferTx{
 		TxId:            txId,
 		TxByteCode:      txByteCode,
+		TxFee:           txFee,
 		ZkOracleAddress: zkOracleAddress,
 	}
 
@@ -105,7 +106,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 			deduct := min(remaining, reserveBalance.Amount)
 
 			// Update the reserve and clearing account balance
-			//if msg.MintOrBurn {
+			// if msg.MintOrBurn {
 			// Mint: Deduct from public and add to private
 			if reserve.PublicValue < deduct {
 				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPublic, strconv.FormatUint(reserveBalance.ReserveId, 10))
@@ -138,37 +139,51 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		}
 	} else { // Burn
 
-		// Find the last unlocked reserve
-		reserveId := k.VoltKeeper.GetLastUnlockedReserve(ctx)
-
-		nextReserveUnlockingId := uint64(0)
-		if reserveId < volttypes.BtcReserveMaxLimit {
-			// n+1 to find next unlocking reserve
-			nextReserveUnlockingId = reserveId + 1
-		} else {
-			// reset to 1
-			nextReserveUnlockingId = 1
-		}
-
-		// Fetch the reserve
-		reserve, err := k.VoltKeeper.GetBtcReserve(ctx, nextReserveUnlockingId)
+		// Get the next unlocking reserve
+		nextReserveUnlockingId, reserve, err := k.GetNextUnlockingReserve(ctx)
 		if err != nil {
-			return sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve while burning quisquis btc")
+			return sdkerrors.Wrapf(types.ErrReserveNotFound, "next unlocking reserve not found")
 		}
 
 		addBack := msg.BtcValue
 		// Burn: Deduct from private and add to public
+		// If do not have enough balance in the last unlocked reserve, iterate over all reserves and find PrivatePoolValues to add back
+		// PrivatePoolValue is treated as global across all reserves as there is no tracking of individual private (dark) accounts
 		if reserve.PrivatePoolValue < addBack {
-			return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, strconv.FormatUint(nextReserveUnlockingId, 10))
+			// If not enough balance in the last unlocked reserve, iterate over all reserves
+			totalAggregated := uint64(0)
+			k.VoltKeeper.IterateBtcReserves(ctx, func(_ []byte, res volttypes.BtcReserve) bool {
+				if totalAggregated >= addBack {
+					return true // Stop iterating if we have aggregated enough
+				}
+
+				if res.PrivatePoolValue > 0 {
+					deduct := min(res.PrivatePoolValue, addBack-totalAggregated)
+
+					res.PrivatePoolValue -= deduct
+					res.PublicValue += deduct
+
+					k.VoltKeeper.SetBtcReserve(ctx, &res)
+
+					totalAggregated += deduct
+				}
+				return false
+			})
+
+			// If we can't find any PrivatePoolValue, we return error (this should never happen as the PrivatePoolValue will always be available as far as Private accounts exist)
+			if totalAggregated < addBack {
+				return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, "could not find enough value in private pool")
+			}
+		} else {
+			reserve.PrivatePoolValue -= addBack
+			reserve.PublicValue += addBack
 		}
-		reserve.PrivatePoolValue -= addBack
-		reserve.PublicValue += addBack
 
 		// Update the clearing account
 		// Check if the reserve id already exists in the ReserveAccountBalances slice
 		found = false
 		for _, balance := range account.ReserveAccountBalances {
-			if balance.ReserveId == nextReserveUnlockingId {
+			if balance.ReserveId == *nextReserveUnlockingId {
 				// If it does, add the minted value to the existing balance
 				balance.Amount += addBack
 				found = true
@@ -179,7 +194,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 		if !found {
 			// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
 			account.ReserveAccountBalances = append(account.ReserveAccountBalances, &volttypes.IndividualTwilightReserveAccountBalance{
-				ReserveId: reserveId,
+				ReserveId: *nextReserveUnlockingId,
 				Amount:    addBack,
 			})
 		}
@@ -240,6 +255,74 @@ func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string)
 	}
 
 	return results, true
+}
+
+// DeductFeeFromPrivatePool deducts the fee from the private pool in the reserve and adds it to the fee pool
+func (k Keeper) DeductFeeFromPrivatePool(ctx sdk.Context, fee uint64) error {
+
+	// Get the next unlocking reserve
+	_, reserve, err := k.GetNextUnlockingReserve(ctx)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrReserveNotFound, "next unlocking reserve not found")
+	}
+
+	if reserve.PrivatePoolValue < fee {
+		// If not enough balance in the last unlocked reserve, iterate over all reserves
+		totalAggregated := uint64(0)
+		k.VoltKeeper.IterateBtcReserves(ctx, func(_ []byte, res volttypes.BtcReserve) bool {
+			if totalAggregated >= fee {
+				return true // Stop iterating if we have aggregated enough
+			}
+
+			if res.PrivatePoolValue > 0 {
+				deduct := min(res.PrivatePoolValue, fee-totalAggregated)
+
+				res.PrivatePoolValue -= deduct
+				res.FeePool += deduct
+
+				k.VoltKeeper.SetBtcReserve(ctx, &res)
+
+				totalAggregated += deduct
+			}
+			return false
+		})
+
+		// If we can't find any PrivatePoolValue, we return error (this should never happen as the PrivatePoolValue will always be available as far as Private accounts exist)
+		if totalAggregated < fee {
+			return sdkerrors.Wrap(types.ErrNotEnoughBalanceInPrivate, "could not find enough value in private pool")
+		}
+	} else {
+		reserve.PrivatePoolValue -= fee
+		reserve.FeePool += fee
+	}
+
+	// Save the updated reserve
+	k.VoltKeeper.SetBtcReserve(ctx, reserve)
+
+	return nil
+}
+
+// GetNextUnlockingReserve returns the next reserve id to be unlocked
+func (k Keeper) GetNextUnlockingReserve(ctx sdk.Context) (*uint64, *volttypes.BtcReserve, error) {
+	// Find the last unlocked reserve
+	reserveId := k.VoltKeeper.GetLastUnlockedReserve(ctx)
+
+	nextReserveUnlockingId := uint64(0)
+	if reserveId < volttypes.BtcReserveMaxLimit {
+		// n+1 to find next unlocking reserve
+		nextReserveUnlockingId = reserveId + 1
+	} else {
+		// reset to 1
+		nextReserveUnlockingId = 1
+	}
+
+	// Fetch the reserve
+	reserve, err := k.VoltKeeper.GetBtcReserve(ctx, nextReserveUnlockingId)
+	if err != nil {
+		return nil, nil, sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve")
+	}
+
+	return &nextReserveUnlockingId, reserve, nil
 }
 
 // MarkQqAccountAsUsed saves the used Qqaccount in a new KV store to avoid being reused

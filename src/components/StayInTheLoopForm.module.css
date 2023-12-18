@@ -1,0 +1,122 @@
+.inOrderTo3 {
+  position: relative;
+  font-size: 3.11em;
+  line-height: 120%;
+  font-weight: 300;
+}
+.inOrderTo4 {
+  position: relative;
+  font-size: 0.78em;
+  line-height: 120%;
+  text-transform: uppercase;
+  font-family: "Andale Mono";
+  display: inline-block;
+  width: 18.21em;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.67em;
+}
+.inOrderTo5 {
+  position: relative;
+  font-size: 1.06em;
+  line-height: 120%;
+  display: inline-block;
+  width: 13.42em;
+  flex-shrink: 0;
+}
+.field {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  padding: 0.67em 0em;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9.33em;
+  text-align: left;
+  font-family: "Atlas Grotesk";
+}
+.section01 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.78em;
+}
+.newsletter {
+  display: flex;
+  flex-direction: column;
+  padding: 0em 33.11em;
+  align-items: center;
+  justify-content: flex-start;
+}
+.content1 {
+  display: flex;
+  flex-direction: row;
+  padding: 0em 9.06em 0em 9.94em;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 24.17em;
+}
+.all {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.text4 {
+  position: absolute;
+  top: 0em;
+  left: 11.25em;
+  font-size: 0.89em;
+  letter-spacing: -0.01em;
+  line-height: 130%;
+}
+.text5 {
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  font-size: 0.89em;
+  letter-spacing: -0.01em;
+  line-height: 130%;
+}
+.text3 {
+  position: absolute;
+  top: 2.22em;
+  left: 7.67em;
+  width: 30.56em;
+  height: 1.28em;
+}
+.base {
+  position: relative;
+  width: 91.56em;
+  height: 4.94em;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-family: "Atlas Grotesk";
+}
+.footer {
+  width: 96em;
+  display: flex;
+  flex-direction: column;
+  padding: 2.78em 0em 1.11em;
+  box-sizing: border-box;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 3.22em;
+  text-align: left;
+}
+.footerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7em;
+  text-align: center;
+  color: #fff;
+  font-family: "Manner Pro";
+}

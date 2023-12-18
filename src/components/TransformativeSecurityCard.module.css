@@ -1,0 +1,81 @@
+.arrowne1Icon1 {
+  position: relative;
+  width: 0.89em;
+  height: 2.39em;
+  overflow: hidden;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.leadIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.56em;
+}
+.navItems {
+  position: absolute;
+  top: 0em;
+  left: 69.44em;
+  width: 15em;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1.33em;
+}
+.content {
+  position: relative;
+  width: 91.56em;
+  height: 24.83em;
+}
+.text9 {
+  position: absolute;
+  top: 0em;
+  left: 11.25em;
+  font-size: 0.89em;
+  line-height: 120%;
+}
+.text10 {
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  font-size: 0.89em;
+  line-height: 120%;
+}
+.text8 {
+  position: absolute;
+  top: 2.22em;
+  left: 7.67em;
+  width: 30.56em;
+  height: 1.28em;
+}
+.base {
+  position: relative;
+  width: 91.56em;
+  height: 4.94em;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.all {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2.78em;
+}
+.footer {
+  position: absolute;
+  top: 43.94em;
+  left: 0em;
+  width: 96em;
+  display: flex;
+  flex-direction: column;
+  padding: 2.78em 2.22em 1.11em;
+  box-sizing: border-box;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  color: #fff;
+  font-family: "Atlas Grotesk";
+}
