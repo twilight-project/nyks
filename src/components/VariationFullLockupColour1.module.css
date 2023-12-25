@@ -1,0 +1,18 @@
+.logoIcon1 {
+  position: absolute;
+  height: 71.83%;
+  width: 15.76%;
+  top: 6.67%;
+  right: 84.24%;
+  bottom: 21.5%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+.variationfullLockupColour {
+  position: relative;
+  width: 269px;
+  height: 60px;
+}

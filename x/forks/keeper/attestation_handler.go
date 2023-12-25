@@ -92,7 +92,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
 		)
 	}
-	ctx.Logger().Error("SendFromModuleToAccount", coins)
+
 	// Update the reserve mapping with the new amount of coins
 	err = a.keeper.VoltKeeper.UpdateBtcReserveAfterMint(ctx, proposal.DepositAmount, receiver, proposal.ReserveAddress)
 	if err != nil {
@@ -112,7 +112,7 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridgetypes.MsgSweepProposal) error {
 
 	// Update the reserve mapping with the values of the proposal
-	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.NewReserveAddress, proposal.JudgeAddress, proposal.BtcBlockNumber, proposal.BtcRelayCapacityValue, proposal.BtcTxHash, proposal.UnlockHeight, proposal.RoundId, proposal.WithdrawIdentifiers)
+	err := a.keeper.VoltKeeper.UpdateBtcReserveAfterSweepProposal(ctx, proposal.ReserveId, proposal.NewReserveAddress, proposal.JudgeAddress, proposal.BtcBlockNumber, proposal.BtcRelayCapacityValue, proposal.BtcTxHash, proposal.UnlockHeight, proposal.RoundId)
 	if err != nil {
 		hash, _ := proposal.ProposalHash()
 		a.keeper.logger(ctx).Error("Could not update the reserve after sweep attestation",
@@ -122,6 +122,25 @@ func (a AttestationHandler) handleSweepProposal(ctx sdk.Context, proposal bridge
 		)
 		return sdkerrors.Wrapf(err, "could not update the reserve after sweep attestation %s", proposal.NewReserveAddress)
 	}
+
+	// Sweep was successful, now we need to mark processed withdraw requests as successful
+	err = a.keeper.VoltKeeper.ConfirmWithdrawRequestsAfterSweepConfirmation(ctx, proposal.ReserveId, proposal.RoundId)
+	if err != nil {
+		hash, _ := proposal.ProposalHash()
+		a.keeper.logger(ctx).Error("Could not confirm withdraw requests after sweep attestation",
+			"cause", err.Error(),
+			"proposal type", proposal.GetType(),
+			"id", types.GetAttestationKey(proposal.GetHeight(), hash),
+		)
+		return sdkerrors.Wrapf(err, "could not confirm withdraw requests after sweep attestation %s", proposal.NewReserveAddress)
+	}
+
+	// now will prune the snapshots for the reserve to save storage space
+	// Prune the Reserve Withdraw Snapshot
+	a.keeper.VoltKeeper.PruneReserveWithdrawSnapshot(ctx, proposal.ReserveId, proposal.RoundId)
+
+	// Prune the Refund Tx Snapshot
+	a.keeper.VoltKeeper.PruneRefundTxSnapshot(ctx, proposal.ReserveId, proposal.RoundId)
 
 	return nil
 }

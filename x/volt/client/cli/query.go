@@ -29,6 +29,16 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdClearingAccount())
 
+	cmd.AddCommand(CmdReserveClearingAccountsAll())
+
+	cmd.AddCommand(CmdReserveWithdrawSnapshot())
+
+	cmd.AddCommand(CmdRefundTxSnapshot())
+
+	cmd.AddCommand(CmdBtcWithdrawRequest())
+
+	cmd.AddCommand(CmdReserveWithdrawPool())
+
 	// this line is used by starport scaffolding # 1
 
 	return cmd

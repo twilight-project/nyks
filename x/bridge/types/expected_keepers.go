@@ -34,8 +34,16 @@ type NyksKeeper interface {
 type VoltKeeper interface {
 	GetBtcReserve(ctx sdk.Context, reserveId uint64) (*volttypes.BtcReserve, error)
 	RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, error)
-	SetBtcDeposit(ctx sdk.Context, depositAddress BtcAddress, twilightDepositAddress sdk.AccAddress, depositTestAmount uint64) error
+	SetBtcDeposit(ctx sdk.Context, btcDepositAddress BtcAddress, twilightAddress sdk.AccAddress, twilightStakingAmount uint64, btcSatoshiTestAmount uint64) error
 	GetBtcDepositAddressByTwilightAddress(ctx sdk.Context, twilightAddress sdk.AccAddress) (btcDeposit *volttypes.BtcDepositAddress, found bool)
 	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
-	GetAllConfirmedBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []volttypes.BtcDepositAddress)
+	GetAllBtcRegisteredDepositAddresses(ctx sdk.Context) (btcDepositAddresses []volttypes.BtcDepositAddress)
+	CheckBtcAddress(ctx sdk.Context, twilightAddress sdk.Address, btcAddress BtcAddress, newSatoshiTestAmount uint64) bool
+	SetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) (*uint32, error)
+	GetBtcWithdrawRequest(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) (*volttypes.BtcWithdrawRequestInternal, bool)
+	IterateBtcWithdrawRequests(ctx sdk.Context, cb func([]byte, *volttypes.BtcWithdrawRequestInternal) bool)
+	CheckClearingAccountBalance(ctx sdk.Context, twilightAddress sdk.AccAddress, reserveId uint64, amount uint64) error
+	CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
+	CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
+	CheckBtcReserveExists(ctx sdk.Context, reserveId uint64) bool
 }

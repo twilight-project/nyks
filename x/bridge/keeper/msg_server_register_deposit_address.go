@@ -24,22 +24,29 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check the following, all should be validated in validate basic
-	btcAddr, e1 := types.NewBtcAddress(msg.DepositAddress)
-	twilightAddress, e2 := sdk.AccAddressFromBech32(msg.TwilightDepositAddress)
+	btcAddr, e1 := types.NewBtcAddress(msg.BtcDepositAddress)
+	twilightAddress, e2 := sdk.AccAddressFromBech32(msg.TwilightAddress)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	}
 
+	// check if a btc address is already registered against this twilight address
 	address, foundExistingBtcAddress := k.VoltKeeper.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
 
 	if foundExistingBtcAddress {
-		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.DepositAddress)
+		return nil, sdkerrors.Wrap(types.ErrResetBtcAddress, address.BtcDepositAddress)
+	}
+
+	// check if a btc address is registered against *any other twilight address* as well
+	checkBtcAddress := k.VoltKeeper.CheckBtcAddress(ctx, twilightAddress, *btcAddr, msg.BtcSatoshiTestAmount)
+	if checkBtcAddress {
+		return nil, sdkerrors.Wrap(types.ErrBtcAddressAlreadyExists, btcAddr.GetBtcAddress())
 	}
 
 	// Convert msg.DepositAmount into sdk.Coins from uint64
-	depositAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(msg.DepositAmount))
+	depositAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(msg.TwilightStakingAmount))
 
 	// Get the account's balance in nyks
 	balance := k.BankKeeper.GetBalance(ctx, twilightAddress, "nyks")
@@ -55,11 +62,10 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, errTakeStake
 	}
 
-	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.DepositAmount)
+	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.TwilightStakingAmount, msg.BtcSatoshiTestAmount)
 	if errSetting != nil {
 		return nil, errSetting
 	}
-	ctx.Logger().Error("btcAddr: ", btcAddr)
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventRegisterBtcDepositAddress{

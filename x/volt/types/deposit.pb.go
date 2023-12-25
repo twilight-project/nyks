@@ -23,10 +23,12 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type BtcDepositAddress struct {
-	DepositAddress         string `protobuf:"bytes,1,opt,name=depositAddress,proto3" json:"depositAddress,omitempty"`
-	TwilightDepositAddress string `protobuf:"bytes,2,opt,name=twilightDepositAddress,proto3" json:"twilightDepositAddress,omitempty"`
-	DepositTestAmount      uint64 `protobuf:"varint,3,opt,name=depositTestAmount,proto3" json:"depositTestAmount,omitempty"`
-	IsConfirmed            bool   `protobuf:"varint,4,opt,name=isConfirmed,proto3" json:"isConfirmed,omitempty"`
+	BtcDepositAddress           string `protobuf:"bytes,1,opt,name=btcDepositAddress,proto3" json:"btcDepositAddress,omitempty"`
+	BtcSatoshiTestAmount        uint64 `protobuf:"varint,2,opt,name=btcSatoshiTestAmount,proto3" json:"btcSatoshiTestAmount,omitempty"`
+	TwilightStakingAmount       uint64 `protobuf:"varint,3,opt,name=twilightStakingAmount,proto3" json:"twilightStakingAmount,omitempty"`
+	TwilightAddress             string `protobuf:"bytes,4,opt,name=twilightAddress,proto3" json:"twilightAddress,omitempty"`
+	IsConfirmed                 bool   `protobuf:"varint,5,opt,name=isConfirmed,proto3" json:"isConfirmed,omitempty"`
+	CreationTwilightBlockHeight int64  `protobuf:"varint,6,opt,name=CreationTwilightBlockHeight,proto3" json:"CreationTwilightBlockHeight,omitempty"`
 }
 
 func (m *BtcDepositAddress) Reset()         { *m = BtcDepositAddress{} }
@@ -62,25 +64,32 @@ func (m *BtcDepositAddress) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_BtcDepositAddress proto.InternalMessageInfo
 
-func (m *BtcDepositAddress) GetDepositAddress() string {
+func (m *BtcDepositAddress) GetBtcDepositAddress() string {
 	if m != nil {
-		return m.DepositAddress
+		return m.BtcDepositAddress
 	}
 	return ""
 }
 
-func (m *BtcDepositAddress) GetTwilightDepositAddress() string {
+func (m *BtcDepositAddress) GetBtcSatoshiTestAmount() uint64 {
 	if m != nil {
-		return m.TwilightDepositAddress
-	}
-	return ""
-}
-
-func (m *BtcDepositAddress) GetDepositTestAmount() uint64 {
-	if m != nil {
-		return m.DepositTestAmount
+		return m.BtcSatoshiTestAmount
 	}
 	return 0
+}
+
+func (m *BtcDepositAddress) GetTwilightStakingAmount() uint64 {
+	if m != nil {
+		return m.TwilightStakingAmount
+	}
+	return 0
+}
+
+func (m *BtcDepositAddress) GetTwilightAddress() string {
+	if m != nil {
+		return m.TwilightAddress
+	}
+	return ""
 }
 
 func (m *BtcDepositAddress) GetIsConfirmed() bool {
@@ -90,6 +99,13 @@ func (m *BtcDepositAddress) GetIsConfirmed() bool {
 	return false
 }
 
+func (m *BtcDepositAddress) GetCreationTwilightBlockHeight() int64 {
+	if m != nil {
+		return m.CreationTwilightBlockHeight
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*BtcDepositAddress)(nil), "twilightproject.nyks.volt.BtcDepositAddress")
 }
@@ -97,22 +113,26 @@ func init() {
 func init() { proto.RegisterFile("nyks/volt/deposit.proto", fileDescriptor_2c34c643aa5b83eb) }
 
 var fileDescriptor_2c34c643aa5b83eb = []byte{
-	// 233 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xcf, 0xab, 0xcc, 0x2e,
-	0xd6, 0x2f, 0xcb, 0xcf, 0x29, 0xd1, 0x4f, 0x49, 0x2d, 0xc8, 0x2f, 0xce, 0x2c, 0xd1, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0x92, 0x2c, 0x29, 0xcf, 0xcc, 0xc9, 0x4c, 0xcf, 0x28, 0x29, 0x28, 0xca,
-	0xcf, 0x4a, 0x4d, 0x2e, 0xd1, 0x03, 0x29, 0xd4, 0x03, 0x29, 0x54, 0x3a, 0xcc, 0xc8, 0x25, 0xe8,
-	0x54, 0x92, 0xec, 0x02, 0x51, 0xef, 0x98, 0x92, 0x52, 0x94, 0x5a, 0x5c, 0x2c, 0xa4, 0xc6, 0xc5,
-	0x97, 0x82, 0x22, 0x22, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x19, 0x84, 0x26, 0x2a, 0x64, 0xc6, 0x25,
-	0x06, 0x33, 0x1a, 0xd5, 0x04, 0x09, 0x26, 0xb0, 0x7a, 0x1c, 0xb2, 0x42, 0x3a, 0x5c, 0x82, 0x50,
-	0x93, 0x42, 0x52, 0x8b, 0x4b, 0x1c, 0x73, 0xf3, 0x4b, 0xf3, 0x4a, 0x24, 0x98, 0x15, 0x18, 0x35,
-	0x58, 0x82, 0x30, 0x25, 0x84, 0x14, 0xb8, 0xb8, 0x33, 0x8b, 0x9d, 0xf3, 0xf3, 0xd2, 0x32, 0x8b,
-	0x72, 0x53, 0x53, 0x24, 0x58, 0x14, 0x18, 0x35, 0x38, 0x82, 0x90, 0x85, 0x9c, 0xdc, 0x4f, 0x3c,
-	0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e,
-	0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x37, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49,
-	0x2f, 0x39, 0x3f, 0x57, 0x1f, 0xe6, 0x18, 0x5d, 0x68, 0x30, 0xe8, 0x83, 0xc3, 0xab, 0x02, 0x12,
-	0x62, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x00, 0x33, 0x06, 0x04, 0x00, 0x00, 0xff,
-	0xff, 0x6c, 0xda, 0x58, 0x2b, 0x4b, 0x01, 0x00, 0x00,
+	// 290 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xcb, 0x4a, 0xc3, 0x40,
+	0x14, 0x86, 0x3b, 0x6d, 0x2d, 0x3a, 0x2e, 0xa4, 0x83, 0x62, 0x44, 0x18, 0x82, 0xab, 0x2c, 0x6c,
+	0x02, 0xea, 0x03, 0xd8, 0x54, 0xd0, 0x75, 0xda, 0x95, 0xbb, 0x5c, 0xc6, 0x64, 0xcc, 0xe5, 0x84,
+	0xcc, 0xa9, 0xda, 0xb7, 0xf0, 0x75, 0x7c, 0x03, 0x97, 0x5d, 0xba, 0x94, 0xe4, 0x45, 0x24, 0x69,
+	0x02, 0x52, 0x8b, 0xbb, 0xc3, 0x7f, 0x81, 0x8f, 0xf3, 0xd3, 0xd3, 0x6c, 0x15, 0x2b, 0xeb, 0x05,
+	0x12, 0xb4, 0x02, 0x91, 0x83, 0x92, 0x68, 0xe6, 0x05, 0x20, 0xb0, 0x33, 0x7c, 0x95, 0x89, 0x0c,
+	0x23, 0xcc, 0x0b, 0x78, 0x16, 0x3e, 0x9a, 0x75, 0xd0, 0xac, 0x83, 0x17, 0x1f, 0x7d, 0x3a, 0xb6,
+	0xd1, 0xbf, 0xdb, 0xe4, 0xa7, 0x41, 0x50, 0x08, 0xa5, 0xd8, 0x25, 0x1d, 0x7b, 0xdb, 0xa2, 0x46,
+	0x74, 0x62, 0x1c, 0x38, 0x7f, 0x0d, 0x76, 0x45, 0x8f, 0x3d, 0xf4, 0xe7, 0x2e, 0x82, 0x8a, 0xe4,
+	0x42, 0x28, 0x9c, 0xa6, 0xb0, 0xcc, 0x50, 0xeb, 0xeb, 0xc4, 0x18, 0x3a, 0x3b, 0x3d, 0x76, 0x43,
+	0x4f, 0x3a, 0xa8, 0x39, 0xba, 0xb1, 0xcc, 0xc2, 0xb6, 0x34, 0x68, 0x4a, 0xbb, 0x4d, 0x66, 0xd0,
+	0xa3, 0xce, 0xe8, 0xa8, 0x86, 0x0d, 0xd5, 0xb6, 0xcc, 0x74, 0x7a, 0x28, 0xd5, 0x0c, 0xb2, 0x27,
+	0x59, 0xa4, 0x22, 0xd0, 0xf6, 0x74, 0x62, 0xec, 0x3b, 0xbf, 0x25, 0x76, 0x4b, 0xcf, 0x67, 0x85,
+	0x70, 0x51, 0x42, 0xb6, 0x68, 0xcb, 0x76, 0x02, 0x7e, 0xfc, 0x20, 0xea, 0x53, 0x1b, 0xe9, 0xc4,
+	0x18, 0x38, 0xff, 0x45, 0xec, 0xfb, 0xcf, 0x92, 0x93, 0x75, 0xc9, 0xc9, 0x77, 0xc9, 0xc9, 0x7b,
+	0xc5, 0x7b, 0xeb, 0x8a, 0xf7, 0xbe, 0x2a, 0xde, 0x7b, 0x9c, 0x84, 0x12, 0xa3, 0xa5, 0x67, 0xfa,
+	0x90, 0x5a, 0x1d, 0xd9, 0xa4, 0x7d, 0xbe, 0xd5, 0xac, 0xf4, 0xb6, 0xd9, 0x09, 0x57, 0xb9, 0x50,
+	0xde, 0xa8, 0x99, 0xe9, 0xfa, 0x27, 0x00, 0x00, 0xff, 0xff, 0x10, 0x64, 0xdc, 0x7a, 0xc1, 0x01,
+	0x00, 0x00,
 }
 
 func (m *BtcDepositAddress) Marshal() (dAtA []byte, err error) {
@@ -135,6 +155,11 @@ func (m *BtcDepositAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.CreationTwilightBlockHeight != 0 {
+		i = encodeVarintDeposit(dAtA, i, uint64(m.CreationTwilightBlockHeight))
+		i--
+		dAtA[i] = 0x30
+	}
 	if m.IsConfirmed {
 		i--
 		if m.IsConfirmed {
@@ -143,24 +168,29 @@ func (m *BtcDepositAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x28
 	}
-	if m.DepositTestAmount != 0 {
-		i = encodeVarintDeposit(dAtA, i, uint64(m.DepositTestAmount))
+	if len(m.TwilightAddress) > 0 {
+		i -= len(m.TwilightAddress)
+		copy(dAtA[i:], m.TwilightAddress)
+		i = encodeVarintDeposit(dAtA, i, uint64(len(m.TwilightAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.TwilightStakingAmount != 0 {
+		i = encodeVarintDeposit(dAtA, i, uint64(m.TwilightStakingAmount))
 		i--
 		dAtA[i] = 0x18
 	}
-	if len(m.TwilightDepositAddress) > 0 {
-		i -= len(m.TwilightDepositAddress)
-		copy(dAtA[i:], m.TwilightDepositAddress)
-		i = encodeVarintDeposit(dAtA, i, uint64(len(m.TwilightDepositAddress)))
+	if m.BtcSatoshiTestAmount != 0 {
+		i = encodeVarintDeposit(dAtA, i, uint64(m.BtcSatoshiTestAmount))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x10
 	}
-	if len(m.DepositAddress) > 0 {
-		i -= len(m.DepositAddress)
-		copy(dAtA[i:], m.DepositAddress)
-		i = encodeVarintDeposit(dAtA, i, uint64(len(m.DepositAddress)))
+	if len(m.BtcDepositAddress) > 0 {
+		i -= len(m.BtcDepositAddress)
+		copy(dAtA[i:], m.BtcDepositAddress)
+		i = encodeVarintDeposit(dAtA, i, uint64(len(m.BtcDepositAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -184,19 +214,25 @@ func (m *BtcDepositAddress) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.DepositAddress)
+	l = len(m.BtcDepositAddress)
 	if l > 0 {
 		n += 1 + l + sovDeposit(uint64(l))
 	}
-	l = len(m.TwilightDepositAddress)
+	if m.BtcSatoshiTestAmount != 0 {
+		n += 1 + sovDeposit(uint64(m.BtcSatoshiTestAmount))
+	}
+	if m.TwilightStakingAmount != 0 {
+		n += 1 + sovDeposit(uint64(m.TwilightStakingAmount))
+	}
+	l = len(m.TwilightAddress)
 	if l > 0 {
 		n += 1 + l + sovDeposit(uint64(l))
-	}
-	if m.DepositTestAmount != 0 {
-		n += 1 + sovDeposit(uint64(m.DepositTestAmount))
 	}
 	if m.IsConfirmed {
 		n += 2
+	}
+	if m.CreationTwilightBlockHeight != 0 {
+		n += 1 + sovDeposit(uint64(m.CreationTwilightBlockHeight))
 	}
 	return n
 }
@@ -238,7 +274,7 @@ func (m *BtcDepositAddress) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcDepositAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -266,13 +302,13 @@ func (m *BtcDepositAddress) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.DepositAddress = string(dAtA[iNdEx:postIndex])
+			m.BtcDepositAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TwilightDepositAddress", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcSatoshiTestAmount", wireType)
 			}
-			var stringLen uint64
+			m.BtcSatoshiTestAmount = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowDeposit
@@ -282,29 +318,16 @@ func (m *BtcDepositAddress) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.BtcSatoshiTestAmount |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDeposit
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDeposit
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.TwilightDepositAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositTestAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TwilightStakingAmount", wireType)
 			}
-			m.DepositTestAmount = 0
+			m.TwilightStakingAmount = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowDeposit
@@ -314,12 +337,44 @@ func (m *BtcDepositAddress) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DepositTestAmount |= uint64(b&0x7F) << shift
+				m.TwilightStakingAmount |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TwilightAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeposit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDeposit
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDeposit
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TwilightAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field IsConfirmed", wireType)
 			}
@@ -339,6 +394,25 @@ func (m *BtcDepositAddress) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.IsConfirmed = bool(v != 0)
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationTwilightBlockHeight", wireType)
+			}
+			m.CreationTwilightBlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeposit
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreationTwilightBlockHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDeposit(dAtA[iNdEx:])

@@ -39,11 +39,15 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
-	// set propose sweep address
+	// Set propose sweep address
 	errSet := k.SetProposeSweepAddress(ctx, *btcAddr, msg.BtcScript, msg.ReserveId, msg.RoundId, judgeAddress)
 	if errSet != nil {
 		return nil, sdkerrors.Wrap(errSet, "Could not set the propose sweep address")
 	}
+
+	// We need to set a variable in the store that will indicate new sweep proposal has been made
+	// This is used to process withdraw snapshot in the volt module's endblocker
+	k.VoltKeeper.SetNewSweepProposalReceived(ctx, msg.ReserveId, msg.RoundId)
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventProposeSweepAddress{

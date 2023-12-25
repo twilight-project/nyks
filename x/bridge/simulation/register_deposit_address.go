@@ -19,7 +19,7 @@ func SimulateMsgRegisterDepositAddress(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgRegisterBtcDepositAddress{
-			TwilightDepositAddress: simAccount.Address.String(),
+			TwilightAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the RegisterDepositAddress simulation

@@ -27301,52 +27301,6 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /twilight-project/nyks/bridge/broadcast_refund_all:
-    get:
-      summary: Queries a list of BroadcastTxSweepAll items.
-      operationId: TwilightprojectNyksBridgeBroadcastTxSweepAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              BroadcastTxSweepMsg:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    reserveId:
-                      type: string
-                      format: uint64
-                    roundId:
-                      type: string
-                      format: uint64
-                    signedSweepTx:
-                      type: string
-                    judgeAddress:
-                      type: string
-                  title: 7. MsgBroadcastTxSweep
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /twilight-project/nyks/bridge/broadcast_tx_refund/{reserveId}/{roundId}:
     get:
       summary: Queries a list of BroadcastTxRefund items.
@@ -27501,6 +27455,52 @@ paths:
           required: true
           type: string
           format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/bridge/broadcast_tx_sweep_all:
+    get:
+      summary: Queries a list of BroadcastTxSweepAll items.
+      operationId: TwilightprojectNyksBridgeBroadcastTxSweepAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BroadcastTxSweepMsg:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signedSweepTx:
+                      type: string
+                    judgeAddress:
+                      type: string
+                  title: 7. MsgBroadcastTxSweep
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /twilight-project/nyks/bridge/params:
@@ -27786,15 +27786,22 @@ paths:
                 items:
                   type: object
                   properties:
-                    depositAddress:
+                    btcDepositAddress:
                       type: string
-                    twilightDepositAddress:
-                      type: string
-                    depositTestAmount:
+                    btcSatoshiTestAmount:
                       type: string
                       format: uint64
+                    twilightStakingAmount:
+                      type: string
+                      format: uint64
+                      title: make it constant through gov proposal
+                    twilightAddress:
+                      type: string
                     isConfirmed:
                       type: boolean
+                    CreationTwilightBlockHeight:
+                      type: string
+                      format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -27949,21 +27956,25 @@ paths:
             type: object
             properties:
               signRefundMsg:
-                type: object
-                properties:
-                  reserveId:
-                    type: string
-                    format: uint64
-                  roundId:
-                    type: string
-                    format: uint64
-                  signerPublicKey:
-                    type: string
-                  refundSignature:
-                    type: string
-                  btcOracleAddress:
-                    type: string
-                title: 4. MsgSignRefund
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
+                      type: string
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    refundSignature:
+                      type: array
+                      items:
+                        type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 4. MsgSignRefund
         default:
           description: An unexpected error response.
           schema:
@@ -28019,7 +28030,9 @@ paths:
                     signerPublicKey:
                       type: string
                     refundSignature:
-                      type: string
+                      type: array
+                      items:
+                        type: string
                     btcOracleAddress:
                       type: string
                   title: 4. MsgSignRefund
@@ -28054,23 +28067,25 @@ paths:
             type: object
             properties:
               signSweepMsg:
-                type: object
-                properties:
-                  reserveId:
-                    type: string
-                    format: uint64
-                  roundId:
-                    type: string
-                    format: uint64
-                  signerPublicKey:
-                    type: string
-                  sweepSignature:
-                    type: array
-                    items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reserveId:
                       type: string
-                  btcOracleAddress:
-                    type: string
-                title: 5. MsgSignSweep
+                      format: uint64
+                    roundId:
+                      type: string
+                      format: uint64
+                    signerPublicKey:
+                      type: string
+                    sweepSignature:
+                      type: array
+                      items:
+                        type: string
+                    btcOracleAddress:
+                      type: string
+                  title: 5. MsgSignSweep
         default:
           description: An unexpected error response.
           schema:
@@ -28385,16 +28400,28 @@ paths:
                 items:
                   type: object
                   properties:
+                    withdrawIdentifier:
+                      type: integer
+                      format: int64
                     withdrawAddress:
                       type: string
-                    reserveAddress:
+                    withdrawReserveId:
                       type: string
+                      format: uint64
                     withdrawAmount:
                       type: string
                       format: uint64
+                      title: in satoshis
                     twilightAddress:
                       type: string
-                  title: 'this line is used by starport scaffolding # proto/tx/message'
+                    isConfirmed:
+                      type: boolean
+                    CreationTwilightBlockHeight:
+                      type: string
+                      format: int64
+                  title: >-
+                    Chain creates an internal mapping with identifier and bool
+                    confirmed
         default:
           description: An unexpected error response.
           schema:
@@ -29545,6 +29572,80 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
+  /twilight-project/nyks/volt/btc_withdraw_request/{twilightAddress}:
+    get:
+      summary: Queries a list of BtcWithdrawRequest items.
+      operationId: TwilightprojectNyksVoltBtcWithdrawRequest
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              BtcWithdrawRequest:
+                type: object
+                properties:
+                  withdrawIdentifier:
+                    type: integer
+                    format: int64
+                  withdrawAddress:
+                    type: string
+                  withdrawReserveId:
+                    type: string
+                    format: uint64
+                  withdrawAmount:
+                    type: string
+                    format: uint64
+                    title: in satoshis
+                  twilightAddress:
+                    type: string
+                  isConfirmed:
+                    type: boolean
+                  CreationTwilightBlockHeight:
+                    type: string
+                    format: int64
+                title: >-
+                  Chain creates an internal mapping with identifier and bool
+                  confirmed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: twilightAddress
+          in: path
+          required: true
+          type: string
+        - name: reserveId
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: btcAddress
+          in: query
+          required: false
+          type: string
+        - name: withdrawAmount
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/volt/clearing_account/{twilightAddress}:
     get:
       summary: Queries a list of ClearingAccount items.
@@ -29643,6 +29744,279 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /twilight-project/nyks/volt/refund_tx_snapshot/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of RefundTxSnapshot items.
+      operationId: TwilightprojectNyksVoltRefundTxSnapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              RefundTxSnapshot:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  RoundId:
+                    type: string
+                    format: uint64
+                  refundAccounts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Amount:
+                          type: string
+                          format: uint64
+                        BtcDepositAddress:
+                          type: string
+                        BtcDepositAddressIdentifier:
+                          type: integer
+                          format: int64
+                      title: >-
+                        RefundTxSnap is used to keep a mapping of the last
+                        refund transaction for a reserve
+                  EndBlockerHeightTwilight:
+                    type: string
+                    format: int64
+                title: >-
+                  LastRefundTxSnapshot is a snapshot of the last refund for this
+                  reserve id
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}:
+    get:
+      summary: Queries a list of ReserveClearingAccountsAll items.
+      operationId: TwilightprojectNyksVoltReserveClearingAccountsAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveClearingAccountsAll:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    TwilightAddress:
+                      type: string
+                    BtcDepositAddress:
+                      type: string
+                    BtcDepositAddressIdentifier:
+                      type: integer
+                      format: int64
+                    BtcWithdrawAddress:
+                      type: string
+                    BtcWithdrawAddressIdentifier:
+                      type: integer
+                      format: int64
+                    ReserveAccountBalances:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          ReserveId:
+                            type: string
+                            format: uint64
+                          Amount:
+                            type: string
+                            format: uint64
+                  title: >-
+                    ClearingAccount is used to keep a mapping of how a user's
+                    addresses and its reserve account balances
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/reserve_withdraw_pool/{reserveId}:
+    get:
+      summary: Queries a list of ReserveWithdrawPool items.
+      operationId: TwilightprojectNyksVoltReserveWithdrawPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveWithdrawPool:
+                type: object
+                properties:
+                  ReserveID:
+                    type: string
+                    format: uint64
+                  RoundID:
+                    type: string
+                    format: uint64
+                  processingWithdrawIdentifiers:
+                    type: array
+                    items:
+                      type: integer
+                      format: int64
+                    title: Currently being processed
+                  queuedWithdrawIdentifiers:
+                    type: array
+                    items:
+                      type: integer
+                      format: int64
+                    title: Waiting to be processed
+                  currentProcessingIndex:
+                    type: integer
+                    format: int64
+                    title: Index of the last processed withdraw
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/reserve_withdraw_snapshot/{reserveId}/{roundId}:
+    get:
+      summary: Queries a list of ReserveWithdrawSnapshot items.
+      operationId: TwilightprojectNyksVoltReserveWithdrawSnapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ReserveWithdrawSnapshot:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  RoundId:
+                    type: string
+                    format: uint64
+                  withdrawRequests:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        withdrawIdentifier:
+                          type: integer
+                          format: int64
+                        withdrawAddress:
+                          type: string
+                        withdrawAmount:
+                          type: string
+                          format: uint64
+                      title: >-
+                        WithdrawRequestSnap is a snapshot of the withdraw
+                        request
+                  EndBlockerHeightTwilight:
+                    type: string
+                    format: int64
+                title: >-
+                  ReserveWithdrawSnapshot is a snapshot of the reserve withdraw,
+                  its used in sweep to know which withdraws are currently being
+                  processed
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: reserveId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /twilight-project/nyks/zkos/mint_or_burn_trading_btc/{twilightAddress}:
@@ -29749,6 +30123,9 @@ paths:
                     type: string
                   txByteCode:
                     type: string
+                  txFee:
+                    type: string
+                    format: uint64
                   zkOracleAddress:
                     type: string
         default:
@@ -48610,7 +48987,9 @@ definitions:
       signerPublicKey:
         type: string
       refundSignature:
-        type: string
+        type: array
+        items:
+          type: string
       btcOracleAddress:
         type: string
     title: 4. MsgSignRefund
@@ -48672,21 +49051,12 @@ definitions:
     title: 2. MsgUnsignedTxSweep
   twilightproject.nyks.bridge.MsgUnsignedTxSweepResponse:
     type: object
-  twilightproject.nyks.bridge.MsgWithdrawBtcRequest:
-    type: object
-    properties:
-      withdrawAddress:
-        type: string
-      reserveAddress:
-        type: string
-      withdrawAmount:
-        type: string
-        format: uint64
-      twilightAddress:
-        type: string
-    title: 'this line is used by starport scaffolding # proto/tx/message'
   twilightproject.nyks.bridge.MsgWithdrawBtcRequestResponse:
     type: object
+    properties:
+      withdrawIdentifer:
+        type: integer
+        format: int64
   twilightproject.nyks.bridge.MsgWithdrawTxFinalResponse:
     type: object
   twilightproject.nyks.bridge.MsgWithdrawTxSignedResponse:
@@ -48851,15 +49221,22 @@ definitions:
         items:
           type: object
           properties:
-            depositAddress:
+            btcDepositAddress:
               type: string
-            twilightDepositAddress:
-              type: string
-            depositTestAmount:
+            btcSatoshiTestAmount:
               type: string
               format: uint64
+            twilightStakingAmount:
+              type: string
+              format: uint64
+              title: make it constant through gov proposal
+            twilightAddress:
+              type: string
             isConfirmed:
               type: boolean
+            CreationTwilightBlockHeight:
+              type: string
+              format: int64
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
@@ -48914,7 +49291,9 @@ definitions:
             signerPublicKey:
               type: string
             refundSignature:
-              type: string
+              type: array
+              items:
+                type: string
             btcOracleAddress:
               type: string
           title: 4. MsgSignRefund
@@ -48922,21 +49301,25 @@ definitions:
     type: object
     properties:
       signRefundMsg:
-        type: object
-        properties:
-          reserveId:
-            type: string
-            format: uint64
-          roundId:
-            type: string
-            format: uint64
-          signerPublicKey:
-            type: string
-          refundSignature:
-            type: string
-          btcOracleAddress:
-            type: string
-        title: 4. MsgSignRefund
+        type: array
+        items:
+          type: object
+          properties:
+            reserveId:
+              type: string
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
+            signerPublicKey:
+              type: string
+            refundSignature:
+              type: array
+              items:
+                type: string
+            btcOracleAddress:
+              type: string
+          title: 4. MsgSignRefund
   twilightproject.nyks.bridge.QuerySignSweepAllResponse:
     type: object
     properties:
@@ -48964,23 +49347,25 @@ definitions:
     type: object
     properties:
       signSweepMsg:
-        type: object
-        properties:
-          reserveId:
-            type: string
-            format: uint64
-          roundId:
-            type: string
-            format: uint64
-          signerPublicKey:
-            type: string
-          sweepSignature:
-            type: array
-            items:
+        type: array
+        items:
+          type: object
+          properties:
+            reserveId:
               type: string
-          btcOracleAddress:
-            type: string
-        title: 5. MsgSignSweep
+              format: uint64
+            roundId:
+              type: string
+              format: uint64
+            signerPublicKey:
+              type: string
+            sweepSignature:
+              type: array
+              items:
+                type: string
+            btcOracleAddress:
+              type: string
+          title: 5. MsgSignSweep
   twilightproject.nyks.bridge.QueryUnsignedTxRefundAllResponse:
     type: object
     properties:
@@ -49065,28 +49450,68 @@ definitions:
         items:
           type: object
           properties:
+            withdrawIdentifier:
+              type: integer
+              format: int64
             withdrawAddress:
               type: string
-            reserveAddress:
+            withdrawReserveId:
               type: string
+              format: uint64
             withdrawAmount:
               type: string
               format: uint64
+              title: in satoshis
             twilightAddress:
               type: string
-          title: 'this line is used by starport scaffolding # proto/tx/message'
+            isConfirmed:
+              type: boolean
+            CreationTwilightBlockHeight:
+              type: string
+              format: int64
+          title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.volt.BtcDepositAddress:
     type: object
     properties:
-      depositAddress:
+      btcDepositAddress:
         type: string
-      twilightDepositAddress:
-        type: string
-      depositTestAmount:
+      btcSatoshiTestAmount:
         type: string
         format: uint64
+      twilightStakingAmount:
+        type: string
+        format: uint64
+        title: make it constant through gov proposal
+      twilightAddress:
+        type: string
       isConfirmed:
         type: boolean
+      CreationTwilightBlockHeight:
+        type: string
+        format: int64
+  twilightproject.nyks.volt.BtcWithdrawRequestInternal:
+    type: object
+    properties:
+      withdrawIdentifier:
+        type: integer
+        format: int64
+      withdrawAddress:
+        type: string
+      withdrawReserveId:
+        type: string
+        format: uint64
+      withdrawAmount:
+        type: string
+        format: uint64
+        title: in satoshis
+      twilightAddress:
+        type: string
+      isConfirmed:
+        type: boolean
+      CreationTwilightBlockHeight:
+        type: string
+        format: int64
+    title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.forks.Attestation:
     type: object
     properties:
@@ -49661,6 +50086,32 @@ definitions:
 
             value, private pool value, public pool value, and the btc relay
             capacity value
+  twilightproject.nyks.volt.QueryBtcWithdrawRequestResponse:
+    type: object
+    properties:
+      BtcWithdrawRequest:
+        type: object
+        properties:
+          withdrawIdentifier:
+            type: integer
+            format: int64
+          withdrawAddress:
+            type: string
+          withdrawReserveId:
+            type: string
+            format: uint64
+          withdrawAmount:
+            type: string
+            format: uint64
+            title: in satoshis
+          twilightAddress:
+            type: string
+          isConfirmed:
+            type: boolean
+          CreationTwilightBlockHeight:
+            type: string
+            format: int64
+        title: Chain creates an internal mapping with identifier and bool confirmed
   twilightproject.nyks.volt.QueryClearingAccountResponse:
     type: object
     properties:
@@ -49700,6 +50151,243 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.volt.QueryRefundTxSnapshotResponse:
+    type: object
+    properties:
+      RefundTxSnapshot:
+        type: object
+        properties:
+          ReserveId:
+            type: string
+            format: uint64
+          RoundId:
+            type: string
+            format: uint64
+          refundAccounts:
+            type: array
+            items:
+              type: object
+              properties:
+                Amount:
+                  type: string
+                  format: uint64
+                BtcDepositAddress:
+                  type: string
+                BtcDepositAddressIdentifier:
+                  type: integer
+                  format: int64
+              title: >-
+                RefundTxSnap is used to keep a mapping of the last refund
+                transaction for a reserve
+          EndBlockerHeightTwilight:
+            type: string
+            format: int64
+        title: >-
+          LastRefundTxSnapshot is a snapshot of the last refund for this reserve
+          id
+  twilightproject.nyks.volt.QueryReserveClearingAccountsAllResponse:
+    type: object
+    properties:
+      ReserveClearingAccountsAll:
+        type: array
+        items:
+          type: object
+          properties:
+            TwilightAddress:
+              type: string
+            BtcDepositAddress:
+              type: string
+            BtcDepositAddressIdentifier:
+              type: integer
+              format: int64
+            BtcWithdrawAddress:
+              type: string
+            BtcWithdrawAddressIdentifier:
+              type: integer
+              format: int64
+            ReserveAccountBalances:
+              type: array
+              items:
+                type: object
+                properties:
+                  ReserveId:
+                    type: string
+                    format: uint64
+                  Amount:
+                    type: string
+                    format: uint64
+          title: >-
+            ClearingAccount is used to keep a mapping of how a user's addresses
+            and its reserve account balances
+  twilightproject.nyks.volt.QueryReserveWithdrawPoolResponse:
+    type: object
+    properties:
+      ReserveWithdrawPool:
+        type: object
+        properties:
+          ReserveID:
+            type: string
+            format: uint64
+          RoundID:
+            type: string
+            format: uint64
+          processingWithdrawIdentifiers:
+            type: array
+            items:
+              type: integer
+              format: int64
+            title: Currently being processed
+          queuedWithdrawIdentifiers:
+            type: array
+            items:
+              type: integer
+              format: int64
+            title: Waiting to be processed
+          currentProcessingIndex:
+            type: integer
+            format: int64
+            title: Index of the last processed withdraw
+  twilightproject.nyks.volt.QueryReserveWithdrawSnapshotResponse:
+    type: object
+    properties:
+      ReserveWithdrawSnapshot:
+        type: object
+        properties:
+          ReserveId:
+            type: string
+            format: uint64
+          RoundId:
+            type: string
+            format: uint64
+          withdrawRequests:
+            type: array
+            items:
+              type: object
+              properties:
+                withdrawIdentifier:
+                  type: integer
+                  format: int64
+                withdrawAddress:
+                  type: string
+                withdrawAmount:
+                  type: string
+                  format: uint64
+              title: WithdrawRequestSnap is a snapshot of the withdraw request
+          EndBlockerHeightTwilight:
+            type: string
+            format: int64
+        title: >-
+          ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its
+          used in sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.RefundTxAccountSnap:
+    type: object
+    properties:
+      Amount:
+        type: string
+        format: uint64
+      BtcDepositAddress:
+        type: string
+      BtcDepositAddressIdentifier:
+        type: integer
+        format: int64
+    title: >-
+      RefundTxSnap is used to keep a mapping of the last refund transaction for
+      a reserve
+  twilightproject.nyks.volt.RefundTxSnapshot:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      RoundId:
+        type: string
+        format: uint64
+      refundAccounts:
+        type: array
+        items:
+          type: object
+          properties:
+            Amount:
+              type: string
+              format: uint64
+            BtcDepositAddress:
+              type: string
+            BtcDepositAddressIdentifier:
+              type: integer
+              format: int64
+          title: >-
+            RefundTxSnap is used to keep a mapping of the last refund
+            transaction for a reserve
+      EndBlockerHeightTwilight:
+        type: string
+        format: int64
+    title: LastRefundTxSnapshot is a snapshot of the last refund for this reserve id
+  twilightproject.nyks.volt.ReserveWithdrawPool:
+    type: object
+    properties:
+      ReserveID:
+        type: string
+        format: uint64
+      RoundID:
+        type: string
+        format: uint64
+      processingWithdrawIdentifiers:
+        type: array
+        items:
+          type: integer
+          format: int64
+        title: Currently being processed
+      queuedWithdrawIdentifiers:
+        type: array
+        items:
+          type: integer
+          format: int64
+        title: Waiting to be processed
+      currentProcessingIndex:
+        type: integer
+        format: int64
+        title: Index of the last processed withdraw
+  twilightproject.nyks.volt.ReserveWithdrawSnapshot:
+    type: object
+    properties:
+      ReserveId:
+        type: string
+        format: uint64
+      RoundId:
+        type: string
+        format: uint64
+      withdrawRequests:
+        type: array
+        items:
+          type: object
+          properties:
+            withdrawIdentifier:
+              type: integer
+              format: int64
+            withdrawAddress:
+              type: string
+            withdrawAmount:
+              type: string
+              format: uint64
+          title: WithdrawRequestSnap is a snapshot of the withdraw request
+      EndBlockerHeightTwilight:
+        type: string
+        format: int64
+    title: >-
+      ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in
+      sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.WithdrawRequestSnap:
+    type: object
+    properties:
+      withdrawIdentifier:
+        type: integer
+        format: int64
+      withdrawAddress:
+        type: string
+      withdrawAmount:
+        type: string
+        format: uint64
+    title: WithdrawRequestSnap is a snapshot of the withdraw request
   twilightproject.nyks.zkos.MsgMintBurnTradingBtc:
     type: object
     properties:
@@ -49723,6 +50411,9 @@ definitions:
         type: string
       txByteCode:
         type: string
+      txFee:
+        type: string
+        format: uint64
       zkOracleAddress:
         type: string
   twilightproject.nyks.zkos.MsgTransferTxResponse:
@@ -49766,5 +50457,8 @@ definitions:
             type: string
           txByteCode:
             type: string
+          txFee:
+            type: string
+            format: uint64
           zkOracleAddress:
             type: string

@@ -20,9 +20,3 @@ message BtcReserve {
     uint64  UnlockHeight = 9;
     uint64  RoundId = 10;
 }
-
-message ReserveWithdrawPool {
-    uint64 ReserveID = 1;
-    uint64 RoundID = 2;
-    repeated bytes Identifiers = 3; //vector of identifiers 
-}

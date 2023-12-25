@@ -638,7 +638,7 @@ func New(
 		panic(err)
 	}
 
-	app.SetAnteHandler(anteHandler)
+	app.SetAnteHandler(CustomAnteHandler(anteHandler))
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {

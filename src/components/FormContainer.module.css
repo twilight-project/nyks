@@ -1,0 +1,161 @@
+.groupChild {
+  position: absolute;
+  height: 51.55%;
+  width: 23.09%;
+  top: 37.62%;
+  right: 59.31%;
+  bottom: 10.83%;
+  left: 17.6%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+.div {
+  position: absolute;
+  top: 95.37%;
+  left: 20.77%;
+  font-size: 0.47em;
+}
+.div1 {
+  position: absolute;
+  top: 95.37%;
+  left: 51.43%;
+  font-size: 0.47em;
+}
+.j {
+  position: absolute;
+  top: 5.14%;
+  left: 70.42%;
+  font-size: 0.36em;
+  background: linear-gradient(90deg, #f84952, #f9963e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.j1 {
+  position: absolute;
+  top: 5.14%;
+  left: 0%;
+  font-size: 0.36em;
+  background: linear-gradient(90deg, #f84952, #f9963e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.groupItem {
+  position: absolute;
+  height: 100.54%;
+  width: 55.14%;
+  top: -0.27%;
+  right: -0.32%;
+  bottom: -0.27%;
+  left: 45.18%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+.jParent {
+  position: absolute;
+  height: 51.27%;
+  width: 41.87%;
+  top: 38.82%;
+  right: 29.86%;
+  bottom: 9.9%;
+  left: 28.27%;
+}
+.groupInner {
+  position: absolute;
+  height: 3.13%;
+  width: 100%;
+  top: 48.96%;
+  right: 0%;
+  bottom: 47.92%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+.rectangleDiv {
+  position: absolute;
+  height: 100%;
+  width: 11.12%;
+  top: 0%;
+  right: 69.52%;
+  bottom: 0%;
+  left: 19.35%;
+  background-color: #7d40dc;
+}
+.groupChild1 {
+  position: absolute;
+  height: 100%;
+  width: 11.12%;
+  top: 0%;
+  right: 44.61%;
+  bottom: 0%;
+  left: 44.26%;
+  background-color: #8e4ee3;
+}
+.groupChild2 {
+  position: absolute;
+  height: 100%;
+  width: 11.12%;
+  top: 0%;
+  right: 19.7%;
+  bottom: 0%;
+  left: 69.18%;
+  background-color: #9955e7;
+}
+.vectorParent {
+  position: absolute;
+  height: 8.88%;
+  width: 58.09%;
+  top: 7.96%;
+  right: 26.29%;
+  bottom: 83.16%;
+  left: 15.62%;
+}
+.layer11 {
+  position: absolute;
+  height: 12.82%;
+  width: 9.32%;
+  top: 21.29%;
+  right: 68.6%;
+  bottom: 65.9%;
+  left: 22.08%;
+  overflow: hidden;
+}
+.groupChild3 {
+  position: absolute;
+  height: 26.15%;
+  width: 44.6%;
+  top: 26.15%;
+  right: 10.8%;
+  bottom: 47.71%;
+  left: 44.6%;
+  background: linear-gradient(270deg, #000 50%, rgba(0, 0, 0, 0));
+  transform: rotate(180deg);
+  transform-origin: 0 0;
+}
+.groupChild4 {
+  position: absolute;
+  height: 26.15%;
+  width: 44.6%;
+  top: 26.15%;
+  right: 0%;
+  bottom: 47.71%;
+  left: 55.4%;
+  background: linear-gradient(270deg, #000 50%, rgba(0, 0, 0, 0));
+}
+.groupParent {
+  position: absolute;
+  height: 17.06%;
+  width: 17.19%;
+  top: 78%;
+  right: 34.08%;
+  bottom: 4.94%;
+  left: 48.73%;
+  text-align: left;
+  color: #fff;
+  font-family: "Andale Mono";
+}

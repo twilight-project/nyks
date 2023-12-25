@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "nyks/bridge/tx.proto";
 import "nyks/bridge/params.proto";
 import "nyks/volt/deposit.proto";
+import "nyks/volt/withdraw.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -80,7 +81,7 @@ service Query {
   
   // Queries a list of BroadcastTxSweepAll items.
   rpc BroadcastTxSweepAll (QueryBroadcastTxSweepAllRequest) returns (QueryBroadcastTxSweepAllResponse) {
-    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_refund_all";
+    option (google.api.http).get = "/twilight-project/nyks/bridge/broadcast_tx_sweep_all";
   
   }
   
@@ -216,7 +217,7 @@ message QueryRegisteredJudgesResponse {
 message QueryWithdrawBtcRequestAllRequest {}
 
 message QueryWithdrawBtcRequestAllResponse {
-  repeated MsgWithdrawBtcRequest withdrawRequest = 1 [(gogoproto.nullable) = false];
+  repeated volt.BtcWithdrawRequestInternal withdrawRequest = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryProposeRefundHashAllRequest {}
@@ -287,7 +288,7 @@ message QuerySignRefundRequest {
 }
 
 message QuerySignRefundResponse {
-  MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
+  repeated MsgSignRefund signRefundMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySignRefundAllRequest {}
@@ -303,7 +304,7 @@ message QuerySignSweepRequest {
 }
 
 message QuerySignSweepResponse {
-  MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
+  repeated MsgSignSweep signSweepMsg = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySignSweepAllRequest {}

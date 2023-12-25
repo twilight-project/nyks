@@ -22,5 +22,5 @@ func (k Keeper) SignRefund(goCtx context.Context, req *types.QuerySignRefundRequ
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "A BtcSignRefundMsg doesn't exist with the given reserveId or roundId")
 	}
 
-	return &types.QuerySignRefundResponse{SignRefundMsg: *signRefundMsg}, nil
+	return &types.QuerySignRefundResponse{SignRefundMsg: signRefundMsg}, nil
 }

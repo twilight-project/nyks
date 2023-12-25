@@ -9,16 +9,16 @@ accounts:
 - name: alice
   coins:
   - 100000000nyks
-  - 0btc
+  - 0sats
 - name: bob
   coins:
   - 100000000nyks
-  - 0btc
+  - 0sats
 faucet:
   name: bob
   coins:
   - 100000nyks
-  - 1btc
+  - 1sats
   host: 0.0.0.0:4500
 client:
   vuex:

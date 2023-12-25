@@ -18,8 +18,8 @@ type (
 		memKey        sdk.StoreKey
 		paramstore    paramtypes.Subspace
 		accountKeeper types.AccountKeeper
-		bankKeeper    types.BankKeeper
-		bridgeKeeper  types.BridgeKeeper
+		BankKeeper    types.BankKeeper
+		BridgeKeeper  types.BridgeKeeper
 	}
 )
 
@@ -29,8 +29,8 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 	accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper,
-	bridgeKeeper types.BridgeKeeper,
+	BankKeeper types.BankKeeper,
+	BridgeKeeper types.BridgeKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -44,9 +44,20 @@ func NewKeeper(
 		memKey:        memKey,
 		paramstore:    ps,
 		accountKeeper: accountKeeper,
-		bankKeeper:    bankKeeper,
-		bridgeKeeper:  bridgeKeeper,
+		BankKeeper:    BankKeeper,
+		BridgeKeeper:  BridgeKeeper,
 	}
+}
+
+// Store and Codec are used to access keeper in EndBlocker
+// Store returns the KVStore for the volt module
+func (k Keeper) Store(ctx sdk.Context) sdk.KVStore {
+	return ctx.KVStore(k.storeKey)
+}
+
+// Codec returns the codec for the volt module
+func (k Keeper) Codec() codec.BinaryCodec {
+	return k.cdc
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

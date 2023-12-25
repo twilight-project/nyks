@@ -44,6 +44,21 @@ var (
 
 	// BtcDepositKey is the key for the user deposit
 	BtcDepositKey = forkstypes.HashString("BtcDepositKey")
+
+	// BtcWithdrawRequestKey is the key for the user withdraw request
+	BtcWithdrawRequestKey = forkstypes.HashString("BtcWithdrawRequestKey")
+
+	// ReserveWithdrawPoolKey is the key for the reserve withdraw pool
+	ReserveWithdrawPoolKey = forkstypes.HashString("ReserveWithdrawPoolKey")
+
+	// NewSweepProposalReceivedKey is the key for the new sweep proposal received
+	NewSweepProposalReceivedKey = forkstypes.HashString("NewSweepProposalReceivedKey")
+
+	// ReserveWithdrawSnapshotKey is the key for the last withdraw snapshot
+	ReserveWithdrawSnapshotKey = forkstypes.HashString("LastWithdrawSnapshotKey")
+
+	// RefundTxSnapshotKey is the key for the last refund tx snapshot
+	RefundTxSnapshotKey = forkstypes.HashString("LastRefundTxSnapshotKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -90,3 +105,79 @@ func GetBtcDepositKey(twilightAddress sdk.AccAddress) []byte {
 
 	return forkstypes.AppendBytes(BtcDepositKey, twilightAddress.Bytes())
 }
+
+// GetBtcWithdrawRequestKeyInternal returns the following key format
+// [HashString("BtcWithdrawRequestKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][reserveAddress][withdrawAddress][withdrawAmount]
+func GetBtcWithdrawRequestKeyInternal(twilightAddress sdk.AccAddress, reserveId uint64, withdrawAddress string, withdrawAmount uint64) []byte {
+	if err := sdk.VerifyAddressFormat(twilightAddress); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid twilight address"))
+	}
+
+	withdrawAmountBuf := new(bytes.Buffer)
+	err := binary.Write(withdrawAmountBuf, binary.LittleEndian, withdrawAmount)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	reserveBufBytes := new(bytes.Buffer)
+	err = binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(BtcWithdrawRequestKey, twilightAddress.Bytes(), reserveBufBytes.Bytes(), []byte(withdrawAddress), withdrawAmountBuf.Bytes())
+}
+
+// GetReserveWithdrawPoolKey returns the following key format
+// [HashString("ReserveWithdrawPoolKey")][1]
+func GetReserveWithdrawPoolKey(reserveId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(ReserveWithdrawPoolKey, reserveBufBytes.Bytes())
+}
+
+// GetNewSweepProposalReceivedKey returns the following key format
+// [HashString("NewSweepProposalReceivedKey")][1][1]
+func GetNewSweepProposalReceivedKey() []byte {
+	return NewSweepProposalReceivedKey
+}
+
+// GetReserveWithdrawSnapshotKey returns the following key format
+// [HashString("LastReserveWithdrawSnapshotKey")][1][1]
+func GetReserveWithdrawSnapshotKey(reserveId uint64, roundId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	roundBufBytes := new(bytes.Buffer)
+	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(ReserveWithdrawSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
+}
+
+// GetLastRefundTxSnapshotKey returns the following key format
+// [HashString("LastRefundTxSnapshotKey")][1][1]
+func GetRefundTxSnapshotKey(reserveId uint64, roundId uint64) []byte {
+	reserveBufBytes := new(bytes.Buffer)
+	err := binary.Write(reserveBufBytes, binary.LittleEndian, reserveId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	roundBufBytes := new(bytes.Buffer)
+	err = binary.Write(roundBufBytes, binary.LittleEndian, roundId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(RefundTxSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
+}
+
+// GetNewSweepProposalReceivedKey

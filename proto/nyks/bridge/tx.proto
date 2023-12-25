@@ -44,9 +44,10 @@ message MsgConfirmBtcDepositResponse {
 }
 
 message MsgRegisterBtcDepositAddress {
-  string depositAddress         = 1;
-  string twilightDepositAddress = 2;
-  uint64 DepositAmount      = 3;
+  string btcDepositAddress  = 1;
+  uint64 btcSatoshiTestAmount  = 2;
+  uint64 twilightStakingAmount  = 3;
+  string twilightAddress  = 4;
 }
 
 message MsgRegisterBtcDepositAddressResponse {}
@@ -70,16 +71,29 @@ message MsgRegisterJudge {
 
 message MsgRegisterJudgeResponse {}
 
+message MsgProposeRefundHash {
+  string refundHash   = 1;
+  string judgeAddress = 2;
+}
+
+message MsgProposeRefundHashResponse {}
+
 // this line is used by starport scaffolding # proto/tx/message
+
+// Withdraw messages are in below order
+// 1. MsgWithdrawBtcRequest
 message MsgWithdrawBtcRequest {
   string withdrawAddress = 1;
-  string reserveAddress  = 2;
+  uint64 reserveId  = 2;
   uint64 withdrawAmount  = 3;
   string twilightAddress = 4;
 }
 
-message MsgWithdrawBtcRequestResponse {}
+message MsgWithdrawBtcRequestResponse {
+  uint32 withdrawIdentifer = 1;
+}
 
+// 2. MsgWithdrawTxSigned
 message MsgWithdrawTxSigned {
   string creator          = 1;
   string validatorAddress = 2;
@@ -88,6 +102,7 @@ message MsgWithdrawTxSigned {
 
 message MsgWithdrawTxSignedResponse {}
 
+// 3. MsgWithdrawTxFinal
 message MsgWithdrawTxFinal {
   string creator      = 1;
   string judgeAddress = 2;
@@ -96,13 +111,7 @@ message MsgWithdrawTxFinal {
 
 message MsgWithdrawTxFinalResponse {}
 
-message MsgProposeRefundHash {
-  string refundHash   = 1;
-  string judgeAddress = 2;
-}
-
-message MsgProposeRefundHashResponse {}
-
+// 4. MsgConfirmBtcWithdraw
 message MsgConfirmBtcWithdraw {
   string txHash       = 1;
   uint64 height       = 2;
@@ -151,7 +160,7 @@ message MsgSignRefund {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
   string signerPublicKey   = 3;
-  string refundSignature  = 4;
+  repeated string refundSignature  = 4;
   string btcOracleAddress = 5;
 }
 
@@ -198,7 +207,6 @@ message MsgSweepProposal {
   string btcTxHash = 6;
   uint64 UnlockHeight = 7;
   uint64 roundId = 8;
-  repeated string withdrawIdentifiers = 9;
 }
 
 message MsgSweepProposalResponse {}

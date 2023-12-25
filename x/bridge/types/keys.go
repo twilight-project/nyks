@@ -141,14 +141,28 @@ func GetUnsignedTxRefundMsgKey(reserveId uint64, roundId uint64) []byte {
 }
 
 // GetBtcSignRefundMsgKey returns the following key format
-// [HashString("BtcSignRefundMsgKey")][1][1]
-func GetBtcSignRefundMsgKey(reserveId uint64, roundId uint64) []byte {
-	return generateMsgKey(BtcSignRefundMsgKey, reserveId, roundId)
+// [HashString("BtcSignRefundMsgKey")][1][1][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetBtcSignRefundMsgKey(reserveId uint64, roundId uint64, btcOracleAddress sdk.AccAddress) []byte {
+	msgKey := generateMsgKey(BtcSignRefundMsgKey, reserveId, roundId)
+	return forkstypes.AppendBytes(msgKey, btcOracleAddress.Bytes())
 }
 
 // GetBtcSignSweepMsgKey returns the following key format
+// [HashString("BtcSignSweepMsgKey")][1][1][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetBtcSignSweepMsgKey(reserveId uint64, roundId uint64, btcOracleAddress sdk.AccAddress) []byte {
+	msgKey := generateMsgKey(BtcSignSweepMsgKey, reserveId, roundId)
+	return forkstypes.AppendBytes(msgKey, btcOracleAddress.Bytes())
+}
+
+// GetBtcSignRefundMsgPrefix returns the following key format
+// [HashString("BtcSignRefundMsgKey")][1][1]
+func GetBtcSignRefundMsgPrefix(reserveId uint64, roundId uint64) []byte {
+	return generateMsgKey(BtcSignRefundMsgKey, reserveId, roundId)
+}
+
+// GetBtcSignSweepMsgPrefix returns the following key format
 // [HashString("BtcSignSweepMsgKey")][1][1]
-func GetBtcSignSweepMsgKey(reserveId uint64, roundId uint64) []byte {
+func GetBtcSignSweepMsgPrefix(reserveId uint64, roundId uint64) []byte {
 	return generateMsgKey(BtcSignSweepMsgKey, reserveId, roundId)
 }
 

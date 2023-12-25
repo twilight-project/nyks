@@ -24,7 +24,7 @@ message EventRegisterJudgeAddress {
 message EventWithdrawBtcRequest {
     string message = 1;
     string twilightAddress = 2;
-    string reserveAddress = 3;
+    uint64 reserveId = 3;
     string withdrawAddress = 4;
     uint64 withdrawAmount = 5;
 }
@@ -34,7 +34,7 @@ message EventSignRefund {
     uint64 reserveId = 2;
     uint64 roundId = 3;
     string signerPublicKey = 4;
-    string refundSignature = 5;
+    repeated string refundSignature = 5;
     string btcOracleAddress = 6;
 }
 

@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	bridgetypes "github.com/twilight-project/nyks/x/bridge/types"
 	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	"github.com/twilight-project/nyks/x/volt/types"
 )
@@ -44,6 +45,21 @@ func (k Keeper) RegisterNewBtcReserve(ctx sdk.Context, judgeAddress sdk.AccAddre
 		k.setLastRegisteredBtcReserve(ctx, reserveId)
 	}
 
+	// After setting the BTC Reserve, set its corresponding withdraw pool
+	withdrawPool := &types.ReserveWithdrawPool{
+		ReserveID:                     reserveId,
+		RoundID:                       0, // Initialize with default values
+		ProcessingWithdrawIdentifiers: []uint32{},
+		QueuedWithdrawIdentifiers:     []uint32{},
+		CurrentProcessingIndex:        0,
+	}
+
+	// Set the withdraw pool using the SetWithdrawPool function
+	err = k.SetReserveWithdrawPool(ctx, withdrawPool)
+	if err != nil {
+		return 0, sdkerrors.Wrap(types.ErrCouldNotSetReserveWithdrawPool, err.Error())
+	}
+
 	return reserveId, nil
 }
 
@@ -77,22 +93,34 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 	reserve.PublicValue = reserve.PublicValue + mintedValue
 
 	// Get the clearing account
-	clearingAccount, found := k.GetClearingAccount(ctx, twilightAddress)
-	if !found {
-		// The case where user is depositing for the first time
+	clearingAccount, foundClearing := k.GetClearingAccount(ctx, twilightAddress)
+	if !foundClearing || clearingAccount.BtcDepositAddress == "" {
+		// The case where user is depositing for the first time, we need to confirm the satoshi test
 		// Fetch user's btc deposit address from GetBtcDepositAddressByTwilightAddress
 		btcDeposit, found := k.GetBtcDepositAddressByTwilightAddress(ctx, twilightAddress)
 		if !found {
 			return sdkerrors.Wrapf(types.ErrBtcDepositAddressNotFound, fmt.Sprint(twilightAddress))
 		}
-		ctx.Logger().Error("btcDeposit", btcDeposit)
-		// Fetch next unique deposit identifier from IncrementCounter
-		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
 
-		// Set the clearing account
-		clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.DepositAddress, depositIdentifier)
+		// check if this particular btc address has already passed the satoshi test in another account
+		btcAddr, err := bridgetypes.NewBtcAddress(btcDeposit.BtcDepositAddress)
 		if err != nil {
-			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+			return sdkerrors.Wrapf(bridgetypes.ErrInvalid, fmt.Sprint(twilightAddress))
+		}
+		// at the time of confirmation its possible others have registered the same address as well
+		checkBtcAddress := k.CheckBtcAddress(ctx, twilightAddress, *btcAddr, btcDeposit.BtcSatoshiTestAmount)
+		if checkBtcAddress {
+			return sdkerrors.Wrap(bridgetypes.ErrBtcAddressAlreadyExists, btcAddr.GetBtcAddress())
+		}
+
+		// check btc satoshi test amount for the first deposit is equal to what user has sent
+		if btcDeposit.BtcSatoshiTestAmount != mintedValue {
+			return sdkerrors.Wrapf(types.ErrBtcSatoshiTestAmountNotEqual, fmt.Sprint(twilightAddress))
+		}
+
+		err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
+		if err != nil {
+			return err
 		}
 
 		// SetBtcDepositConfirmed sets the deposit as confirmed
@@ -100,35 +128,55 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
 		}
-		ctx.Logger().Error("SetBtcDepositConfirmed", twilightAddress)
+
+		// Fetch next unique deposit identifier from IncrementCounter
+		depositIdentifier := k.IncrementCounter(ctx, DepositCounterKey)
+
+		// There are two use-cases here, clearing accounts are set by zkOS mint and by a user transferring to another as well
+		// However, in those two ways, you will have a clearing account but you will not have btc address in that clearing account
+		// As part of the satoshi test we are only concerned with checking and setting the btc address associated with a clearing account
+		// So below, we check if the clearing was not found at all, we create a new clearing account and set the btc address
+		if !foundClearing {
+			// Set the clearing account
+			clearingAccount, err = k.SetBtcAddressForClearingAccount(ctx, twilightAddress, btcDeposit.BtcDepositAddress, depositIdentifier)
+			if err != nil {
+				return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+			}
+		} else if clearingAccount.BtcDepositAddress == "" {
+			// In the other case, where you already had the clearing account but there was no btc address on it
+			// We update the btc address on the clearing account
+
+			// Set the clearing account
+			clearingAccount, err = k.SetBtcAddressForExistingClearingAccount(ctx, twilightAddress, btcDeposit.BtcDepositAddress, depositIdentifier)
+			if err != nil {
+				return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(twilightAddress))
+			}
+		}
 
 	}
 
 	// Update the clearing account
 	// Check if the reserve id already exists in the ReserveAccountBalances slice
-	found = false
+	foundBalance := false
 	for _, balance := range clearingAccount.ReserveAccountBalances {
 		if balance.ReserveId == reserveId {
 			// If it does, add the minted value to the existing balance
 			balance.Amount += mintedValue
-			found = true
+			foundBalance = true
 			break
 		}
 	}
-	ctx.Logger().Error("found", found)
 
-	if !found {
+	if !foundBalance {
 		// If it doesn't, append a new IndividualTwilightReserveAccountBalance to the slice
 		clearingAccount.ReserveAccountBalances = append(clearingAccount.ReserveAccountBalances, &types.IndividualTwilightReserveAccountBalance{
 			ReserveId: reserveId,
 			Amount:    mintedValue,
 		})
 	}
-	ctx.Logger().Error("ReserveAccountBalances", clearingAccount.ReserveAccountBalances)
 
 	// Save the updated clearing account
 	k.SetClearingAccount(ctx, twilightAddress, clearingAccount)
-	ctx.Logger().Error("SetClearingAccount", clearingAccount)
 	// Save the reserve
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
@@ -138,7 +186,7 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 }
 
 // UpdateBtcReserveAfterSweepProposal based on the passed reserveId, the operation happens after a successful attestation of MsgSweepProposal
-func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) error {
+func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64) error {
 
 	// Get the reserve
 	reserve, err := k.GetBtcReserve(ctx, reserveId)
@@ -164,7 +212,7 @@ func (k Keeper) UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId ui
 
 }
 
-// GetBtcReserve function that returns a reserve if passed an oracle address and reserve address
+// GetBtcReserve function that returns a reserve if passed a reserveId
 func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcReserve, error) {
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetReserveKey(reserveId)
@@ -178,6 +226,13 @@ func (k Keeper) GetBtcReserve(ctx sdk.Context, reserveId uint64) (*types.BtcRese
 		return nil, sdkerrors.Wrapf(types.ErrBtcReserveNotFound, fmt.Sprint(reserveId))
 	}
 	return reserve, nil
+}
+
+// CheckBtcReserveExists checks if a Btc reserve exists for the given reserveId
+func (k Keeper) CheckBtcReserveExists(ctx sdk.Context, reserveId uint64) bool {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetReserveKey(reserveId)
+	return store.Has(aKey)
 }
 
 // GetBtcReserveIdByAddress returns a reserve id if passed an reserve address

@@ -10,10 +10,17 @@ import { Api } from "./rest";
 
 import { IndividualTwilightReserveAccountBalance as typeIndividualTwilightReserveAccountBalance} from "./types"
 import { ClearingAccount as typeClearingAccount} from "./types"
+import { RefundTxAccountSnap as typeRefundTxAccountSnap} from "./types"
+import { RefundTxSnapshot as typeRefundTxSnapshot} from "./types"
 import { BtcDepositAddress as typeBtcDepositAddress} from "./types"
+import { EventReserveWithdrawSnapshot as typeEventReserveWithdrawSnapshot} from "./types"
+import { EventRefundTxSnapshot as typeEventRefundTxSnapshot} from "./types"
 import { Params as typeParams} from "./types"
 import { BtcReserve as typeBtcReserve} from "./types"
+import { BtcWithdrawRequestInternal as typeBtcWithdrawRequestInternal} from "./types"
 import { ReserveWithdrawPool as typeReserveWithdrawPool} from "./types"
+import { WithdrawRequestSnap as typeWithdrawRequestSnap} from "./types"
+import { ReserveWithdrawSnapshot as typeReserveWithdrawSnapshot} from "./types"
 
 export {  };
 
@@ -73,10 +80,17 @@ class SDKModule {
 		this.structure =  {
 						IndividualTwilightReserveAccountBalance: getStructure(typeIndividualTwilightReserveAccountBalance.fromPartial({})),
 						ClearingAccount: getStructure(typeClearingAccount.fromPartial({})),
+						RefundTxAccountSnap: getStructure(typeRefundTxAccountSnap.fromPartial({})),
+						RefundTxSnapshot: getStructure(typeRefundTxSnapshot.fromPartial({})),
 						BtcDepositAddress: getStructure(typeBtcDepositAddress.fromPartial({})),
+						EventReserveWithdrawSnapshot: getStructure(typeEventReserveWithdrawSnapshot.fromPartial({})),
+						EventRefundTxSnapshot: getStructure(typeEventRefundTxSnapshot.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						BtcReserve: getStructure(typeBtcReserve.fromPartial({})),
+						BtcWithdrawRequestInternal: getStructure(typeBtcWithdrawRequestInternal.fromPartial({})),
 						ReserveWithdrawPool: getStructure(typeReserveWithdrawPool.fromPartial({})),
+						WithdrawRequestSnap: getStructure(typeWithdrawRequestSnap.fromPartial({})),
+						ReserveWithdrawSnapshot: getStructure(typeReserveWithdrawSnapshot.fromPartial({})),
 						
 		};
 		client.on('signer-changed',(signer) => {			

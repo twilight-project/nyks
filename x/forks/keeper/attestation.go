@@ -1,13 +1,11 @@
 package keeper
 
 import (
-	"bytes"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"sort"
 
-	"github.com/btcsuite/btcd/wire"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -212,7 +210,7 @@ func (k Keeper) GetSweepProposalAttestationsForBtcSweepTx(ctx sdk.Context, txHas
 
 			// convert the bytes to string
 			txHash := hex.EncodeToString(hash)
-			tx, err := createTxFromHex(txHash)
+			tx, err := types.CreateTxFromHex(txHash)
 			if err != nil {
 				panic(err)
 			}
@@ -234,25 +232,6 @@ func (k Keeper) GetSweepProposalAttestationsForBtcSweepTx(ctx sdk.Context, txHas
 	}
 
 	return filteredAttestation, nil
-}
-
-func createTxFromHex(txHex string) (*wire.MsgTx, error) {
-	// Decode the transaction hex string
-	txBytes, err := hex.DecodeString(txHex)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode hex string: %v", err)
-	}
-
-	// Create a new transaction object
-	tx := wire.NewMsgTx(wire.TxVersion)
-
-	// Deserialize the transaction bytes
-	err = tx.Deserialize(bytes.NewReader(txBytes))
-	if err != nil {
-		return nil, fmt.Errorf("failed to deserialize transaction: %v", err)
-	}
-
-	return tx, nil
 }
 
 // // DeleteAttestation deletes the given attestation

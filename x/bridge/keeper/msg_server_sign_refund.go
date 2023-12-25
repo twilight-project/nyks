@@ -25,7 +25,7 @@ func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (
 	// 	return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveAddress))
 	// }
 
-	refundSigValid := types.IsValidSignature(msg.RefundSignature)
+	refundSigValid := types.ValidateSignatures(msg.RefundSignature)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if refundSigValid == false {
@@ -33,7 +33,7 @@ func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (
 	}
 
 	// check if this signed btc refund msg is already registered
-	_, found := k.GetBtcSignRefundMsg(ctx, msg.ReserveId, msg.RoundId)
+	_, found := k.GetBtcSignRefundMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, btcOracleAddress)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Refund Request")
 	}

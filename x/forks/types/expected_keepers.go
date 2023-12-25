@@ -44,8 +44,11 @@ type StakingKeeper interface {
 // VoltKeeper defines the expected interface needed for mapping of deposit addresses in a reserve
 type VoltKeeper interface {
 	UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, twilightAddress sdk.AccAddress, reserveAddress string) error
-	UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64, withdrawIdentifiers []string) error
-	UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error
+	UpdateBtcReserveAfterSweepProposal(ctx sdk.Context, reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, btcTxHash string, unlockHeight uint64, roundId uint64) error
+	ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, reserveId uint64, roundId uint64) error
+	PruneReserveWithdrawSnapshot(ctx sdk.Context, reserveId uint64, roundId uint64)
+	PruneRefundTxSnapshot(ctx sdk.Context, reserveId uint64, roundId uint64)
+	//UpdateMintInClearing(ctx sdk.Context, receiver sdk.AccAddress, amount uint64, reserveAddress string) error
 }
 
 type BridgeKeeper interface {

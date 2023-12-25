@@ -4,10 +4,11 @@ package twilightproject.nyks.volt;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
+//import "cosmos/base/query/v1beta1/pagination.proto";
 import "nyks/volt/params.proto";
 import "nyks/volt/clearing.proto";
 import "nyks/volt/reserve.proto";
+import "nyks/volt/withdraw.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -35,6 +36,36 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/clearing_account/{twilightAddress}";
   
   }
+  
+  // Queries a list of ReserveClearingAccountsAll items.
+  rpc ReserveClearingAccountsAll (QueryReserveClearingAccountsAllRequest) returns (QueryReserveClearingAccountsAllResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/reserve_clearing_accounts_all/{reserveId}";
+  
+  }
+  
+  // Queries a list of ReserveWithdrawSnapshot items.
+  rpc ReserveWithdrawSnapshot (QueryReserveWithdrawSnapshotRequest) returns (QueryReserveWithdrawSnapshotResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/reserve_withdraw_snapshot/{reserveId}/{roundId}";
+  
+  }
+  
+  // Queries a list of RefundTxSnapshot items.
+  rpc RefundTxSnapshot (QueryRefundTxSnapshotRequest) returns (QueryRefundTxSnapshotResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/refund_tx_snapshot/{reserveId}/{roundId}";
+  
+  }
+  
+  // Queries a list of BtcWithdrawRequest items.
+  rpc BtcWithdrawRequest (QueryBtcWithdrawRequestRequest) returns (QueryBtcWithdrawRequestResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/btc_withdraw_request/{twilightAddress}";
+  
+  }
+  
+  // Queries a list of ReserveWithdrawPool items.
+  rpc ReserveWithdrawPool (QueryReserveWithdrawPoolRequest) returns (QueryReserveWithdrawPoolResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/reserve_withdraw_pool/{reserveId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -52,7 +83,6 @@ message QueryBtcReserveResponse {
   repeated BtcReserve BtcReserves = 1 [(gogoproto.nullable) = false];
 }
 
-
 // this line is used by starport scaffolding # 3
 message QueryClearingAccountRequest {
   string twilightAddress = 1;
@@ -60,5 +90,50 @@ message QueryClearingAccountRequest {
 
 message QueryClearingAccountResponse {
   ClearingAccount ClearingAccount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReserveClearingAccountsAllRequest {
+  uint64 reserveId = 1;
+}
+
+message QueryReserveClearingAccountsAllResponse {
+  repeated ClearingAccount ReserveClearingAccountsAll = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReserveWithdrawSnapshotRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryReserveWithdrawSnapshotResponse {
+  ReserveWithdrawSnapshot ReserveWithdrawSnapshot = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryRefundTxSnapshotRequest {
+  uint64 reserveId = 1;
+  uint64 roundId   = 2;
+}
+
+message QueryRefundTxSnapshotResponse {
+  RefundTxSnapshot RefundTxSnapshot = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryBtcWithdrawRequestRequest {
+  string twilightAddress = 1;
+  uint64 reserveId      = 2;
+  string btcAddress     = 3;
+  uint64 withdrawAmount = 4;
+}
+
+message QueryBtcWithdrawRequestResponse {
+  BtcWithdrawRequestInternal BtcWithdrawRequest = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryReserveWithdrawPoolRequest {
+  uint64 reserveId = 1;
+}
+
+message QueryReserveWithdrawPoolResponse {
+  ReserveWithdrawPool ReserveWithdrawPool = 1 [(gogoproto.nullable) = false];
 }
 

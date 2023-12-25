@@ -23,7 +23,7 @@ export interface EventRegisterJudgeAddress {
 export interface EventWithdrawBtcRequest {
   message: string;
   twilightAddress: string;
-  reserveAddress: string;
+  reserveId: number;
   withdrawAddress: string;
   withdrawAmount: number;
 }
@@ -33,7 +33,7 @@ export interface EventSignRefund {
   reserveId: number;
   roundId: number;
   signerPublicKey: string;
-  refundSignature: string;
+  refundSignature: string[];
   btcOracleAddress: string;
 }
 
@@ -279,7 +279,7 @@ export const EventRegisterJudgeAddress = {
 };
 
 function createBaseEventWithdrawBtcRequest(): EventWithdrawBtcRequest {
-  return { message: "", twilightAddress: "", reserveAddress: "", withdrawAddress: "", withdrawAmount: 0 };
+  return { message: "", twilightAddress: "", reserveId: 0, withdrawAddress: "", withdrawAmount: 0 };
 }
 
 export const EventWithdrawBtcRequest = {
@@ -290,8 +290,8 @@ export const EventWithdrawBtcRequest = {
     if (message.twilightAddress !== "") {
       writer.uint32(18).string(message.twilightAddress);
     }
-    if (message.reserveAddress !== "") {
-      writer.uint32(26).string(message.reserveAddress);
+    if (message.reserveId !== 0) {
+      writer.uint32(24).uint64(message.reserveId);
     }
     if (message.withdrawAddress !== "") {
       writer.uint32(34).string(message.withdrawAddress);
@@ -316,7 +316,7 @@ export const EventWithdrawBtcRequest = {
           message.twilightAddress = reader.string();
           break;
         case 3:
-          message.reserveAddress = reader.string();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         case 4:
           message.withdrawAddress = reader.string();
@@ -336,7 +336,7 @@ export const EventWithdrawBtcRequest = {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       withdrawAddress: isSet(object.withdrawAddress) ? String(object.withdrawAddress) : "",
       withdrawAmount: isSet(object.withdrawAmount) ? Number(object.withdrawAmount) : 0,
     };
@@ -346,7 +346,7 @@ export const EventWithdrawBtcRequest = {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.withdrawAddress !== undefined && (obj.withdrawAddress = message.withdrawAddress);
     message.withdrawAmount !== undefined && (obj.withdrawAmount = Math.round(message.withdrawAmount));
     return obj;
@@ -356,7 +356,7 @@ export const EventWithdrawBtcRequest = {
     const message = createBaseEventWithdrawBtcRequest();
     message.message = object.message ?? "";
     message.twilightAddress = object.twilightAddress ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
     message.withdrawAddress = object.withdrawAddress ?? "";
     message.withdrawAmount = object.withdrawAmount ?? 0;
     return message;
@@ -364,7 +364,7 @@ export const EventWithdrawBtcRequest = {
 };
 
 function createBaseEventSignRefund(): EventSignRefund {
-  return { message: "", reserveId: 0, roundId: 0, signerPublicKey: "", refundSignature: "", btcOracleAddress: "" };
+  return { message: "", reserveId: 0, roundId: 0, signerPublicKey: "", refundSignature: [], btcOracleAddress: "" };
 }
 
 export const EventSignRefund = {
@@ -381,8 +381,8 @@ export const EventSignRefund = {
     if (message.signerPublicKey !== "") {
       writer.uint32(34).string(message.signerPublicKey);
     }
-    if (message.refundSignature !== "") {
-      writer.uint32(42).string(message.refundSignature);
+    for (const v of message.refundSignature) {
+      writer.uint32(42).string(v!);
     }
     if (message.btcOracleAddress !== "") {
       writer.uint32(50).string(message.btcOracleAddress);
@@ -410,7 +410,7 @@ export const EventSignRefund = {
           message.signerPublicKey = reader.string();
           break;
         case 5:
-          message.refundSignature = reader.string();
+          message.refundSignature.push(reader.string());
           break;
         case 6:
           message.btcOracleAddress = reader.string();
@@ -429,7 +429,7 @@ export const EventSignRefund = {
       reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
       signerPublicKey: isSet(object.signerPublicKey) ? String(object.signerPublicKey) : "",
-      refundSignature: isSet(object.refundSignature) ? String(object.refundSignature) : "",
+      refundSignature: Array.isArray(object?.refundSignature) ? object.refundSignature.map((e: any) => String(e)) : [],
       btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
     };
   },
@@ -440,7 +440,11 @@ export const EventSignRefund = {
     message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     message.signerPublicKey !== undefined && (obj.signerPublicKey = message.signerPublicKey);
-    message.refundSignature !== undefined && (obj.refundSignature = message.refundSignature);
+    if (message.refundSignature) {
+      obj.refundSignature = message.refundSignature.map((e) => e);
+    } else {
+      obj.refundSignature = [];
+    }
     message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
     return obj;
   },
@@ -451,7 +455,7 @@ export const EventSignRefund = {
     message.reserveId = object.reserveId ?? 0;
     message.roundId = object.roundId ?? 0;
     message.signerPublicKey = object.signerPublicKey ?? "";
-    message.refundSignature = object.refundSignature ?? "";
+    message.refundSignature = object.refundSignature?.map((e) => e) || [];
     message.btcOracleAddress = object.btcOracleAddress ?? "";
     return message;
   },

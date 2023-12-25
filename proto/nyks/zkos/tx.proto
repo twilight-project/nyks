@@ -9,10 +9,12 @@ service Msg {
   rpc TransferTx         (MsgTransferTx        ) returns (MsgTransferTxResponse        );
   rpc MintBurnTradingBtc (MsgMintBurnTradingBtc) returns (MsgMintBurnTradingBtcResponse);
 }
+
 message MsgTransferTx {
   string txId            = 1;
   string txByteCode      = 2;
-  string zkOracleAddress = 3;
+  uint64 txFee           = 3;
+  string zkOracleAddress = 4;
 }
 
 message MsgTransferTxResponse {}

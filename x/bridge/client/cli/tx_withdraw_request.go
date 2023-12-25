@@ -14,12 +14,15 @@ var _ = strconv.Itoa(0)
 
 func CmdWithdrawRequest() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-btc-request [withdraw-address] [reserve-address] [withdraw-amount]",
+		Use:   "withdraw-btc-request [withdraw-address] [reserve-id] [withdraw-amount]",
 		Short: "Broadcast message WithdrawRequest",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argWithdrawAddress := args[0]
-			argReserveAddress := args[1]
+			argReserveId, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
 
 			argWithdrawAmount, err := strconv.ParseUint(args[2], 10, 64)
 			if err != nil {
@@ -33,7 +36,7 @@ func CmdWithdrawRequest() *cobra.Command {
 
 			msg := types.NewMsgWithdrawBtcRequest(
 				argWithdrawAddress,
-				argReserveAddress,
+				argReserveId,
 				argWithdrawAmount,
 				clientCtx.GetFromAddress().String(),
 			)

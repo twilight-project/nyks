@@ -1,0 +1,53 @@
+.text6 {
+  position: absolute;
+  top: calc(50% - 11px);
+  left: calc(50% - 195px);
+  font-size: 0.89em;
+  letter-spacing: -0.02em;
+  line-height: 140%;
+  text-transform: uppercase;
+}
+.announcementBar {
+  position: relative;
+  background-color: #76fccb;
+  width: 96em;
+  height: 2.22em;
+}
+.backgroundIcon {
+  position: absolute;
+  top: 30.78em;
+  left: 0em;
+  width: 96em;
+  height: 72em;
+  overflow: hidden;
+  object-fit: cover;
+}
+.footer1 {
+  position: absolute;
+  top: 18.33em;
+  left: 0em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 11.11em;
+}
+.footer {
+  position: relative;
+  background-color: #000;
+  width: 96em;
+  height: 98.72em;
+}
+.homeV5 {
+  position: relative;
+  background-color: #000;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  color: #000;
+  font-family: "Andale Mono";
+}

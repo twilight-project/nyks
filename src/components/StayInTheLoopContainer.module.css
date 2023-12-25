@@ -1,0 +1,77 @@
+.copyChild {
+  position: absolute;
+  top: 5.22em;
+  left: -21.72em;
+  background: linear-gradient(180deg, #000, rgba(8, 8, 28, 0));
+  width: 96.44em;
+  height: 19.11em;
+}
+.inOrderTo3 {
+  position: absolute;
+  top: 0em;
+  left: calc(50% - 476.5px);
+  font-size: 3.11em;
+  line-height: 120%;
+  font-weight: 300;
+  display: inline-block;
+  width: 17.02em;
+}
+.inOrderTo4 {
+  position: absolute;
+  top: 6.93em;
+  left: calc(50% - 127.5px);
+  font-size: 0.78em;
+  line-height: 120%;
+  text-transform: uppercase;
+  font-family: "Andale Mono";
+  display: inline-block;
+  width: 18.21em;
+}
+.fieldChild {
+  position: absolute;
+  top: 0em;
+  left: 0em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  width: 29.72em;
+  height: 3.33em;
+}
+.inOrderTo5 {
+  position: absolute;
+  top: 1em;
+  left: calc(50% - 267.5px);
+  font-size: 1.06em;
+  line-height: 120%;
+  display: inline-block;
+  width: 13.42em;
+}
+.field {
+  position: absolute;
+  top: 10.06em;
+  left: 11.56em;
+  width: 29.72em;
+  height: 3.33em;
+  text-align: left;
+  font-family: "Atlas Grotesk";
+}
+.copy {
+  position: absolute;
+  top: 11.11em;
+  left: 21.5em;
+  width: 52.94em;
+  height: 13.39em;
+}
+.section {
+  position: absolute;
+  top: 12.44em;
+  left: 0em;
+  background-color: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  width: 96em;
+  height: 72em;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  font-family: "Manner Pro";
+}
