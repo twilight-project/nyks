@@ -2,31 +2,21 @@ package app
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	zkos "github.com/twilight-project/nyks/x/zkos/types"
 )
 
-// CustomFeeCheckHandler checks that the transaction fee is in 'sats' and then calls the next ante handler
-func CustomFeeCheckHandler(next sdk.AnteHandler) sdk.AnteHandler {
+func CustomAnteHandler(anteHandler sdk.AnteHandler) sdk.AnteHandler {
 	return func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
-		feeTx, ok := tx.(sdk.FeeTx)
-		if !ok {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
-		}
-
-		fee := feeTx.GetFee()
-		feeInSats := false
-		for _, coin := range fee {
-			if coin.Denom == "sats" && coin.Amount.IsPositive() {
-				feeInSats = true
-				break
+		// Extract messages from the transaction
+		for _, msg := range tx.GetMsgs() {
+			switch msg.(type) {
+			case *zkos.MsgTransferTx, *zkos.MsgMintBurnTradingBtc:
+				// Bypass fee processing for these messages
+				return ctx, nil
 			}
 		}
 
-		if !feeInSats {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Fee must be positive and in sats")
-		}
-
-		// Call the next ante handler
-		return next(ctx, tx, simulate)
+		// For other message types, use the default ante handler
+		return anteHandler(ctx, tx, simulate)
 	}
 }
