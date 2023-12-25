@@ -1,6 +1,4 @@
 # Nyks
-=======
-# Twilight
 
 Due to asynchronous nature of Bitcoin, natural forking is commonplace though not as common as other POWs with faster block time. To follow the canonical chain with highest cumulative work, network participants follow the majority opinion of honest full nodes, not the miner, of they think bitcoin is. To be certain if a transaction is valid or subject to reorg, some organisations go extra mile, run multiple bitcoin nodes, check block validation rules, even check inflation rules to be really really sure etc.
 
