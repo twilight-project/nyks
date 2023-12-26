@@ -33,6 +33,9 @@ func (k msgServer) BroadcastTxSweep(goCtx context.Context, msg *types.MsgBroadca
 		return nil, errSet
 	}
 
+	// now unlock the ProposeSweepAddress for the next sweep cycle
+	k.UnlockProposeSweepAddress(ctx)
+
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventBroadcastTxSweep{
 			Message:       msg.Type(),

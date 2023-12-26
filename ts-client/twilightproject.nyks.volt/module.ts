@@ -21,6 +21,7 @@ import { BtcWithdrawRequestInternal as typeBtcWithdrawRequestInternal} from "./t
 import { ReserveWithdrawPool as typeReserveWithdrawPool} from "./types"
 import { WithdrawRequestSnap as typeWithdrawRequestSnap} from "./types"
 import { ReserveWithdrawSnapshot as typeReserveWithdrawSnapshot} from "./types"
+import { NewSweepProposalReceivedInternal as typeNewSweepProposalReceivedInternal} from "./types"
 
 export {  };
 
@@ -91,6 +92,7 @@ class SDKModule {
 						ReserveWithdrawPool: getStructure(typeReserveWithdrawPool.fromPartial({})),
 						WithdrawRequestSnap: getStructure(typeWithdrawRequestSnap.fromPartial({})),
 						ReserveWithdrawSnapshot: getStructure(typeReserveWithdrawSnapshot.fromPartial({})),
+						NewSweepProposalReceivedInternal: getStructure(typeNewSweepProposalReceivedInternal.fromPartial({})),
 						
 		};
 		client.on('signer-changed',(signer) => {			

@@ -33,6 +33,15 @@ func (k msgServer) ProposeSweepAddress(goCtx context.Context, msg *types.MsgProp
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
+	// Our sweeps are sequential
+	// We will reject any sweep address proposal until broadcast is received for that reserveId currently in process
+	lockStatus := k.IsProposeSweepAddressLocked(ctx)
+	if lockStatus == true {
+		return nil, sdkerrors.Wrapf(types.ErrProposeSweepAddressIsLocked, "propose sweep address is locked, waiting for the broadcast sweep tx for the last proposed sweep address")
+	} else {
+		k.LockProposeSweepAddress(ctx)
+	}
+
 	// Check that reserve exists
 	_, errRes := k.VoltKeeper.GetBtcReserve(ctx, msg.ReserveId)
 	if errRes != nil {

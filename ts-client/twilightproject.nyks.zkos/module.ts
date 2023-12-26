@@ -7,18 +7,13 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgMintBurnTradingBtc } from "./types/nyks/zkos/tx";
 import { MsgTransferTx } from "./types/nyks/zkos/tx";
+import { MsgMintBurnTradingBtc } from "./types/nyks/zkos/tx";
 
+import { EventTransferTx as typeEventTransferTx} from "./types"
 import { Params as typeParams} from "./types"
 
-export { MsgMintBurnTradingBtc, MsgTransferTx };
-
-type sendMsgMintBurnTradingBtcParams = {
-  value: MsgMintBurnTradingBtc,
-  fee?: StdFee,
-  memo?: string
-};
+export { MsgTransferTx, MsgMintBurnTradingBtc };
 
 type sendMsgTransferTxParams = {
   value: MsgTransferTx,
@@ -26,13 +21,19 @@ type sendMsgTransferTxParams = {
   memo?: string
 };
 
-
-type msgMintBurnTradingBtcParams = {
+type sendMsgMintBurnTradingBtcParams = {
   value: MsgMintBurnTradingBtc,
+  fee?: StdFee,
+  memo?: string
 };
+
 
 type msgTransferTxParams = {
   value: MsgTransferTx,
+};
+
+type msgMintBurnTradingBtcParams = {
+  value: MsgMintBurnTradingBtc,
 };
 
 
@@ -65,20 +66,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
-		async sendMsgMintBurnTradingBtc({ value, fee, memo }: sendMsgMintBurnTradingBtcParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgMintBurnTradingBtc: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgMintBurnTradingBtc({ value: MsgMintBurnTradingBtc.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgMintBurnTradingBtc: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgTransferTx({ value, fee, memo }: sendMsgTransferTxParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgTransferTx: Unable to sign Tx. Signer is not present.')
@@ -93,20 +80,34 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		
-		msgMintBurnTradingBtc({ value }: msgMintBurnTradingBtcParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.zkos.MsgMintBurnTradingBtc", value: MsgMintBurnTradingBtc.fromPartial( value ) }  
+		async sendMsgMintBurnTradingBtc({ value, fee, memo }: sendMsgMintBurnTradingBtcParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgMintBurnTradingBtc: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgMintBurnTradingBtc({ value: MsgMintBurnTradingBtc.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:MsgMintBurnTradingBtc: Could not create message: ' + e.message)
+				throw new Error('TxClient:sendMsgMintBurnTradingBtc: Could not broadcast Tx: '+ e.message)
 			}
 		},
+		
 		
 		msgTransferTx({ value }: msgTransferTxParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.zkos.MsgTransferTx", value: MsgTransferTx.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgTransferTx: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgMintBurnTradingBtc({ value }: msgMintBurnTradingBtcParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.zkos.MsgMintBurnTradingBtc", value: MsgMintBurnTradingBtc.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgMintBurnTradingBtc: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -132,6 +133,7 @@ class SDKModule {
 		this.query = queryClient({ addr: client.env.apiURL });		
 		this.updateTX(client);
 		this.structure =  {
+						EventTransferTx: getStructure(typeEventTransferTx.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						
 		};

@@ -42,6 +42,13 @@ export interface ReserveWithdrawSnapshot {
   EndBlockerHeightTwilight: number;
 }
 
+/** NewSweepProposalReceivedInternal is an internal mapping for the sweep proposal to let Endblocker know that a new sweep proposal has been received */
+export interface NewSweepProposalReceivedInternal {
+  reserveId: number;
+  roundId: number;
+  creationTwilightBlockHeight: number;
+}
+
 function createBaseBtcWithdrawRequestInternal(): BtcWithdrawRequestInternal {
   return {
     withdrawIdentifier: 0,
@@ -424,6 +431,78 @@ export const ReserveWithdrawSnapshot = {
     message.RoundId = object.RoundId ?? 0;
     message.withdrawRequests = object.withdrawRequests?.map((e) => WithdrawRequestSnap.fromPartial(e)) || [];
     message.EndBlockerHeightTwilight = object.EndBlockerHeightTwilight ?? 0;
+    return message;
+  },
+};
+
+function createBaseNewSweepProposalReceivedInternal(): NewSweepProposalReceivedInternal {
+  return { reserveId: 0, roundId: 0, creationTwilightBlockHeight: 0 };
+}
+
+export const NewSweepProposalReceivedInternal = {
+  encode(message: NewSweepProposalReceivedInternal, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.reserveId !== 0) {
+      writer.uint32(8).uint64(message.reserveId);
+    }
+    if (message.roundId !== 0) {
+      writer.uint32(16).uint64(message.roundId);
+    }
+    if (message.creationTwilightBlockHeight !== 0) {
+      writer.uint32(48).int64(message.creationTwilightBlockHeight);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewSweepProposalReceivedInternal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNewSweepProposalReceivedInternal();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.roundId = longToNumber(reader.uint64() as Long);
+          break;
+        case 6:
+          message.creationTwilightBlockHeight = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewSweepProposalReceivedInternal {
+    return {
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
+      creationTwilightBlockHeight: isSet(object.creationTwilightBlockHeight)
+        ? Number(object.creationTwilightBlockHeight)
+        : 0,
+    };
+  },
+
+  toJSON(message: NewSweepProposalReceivedInternal): unknown {
+    const obj: any = {};
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
+    message.creationTwilightBlockHeight !== undefined
+      && (obj.creationTwilightBlockHeight = Math.round(message.creationTwilightBlockHeight));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NewSweepProposalReceivedInternal>, I>>(
+    object: I,
+  ): NewSweepProposalReceivedInternal {
+    const message = createBaseNewSweepProposalReceivedInternal();
+    message.reserveId = object.reserveId ?? 0;
+    message.roundId = object.roundId ?? 0;
+    message.creationTwilightBlockHeight = object.creationTwilightBlockHeight ?? 0;
     return message;
   },
 };

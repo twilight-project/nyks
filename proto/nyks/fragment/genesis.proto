@@ -1,0 +1,12 @@
+syntax = "proto3";
+package twilightproject.nyks.fragment;
+
+import "gogoproto/gogo.proto";
+import "nyks/fragment/params.proto";
+
+option go_package = "github.com/twilight-project/nyks/x/fragment/types";
+
+// GenesisState defines the fragment module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

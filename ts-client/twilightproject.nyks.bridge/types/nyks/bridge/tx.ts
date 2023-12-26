@@ -67,6 +67,7 @@ export interface MsgWithdrawBtcRequest {
 }
 
 export interface MsgWithdrawBtcRequestResponse {
+  withdrawIdentifer: number;
 }
 
 /** 2. MsgWithdrawTxSigned */
@@ -194,7 +195,6 @@ export interface MsgSweepProposal {
   btcTxHash: string;
   UnlockHeight: number;
   roundId: number;
-  withdrawIdentifiers: string[];
 }
 
 export interface MsgSweepProposalResponse {
@@ -868,11 +868,14 @@ export const MsgWithdrawBtcRequest = {
 };
 
 function createBaseMsgWithdrawBtcRequestResponse(): MsgWithdrawBtcRequestResponse {
-  return {};
+  return { withdrawIdentifer: 0 };
 }
 
 export const MsgWithdrawBtcRequestResponse = {
-  encode(_: MsgWithdrawBtcRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: MsgWithdrawBtcRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.withdrawIdentifer !== 0) {
+      writer.uint32(8).uint32(message.withdrawIdentifer);
+    }
     return writer;
   },
 
@@ -883,6 +886,9 @@ export const MsgWithdrawBtcRequestResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.withdrawIdentifer = reader.uint32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -891,17 +897,21 @@ export const MsgWithdrawBtcRequestResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgWithdrawBtcRequestResponse {
-    return {};
+  fromJSON(object: any): MsgWithdrawBtcRequestResponse {
+    return { withdrawIdentifer: isSet(object.withdrawIdentifer) ? Number(object.withdrawIdentifer) : 0 };
   },
 
-  toJSON(_: MsgWithdrawBtcRequestResponse): unknown {
+  toJSON(message: MsgWithdrawBtcRequestResponse): unknown {
     const obj: any = {};
+    message.withdrawIdentifer !== undefined && (obj.withdrawIdentifer = Math.round(message.withdrawIdentifer));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgWithdrawBtcRequestResponse>, I>>(_: I): MsgWithdrawBtcRequestResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawBtcRequestResponse>, I>>(
+    object: I,
+  ): MsgWithdrawBtcRequestResponse {
     const message = createBaseMsgWithdrawBtcRequestResponse();
+    message.withdrawIdentifer = object.withdrawIdentifer ?? 0;
     return message;
   },
 };
@@ -2092,7 +2102,6 @@ function createBaseMsgSweepProposal(): MsgSweepProposal {
     btcTxHash: "",
     UnlockHeight: 0,
     roundId: 0,
-    withdrawIdentifiers: [],
   };
 }
 
@@ -2121,9 +2130,6 @@ export const MsgSweepProposal = {
     }
     if (message.roundId !== 0) {
       writer.uint32(64).uint64(message.roundId);
-    }
-    for (const v of message.withdrawIdentifiers) {
-      writer.uint32(74).string(v!);
     }
     return writer;
   },
@@ -2159,9 +2165,6 @@ export const MsgSweepProposal = {
         case 8:
           message.roundId = longToNumber(reader.uint64() as Long);
           break;
-        case 9:
-          message.withdrawIdentifiers.push(reader.string());
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2180,9 +2183,6 @@ export const MsgSweepProposal = {
       btcTxHash: isSet(object.btcTxHash) ? String(object.btcTxHash) : "",
       UnlockHeight: isSet(object.UnlockHeight) ? Number(object.UnlockHeight) : 0,
       roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
-      withdrawIdentifiers: Array.isArray(object?.withdrawIdentifiers)
-        ? object.withdrawIdentifiers.map((e: any) => String(e))
-        : [],
     };
   },
 
@@ -2197,11 +2197,6 @@ export const MsgSweepProposal = {
     message.btcTxHash !== undefined && (obj.btcTxHash = message.btcTxHash);
     message.UnlockHeight !== undefined && (obj.UnlockHeight = Math.round(message.UnlockHeight));
     message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
-    if (message.withdrawIdentifiers) {
-      obj.withdrawIdentifiers = message.withdrawIdentifiers.map((e) => e);
-    } else {
-      obj.withdrawIdentifiers = [];
-    }
     return obj;
   },
 
@@ -2215,7 +2210,6 @@ export const MsgSweepProposal = {
     message.btcTxHash = object.btcTxHash ?? "";
     message.UnlockHeight = object.UnlockHeight ?? 0;
     message.roundId = object.roundId ?? 0;
-    message.withdrawIdentifiers = object.withdrawIdentifiers?.map((e) => e) || [];
     return message;
   },
 };

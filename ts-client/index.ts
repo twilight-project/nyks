@@ -25,12 +25,13 @@ import { Module as IbcCorePortV1, msgTypes as IbcCorePortV1MsgTypes } from './ib
 import { Module as TendermintSpnMonitoringp, msgTypes as TendermintSpnMonitoringpMsgTypes } from './tendermint.spn.monitoringp'
 import { Module as TwilightprojectNyksBridge, msgTypes as TwilightprojectNyksBridgeMsgTypes } from './twilightproject.nyks.bridge'
 import { Module as TwilightprojectNyksForks, msgTypes as TwilightprojectNyksForksMsgTypes } from './twilightproject.nyks.forks'
+import { Module as TwilightprojectNyksFragment, msgTypes as TwilightprojectNyksFragmentMsgTypes } from './twilightproject.nyks.fragment'
 import { Module as TwilightprojectNyksVolt, msgTypes as TwilightprojectNyksVoltMsgTypes } from './twilightproject.nyks.volt'
 import { Module as TwilightprojectNyksZkos, msgTypes as TwilightprojectNyksZkosMsgTypes } from './twilightproject.nyks.zkos'
 
 
 const Client = IgniteClient.plugin([
-    CosmosAuthV1Beta1, CosmosBankV1Beta1, CosmosBaseTendermintV1Beta1, CosmosCrisisV1Beta1, CosmosDistributionV1Beta1, CosmosEvidenceV1Beta1, CosmosFeegrantV1Beta1, CosmosGovV1Beta1, CosmosMintV1Beta1, CosmosParamsV1Beta1, CosmosSlashingV1Beta1, CosmosStakingV1Beta1, CosmosTxV1Beta1, CosmosUpgradeV1Beta1, CosmosVestingV1Beta1, IbcApplicationsTransferV1, IbcCoreChannelV1, IbcCoreClientV1, IbcCoreConnectionV1, IbcCorePortV1, TendermintSpnMonitoringp, TwilightprojectNyksBridge, TwilightprojectNyksForks, TwilightprojectNyksVolt, TwilightprojectNyksZkos
+    CosmosAuthV1Beta1, CosmosBankV1Beta1, CosmosBaseTendermintV1Beta1, CosmosCrisisV1Beta1, CosmosDistributionV1Beta1, CosmosEvidenceV1Beta1, CosmosFeegrantV1Beta1, CosmosGovV1Beta1, CosmosMintV1Beta1, CosmosParamsV1Beta1, CosmosSlashingV1Beta1, CosmosStakingV1Beta1, CosmosTxV1Beta1, CosmosUpgradeV1Beta1, CosmosVestingV1Beta1, IbcApplicationsTransferV1, IbcCoreChannelV1, IbcCoreClientV1, IbcCoreConnectionV1, IbcCorePortV1, TendermintSpnMonitoringp, TwilightprojectNyksBridge, TwilightprojectNyksForks, TwilightprojectNyksFragment, TwilightprojectNyksVolt, TwilightprojectNyksZkos
 ]);
 
 const registry = new Registry([
@@ -57,6 +58,7 @@ const registry = new Registry([
   ...TendermintSpnMonitoringpMsgTypes,
   ...TwilightprojectNyksBridgeMsgTypes,
   ...TwilightprojectNyksForksMsgTypes,
+  ...TwilightprojectNyksFragmentMsgTypes,
   ...TwilightprojectNyksVoltMsgTypes,
   ...TwilightprojectNyksZkosMsgTypes,
   

@@ -7,6 +7,7 @@ export const protobufPackage = "twilightproject.nyks.zkos";
 export interface MsgTransferTx {
   txId: string;
   txByteCode: string;
+  txFee: number;
   zkOracleAddress: string;
 }
 
@@ -25,7 +26,7 @@ export interface MsgMintBurnTradingBtcResponse {
 }
 
 function createBaseMsgTransferTx(): MsgTransferTx {
-  return { txId: "", txByteCode: "", zkOracleAddress: "" };
+  return { txId: "", txByteCode: "", txFee: 0, zkOracleAddress: "" };
 }
 
 export const MsgTransferTx = {
@@ -36,8 +37,11 @@ export const MsgTransferTx = {
     if (message.txByteCode !== "") {
       writer.uint32(18).string(message.txByteCode);
     }
+    if (message.txFee !== 0) {
+      writer.uint32(24).uint64(message.txFee);
+    }
     if (message.zkOracleAddress !== "") {
-      writer.uint32(26).string(message.zkOracleAddress);
+      writer.uint32(34).string(message.zkOracleAddress);
     }
     return writer;
   },
@@ -56,6 +60,9 @@ export const MsgTransferTx = {
           message.txByteCode = reader.string();
           break;
         case 3:
+          message.txFee = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
           message.zkOracleAddress = reader.string();
           break;
         default:
@@ -70,6 +77,7 @@ export const MsgTransferTx = {
     return {
       txId: isSet(object.txId) ? String(object.txId) : "",
       txByteCode: isSet(object.txByteCode) ? String(object.txByteCode) : "",
+      txFee: isSet(object.txFee) ? Number(object.txFee) : 0,
       zkOracleAddress: isSet(object.zkOracleAddress) ? String(object.zkOracleAddress) : "",
     };
   },
@@ -78,6 +86,7 @@ export const MsgTransferTx = {
     const obj: any = {};
     message.txId !== undefined && (obj.txId = message.txId);
     message.txByteCode !== undefined && (obj.txByteCode = message.txByteCode);
+    message.txFee !== undefined && (obj.txFee = Math.round(message.txFee));
     message.zkOracleAddress !== undefined && (obj.zkOracleAddress = message.zkOracleAddress);
     return obj;
   },
@@ -86,6 +95,7 @@ export const MsgTransferTx = {
     const message = createBaseMsgTransferTx();
     message.txId = object.txId ?? "";
     message.txByteCode = object.txByteCode ?? "";
+    message.txFee = object.txFee ?? 0;
     message.zkOracleAddress = object.zkOracleAddress ?? "";
     return message;
   },

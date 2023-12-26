@@ -742,6 +742,27 @@ func (k Keeper) GetAllProposedSweepAddresses(ctx sdk.Context, limit uint64) ([]t
 	return proposeSweepAddress, nil
 }
 
+// LockReserveSweep locks the reserve sweep process
+func (k Keeper) LockProposeSweepAddress(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	// When locking, we set the key to any non-nil byte slice, here using []byte{1}
+	store.Set(types.ProposeSweepAddressLockKey, []byte{1})
+}
+
+// UnlockReserveSweep unlocks the reserve sweep process
+func (k Keeper) UnlockProposeSweepAddress(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	// When unlocking, we delete the key from the store
+	store.Delete(types.ProposeSweepAddressLockKey)
+}
+
+// IsReserveSweepLocked checks if the reserve sweep is locked
+func (k Keeper) IsProposeSweepAddressLocked(ctx sdk.Context) bool {
+	store := ctx.KVStore(k.storeKey)
+	// If the key exists, we are locked
+	return store.Has(types.ProposeSweepAddressLockKey)
+}
+
 /////////////////////////////
 //       Parameters        //
 /////////////////////////////

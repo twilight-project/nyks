@@ -13,9 +13,10 @@ import { BtcWithdrawRequestInternal } from "twilight-project-nyks-client-ts/twil
 import { ReserveWithdrawPool } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { WithdrawRequestSnap } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { ReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { NewSweepProposalReceivedInternal } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 
 
-export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, RefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, ReserveWithdrawSnapshot };
+export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, RefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, ReserveWithdrawSnapshot, NewSweepProposalReceivedInternal };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -69,6 +70,7 @@ const getDefaultState = () => {
 						ReserveWithdrawPool: getStructure(ReserveWithdrawPool.fromPartial({})),
 						WithdrawRequestSnap: getStructure(WithdrawRequestSnap.fromPartial({})),
 						ReserveWithdrawSnapshot: getStructure(ReserveWithdrawSnapshot.fromPartial({})),
+						NewSweepProposalReceivedInternal: getStructure(NewSweepProposalReceivedInternal.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -320,9 +322,13 @@ export default {
 			try {
 				const key = params ?? {};
 				const client = initClient(rootGetters);
-				let value= (await client.TwilightprojectNyksVolt.query.queryBtcWithdrawRequest( key.twilightAddress)).data
+				let value= (await client.TwilightprojectNyksVolt.query.queryBtcWithdrawRequest( key.twilightAddress, query ?? undefined)).data
 				
 					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.TwilightprojectNyksVolt.query.queryBtcWithdrawRequest( key.twilightAddress, {...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
 				commit('QUERY', { query: 'BtcWithdrawRequest', key: { params: {...key}, query}, value })
 				if (subscribe) commit('SUBSCRIBE', { action: 'QueryBtcWithdrawRequest', payload: { options: { all }, params: {...key},query }})
 				return getters['getBtcWithdrawRequest']( { params: {...key}, query}) ?? {}
@@ -342,7 +348,7 @@ export default {
 			try {
 				const key = params ?? {};
 				const client = initClient(rootGetters);
-				let value= (await client.TwilightprojectNyksVolt.query.queryReserveWithdrawPool( key.reserveId,  key.roundId)).data
+				let value= (await client.TwilightprojectNyksVolt.query.queryReserveWithdrawPool( key.reserveId)).data
 				
 					
 				commit('QUERY', { query: 'ReserveWithdrawPool', key: { params: {...key}, query}, value })

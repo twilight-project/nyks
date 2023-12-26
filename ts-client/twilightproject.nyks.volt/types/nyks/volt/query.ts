@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { ClearingAccount, RefundTxSnapshot } from "./clearing";
 import { Params } from "./params";
 import { BtcReserve } from "./reserve";
-import { ReserveWithdrawSnapshot } from "./withdraw";
+import { BtcWithdrawRequestInternal, ReserveWithdrawPool, ReserveWithdrawSnapshot } from "./withdraw";
 
 export const protobufPackage = "twilightproject.nyks.volt";
 
@@ -62,17 +62,21 @@ export interface QueryRefundTxSnapshotResponse {
 
 export interface QueryBtcWithdrawRequestRequest {
   twilightAddress: string;
+  reserveId: number;
+  btcAddress: string;
+  withdrawAmount: number;
 }
 
 export interface QueryBtcWithdrawRequestResponse {
+  BtcWithdrawRequest: BtcWithdrawRequestInternal | undefined;
 }
 
 export interface QueryReserveWithdrawPoolRequest {
   reserveId: number;
-  roundId: number;
 }
 
 export interface QueryReserveWithdrawPoolResponse {
+  ReserveWithdrawPool: ReserveWithdrawPool | undefined;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -695,13 +699,22 @@ export const QueryRefundTxSnapshotResponse = {
 };
 
 function createBaseQueryBtcWithdrawRequestRequest(): QueryBtcWithdrawRequestRequest {
-  return { twilightAddress: "" };
+  return { twilightAddress: "", reserveId: 0, btcAddress: "", withdrawAmount: 0 };
 }
 
 export const QueryBtcWithdrawRequestRequest = {
   encode(message: QueryBtcWithdrawRequestRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.twilightAddress !== "") {
       writer.uint32(10).string(message.twilightAddress);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(16).uint64(message.reserveId);
+    }
+    if (message.btcAddress !== "") {
+      writer.uint32(26).string(message.btcAddress);
+    }
+    if (message.withdrawAmount !== 0) {
+      writer.uint32(32).uint64(message.withdrawAmount);
     }
     return writer;
   },
@@ -716,6 +729,15 @@ export const QueryBtcWithdrawRequestRequest = {
         case 1:
           message.twilightAddress = reader.string();
           break;
+        case 2:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.btcAddress = reader.string();
+          break;
+        case 4:
+          message.withdrawAmount = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -725,12 +747,20 @@ export const QueryBtcWithdrawRequestRequest = {
   },
 
   fromJSON(object: any): QueryBtcWithdrawRequestRequest {
-    return { twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "" };
+    return {
+      twilightAddress: isSet(object.twilightAddress) ? String(object.twilightAddress) : "",
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
+      btcAddress: isSet(object.btcAddress) ? String(object.btcAddress) : "",
+      withdrawAmount: isSet(object.withdrawAmount) ? Number(object.withdrawAmount) : 0,
+    };
   },
 
   toJSON(message: QueryBtcWithdrawRequestRequest): unknown {
     const obj: any = {};
     message.twilightAddress !== undefined && (obj.twilightAddress = message.twilightAddress);
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
+    message.btcAddress !== undefined && (obj.btcAddress = message.btcAddress);
+    message.withdrawAmount !== undefined && (obj.withdrawAmount = Math.round(message.withdrawAmount));
     return obj;
   },
 
@@ -739,16 +769,22 @@ export const QueryBtcWithdrawRequestRequest = {
   ): QueryBtcWithdrawRequestRequest {
     const message = createBaseQueryBtcWithdrawRequestRequest();
     message.twilightAddress = object.twilightAddress ?? "";
+    message.reserveId = object.reserveId ?? 0;
+    message.btcAddress = object.btcAddress ?? "";
+    message.withdrawAmount = object.withdrawAmount ?? 0;
     return message;
   },
 };
 
 function createBaseQueryBtcWithdrawRequestResponse(): QueryBtcWithdrawRequestResponse {
-  return {};
+  return { BtcWithdrawRequest: undefined };
 }
 
 export const QueryBtcWithdrawRequestResponse = {
-  encode(_: QueryBtcWithdrawRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryBtcWithdrawRequestResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.BtcWithdrawRequest !== undefined) {
+      BtcWithdrawRequestInternal.encode(message.BtcWithdrawRequest, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -759,6 +795,9 @@ export const QueryBtcWithdrawRequestResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.BtcWithdrawRequest = BtcWithdrawRequestInternal.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -767,32 +806,41 @@ export const QueryBtcWithdrawRequestResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryBtcWithdrawRequestResponse {
-    return {};
+  fromJSON(object: any): QueryBtcWithdrawRequestResponse {
+    return {
+      BtcWithdrawRequest: isSet(object.BtcWithdrawRequest)
+        ? BtcWithdrawRequestInternal.fromJSON(object.BtcWithdrawRequest)
+        : undefined,
+    };
   },
 
-  toJSON(_: QueryBtcWithdrawRequestResponse): unknown {
+  toJSON(message: QueryBtcWithdrawRequestResponse): unknown {
     const obj: any = {};
+    message.BtcWithdrawRequest !== undefined && (obj.BtcWithdrawRequest = message.BtcWithdrawRequest
+      ? BtcWithdrawRequestInternal.toJSON(message.BtcWithdrawRequest)
+      : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryBtcWithdrawRequestResponse>, I>>(_: I): QueryBtcWithdrawRequestResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryBtcWithdrawRequestResponse>, I>>(
+    object: I,
+  ): QueryBtcWithdrawRequestResponse {
     const message = createBaseQueryBtcWithdrawRequestResponse();
+    message.BtcWithdrawRequest = (object.BtcWithdrawRequest !== undefined && object.BtcWithdrawRequest !== null)
+      ? BtcWithdrawRequestInternal.fromPartial(object.BtcWithdrawRequest)
+      : undefined;
     return message;
   },
 };
 
 function createBaseQueryReserveWithdrawPoolRequest(): QueryReserveWithdrawPoolRequest {
-  return { reserveId: 0, roundId: 0 };
+  return { reserveId: 0 };
 }
 
 export const QueryReserveWithdrawPoolRequest = {
   encode(message: QueryReserveWithdrawPoolRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.reserveId !== 0) {
-      writer.uint32(8).int32(message.reserveId);
-    }
-    if (message.roundId !== 0) {
-      writer.uint32(16).int32(message.roundId);
+      writer.uint32(8).uint64(message.reserveId);
     }
     return writer;
   },
@@ -805,10 +853,7 @@ export const QueryReserveWithdrawPoolRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.reserveId = reader.int32();
-          break;
-        case 2:
-          message.roundId = reader.int32();
+          message.reserveId = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -819,16 +864,12 @@ export const QueryReserveWithdrawPoolRequest = {
   },
 
   fromJSON(object: any): QueryReserveWithdrawPoolRequest {
-    return {
-      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
-      roundId: isSet(object.roundId) ? Number(object.roundId) : 0,
-    };
+    return { reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0 };
   },
 
   toJSON(message: QueryReserveWithdrawPoolRequest): unknown {
     const obj: any = {};
     message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
-    message.roundId !== undefined && (obj.roundId = Math.round(message.roundId));
     return obj;
   },
 
@@ -837,17 +878,19 @@ export const QueryReserveWithdrawPoolRequest = {
   ): QueryReserveWithdrawPoolRequest {
     const message = createBaseQueryReserveWithdrawPoolRequest();
     message.reserveId = object.reserveId ?? 0;
-    message.roundId = object.roundId ?? 0;
     return message;
   },
 };
 
 function createBaseQueryReserveWithdrawPoolResponse(): QueryReserveWithdrawPoolResponse {
-  return {};
+  return { ReserveWithdrawPool: undefined };
 }
 
 export const QueryReserveWithdrawPoolResponse = {
-  encode(_: QueryReserveWithdrawPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryReserveWithdrawPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.ReserveWithdrawPool !== undefined) {
+      ReserveWithdrawPool.encode(message.ReserveWithdrawPool, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -858,6 +901,9 @@ export const QueryReserveWithdrawPoolResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.ReserveWithdrawPool = ReserveWithdrawPool.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -866,19 +912,29 @@ export const QueryReserveWithdrawPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryReserveWithdrawPoolResponse {
-    return {};
+  fromJSON(object: any): QueryReserveWithdrawPoolResponse {
+    return {
+      ReserveWithdrawPool: isSet(object.ReserveWithdrawPool)
+        ? ReserveWithdrawPool.fromJSON(object.ReserveWithdrawPool)
+        : undefined,
+    };
   },
 
-  toJSON(_: QueryReserveWithdrawPoolResponse): unknown {
+  toJSON(message: QueryReserveWithdrawPoolResponse): unknown {
     const obj: any = {};
+    message.ReserveWithdrawPool !== undefined && (obj.ReserveWithdrawPool = message.ReserveWithdrawPool
+      ? ReserveWithdrawPool.toJSON(message.ReserveWithdrawPool)
+      : undefined);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<QueryReserveWithdrawPoolResponse>, I>>(
-    _: I,
+    object: I,
   ): QueryReserveWithdrawPoolResponse {
     const message = createBaseQueryReserveWithdrawPoolResponse();
+    message.ReserveWithdrawPool = (object.ReserveWithdrawPool !== undefined && object.ReserveWithdrawPool !== null)
+      ? ReserveWithdrawPool.fromPartial(object.ReserveWithdrawPool)
+      : undefined;
     return message;
   },
 };

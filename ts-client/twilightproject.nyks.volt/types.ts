@@ -11,6 +11,7 @@ import { BtcWithdrawRequestInternal } from "./types/nyks/volt/withdraw"
 import { ReserveWithdrawPool } from "./types/nyks/volt/withdraw"
 import { WithdrawRequestSnap } from "./types/nyks/volt/withdraw"
 import { ReserveWithdrawSnapshot } from "./types/nyks/volt/withdraw"
+import { NewSweepProposalReceivedInternal } from "./types/nyks/volt/withdraw"
 
 
 export {     
@@ -27,5 +28,6 @@ export {
     ReserveWithdrawPool,
     WithdrawRequestSnap,
     ReserveWithdrawSnapshot,
+    NewSweepProposalReceivedInternal,
     
  }

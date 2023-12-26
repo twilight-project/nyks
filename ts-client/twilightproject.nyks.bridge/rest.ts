@@ -135,7 +135,10 @@ export interface BridgeMsgUnsignedTxSweep {
 
 export type BridgeMsgUnsignedTxSweepResponse = object;
 
-export type BridgeMsgWithdrawBtcRequestResponse = object;
+export interface BridgeMsgWithdrawBtcRequestResponse {
+  /** @format int64 */
+  withdrawIdentifer?: number;
+}
 
 export type BridgeMsgWithdrawTxFinalResponse = object;
 

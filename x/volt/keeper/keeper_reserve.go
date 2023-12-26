@@ -332,6 +332,29 @@ func (k Keeper) GetLastUnlockedReserve(ctx sdk.Context) uint64 {
 	return forkstypes.UInt64FromBytes(bytes)
 }
 
+// GetNextUnlockingReserve returns the next reserve id to be unlocked
+func (k Keeper) GetNextUnlockingReserve(ctx sdk.Context) (*uint64, *types.BtcReserve, error) {
+	// Find the last unlocked reserve
+	reserveId := k.GetLastUnlockedReserve(ctx)
+
+	nextReserveUnlockingId := uint64(0)
+	if reserveId < types.BtcReserveMaxLimit {
+		// n+1 to find next unlocking reserve
+		nextReserveUnlockingId = reserveId + 1
+	} else {
+		// reset to 1
+		nextReserveUnlockingId = 1
+	}
+
+	// Fetch the reserve
+	reserve, err := k.GetBtcReserve(ctx, nextReserveUnlockingId)
+	if err != nil {
+		return nil, nil, sdkerrors.Wrap(types.ErrBtcReserveNotFound, "cannot find reserve")
+	}
+
+	return &nextReserveUnlockingId, reserve, nil
+}
+
 func prefixRange(prefix []byte) ([]byte, []byte) {
 	if prefix == nil {
 		panic("nil key not allowed")

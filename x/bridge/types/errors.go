@@ -20,4 +20,5 @@ var (
 	ErrInsufficientBalanceInBank   = sdkerrors.Register(ModuleName, 10, "insufficient balance in bank")
 	ErrClearingAccountDoesNotExist = sdkerrors.Register(ModuleName, 11, "clearing account does not exist")
 	ErrBtcAddressAlreadyExists     = sdkerrors.Register(ModuleName, 12, "btc address already exists")
+	ErrProposeSweepAddressIsLocked = sdkerrors.Register(ModuleName, 13, "propose sweep address is locked")
 )

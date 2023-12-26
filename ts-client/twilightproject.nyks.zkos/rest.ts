@@ -35,6 +35,9 @@ export type ZkosMsgMintBurnTradingBtcResponse = object;
 export interface ZkosMsgTransferTx {
   txId?: string;
   txByteCode?: string;
+
+  /** @format uint64 */
+  txFee?: string;
   zkOracleAddress?: string;
 }
 
@@ -182,7 +185,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title nyks/zkos/genesis.proto
+ * @title nyks/zkos/events.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {

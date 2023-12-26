@@ -64,6 +64,9 @@ var (
 
 	// ProposeSweepAddressMsg is the key for the propose sweep address
 	ProposeSweepAddressMsg = forkstypes.HashString("ProposeSweepAddressMsg")
+
+	// ProposeSweepAddressLockKey is the key for the propose sweep address lock
+	ProposeSweepAddressLockKey = forkstypes.HashString("ProposeSweepAddressLockKey")
 )
 
 func KeyPrefix(p string) []byte {

@@ -140,7 +140,7 @@ func (k Keeper) SetMintOrBurnTradingBtc(ctx sdk.Context, msg *types.MsgMintBurnT
 	} else { // Burn
 
 		// Get the next unlocking reserve
-		nextReserveUnlockingId, reserve, err := k.GetNextUnlockingReserve(ctx)
+		nextReserveUnlockingId, reserve, err := k.VoltKeeper.GetNextUnlockingReserve(ctx)
 		if err != nil {
 			return sdkerrors.Wrapf(types.ErrReserveNotFound, "next unlocking reserve not found")
 		}
@@ -261,7 +261,7 @@ func (k Keeper) GetMintOrBurnTradingBtc(ctx sdk.Context, twilightAddress string)
 func (k Keeper) DeductFeeFromPrivatePool(ctx sdk.Context, fee uint64) error {
 
 	// Get the next unlocking reserve
-	_, reserve, err := k.GetNextUnlockingReserve(ctx)
+	_, reserve, err := k.VoltKeeper.GetNextUnlockingReserve(ctx)
 	if err != nil {
 		return sdkerrors.Wrapf(types.ErrReserveNotFound, "next unlocking reserve not found")
 	}
@@ -300,29 +300,6 @@ func (k Keeper) DeductFeeFromPrivatePool(ctx sdk.Context, fee uint64) error {
 	k.VoltKeeper.SetBtcReserve(ctx, reserve)
 
 	return nil
-}
-
-// GetNextUnlockingReserve returns the next reserve id to be unlocked
-func (k Keeper) GetNextUnlockingReserve(ctx sdk.Context) (*uint64, *volttypes.BtcReserve, error) {
-	// Find the last unlocked reserve
-	reserveId := k.VoltKeeper.GetLastUnlockedReserve(ctx)
-
-	nextReserveUnlockingId := uint64(0)
-	if reserveId < volttypes.BtcReserveMaxLimit {
-		// n+1 to find next unlocking reserve
-		nextReserveUnlockingId = reserveId + 1
-	} else {
-		// reset to 1
-		nextReserveUnlockingId = 1
-	}
-
-	// Fetch the reserve
-	reserve, err := k.VoltKeeper.GetBtcReserve(ctx, nextReserveUnlockingId)
-	if err != nil {
-		return nil, nil, sdkerrors.Wrap(types.ErrReserveNotFound, "cannot find reserve")
-	}
-
-	return &nextReserveUnlockingId, reserve, nil
 }
 
 // MarkQqAccountAsUsed saves the used Qqaccount in a new KV store to avoid being reused

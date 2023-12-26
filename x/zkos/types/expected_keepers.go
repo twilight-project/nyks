@@ -29,4 +29,5 @@ type VoltKeeper interface {
 	GetBtcReserve(ctx sdk.Context, reserveId uint64) (*volttypes.BtcReserve, error)
 	GetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress) (*volttypes.ClearingAccount, bool)
 	SetClearingAccount(ctx sdk.Context, twilightAddress sdk.AccAddress, account *volttypes.ClearingAccount) error
+	GetNextUnlockingReserve(ctx sdk.Context) (*uint64, *volttypes.BtcReserve, error)
 }
