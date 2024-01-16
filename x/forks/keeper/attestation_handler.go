@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/armon/go-metrics"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -29,6 +31,8 @@ func (a AttestationHandler) ValidateMembers() {
 func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, proposal types.BtcProposal) error {
 	switch proposal := proposal.(type) {
 
+	case *types.MsgSeenBtcChainTip:
+		return a.handleSeenBtcChainTip(ctx, *proposal)
 	case *bridgetypes.MsgConfirmBtcDeposit:
 		return a.handleConfirmBtcDeposit(ctx, *proposal)
 	case *bridgetypes.MsgSweepProposal:
@@ -39,6 +43,19 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 	default:
 		panic(fmt.Sprintf("Invalid event type for attestations %s", proposal.GetType()))
 	}
+}
+
+// handleSeenBtcChainTip handles the processing of a MsgSeenBtcChainTip
+// Currently, we do not have post-processing to the function is empty
+func (a AttestationHandler) handleSeenBtcChainTip(ctx sdk.Context, proposal types.MsgSeenBtcChainTip) error {
+	ctx.Logger().Error("SeenBtcChainTip")
+	telemetry.SetGaugeWithLabels(
+		[]string{"tx", "msg", "last_seen_btc_block"},
+		float32(proposal.GetHeight()),
+		[]metrics.Label{telemetry.NewLabel("block", "number")},
+	)
+
+	return nil
 }
 
 // handleConfirmBtcDeposit handles the processing of a MsgConfirmBtcDeposit
@@ -104,6 +121,12 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 		)
 		return sdkerrors.Wrapf(err, "could not update the reserve %s", proposal.ReserveAddress)
 	}
+
+	telemetry.SetGaugeWithLabels(
+		[]string{"tx", "msg", "confirm_btc_deposit"},
+		float32(mintAmount.Int64()),
+		[]metrics.Label{telemetry.NewLabel("denom", "sats")},
+	)
 
 	return err // returns nil if no error occurred`
 }

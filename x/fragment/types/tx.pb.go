@@ -9,7 +9,9 @@ import (
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,19 +25,298 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Existing Messages
+type MsgRegisterReserveAddress struct {
+	ReserveScript  string `protobuf:"bytes,1,opt,name=reserveScript,proto3" json:"reserveScript,omitempty"`
+	ReserveAddress string `protobuf:"bytes,2,opt,name=reserveAddress,proto3" json:"reserveAddress,omitempty"`
+	JudgeAddress   string `protobuf:"bytes,3,opt,name=judgeAddress,proto3" json:"judgeAddress,omitempty"`
+}
+
+func (m *MsgRegisterReserveAddress) Reset()         { *m = MsgRegisterReserveAddress{} }
+func (m *MsgRegisterReserveAddress) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterReserveAddress) ProtoMessage()    {}
+func (*MsgRegisterReserveAddress) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e0c3b1d039097173, []int{0}
+}
+func (m *MsgRegisterReserveAddress) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterReserveAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterReserveAddress.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterReserveAddress) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterReserveAddress.Merge(m, src)
+}
+func (m *MsgRegisterReserveAddress) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterReserveAddress) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterReserveAddress.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterReserveAddress proto.InternalMessageInfo
+
+func (m *MsgRegisterReserveAddress) GetReserveScript() string {
+	if m != nil {
+		return m.ReserveScript
+	}
+	return ""
+}
+
+func (m *MsgRegisterReserveAddress) GetReserveAddress() string {
+	if m != nil {
+		return m.ReserveAddress
+	}
+	return ""
+}
+
+func (m *MsgRegisterReserveAddress) GetJudgeAddress() string {
+	if m != nil {
+		return m.JudgeAddress
+	}
+	return ""
+}
+
+type MsgRegisterJudge struct {
+	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	JudgeAddress     string `protobuf:"bytes,2,opt,name=judgeAddress,proto3" json:"judgeAddress,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,3,opt,name=validatorAddress,proto3" json:"validatorAddress,omitempty"`
+}
+
+func (m *MsgRegisterJudge) Reset()         { *m = MsgRegisterJudge{} }
+func (m *MsgRegisterJudge) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterJudge) ProtoMessage()    {}
+func (*MsgRegisterJudge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e0c3b1d039097173, []int{1}
+}
+func (m *MsgRegisterJudge) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterJudge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterJudge.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterJudge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterJudge.Merge(m, src)
+}
+func (m *MsgRegisterJudge) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterJudge) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterJudge.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterJudge proto.InternalMessageInfo
+
+func (m *MsgRegisterJudge) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgRegisterJudge) GetJudgeAddress() string {
+	if m != nil {
+		return m.JudgeAddress
+	}
+	return ""
+}
+
+func (m *MsgRegisterJudge) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+type MsgSetDelegateAddresses struct {
+	ValidatorAddress string `protobuf:"bytes,2,opt,name=validatorAddress,proto3" json:"validatorAddress,omitempty"`
+	BtcOracleAddress string `protobuf:"bytes,3,opt,name=btcOracleAddress,proto3" json:"btcOracleAddress,omitempty"`
+	BtcPublicKey     string `protobuf:"bytes,4,opt,name=btcPublicKey,proto3" json:"btcPublicKey,omitempty"`
+}
+
+func (m *MsgSetDelegateAddresses) Reset()         { *m = MsgSetDelegateAddresses{} }
+func (m *MsgSetDelegateAddresses) String() string { return proto.CompactTextString(m) }
+func (*MsgSetDelegateAddresses) ProtoMessage()    {}
+func (*MsgSetDelegateAddresses) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e0c3b1d039097173, []int{2}
+}
+func (m *MsgSetDelegateAddresses) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetDelegateAddresses) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetDelegateAddresses.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetDelegateAddresses) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetDelegateAddresses.Merge(m, src)
+}
+func (m *MsgSetDelegateAddresses) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetDelegateAddresses) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetDelegateAddresses.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetDelegateAddresses proto.InternalMessageInfo
+
+func (m *MsgSetDelegateAddresses) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+func (m *MsgSetDelegateAddresses) GetBtcOracleAddress() string {
+	if m != nil {
+		return m.BtcOracleAddress
+	}
+	return ""
+}
+
+func (m *MsgSetDelegateAddresses) GetBtcPublicKey() string {
+	if m != nil {
+		return m.BtcPublicKey
+	}
+	return ""
+}
+
+// Combined Oracles
+type RegisterOracleAddresses struct {
+	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	ZkOracleAddress  string `protobuf:"bytes,2,opt,name=zkOracleAddress,proto3" json:"zkOracleAddress,omitempty"`
+	ValidatorAddress string `protobuf:"bytes,3,opt,name=validatorAddress,proto3" json:"validatorAddress,omitempty"`
+	BtcOracleAddress string `protobuf:"bytes,4,opt,name=btcOracleAddress,proto3" json:"btcOracleAddress,omitempty"`
+	BtcPublicKey     string `protobuf:"bytes,5,opt,name=btcPublicKey,proto3" json:"btcPublicKey,omitempty"`
+}
+
+func (m *RegisterOracleAddresses) Reset()         { *m = RegisterOracleAddresses{} }
+func (m *RegisterOracleAddresses) String() string { return proto.CompactTextString(m) }
+func (*RegisterOracleAddresses) ProtoMessage()    {}
+func (*RegisterOracleAddresses) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e0c3b1d039097173, []int{3}
+}
+func (m *RegisterOracleAddresses) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RegisterOracleAddresses) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RegisterOracleAddresses.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RegisterOracleAddresses) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterOracleAddresses.Merge(m, src)
+}
+func (m *RegisterOracleAddresses) XXX_Size() int {
+	return m.Size()
+}
+func (m *RegisterOracleAddresses) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterOracleAddresses.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterOracleAddresses proto.InternalMessageInfo
+
+func (m *RegisterOracleAddresses) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *RegisterOracleAddresses) GetZkOracleAddress() string {
+	if m != nil {
+		return m.ZkOracleAddress
+	}
+	return ""
+}
+
+func (m *RegisterOracleAddresses) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+func (m *RegisterOracleAddresses) GetBtcOracleAddress() string {
+	if m != nil {
+		return m.BtcOracleAddress
+	}
+	return ""
+}
+
+func (m *RegisterOracleAddresses) GetBtcPublicKey() string {
+	if m != nil {
+		return m.BtcPublicKey
+	}
+	return ""
+}
+
+func init() {
+	proto.RegisterType((*MsgRegisterReserveAddress)(nil), "twilightproject.nyks.fragment.MsgRegisterReserveAddress")
+	proto.RegisterType((*MsgRegisterJudge)(nil), "twilightproject.nyks.fragment.MsgRegisterJudge")
+	proto.RegisterType((*MsgSetDelegateAddresses)(nil), "twilightproject.nyks.fragment.MsgSetDelegateAddresses")
+	proto.RegisterType((*RegisterOracleAddresses)(nil), "twilightproject.nyks.fragment.RegisterOracleAddresses")
+}
+
 func init() { proto.RegisterFile("nyks/fragment/tx.proto", fileDescriptor_e0c3b1d039097173) }
 
 var fileDescriptor_e0c3b1d039097173 = []byte{
-	// 139 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xcb, 0xab, 0xcc, 0x2e,
-	0xd6, 0x4f, 0x2b, 0x4a, 0x4c, 0xcf, 0x4d, 0xcd, 0x2b, 0xd1, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca,
-	0x2f, 0xc9, 0x17, 0x92, 0x2d, 0x29, 0xcf, 0xcc, 0xc9, 0x4c, 0xcf, 0x28, 0x29, 0x28, 0xca, 0xcf,
-	0x4a, 0x4d, 0x2e, 0xd1, 0x03, 0xa9, 0xd3, 0x83, 0xa9, 0x33, 0x62, 0xe5, 0x62, 0xf6, 0x2d, 0x4e,
-	0x77, 0xf2, 0x3e, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27,
-	0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xc3, 0xf4, 0xcc,
-	0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0x98, 0x51, 0xba, 0x50, 0xb3, 0xf4, 0xc1,
-	0x76, 0x56, 0x20, 0xd9, 0x5a, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xb6, 0xd9, 0x18, 0x10, 0x00,
-	0x00, 0xff, 0xff, 0x54, 0xa5, 0xdc, 0x6e, 0x93, 0x00, 0x00, 0x00,
+	// 360 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0xcd, 0x4a, 0xfb, 0x40,
+	0x14, 0xc5, 0x3b, 0xfd, 0xf8, 0xff, 0x71, 0xf0, 0xa3, 0x64, 0x61, 0xe3, 0xc2, 0x20, 0x41, 0xa4,
+	0x08, 0x26, 0xa8, 0x4f, 0xa0, 0xb8, 0xb2, 0x14, 0xa5, 0xdd, 0xb9, 0x4b, 0x26, 0xd7, 0xe9, 0xb4,
+	0x69, 0x13, 0x66, 0x6e, 0x6b, 0x2b, 0xbe, 0x82, 0xe0, 0xc6, 0x77, 0x72, 0xd9, 0xa5, 0xee, 0xa4,
+	0x7d, 0x11, 0x49, 0xda, 0x48, 0xd3, 0x04, 0xd1, 0x65, 0x7e, 0x39, 0xf7, 0xcc, 0x3d, 0x97, 0x43,
+	0x77, 0x07, 0x93, 0x9e, 0xb2, 0xef, 0xa5, 0xc3, 0xfb, 0x30, 0x40, 0x1b, 0xc7, 0x56, 0x28, 0x03,
+	0x0c, 0xb4, 0x7d, 0x7c, 0x10, 0xbe, 0xe0, 0x1d, 0x0c, 0x65, 0xd0, 0x05, 0x86, 0x56, 0xa4, 0xb3,
+	0x12, 0x9d, 0xf9, 0x4c, 0xe8, 0x5e, 0x53, 0xf1, 0x16, 0x70, 0xa1, 0x10, 0x64, 0x0b, 0x14, 0xc8,
+	0x11, 0x5c, 0x78, 0x9e, 0x04, 0xa5, 0xb4, 0x43, 0xba, 0x25, 0x17, 0xa4, 0xcd, 0xa4, 0x08, 0x51,
+	0x27, 0x07, 0xa4, 0xbe, 0xd1, 0x4a, 0x43, 0xed, 0x88, 0x6e, 0xcb, 0xd4, 0x9c, 0x5e, 0x8c, 0x65,
+	0x6b, 0x54, 0x33, 0xe9, 0x66, 0x77, 0xe8, 0xf1, 0x6f, 0x55, 0x29, 0x56, 0xa5, 0x98, 0xf9, 0x44,
+	0xab, 0x2b, 0xeb, 0x5c, 0x47, 0xbf, 0x34, 0x9d, 0xfe, 0x67, 0x12, 0x1c, 0x0c, 0xe4, 0xf2, 0xfd,
+	0xe4, 0x33, 0xe3, 0x58, 0xcc, 0x3a, 0x6a, 0xc7, 0xb4, 0x3a, 0x72, 0x7c, 0xe1, 0x45, 0x03, 0xe9,
+	0x97, 0x33, 0xdc, 0x7c, 0x25, 0xb4, 0xd6, 0x54, 0xbc, 0x0d, 0x78, 0x05, 0x3e, 0x70, 0x07, 0x13,
+	0x17, 0xc8, 0xf7, 0x29, 0xe6, 0xfb, 0x44, 0x5a, 0x17, 0xd9, 0x8d, 0x74, 0x98, 0xbf, 0x96, 0x36,
+	0xc3, 0xa3, 0x0c, 0x2e, 0xb2, 0xdb, 0xa1, 0xeb, 0x0b, 0xd6, 0x80, 0x89, 0x5e, 0x5e, 0x64, 0x58,
+	0x65, 0xe6, 0x07, 0xa1, 0xb5, 0xe4, 0x26, 0xa9, 0x69, 0x50, 0x3f, 0x5c, 0xa7, 0x4e, 0x77, 0x1e,
+	0x7b, 0xe9, 0x25, 0x16, 0x0b, 0xaf, 0xe3, 0xbf, 0xdc, 0x28, 0x37, 0x5b, 0xf9, 0x97, 0xd9, 0x2a,
+	0xd9, 0x6c, 0x67, 0x15, 0x5a, 0x6a, 0x2a, 0x7e, 0xd9, 0x78, 0x9b, 0x19, 0x64, 0x3a, 0x33, 0xc8,
+	0xe7, 0xcc, 0x20, 0x2f, 0x73, 0xa3, 0x30, 0x9d, 0x1b, 0x85, 0xf7, 0xb9, 0x51, 0xb8, 0x3b, 0xe5,
+	0x02, 0x3b, 0x43, 0xd7, 0x62, 0x41, 0xdf, 0x4e, 0xca, 0x7c, 0xb2, 0x6c, 0xb3, 0x1d, 0xb7, 0x7e,
+	0xbc, 0xd2, 0xfb, 0x49, 0x08, 0xca, 0xfd, 0x17, 0x77, 0xff, 0xfc, 0x2b, 0x00, 0x00, 0xff, 0xff,
+	0xf8, 0xd2, 0x2c, 0xac, 0x15, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -79,3 +360,1035 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Streams:     []grpc.StreamDesc{},
 	Metadata:    "nyks/fragment/tx.proto",
 }
+
+func (m *MsgRegisterReserveAddress) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterReserveAddress) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterReserveAddress) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.JudgeAddress) > 0 {
+		i -= len(m.JudgeAddress)
+		copy(dAtA[i:], m.JudgeAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.JudgeAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ReserveAddress) > 0 {
+		i -= len(m.ReserveAddress)
+		copy(dAtA[i:], m.ReserveAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ReserveAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ReserveScript) > 0 {
+		i -= len(m.ReserveScript)
+		copy(dAtA[i:], m.ReserveScript)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ReserveScript)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRegisterJudge) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterJudge) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterJudge) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ValidatorAddress) > 0 {
+		i -= len(m.ValidatorAddress)
+		copy(dAtA[i:], m.ValidatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.JudgeAddress) > 0 {
+		i -= len(m.JudgeAddress)
+		copy(dAtA[i:], m.JudgeAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.JudgeAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetDelegateAddresses) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetDelegateAddresses) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetDelegateAddresses) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BtcPublicKey) > 0 {
+		i -= len(m.BtcPublicKey)
+		copy(dAtA[i:], m.BtcPublicKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BtcPublicKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.BtcOracleAddress) > 0 {
+		i -= len(m.BtcOracleAddress)
+		copy(dAtA[i:], m.BtcOracleAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BtcOracleAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ValidatorAddress) > 0 {
+		i -= len(m.ValidatorAddress)
+		copy(dAtA[i:], m.ValidatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RegisterOracleAddresses) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RegisterOracleAddresses) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RegisterOracleAddresses) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BtcPublicKey) > 0 {
+		i -= len(m.BtcPublicKey)
+		copy(dAtA[i:], m.BtcPublicKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BtcPublicKey)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.BtcOracleAddress) > 0 {
+		i -= len(m.BtcOracleAddress)
+		copy(dAtA[i:], m.BtcOracleAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BtcOracleAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ValidatorAddress) > 0 {
+		i -= len(m.ValidatorAddress)
+		copy(dAtA[i:], m.ValidatorAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ValidatorAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ZkOracleAddress) > 0 {
+		i -= len(m.ZkOracleAddress)
+		copy(dAtA[i:], m.ZkOracleAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ZkOracleAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *MsgRegisterReserveAddress) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ReserveScript)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ReserveAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.JudgeAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRegisterJudge) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.JudgeAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ValidatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetDelegateAddresses) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ValidatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BtcOracleAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BtcPublicKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *RegisterOracleAddresses) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ZkOracleAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ValidatorAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BtcOracleAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BtcPublicKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgRegisterReserveAddress) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterReserveAddress: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterReserveAddress: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveScript", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReserveScript = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReserveAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field JudgeAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.JudgeAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterJudge) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterJudge: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterJudge: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field JudgeAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.JudgeAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetDelegateAddresses) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetDelegateAddresses: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetDelegateAddresses: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcOracleAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BtcOracleAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcPublicKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BtcPublicKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RegisterOracleAddresses) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RegisterOracleAddresses: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RegisterOracleAddresses: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ZkOracleAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ZkOracleAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValidatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcOracleAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BtcOracleAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BtcPublicKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BtcPublicKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

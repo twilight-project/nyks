@@ -135,9 +135,12 @@ func (k Keeper) TryAttestation(ctx sdk.Context, att *types.Attestation) {
 					// k.SetLastObservedEthereumBlockHeight(ctx, claim.GetBlockHeight())
 
 					att.Observed = true
-					k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
-
-					k.emitObservedEvent(ctx, att, proposal)
+					// we are processing attestation first and then setting it as true
+					err := k.processAttestation(ctx, att, proposal)
+					if err == nil {
+						k.SetAttestation(ctx, proposal.GetHeight(), hash, att)
+						k.emitObservedEvent(ctx, att, proposal)
+					}
 
 					break
 				}

@@ -5,3 +5,32 @@ option go_package = "github.com/twilight-project/nyks/x/fragment/types";
 
 // Msg defines the Msg service.
 service Msg {}
+
+
+// Existing Messages
+message MsgRegisterReserveAddress {
+    string reserveScript  = 1;
+    string reserveAddress = 2;
+    string judgeAddress   = 3;
+}
+  
+message MsgRegisterJudge {
+    string creator          = 1;
+    string judgeAddress     = 2;
+    string validatorAddress = 3;
+}
+
+message MsgSetDelegateAddresses {
+   string validatorAddress = 2;
+   string btcOracleAddress = 3;
+   string btcPublicKey = 4;
+}
+
+// Combined Oracles
+message RegisterOracleAddresses {
+    string creator          = 1;
+    string zkOracleAddress     = 2;
+    string validatorAddress = 3;
+    string btcOracleAddress = 4;
+    string btcPublicKey = 5;
+}

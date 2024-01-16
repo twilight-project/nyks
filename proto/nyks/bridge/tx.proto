@@ -136,8 +136,8 @@ message MsgProposeSweepAddressResponse {}
 
 // 2. MsgUnsignedTxSweep
 message MsgUnsignedTxSweep {
-  string txId               = 1;
-  string btcUnsignedSweepTx = 2;
+  string txId               = 1; //remove txid from here
+  string btcUnsignedSweepTx = 2; //make txid yourself
   uint64 reserveId         = 3;
   uint64 roundId            = 4;
   string judgeAddress       = 5;
@@ -149,7 +149,7 @@ message MsgUnsignedTxSweepResponse {}
 message MsgUnsignedTxRefund {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
-  string btcUnsignedRefundTx = 3;
+  string btcUnsignedRefundTx = 3; //make txid yourself
   string judgeAddress        = 4;
 }
 
@@ -157,6 +157,7 @@ message MsgUnsignedTxRefundResponse {}
 
 // 4. MsgSignRefund
 message MsgSignRefund {
+  // add txid
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
   string signerPublicKey   = 3;
@@ -168,6 +169,7 @@ message MsgSignRefundResponse {}
 
 // 5. MsgSignSweep
 message MsgSignSweep {
+  // add txid
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
   string signerPublicKey = 3;
@@ -181,7 +183,7 @@ message MsgSignSweepResponse {}
 message MsgBroadcastTxRefund {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
-  string signedRefundTx = 3;
+  string signedRefundTx = 3; // make txid yourself
   string judgeAddress   = 4;
 }
 
@@ -191,7 +193,7 @@ message MsgBroadcastTxRefundResponse {}
 message MsgBroadcastTxSweep {
   uint64 reserveId           = 1;
   uint64 roundId             = 2;
-  string signedSweepTx = 3;
+  string signedSweepTx = 3; //make txid yourself
   string judgeAddress  = 4;
 }
 
@@ -204,7 +206,7 @@ message MsgSweepProposal {
   string judgeAddress          =  3;
   uint64 BtcBlockNumber = 4;
   uint64 btcRelayCapacityValue =  5;
-  string btcTxHash = 6;
+  string btcTxHash = 6; // rename to sweepTxId
   uint64 UnlockHeight = 7;
   uint64 roundId = 8;
 }

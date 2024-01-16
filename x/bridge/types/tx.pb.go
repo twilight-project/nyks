@@ -1302,6 +1302,7 @@ var xxx_messageInfo_MsgUnsignedTxRefundResponse proto.InternalMessageInfo
 
 // 4. MsgSignRefund
 type MsgSignRefund struct {
+	// add txid
 	ReserveId        uint64   `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
 	RoundId          uint64   `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
 	SignerPublicKey  string   `protobuf:"bytes,3,opt,name=signerPublicKey,proto3" json:"signerPublicKey,omitempty"`
@@ -1415,6 +1416,7 @@ var xxx_messageInfo_MsgSignRefundResponse proto.InternalMessageInfo
 
 // 5. MsgSignSweep
 type MsgSignSweep struct {
+	// add txid
 	ReserveId        uint64   `protobuf:"varint,1,opt,name=reserveId,proto3" json:"reserveId,omitempty"`
 	RoundId          uint64   `protobuf:"varint,2,opt,name=roundId,proto3" json:"roundId,omitempty"`
 	SignerPublicKey  string   `protobuf:"bytes,3,opt,name=signerPublicKey,proto3" json:"signerPublicKey,omitempty"`

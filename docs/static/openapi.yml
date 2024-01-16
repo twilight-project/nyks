@@ -27322,6 +27322,7 @@ paths:
                     format: uint64
                   signedRefundTx:
                     type: string
+                    title: make txid yourself
                   judgeAddress:
                     type: string
                 title: 6. MsgBroadcastTxRefund
@@ -27379,6 +27380,7 @@ paths:
                       format: uint64
                     signedRefundTx:
                       type: string
+                      title: make txid yourself
                     judgeAddress:
                       type: string
                   title: 6. MsgBroadcastTxRefund
@@ -27423,6 +27425,7 @@ paths:
                     format: uint64
                   signedSweepTx:
                     type: string
+                    title: make txid yourself
                   judgeAddress:
                     type: string
                 title: 7. MsgBroadcastTxSweep
@@ -27480,6 +27483,7 @@ paths:
                       format: uint64
                     signedSweepTx:
                       type: string
+                      title: make txid yourself
                     judgeAddress:
                       type: string
                   title: 7. MsgBroadcastTxSweep
@@ -27963,6 +27967,7 @@ paths:
                     reserveId:
                       type: string
                       format: uint64
+                      title: add txid
                     roundId:
                       type: string
                       format: uint64
@@ -28024,6 +28029,7 @@ paths:
                     reserveId:
                       type: string
                       format: uint64
+                      title: add txid
                     roundId:
                       type: string
                       format: uint64
@@ -28074,6 +28080,7 @@ paths:
                     reserveId:
                       type: string
                       format: uint64
+                      title: add txid
                     roundId:
                       type: string
                       format: uint64
@@ -28135,6 +28142,7 @@ paths:
                     reserveId:
                       type: string
                       format: uint64
+                      title: add txid
                     roundId:
                       type: string
                       format: uint64
@@ -28188,6 +28196,7 @@ paths:
                     format: uint64
                   btcUnsignedRefundTx:
                     type: string
+                    title: make txid yourself
                   judgeAddress:
                     type: string
                 title: 3. MsgUnsignedTxRefund
@@ -28245,6 +28254,7 @@ paths:
                       format: uint64
                     btcUnsignedRefundTx:
                       type: string
+                      title: make txid yourself
                     judgeAddress:
                       type: string
                   title: 3. MsgUnsignedTxRefund
@@ -28289,8 +28299,10 @@ paths:
                 properties:
                   txId:
                     type: string
+                    title: remove txid from here
                   btcUnsignedSweepTx:
                     type: string
+                    title: make txid yourself
                   reserveId:
                     type: string
                     format: uint64
@@ -28348,8 +28360,10 @@ paths:
                   properties:
                     txId:
                       type: string
+                      title: remove txid from here
                     btcUnsignedSweepTx:
                       type: string
+                      title: make txid yourself
                     reserveId:
                       type: string
                       format: uint64
@@ -48925,6 +48939,7 @@ definitions:
         format: uint64
       signedRefundTx:
         type: string
+        title: make txid yourself
       judgeAddress:
         type: string
     title: 6. MsgBroadcastTxRefund
@@ -48941,6 +48956,7 @@ definitions:
         format: uint64
       signedSweepTx:
         type: string
+        title: make txid yourself
       judgeAddress:
         type: string
     title: 7. MsgBroadcastTxSweep
@@ -49017,6 +49033,7 @@ definitions:
       reserveId:
         type: string
         format: uint64
+        title: add txid
       roundId:
         type: string
         format: uint64
@@ -49037,6 +49054,7 @@ definitions:
       reserveId:
         type: string
         format: uint64
+        title: add txid
       roundId:
         type: string
         format: uint64
@@ -49064,6 +49082,7 @@ definitions:
         format: uint64
       btcUnsignedRefundTx:
         type: string
+        title: make txid yourself
       judgeAddress:
         type: string
     title: 3. MsgUnsignedTxRefund
@@ -49074,8 +49093,10 @@ definitions:
     properties:
       txId:
         type: string
+        title: remove txid from here
       btcUnsignedSweepTx:
         type: string
+        title: make txid yourself
       reserveId:
         type: string
         format: uint64
@@ -49116,6 +49137,7 @@ definitions:
               format: uint64
             signedRefundTx:
               type: string
+              title: make txid yourself
             judgeAddress:
               type: string
           title: 6. MsgBroadcastTxRefund
@@ -49133,6 +49155,7 @@ definitions:
             format: uint64
           signedRefundTx:
             type: string
+            title: make txid yourself
           judgeAddress:
             type: string
         title: 6. MsgBroadcastTxRefund
@@ -49152,6 +49175,7 @@ definitions:
               format: uint64
             signedSweepTx:
               type: string
+              title: make txid yourself
             judgeAddress:
               type: string
           title: 7. MsgBroadcastTxSweep
@@ -49169,6 +49193,7 @@ definitions:
             format: uint64
           signedSweepTx:
             type: string
+            title: make txid yourself
           judgeAddress:
             type: string
         title: 7. MsgBroadcastTxSweep
@@ -49321,6 +49346,7 @@ definitions:
             reserveId:
               type: string
               format: uint64
+              title: add txid
             roundId:
               type: string
               format: uint64
@@ -49344,6 +49370,7 @@ definitions:
             reserveId:
               type: string
               format: uint64
+              title: add txid
             roundId:
               type: string
               format: uint64
@@ -49367,6 +49394,7 @@ definitions:
             reserveId:
               type: string
               format: uint64
+              title: add txid
             roundId:
               type: string
               format: uint64
@@ -49390,6 +49418,7 @@ definitions:
             reserveId:
               type: string
               format: uint64
+              title: add txid
             roundId:
               type: string
               format: uint64
@@ -49418,6 +49447,7 @@ definitions:
               format: uint64
             btcUnsignedRefundTx:
               type: string
+              title: make txid yourself
             judgeAddress:
               type: string
           title: 3. MsgUnsignedTxRefund
@@ -49435,6 +49465,7 @@ definitions:
             format: uint64
           btcUnsignedRefundTx:
             type: string
+            title: make txid yourself
           judgeAddress:
             type: string
         title: 3. MsgUnsignedTxRefund
@@ -49448,8 +49479,10 @@ definitions:
           properties:
             txId:
               type: string
+              title: remove txid from here
             btcUnsignedSweepTx:
               type: string
+              title: make txid yourself
             reserveId:
               type: string
               format: uint64
@@ -49467,8 +49500,10 @@ definitions:
         properties:
           txId:
             type: string
+            title: remove txid from here
           btcUnsignedSweepTx:
             type: string
+            title: make txid yourself
           reserveId:
             type: string
             format: uint64
