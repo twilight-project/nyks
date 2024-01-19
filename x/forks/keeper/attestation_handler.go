@@ -48,7 +48,6 @@ func (a AttestationHandler) Handle(ctx sdk.Context, att types.Attestation, propo
 // handleSeenBtcChainTip handles the processing of a MsgSeenBtcChainTip
 // Currently, we do not have post-processing to the function is empty
 func (a AttestationHandler) handleSeenBtcChainTip(ctx sdk.Context, proposal types.MsgSeenBtcChainTip) error {
-	ctx.Logger().Error("SeenBtcChainTip")
 	telemetry.SetGaugeWithLabels(
 		[]string{"tx", "msg", "last_seen_btc_block"},
 		float32(proposal.GetHeight()),
@@ -122,11 +121,13 @@ func (a AttestationHandler) handleConfirmBtcDeposit(ctx sdk.Context, proposal br
 		return sdkerrors.Wrapf(err, "could not update the reserve %s", proposal.ReserveAddress)
 	}
 
-	telemetry.SetGaugeWithLabels(
-		[]string{"tx", "msg", "confirm_btc_deposit"},
-		float32(mintAmount.Int64()),
-		[]metrics.Label{telemetry.NewLabel("denom", "sats")},
-	)
+	// telemetry.SetGaugeWithLabels(
+	// 	[]string{"tx", "msg", "confirm_btc_deposit"},
+	// 	float32(mintAmount.Int64()),
+	// 	[]metrics.Label{telemetry.NewLabel("denom", "sats")},
+	// )
+	// Increase the counter by the mint amount
+	types.MintedSatsCounter.Add(float64(mintAmount.Int64()))
 
 	return err // returns nil if no error occurred`
 }

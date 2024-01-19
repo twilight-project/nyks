@@ -16,6 +16,7 @@ require (
 	github.com/ignite-hq/cli v0.20.3
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
+	github.com/prometheus/client_golang v1.14.0
 	github.com/rs/zerolog v1.29.1 // indirect
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1

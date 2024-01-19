@@ -80,6 +80,9 @@ func (k msgServer) SeenBtcChainTip(goCtx context.Context, msg *types.MsgSeenBtcC
 		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
 	}
 
+	// Set the telemetry gauge for this oracle to the block number
+	types.OracleBlockGauge.WithLabelValues(msg.BtcOracleAddress).Set(float64(msg.Height))
+
 	err = k.ClaimHandlerCommon(ctx, any, valAddr, msg)
 	if err != nil {
 		return nil, err
