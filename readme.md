@@ -25,3 +25,7 @@ You will need nyks tokens to stake, the easiest way is to get in touch using our
 2. In the terminal, run `npm install`
 3. Run `npm start` to view project in browser
 
+
+# Setting up a validator and join testnet
+
+[setup guide](https://twilighthq.notion.site/DevOps-Setting-Up-a-Validator-1b88c5fa4b0647e28957ee782f51ef77?pvs=4)
