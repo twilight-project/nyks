@@ -97,6 +97,9 @@ import (
 
 	"github.com/twilight-project/nyks/docs"
 
+	bootstrapmodule "github.com/twilight-project/nyks/x/bootstrap"
+	bootstrapmodulekeeper "github.com/twilight-project/nyks/x/bootstrap/keeper"
+	bootstrapmoduletypes "github.com/twilight-project/nyks/x/bootstrap/types"
 	bridgemodule "github.com/twilight-project/nyks/x/bridge"
 	bridgemodulekeeper "github.com/twilight-project/nyks/x/bridge/keeper"
 	bridgemoduletypes "github.com/twilight-project/nyks/x/bridge/types"
@@ -170,6 +173,7 @@ var (
 		voltmodule.AppModuleBasic{},
 		zkosmodule.AppModuleBasic{},
 		fragmentmodule.AppModuleBasic{},
+		bootstrapmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -254,6 +258,8 @@ type App struct {
 	ZkosKeeper zkosmodulekeeper.Keeper
 
 	FragmentKeeper fragmentmodulekeeper.Keeper
+
+	BootstrapKeeper bootstrapmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -295,6 +301,7 @@ func New(
 		voltmoduletypes.StoreKey,
 		zkosmoduletypes.StoreKey,
 		fragmentmoduletypes.StoreKey,
+		bootstrapmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -476,6 +483,16 @@ func New(
 	)
 	fragmentModule := fragmentmodule.NewAppModule(appCodec, app.FragmentKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.BootstrapKeeper = *bootstrapmodulekeeper.NewKeeper(
+		appCodec,
+		keys[bootstrapmoduletypes.StoreKey],
+		keys[bootstrapmoduletypes.MemStoreKey],
+		app.GetSubspace(bootstrapmoduletypes.ModuleName),
+
+		app.StakingKeeper,
+	)
+	bootstrapModule := bootstrapmodule.NewAppModule(appCodec, app.BootstrapKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -521,6 +538,7 @@ func New(
 		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		zkosModule,
 		fragmentModule,
+		bootstrapModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -552,6 +570,7 @@ func New(
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
 		fragmentmoduletypes.ModuleName,
+		bootstrapmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -579,6 +598,7 @@ func New(
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
 		fragmentmoduletypes.ModuleName,
+		bootstrapmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -611,6 +631,7 @@ func New(
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
 		fragmentmoduletypes.ModuleName,
+		bootstrapmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -639,6 +660,7 @@ func New(
 		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		zkosModule,
 		fragmentModule,
+		bootstrapModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -861,6 +883,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(voltmoduletypes.ModuleName)
 	paramsKeeper.Subspace(zkosmoduletypes.ModuleName)
 	paramsKeeper.Subspace(fragmentmoduletypes.ModuleName)
+	paramsKeeper.Subspace(bootstrapmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

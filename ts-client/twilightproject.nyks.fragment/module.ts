@@ -9,6 +9,10 @@ import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 
 import { Params as typeParams} from "./types"
+import { MsgRegisterReserveAddress as typeMsgRegisterReserveAddress} from "./types"
+import { MsgRegisterJudge as typeMsgRegisterJudge} from "./types"
+import { MsgSetDelegateAddresses as typeMsgSetDelegateAddresses} from "./types"
+import { RegisterOracleAddresses as typeRegisterOracleAddresses} from "./types"
 
 export {  };
 
@@ -67,6 +71,10 @@ class SDKModule {
 		this.updateTX(client);
 		this.structure =  {
 						Params: getStructure(typeParams.fromPartial({})),
+						MsgRegisterReserveAddress: getStructure(typeMsgRegisterReserveAddress.fromPartial({})),
+						MsgRegisterJudge: getStructure(typeMsgRegisterJudge.fromPartial({})),
+						MsgSetDelegateAddresses: getStructure(typeMsgSetDelegateAddresses.fromPartial({})),
+						RegisterOracleAddresses: getStructure(typeRegisterOracleAddresses.fromPartial({})),
 						
 		};
 		client.on('signer-changed',(signer) => {			

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package twilightproject.nyks.bootstrap;
+
+import "cosmos/staking/v1beta1/tx.proto"; // The path might differ based on your setup
+
+option go_package = "github.com/twilight-project/nyks/x/bootstrap/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateValidatorWrapper (MsgCreateValidatorWrapper) returns (MsgCreateValidatorWrapperResponse);
+}
+
+message MsgCreateValidatorWrapper {
+  string creator          = 1;
+  cosmos.staking.v1beta1.MsgCreateValidator createValidator = 2; // Use the staking MsgCreateValidator type here
+  string zkOracleAddress  = 3;
+  string btcOracleAddress = 4;
+}
+
+message MsgCreateValidatorWrapperResponse {
+  // Define response fields if needed
+}

@@ -9,7 +9,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.45.3
 	github.com/cosmos/ibc-go/v2 v2.0.3
 	github.com/gogo/protobuf v1.3.3
-	github.com/golang/protobuf v1.5.3
+	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/gtank/ristretto255 v0.1.2

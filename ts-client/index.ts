@@ -23,6 +23,7 @@ import { Module as IbcCoreClientV1, msgTypes as IbcCoreClientV1MsgTypes } from '
 import { Module as IbcCoreConnectionV1, msgTypes as IbcCoreConnectionV1MsgTypes } from './ibc.core.connection.v1'
 import { Module as IbcCorePortV1, msgTypes as IbcCorePortV1MsgTypes } from './ibc.core.port.v1'
 import { Module as TendermintSpnMonitoringp, msgTypes as TendermintSpnMonitoringpMsgTypes } from './tendermint.spn.monitoringp'
+import { Module as TwilightprojectNyksBootstrap, msgTypes as TwilightprojectNyksBootstrapMsgTypes } from './twilightproject.nyks.bootstrap'
 import { Module as TwilightprojectNyksBridge, msgTypes as TwilightprojectNyksBridgeMsgTypes } from './twilightproject.nyks.bridge'
 import { Module as TwilightprojectNyksForks, msgTypes as TwilightprojectNyksForksMsgTypes } from './twilightproject.nyks.forks'
 import { Module as TwilightprojectNyksFragment, msgTypes as TwilightprojectNyksFragmentMsgTypes } from './twilightproject.nyks.fragment'
@@ -31,7 +32,7 @@ import { Module as TwilightprojectNyksZkos, msgTypes as TwilightprojectNyksZkosM
 
 
 const Client = IgniteClient.plugin([
-    CosmosAuthV1Beta1, CosmosBankV1Beta1, CosmosBaseTendermintV1Beta1, CosmosCrisisV1Beta1, CosmosDistributionV1Beta1, CosmosEvidenceV1Beta1, CosmosFeegrantV1Beta1, CosmosGovV1Beta1, CosmosMintV1Beta1, CosmosParamsV1Beta1, CosmosSlashingV1Beta1, CosmosStakingV1Beta1, CosmosTxV1Beta1, CosmosUpgradeV1Beta1, CosmosVestingV1Beta1, IbcApplicationsTransferV1, IbcCoreChannelV1, IbcCoreClientV1, IbcCoreConnectionV1, IbcCorePortV1, TendermintSpnMonitoringp, TwilightprojectNyksBridge, TwilightprojectNyksForks, TwilightprojectNyksFragment, TwilightprojectNyksVolt, TwilightprojectNyksZkos
+    CosmosAuthV1Beta1, CosmosBankV1Beta1, CosmosBaseTendermintV1Beta1, CosmosCrisisV1Beta1, CosmosDistributionV1Beta1, CosmosEvidenceV1Beta1, CosmosFeegrantV1Beta1, CosmosGovV1Beta1, CosmosMintV1Beta1, CosmosParamsV1Beta1, CosmosSlashingV1Beta1, CosmosStakingV1Beta1, CosmosTxV1Beta1, CosmosUpgradeV1Beta1, CosmosVestingV1Beta1, IbcApplicationsTransferV1, IbcCoreChannelV1, IbcCoreClientV1, IbcCoreConnectionV1, IbcCorePortV1, TendermintSpnMonitoringp, TwilightprojectNyksBootstrap, TwilightprojectNyksBridge, TwilightprojectNyksForks, TwilightprojectNyksFragment, TwilightprojectNyksVolt, TwilightprojectNyksZkos
 ]);
 
 const registry = new Registry([
@@ -56,6 +57,7 @@ const registry = new Registry([
   ...IbcCoreConnectionV1MsgTypes,
   ...IbcCorePortV1MsgTypes,
   ...TendermintSpnMonitoringpMsgTypes,
+  ...TwilightprojectNyksBootstrapMsgTypes,
   ...TwilightprojectNyksBridgeMsgTypes,
   ...TwilightprojectNyksForksMsgTypes,
   ...TwilightprojectNyksFragmentMsgTypes,

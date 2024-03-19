@@ -1,9 +1,13 @@
 import { Client, registry, MissingWalletError } from 'twilight-project-nyks-client-ts'
 
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
+import { MsgRegisterReserveAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
+import { MsgRegisterJudge } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
+import { MsgSetDelegateAddresses } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
+import { RegisterOracleAddresses } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
 
 
-export { Params };
+export { Params, MsgRegisterReserveAddress, MsgRegisterJudge, MsgSetDelegateAddresses, RegisterOracleAddresses };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -38,6 +42,10 @@ const getDefaultState = () => {
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
+						MsgRegisterReserveAddress: getStructure(MsgRegisterReserveAddress.fromPartial({})),
+						MsgRegisterJudge: getStructure(MsgRegisterJudge.fromPartial({})),
+						MsgSetDelegateAddresses: getStructure(MsgSetDelegateAddresses.fromPartial({})),
+						RegisterOracleAddresses: getStructure(RegisterOracleAddresses.fromPartial({})),
 						
 		},
 		_Registry: registry,

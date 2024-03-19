@@ -131,7 +131,6 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 			}
 			return validatorAddress, nil
 		}
-		ctx.Logger().Error("not able to fine judges")
 	}
 
 	return nil, sdkerrors.Wrapf(types.ErrValidatorAddressNotFound, "judge address %v", judgeAddress)
@@ -139,7 +138,6 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 
 // CheckJudgeValidatorInSet checks if the validator address of a judge is in the set of validators
 func (k Keeper) CheckJudgeValidatorInSet(ctx sdk.Context, judgeAddress sdk.AccAddress) bool {
-	ctx.Logger().Error(judgeAddress.String())
 	validatorAddress, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
 	if err != nil {
 		return false

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package twilightproject.nyks.bootstrap;
+
+import "gogoproto/gogo.proto";
+import "nyks/bootstrap/params.proto";
+
+option go_package = "github.com/twilight-project/nyks/x/bootstrap/types";
+
+// GenesisState defines the bootstrap module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

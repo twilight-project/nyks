@@ -118,7 +118,9 @@ export interface MsgProposeSweepAddressResponse {
 
 /** 2. MsgUnsignedTxSweep */
 export interface MsgUnsignedTxSweep {
+  /** remove txid from here */
   txId: string;
+  /** make txid yourself */
   btcUnsignedSweepTx: string;
   reserveId: number;
   roundId: number;
@@ -132,6 +134,7 @@ export interface MsgUnsignedTxSweepResponse {
 export interface MsgUnsignedTxRefund {
   reserveId: number;
   roundId: number;
+  /** make txid yourself */
   btcUnsignedRefundTx: string;
   judgeAddress: string;
 }
@@ -141,6 +144,7 @@ export interface MsgUnsignedTxRefundResponse {
 
 /** 4. MsgSignRefund */
 export interface MsgSignRefund {
+  /** add txid */
   reserveId: number;
   roundId: number;
   signerPublicKey: string;
@@ -153,6 +157,7 @@ export interface MsgSignRefundResponse {
 
 /** 5. MsgSignSweep */
 export interface MsgSignSweep {
+  /** add txid */
   reserveId: number;
   roundId: number;
   signerPublicKey: string;
@@ -167,6 +172,7 @@ export interface MsgSignSweepResponse {
 export interface MsgBroadcastTxRefund {
   reserveId: number;
   roundId: number;
+  /** make txid yourself */
   signedRefundTx: string;
   judgeAddress: string;
 }
@@ -178,6 +184,7 @@ export interface MsgBroadcastTxRefundResponse {
 export interface MsgBroadcastTxSweep {
   reserveId: number;
   roundId: number;
+  /** make txid yourself */
   signedSweepTx: string;
   judgeAddress: string;
 }
@@ -192,6 +199,7 @@ export interface MsgSweepProposal {
   judgeAddress: string;
   BtcBlockNumber: number;
   btcRelayCapacityValue: number;
+  /** rename to sweepTxId */
   btcTxHash: string;
   UnlockHeight: number;
   roundId: number;
