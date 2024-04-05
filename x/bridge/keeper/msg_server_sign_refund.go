@@ -14,7 +14,7 @@ func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (
 	btcOracleAddress, e1 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
 
 	// Check if oracle is registered and active
-	errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	_, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
 	if errOracle != nil {
 		return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
 	}

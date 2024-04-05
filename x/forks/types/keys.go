@@ -40,10 +40,23 @@ var (
 
 	// LastObservedBlockHeightKey indexes the latest block height
 	LastObservedBlockHeightKey = HashString("LastObservedBlockHeightKey")
+
+	// GetValidatorKey returns the following key format
+	KeyValidator = HashString("KeyValidator")
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+// GetValidatorKey returns the following key format
+// prefix cosmos-validator
+// [HashString("KeyValidator")][twilightvaloper1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
+func GetValidatorKey(val sdk.ValAddress) []byte {
+	if err := sdk.VerifyAddressFormat(val); err != nil {
+		panic(sdkerrors.Wrap(err, "invalid validator address"))
+	}
+	return AppendBytes(KeyValidator, val.Bytes())
 }
 
 // GetOrchestratorAddressKey returns the following key format

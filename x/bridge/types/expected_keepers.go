@@ -4,7 +4,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	nykstypes "github.com/twilight-project/nyks/x/forks/types"
 	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
@@ -25,8 +24,8 @@ type BankKeeper interface {
 
 // NyksKeeper defines the expected interface needed for orchestrator/oracle related methods and proposals
 type NyksKeeper interface {
-	GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool)
-	CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) error
+	//GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool)
+	CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) (sdk.ValAddress, error)
 	ClaimHandlerCommon(ctx sdk.Context, msgAny *codectypes.Any, valAddr sdk.ValAddress, msg nykstypes.BtcProposal) error
 }
 

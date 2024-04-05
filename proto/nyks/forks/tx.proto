@@ -13,9 +13,10 @@ service Msg {
 }
 
 message MsgSetDelegateAddresses {
-  string validatorAddress = 2;
-  string btcOracleAddress = 3;
-  string btcPublicKey = 4;
+  string validatorAddress = 1;
+  string btcOracleAddress = 2;
+  string btcPublicKey = 3;
+  string zkOracleAddress = 4;
 }
 
 message MsgSetDelegateAddressesResponse {

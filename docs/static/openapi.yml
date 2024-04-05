@@ -28477,6 +28477,8 @@ paths:
                       type: string
                     btcPublicKey:
                       type: string
+                    zkOracleAddress:
+                      type: string
         default:
           description: An unexpected error response.
           schema:
@@ -49788,6 +49790,8 @@ definitions:
         type: string
       btcPublicKey:
         type: string
+      zkOracleAddress:
+        type: string
   twilightproject.nyks.forks.MsgSetDelegateAddressesResponse:
     type: object
     properties:
@@ -50020,6 +50024,8 @@ definitions:
             btcOracleAddress:
               type: string
             btcPublicKey:
+              type: string
+            zkOracleAddress:
               type: string
   twilightproject.nyks.forks.QueryDelegateKeysByBtcOracleAddressResponse:
     type: object
