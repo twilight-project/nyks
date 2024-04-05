@@ -69,8 +69,7 @@ message QueryDelegateKeysByBtcOracleAddressRequest {
 }
 
 message QueryDelegateKeysByBtcOracleAddressResponse {
-  string validatorAddress = 1;
-  string btcPublicKey = 2;
+  MsgSetDelegateAddresses addresses = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDelegateKeysAllRequest {

@@ -17,7 +17,7 @@ func (k Keeper) DelegateKeysByBtcOracleAddress(goCtx context.Context, req *types
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	keys, err := k.GetDelegateKeys(ctx)
+	keys, err := k.GetAllDelegateAddresses(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (k Keeper) DelegateKeysByBtcOracleAddress(goCtx context.Context, req *types
 			panic("Invalid orchestrator addr in store!")
 		}
 		if reqOrchestrator.Equals(keyOrchestrator) {
-			return &types.QueryDelegateKeysByBtcOracleAddressResponse{ValidatorAddress: key.ValidatorAddress, BtcPublicKey: key.BtcPublicKey}, nil
+			return &types.QueryDelegateKeysByBtcOracleAddressResponse{Addresses: key}, nil
 		}
 
 	}

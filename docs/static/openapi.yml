@@ -28676,10 +28676,17 @@ paths:
           schema:
             type: object
             properties:
-              validatorAddress:
-                type: string
-              btcPublicKey:
-                type: string
+              addresses:
+                type: object
+                properties:
+                  validatorAddress:
+                    type: string
+                  btcOracleAddress:
+                    type: string
+                  btcPublicKey:
+                    type: string
+                  zkOracleAddress:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -50030,10 +50037,17 @@ definitions:
   twilightproject.nyks.forks.QueryDelegateKeysByBtcOracleAddressResponse:
     type: object
     properties:
-      validatorAddress:
-        type: string
-      btcPublicKey:
-        type: string
+      addresses:
+        type: object
+        properties:
+          validatorAddress:
+            type: string
+          btcOracleAddress:
+            type: string
+          btcPublicKey:
+            type: string
+          zkOracleAddress:
+            type: string
   twilightproject.nyks.forks.QueryParamsResponse:
     type: object
     properties:
