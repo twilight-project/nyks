@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/twilight-project/nyks/x/bridge/types"
+	forkstypes "github.com/twilight-project/nyks/x/forks/types"
 	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
@@ -19,12 +20,12 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 	}
 
 	_, foundDuplicate := k.GetUnsignedTxSweepMsg(ctx, msg.ReserveId, msg.RoundId)
-	if foundDuplicate != false {
+	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
 	}
 
 	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
-	if found == false {
+	if !found {
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
@@ -34,13 +35,25 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
+	// Compute and compare the txHash of the btcUnsignedSweepTx with the proposed sweep address that we have
+	txHash, errHash := forkstypes.CreateTxHashFromHex(msg.BtcUnsignedSweepTx)
+	if errHash != nil {
+		return nil, sdkerrors.Wrap(errHash, "Could not create transaction hash")
+	}
+
+	proposedSweepAddress, found := k.GetProposeSweepAddress(ctx, msg.ReserveId, msg.RoundId)
+
+	if proposedSweepAddress.BtcAddress != txHash.String() {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned sweep transaction is not valid")
+	}
+
 	// Compare the sweep tx outputs with the reserve withdraw snapshot
 	check, err := k.VoltKeeper.CheckReserveWithdrawSnapshot(ctx, msg.BtcUnsignedSweepTx, msg.ReserveId, msg.RoundId)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check reserve withdraw snapshot")
 	}
 
-	if check == false {
+	if !check {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned sweep transaction is not valid")
 	}
 

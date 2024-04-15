@@ -6,6 +6,7 @@ import (
 	fmt "fmt"
 
 	btcec "github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -107,4 +108,18 @@ func CreateTxFromHex(txHex string) (*wire.MsgTx, error) {
 	}
 
 	return tx, nil
+}
+
+// CreateTxHashFromHex creates a btc transaction hash from a hex string
+func CreateTxHashFromHex(txHex string) (*chainhash.Hash, error) {
+	// Decode the transaction hex string
+	txBytes, err := hex.DecodeString(txHex)
+	if err != nil {
+		return &chainhash.Hash{}, fmt.Errorf("failed to decode hex string: %v", err)
+	}
+
+	// Compute the transaction hash
+	txHash := chainhash.DoubleHashH(txBytes)
+
+	return &txHash, nil
 }
