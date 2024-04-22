@@ -16,7 +16,7 @@ func (k Keeper) DelegateKeysAll(goCtx context.Context, req *types.QueryDelegateK
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	keys, err := k.GetDelegateKeys(ctx)
+	keys, err := k.GetAllDelegateAddresses(ctx)
 	if err != nil {
 		return nil, err
 	}

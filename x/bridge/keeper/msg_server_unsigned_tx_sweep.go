@@ -19,12 +19,12 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 	}
 
 	_, foundDuplicate := k.GetUnsignedTxSweepMsg(ctx, msg.ReserveId, msg.RoundId)
-	if foundDuplicate != false {
+	if foundDuplicate {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "A similar unsignedTxSweep already exists!")
 	}
 
 	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
-	if found == false {
+	if !found {
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
@@ -40,7 +40,7 @@ func (k msgServer) UnsignedTxSweep(goCtx context.Context, msg *types.MsgUnsigned
 		return nil, sdkerrors.Wrap(err, "Could not check reserve withdraw snapshot")
 	}
 
-	if check == false {
+	if !check {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned sweep transaction is not valid")
 	}
 

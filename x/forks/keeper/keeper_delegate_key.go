@@ -3,13 +3,10 @@ package keeper
 import (
 	"encoding/hex"
 	"sort"
-	"time"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/twilight-project/nyks/x/forks/types"
 )
@@ -18,99 +15,302 @@ import (
 //    ADDRESS DELEGATION   //
 /////////////////////////////
 
-// SetOrchestratorValidator sets the Orchestrator key for a given validator
-func (k Keeper) SetOrchestratorValidator(ctx sdk.Context, val sdk.ValAddress, orch sdk.AccAddress) {
-	if err := sdk.VerifyAddressFormat(val); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid val address"))
+// SetDelegateAddresses sets the delegate addresses for a given validator
+func (k Keeper) SetDelegateAddresses(ctx sdk.Context, msg *types.MsgSetDelegateAddresses) error {
+	val, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	if err != nil {
+		sdkerrors.Wrap(err, "invalid validator address")
 	}
-	if err := sdk.VerifyAddressFormat(orch); err != nil {
-		panic(sdkerrors.Wrap(err, "invalid orch address"))
-	}
+
 	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.GetOrchestratorAddressKey(orch)), val.Bytes())
+	key := types.GetValidatorKey(val)
+
+	bz := store.Get(key)
+	if bz == nil {
+		// If no existing message, set the new message
+		bz := k.cdc.MustMarshal(msg)
+		store.Set(key, bz)
+	} else {
+		// If existing message, unmarshal it and update the fields
+		var existingMsg types.MsgSetDelegateAddresses
+		k.cdc.MustUnmarshal(bz, &existingMsg)
+
+		existingMsg.BtcOracleAddress = msg.BtcOracleAddress
+
+		if msg.BtcPublicKey != "" {
+			existingMsg.BtcPublicKey = msg.BtcPublicKey
+		}
+		if msg.ZkOracleAddress != "" {
+			existingMsg.ZkOracleAddress = msg.ZkOracleAddress
+		}
+
+		bz := k.cdc.MustMarshal(&existingMsg)
+		store.Set(key, bz)
+	}
+
+	return nil
 }
+
+// GetDelegateAddresses returns the delegate addresses for a given validator
+func (k Keeper) GetDelegateAddresses(ctx sdk.Context, orchestratorAddress sdk.AccAddress) (*types.MsgSetDelegateAddresses, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	// Create an iterator over the range of keys in the store
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyValidator)
+
+	// Iterate over the keys
+	for ; iterator.Valid(); iterator.Next() {
+		// Get the value from the store
+		bz := iterator.Value()
+
+		// Unmarshal the value into a MsgSetDelegateAddresses object
+		var msg types.MsgSetDelegateAddresses
+		k.cdc.MustUnmarshal(bz, &msg)
+
+		// If the orchestratorAddress matches the one in the MsgSetDelegateAddresses object, return the object and true
+		if msg.BtcOracleAddress == orchestratorAddress.String() {
+			ctx.Logger().Error(msg.String())
+			return &msg, true
+		}
+	}
+
+	// If no match is found after iterating over all keys, return nil and false
+	return nil, false
+}
+
+// GetAllDelegateAddresses returns all delegate addresses
+func (k Keeper) GetAllDelegateAddresses(ctx sdk.Context) ([]types.MsgSetDelegateAddresses, error) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyValidator)
+	defer iterator.Close()
+
+	var msgs []types.MsgSetDelegateAddresses
+	for ; iterator.Valid(); iterator.Next() {
+		var msg types.MsgSetDelegateAddresses
+		k.cdc.MustUnmarshal(iterator.Value(), &msg)
+		msgs = append(msgs, msg)
+	}
+
+	return msgs, nil
+}
+
+// checkOrchestratorValidatorInSet checks that the orchestrator refers to a validator that is
+// currently in the set
+func (k Keeper) CheckOrchestratorValidatorInSet(ctx sdk.Context, orchestrator string) (sdk.ValAddress, error) {
+	accAddr, err := sdk.AccAddressFromBech32(orchestrator)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "invalid orchestrator address")
+	}
+
+	delegate_addresses, found := k.GetDelegateAddresses(ctx, accAddr)
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "invalid btc oracle account address")
+	}
+
+	valAddress, err := sdk.ValAddressFromBech32(delegate_addresses.ValidatorAddress)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "validator stored address is invalid bech32")
+	}
+	valOperator, found := k.StakingKeeper.GetValidator(ctx, valAddress)
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "validator not found")
+	}
+	// return an error if the validator isn't in the active set
+	val := k.StakingKeeper.Validator(ctx, valOperator.GetOperator())
+	if val == nil || !val.IsBonded() {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrorInvalidSigner, "validator not in active set")
+	}
+
+	return val.GetOperator(), nil
+}
+
+//** REMOVE LATER AS REPLACEMENT FUNCTIONS ARE ADDED ABOVE **//
+// // SetOrchestratorValidator sets the Orchestrator key for a given validator
+// func (k Keeper) SetOrchestratorValidator(ctx sdk.Context, val sdk.ValAddress, orch sdk.AccAddress) {
+// 	if err := sdk.VerifyAddressFormat(val); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid val address"))
+// 	}
+// 	if err := sdk.VerifyAddressFormat(orch); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid orch address"))
+// 	}
+// 	store := ctx.KVStore(k.storeKey)
+// 	store.Set([]byte(types.GetOrchestratorAddressKey(orch)), val.Bytes())
+// }
+
+// // GetOrchestratorValidator returns the validator key associated with an orchestrator key
+// func (k Keeper) GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool) {
+// 	if err := sdk.VerifyAddressFormat(orch); err != nil {
+// 		ctx.Logger().Error("invalid orch address")
+// 		return validator, false
+// 	}
+
+// 	store := ctx.KVStore(k.storeKey)
+// 	valAddr := store.Get([]byte(types.GetOrchestratorAddressKey(orch)))
+// 	if valAddr == nil {
+// 		return stakingtypes.Validator{
+// 			OperatorAddress: "",
+// 			ConsensusPubkey: &codectypes.Any{
+// 				TypeUrl:              "",
+// 				Value:                []byte{},
+// 				XXX_NoUnkeyedLiteral: struct{}{},
+// 				XXX_unrecognized:     []byte{},
+// 				XXX_sizecache:        0,
+// 			},
+// 			Jailed:          false,
+// 			Status:          0,
+// 			Tokens:          sdk.Int{},
+// 			DelegatorShares: sdk.Dec{},
+// 			Description: stakingtypes.Description{
+// 				Moniker:         "",
+// 				Identity:        "",
+// 				Website:         "",
+// 				SecurityContact: "",
+// 				Details:         "",
+// 			},
+// 			UnbondingHeight: 0,
+// 			UnbondingTime:   time.Time{},
+// 			Commission: stakingtypes.Commission{
+// 				CommissionRates: stakingtypes.CommissionRates{
+// 					Rate:          sdk.Dec{},
+// 					MaxRate:       sdk.Dec{},
+// 					MaxChangeRate: sdk.Dec{},
+// 				},
+// 				UpdateTime: time.Time{},
+// 			},
+// 			MinSelfDelegation: sdk.Int{},
+// 		}, false
+// 	}
+// 	validator, found = k.StakingKeeper.GetValidator(ctx, valAddr)
+// 	if !found {
+// 		return stakingtypes.Validator{
+// 			OperatorAddress: "",
+// 			ConsensusPubkey: &codectypes.Any{
+// 				TypeUrl:              "",
+// 				Value:                []byte{},
+// 				XXX_NoUnkeyedLiteral: struct{}{},
+// 				XXX_unrecognized:     []byte{},
+// 				XXX_sizecache:        0,
+// 			},
+// 			Jailed:          false,
+// 			Status:          0,
+// 			Tokens:          sdk.Int{},
+// 			DelegatorShares: sdk.Dec{},
+// 			Description: stakingtypes.Description{
+// 				Moniker:         "",
+// 				Identity:        "",
+// 				Website:         "",
+// 				SecurityContact: "",
+// 				Details:         "",
+// 			},
+// 			UnbondingHeight: 0,
+// 			UnbondingTime:   time.Time{},
+// 			Commission: stakingtypes.Commission{
+// 				CommissionRates: stakingtypes.CommissionRates{
+// 					Rate:          sdk.Dec{},
+// 					MaxRate:       sdk.Dec{},
+// 					MaxChangeRate: sdk.Dec{},
+// 				},
+// 				UpdateTime: time.Time{},
+// 			},
+// 			MinSelfDelegation: sdk.Int{},
+// 		}, false
+// 	}
+
+// 	return validator, true
+// }
+
+// func (k Keeper) SetOrchestratorValidator(ctx sdk.Context, val sdk.ValAddress, orch sdk.AccAddress) {
+// 	if err := sdk.VerifyAddressFormat(val); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid val address"))
+// 	}
+// 	if err := sdk.VerifyAddressFormat(orch); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid orch address"))
+// 	}
+// 	store := ctx.KVStore(k.storeKey)
+// 	store.Set([]byte(types.GetOrchestratorAddressKey(orch)), val.Bytes())
+// }
 
 // GetOrchestratorValidator returns the validator key associated with an orchestrator key
-func (k Keeper) GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool) {
-	if err := sdk.VerifyAddressFormat(orch); err != nil {
-		ctx.Logger().Error("invalid orch address")
-		return validator, false
-	}
+// func (k Keeper) GetOrchestratorValidator(ctx sdk.Context, orch sdk.AccAddress) (validator stakingtypes.Validator, found bool) {
+// 	if err := sdk.VerifyAddressFormat(orch); err != nil {
+// 		ctx.Logger().Error("invalid orch address")
+// 		return validator, false
+// 	}
 
-	store := ctx.KVStore(k.storeKey)
-	valAddr := store.Get([]byte(types.GetOrchestratorAddressKey(orch)))
-	if valAddr == nil {
-		return stakingtypes.Validator{
-			OperatorAddress: "",
-			ConsensusPubkey: &codectypes.Any{
-				TypeUrl:              "",
-				Value:                []byte{},
-				XXX_NoUnkeyedLiteral: struct{}{},
-				XXX_unrecognized:     []byte{},
-				XXX_sizecache:        0,
-			},
-			Jailed:          false,
-			Status:          0,
-			Tokens:          sdk.Int{},
-			DelegatorShares: sdk.Dec{},
-			Description: stakingtypes.Description{
-				Moniker:         "",
-				Identity:        "",
-				Website:         "",
-				SecurityContact: "",
-				Details:         "",
-			},
-			UnbondingHeight: 0,
-			UnbondingTime:   time.Time{},
-			Commission: stakingtypes.Commission{
-				CommissionRates: stakingtypes.CommissionRates{
-					Rate:          sdk.Dec{},
-					MaxRate:       sdk.Dec{},
-					MaxChangeRate: sdk.Dec{},
-				},
-				UpdateTime: time.Time{},
-			},
-			MinSelfDelegation: sdk.Int{},
-		}, false
-	}
-	validator, found = k.StakingKeeper.GetValidator(ctx, valAddr)
-	if !found {
-		return stakingtypes.Validator{
-			OperatorAddress: "",
-			ConsensusPubkey: &codectypes.Any{
-				TypeUrl:              "",
-				Value:                []byte{},
-				XXX_NoUnkeyedLiteral: struct{}{},
-				XXX_unrecognized:     []byte{},
-				XXX_sizecache:        0,
-			},
-			Jailed:          false,
-			Status:          0,
-			Tokens:          sdk.Int{},
-			DelegatorShares: sdk.Dec{},
-			Description: stakingtypes.Description{
-				Moniker:         "",
-				Identity:        "",
-				Website:         "",
-				SecurityContact: "",
-				Details:         "",
-			},
-			UnbondingHeight: 0,
-			UnbondingTime:   time.Time{},
-			Commission: stakingtypes.Commission{
-				CommissionRates: stakingtypes.CommissionRates{
-					Rate:          sdk.Dec{},
-					MaxRate:       sdk.Dec{},
-					MaxChangeRate: sdk.Dec{},
-				},
-				UpdateTime: time.Time{},
-			},
-			MinSelfDelegation: sdk.Int{},
-		}, false
-	}
+// 	store := ctx.KVStore(k.storeKey)
+// 	valAddr := store.Get([]byte(types.GetOrchestratorAddressKey(orch)))
+// 	if valAddr == nil {
+// 		return stakingtypes.Validator{
+// 			OperatorAddress: "",
+// 			ConsensusPubkey: &codectypes.Any{
+// 				TypeUrl:              "",
+// 				Value:                []byte{},
+// 				XXX_NoUnkeyedLiteral: struct{}{},
+// 				XXX_unrecognized:     []byte{},
+// 				XXX_sizecache:        0,
+// 			},
+// 			Jailed:          false,
+// 			Status:          0,
+// 			Tokens:          sdk.Int{},
+// 			DelegatorShares: sdk.Dec{},
+// 			Description: stakingtypes.Description{
+// 				Moniker:         "",
+// 				Identity:        "",
+// 				Website:         "",
+// 				SecurityContact: "",
+// 				Details:         "",
+// 			},
+// 			UnbondingHeight: 0,
+// 			UnbondingTime:   time.Time{},
+// 			Commission: stakingtypes.Commission{
+// 				CommissionRates: stakingtypes.CommissionRates{
+// 					Rate:          sdk.Dec{},
+// 					MaxRate:       sdk.Dec{},
+// 					MaxChangeRate: sdk.Dec{},
+// 				},
+// 				UpdateTime: time.Time{},
+// 			},
+// 			MinSelfDelegation: sdk.Int{},
+// 		}, false
+// 	}
+// 	validator, found = k.StakingKeeper.GetValidator(ctx, valAddr)
+// 	if !found {
+// 		return stakingtypes.Validator{
+// 			OperatorAddress: "",
+// 			ConsensusPubkey: &codectypes.Any{
+// 				TypeUrl:              "",
+// 				Value:                []byte{},
+// 				XXX_NoUnkeyedLiteral: struct{}{},
+// 				XXX_unrecognized:     []byte{},
+// 				XXX_sizecache:        0,
+// 			},
+// 			Jailed:          false,
+// 			Status:          0,
+// 			Tokens:          sdk.Int{},
+// 			DelegatorShares: sdk.Dec{},
+// 			Description: stakingtypes.Description{
+// 				Moniker:         "",
+// 				Identity:        "",
+// 				Website:         "",
+// 				SecurityContact: "",
+// 				Details:         "",
+// 			},
+// 			UnbondingHeight: 0,
+// 			UnbondingTime:   time.Time{},
+// 			Commission: stakingtypes.Commission{
+// 				CommissionRates: stakingtypes.CommissionRates{
+// 					Rate:          sdk.Dec{},
+// 					MaxRate:       sdk.Dec{},
+// 					MaxChangeRate: sdk.Dec{},
+// 				},
+// 				UpdateTime: time.Time{},
+// 			},
+// 			MinSelfDelegation: sdk.Int{},
+// 		}, false
+// 	}
 
-	return validator, true
-}
+// 	return validator, true
+// }
 
 // /////////////////////////////
 // //    BTC PUBLIC KEY    // //
@@ -153,6 +353,32 @@ func (k Keeper) GetBtcPublicKeyByValidator(ctx sdk.Context, validator sdk.ValAdd
 	}
 	return pk, true
 }
+
+// // SetZkOracleForValidator sets the zk oracle address for a given validator
+// func (k Keeper) SetZkOracleForValidator(ctx sdk.Context, validator sdk.ValAddress, zkOracle sdk.AccAddress) {
+// 	if err := sdk.VerifyAddressFormat(validator); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid validator address"))
+// 	}
+// 	if err := sdk.VerifyAddressFormat(zkOracle); err != nil {
+// 		panic(sdkerrors.Wrap(err, "invalid zk oracle address"))
+// 	}
+// 	store := ctx.KVStore(k.storeKey)
+// 	store.Set([]byte(types.GetZkOracleByValidatorKey(validator)), zkOracle.Bytes())
+// }
+
+// // GetZkOracleByValidator returns the zk oracle address for a given validator
+// func (k Keeper) GetZkOracleByValidator(ctx sdk.Context, validator sdk.ValAddress) (zkOracle sdk.AccAddress, found bool) {
+// 	if err := sdk.VerifyAddressFormat(validator); err != nil {
+// 		ctx.Logger().Error("invalid validator address")
+// 		return zkOracle, false
+// 	}
+// 	store := ctx.KVStore(k.storeKey)
+// 	zkOracleAddr := store.Get([]byte(types.GetZkOracleByValidatorKey(validator)))
+// 	if zkOracleAddr == nil {
+// 		return zkOracle, false
+// 	}
+// 	return sdk.AccAddress(zkOracleAddr), true
+// }
 
 // // GetValidatorByEthAddress returns the validator for a given eth address
 // func (k Keeper) GetValidatorByEthAddress(ctx sdk.Context, ethAddr types.EthAddress) (validator stakingtypes.Validator, found bool) {

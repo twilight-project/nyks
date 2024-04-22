@@ -381,40 +381,48 @@ func (k Keeper) CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, r
 		return false, sdkerrors.Wrapf(types.ErrInvalid, "error decoding btc transaction")
 	}
 
-	// Retrieve the ReserveWithdrawSnapshot
-	snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
-	if !found && len(btcTx.TxOut) != 1 {
-		return false, sdkerrors.Wrapf(types.ErrInvalid, "reserve withdraw snapshot not found for reserveId %d, roundId %d and btxTx has more than one output", reserveId, roundId)
-	} else {
-		// Create a map of expected addresses and amounts
-		expectedOutputs := make(map[string]int64)
+	if len(btcTx.TxOut) == 0 {
+		return false, sdkerrors.Wrapf(types.ErrInvalid, "btc transaction has no outputs")
+	}
 
-		for _, withdrawRequest := range snapshot.WithdrawRequests {
-			expectedOutputs[withdrawRequest.WithdrawAddress] = int64(withdrawRequest.WithdrawAmount)
-		}
+	// All of the below checks are to ensure that the btcTx outputs are valid
+	// If btcTx output is only 1, that means it just includes the sweep output, no need to do address and amount checks
+	if len(btcTx.TxOut) != 1 {
+		// Retrieve the ReserveWithdrawSnapshot
+		snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
+		if !found {
+			return false, sdkerrors.Wrapf(types.ErrInvalid, "reserve withdraw snapshot not found for reserveId %d, roundId %d and btxTx has more than one output", reserveId, roundId)
+		} else {
+			// Create a map of expected addresses and amounts
+			expectedOutputs := make(map[string]int64)
 
-		// Check if the number of outputs (excluding the reserved sweep output) matches the snapshot
-		if len(btcTx.TxOut)-1 != len(expectedOutputs) {
-			return false, sdkerrors.Wrapf(types.ErrInvalid, "number of outputs in btc transaction does not match the snapshot")
-		}
-
-		// Iterate through all the outputs of the Bitcoin transaction
-		for i, output := range btcTx.TxOut {
-			if i == 0 { // Skip the output reserved for the sweep
-				continue
+			for _, withdrawRequest := range snapshot.WithdrawRequests {
+				expectedOutputs[withdrawRequest.WithdrawAddress] = int64(withdrawRequest.WithdrawAmount)
 			}
 
-			_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
-			if err != nil {
-				return false, sdkerrors.Wrapf(types.ErrInvalid, "btcUnsignedSweepTx is invalid")
+			// Check if the number of outputs (excluding the reserved sweep output) matches the snapshot
+			if len(btcTx.TxOut)-1 != len(expectedOutputs) {
+				return false, sdkerrors.Wrapf(types.ErrInvalid, "number of outputs in btc transaction does not match the snapshot")
 			}
-			for _, addr := range addresses {
-				addrStr := addr.String()
-				expectedAmount, exists := expectedOutputs[addrStr]
-				if !exists || output.Value != expectedAmount {
-					return false, sdkerrors.Wrapf(types.ErrInvalid, "btc tx outputs did not match with the snapshot")
+
+			// Iterate through all the outputs of the Bitcoin transaction
+			for i, output := range btcTx.TxOut {
+				if i == 0 { // Skip the output reserved for the sweep
+					continue
 				}
-				delete(expectedOutputs, addrStr)
+
+				_, addresses, _, err := txscript.ExtractPkScriptAddrs(output.PkScript, &chaincfg.MainNetParams)
+				if err != nil {
+					return false, sdkerrors.Wrapf(types.ErrInvalid, "btcUnsignedSweepTx is invalid")
+				}
+				for _, addr := range addresses {
+					addrStr := addr.String()
+					expectedAmount, exists := expectedOutputs[addrStr]
+					if !exists || output.Value != expectedAmount {
+						return false, sdkerrors.Wrapf(types.ErrInvalid, "btc tx outputs did not match with the snapshot")
+					}
+					delete(expectedOutputs, addrStr)
+				}
 			}
 		}
 	}
