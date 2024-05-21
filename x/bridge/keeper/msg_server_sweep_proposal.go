@@ -20,11 +20,6 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
 
-	found := k.CheckJudgeValidatorInSet(ctx, judgeAddress)
-	if found == false {
-		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
-	}
-
 	any, err := codectypes.NewAnyWithValue(msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not check Any value")
