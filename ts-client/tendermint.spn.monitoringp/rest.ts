@@ -9,45 +9,16 @@
  * ---------------------------------------------------------------
  */
 
-export interface MonitoringpConnectionChannelID {
-  channelID?: string;
-}
-
-export interface MonitoringpConsumerClientID {
-  clientID?: string;
-}
-
-export interface MonitoringpMonitoringInfo {
-  transmitted?: boolean;
-  signatureCounts?: TypesSignatureCounts;
-}
-
-/**
- * Params defines the parameters for the module.
- */
-export interface MonitoringpParams {
-  /** @format int64 */
-  lastBlockHeight?: string;
-  consumerChainID?: string;
-  consumerConsensusState?: TypesConsensusState;
-
-  /** @format int64 */
-  consumerUnbondingPeriod?: string;
-
-  /** @format uint64 */
-  consumerRevisionHeight?: string;
-}
-
 export interface MonitoringpQueryGetConnectionChannelIDResponse {
-  ConnectionChannelID?: MonitoringpConnectionChannelID;
+  ConnectionChannelID?: SpnmonitoringpConnectionChannelID;
 }
 
 export interface MonitoringpQueryGetConsumerClientIDResponse {
-  ConsumerClientID?: MonitoringpConsumerClientID;
+  ConsumerClientID?: SpnmonitoringpConsumerClientID;
 }
 
 export interface MonitoringpQueryGetMonitoringInfoResponse {
-  MonitoringInfo?: MonitoringpMonitoringInfo;
+  MonitoringInfo?: SpnmonitoringpMonitoringInfo;
 }
 
 /**
@@ -55,7 +26,7 @@ export interface MonitoringpQueryGetMonitoringInfoResponse {
  */
 export interface MonitoringpQueryParamsResponse {
   /** Params defines the parameters for the module. */
-  params?: MonitoringpParams;
+  params?: SpnmonitoringpParams;
 }
 
 export interface ProtobufAny {
@@ -67,6 +38,35 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+export interface SpnmonitoringpConnectionChannelID {
+  channelID?: string;
+}
+
+export interface SpnmonitoringpConsumerClientID {
+  clientID?: string;
+}
+
+export interface SpnmonitoringpMonitoringInfo {
+  transmitted?: boolean;
+  signatureCounts?: TypesSignatureCounts;
+}
+
+/**
+ * Params defines the parameters for the module.
+ */
+export interface SpnmonitoringpParams {
+  /** @format int64 */
+  lastBlockHeight?: string;
+  consumerChainID?: string;
+  consumerConsensusState?: TypesConsensusState;
+
+  /** @format int64 */
+  consumerUnbondingPeriod?: string;
+
+  /** @format uint64 */
+  consumerRevisionHeight?: string;
 }
 
 export interface TypesConsensusState {

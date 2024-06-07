@@ -9,18 +9,20 @@
  * ---------------------------------------------------------------
  */
 
-/**
- * Params defines the parameters for the module.
- */
-export type FragmentParams = object;
+export type FragmentMsgSignerApplicationResponse = object;
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface FragmentQueryParamsResponse {
   /** params holds all the parameters of this module. */
-  params?: FragmentParams;
+  params?: NyksfragmentParams;
 }
+
+/**
+ * Params defines the parameters for the module.
+ */
+export type NyksfragmentParams = object;
 
 export interface ProtobufAny {
   "@type"?: string;

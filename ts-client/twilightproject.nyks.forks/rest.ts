@@ -90,17 +90,13 @@ export interface ForksMsgSetDelegateAddresses {
   validatorAddress?: string;
   btcOracleAddress?: string;
   btcPublicKey?: string;
+  zkOracleAddress?: string;
 }
 
 export interface ForksMsgSetDelegateAddressesResponse {
   /** @format uint64 */
   id?: string;
 }
-
-/**
- * Params defines the parameters for the module.
- */
-export type ForksParams = object;
 
 export interface ForksQueryAttestationsResponse {
   attestations?: ForksAttestation[];
@@ -111,8 +107,7 @@ export interface ForksQueryDelegateKeysAllResponse {
 }
 
 export interface ForksQueryDelegateKeysByBtcOracleAddressResponse {
-  validatorAddress?: string;
-  btcPublicKey?: string;
+  addresses?: ForksMsgSetDelegateAddresses;
 }
 
 /**
@@ -120,8 +115,13 @@ export interface ForksQueryDelegateKeysByBtcOracleAddressResponse {
  */
 export interface ForksQueryParamsResponse {
   /** params holds all the parameters of this module. */
-  params?: ForksParams;
+  params?: NyksforksParams;
 }
+
+/**
+ * Params defines the parameters for the module.
+ */
+export type NyksforksParams = object;
 
 /**
 * `Any` contains an arbitrary serialized protocol buffer message along with a

@@ -9,6 +9,24 @@
  * ---------------------------------------------------------------
  */
 
+/**
+ * Params defines the set of params for the distribution module.
+ */
+export interface Distributionv1Beta1Params {
+  community_tax?: string;
+  base_proposer_reward?: string;
+  bonus_proposer_reward?: string;
+  withdraw_addr_enabled?: boolean;
+}
+
+/**
+* ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
+for a validator inexpensive to track, allows simple sanity checks.
+*/
+export interface Distributionv1Beta1ValidatorOutstandingRewards {
+  rewards?: V1Beta1DecCoin[];
+}
+
 export interface ProtobufAny {
   "@type"?: string;
 }
@@ -143,16 +161,6 @@ export interface V1Beta1PageResponse {
 }
 
 /**
- * Params defines the set of params for the distribution module.
- */
-export interface V1Beta1Params {
-  community_tax?: string;
-  base_proposer_reward?: string;
-  bonus_proposer_reward?: string;
-  withdraw_addr_enabled?: boolean;
-}
-
-/**
 * QueryCommunityPoolResponse is the response type for the Query/CommunityPool
 RPC method.
 */
@@ -205,7 +213,7 @@ export interface V1Beta1QueryDelegatorWithdrawAddressResponse {
  */
 export interface V1Beta1QueryParamsResponse {
   /** params defines the parameters of the module. */
-  params?: V1Beta1Params;
+  params?: Distributionv1Beta1Params;
 }
 
 export interface V1Beta1QueryValidatorCommissionResponse {
@@ -222,7 +230,7 @@ export interface V1Beta1QueryValidatorOutstandingRewardsResponse {
    * ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
    * for a validator inexpensive to track, allows simple sanity checks.
    */
-  rewards?: V1Beta1ValidatorOutstandingRewards;
+  rewards?: Distributionv1Beta1ValidatorOutstandingRewards;
 }
 
 /**
@@ -243,14 +251,6 @@ for a validator kept as a running counter, can be withdrawn at any time.
 */
 export interface V1Beta1ValidatorAccumulatedCommission {
   commission?: V1Beta1DecCoin[];
-}
-
-/**
-* ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
-for a validator inexpensive to track, allows simple sanity checks.
-*/
-export interface V1Beta1ValidatorOutstandingRewards {
-  rewards?: V1Beta1DecCoin[];
 }
 
 /**

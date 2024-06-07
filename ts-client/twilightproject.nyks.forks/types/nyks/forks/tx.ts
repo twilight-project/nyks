@@ -8,6 +8,7 @@ export interface MsgSetDelegateAddresses {
   validatorAddress: string;
   btcOracleAddress: string;
   btcPublicKey: string;
+  zkOracleAddress: string;
 }
 
 export interface MsgSetDelegateAddressesResponse {
@@ -24,19 +25,22 @@ export interface MsgSeenBtcChainTipResponse {
 }
 
 function createBaseMsgSetDelegateAddresses(): MsgSetDelegateAddresses {
-  return { validatorAddress: "", btcOracleAddress: "", btcPublicKey: "" };
+  return { validatorAddress: "", btcOracleAddress: "", btcPublicKey: "", zkOracleAddress: "" };
 }
 
 export const MsgSetDelegateAddresses = {
   encode(message: MsgSetDelegateAddresses, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validatorAddress !== "") {
-      writer.uint32(18).string(message.validatorAddress);
+      writer.uint32(10).string(message.validatorAddress);
     }
     if (message.btcOracleAddress !== "") {
-      writer.uint32(26).string(message.btcOracleAddress);
+      writer.uint32(18).string(message.btcOracleAddress);
     }
     if (message.btcPublicKey !== "") {
-      writer.uint32(34).string(message.btcPublicKey);
+      writer.uint32(26).string(message.btcPublicKey);
+    }
+    if (message.zkOracleAddress !== "") {
+      writer.uint32(34).string(message.zkOracleAddress);
     }
     return writer;
   },
@@ -48,14 +52,17 @@ export const MsgSetDelegateAddresses = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
+        case 1:
           message.validatorAddress = reader.string();
           break;
-        case 3:
+        case 2:
           message.btcOracleAddress = reader.string();
           break;
-        case 4:
+        case 3:
           message.btcPublicKey = reader.string();
+          break;
+        case 4:
+          message.zkOracleAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -70,6 +77,7 @@ export const MsgSetDelegateAddresses = {
       validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
       btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
       btcPublicKey: isSet(object.btcPublicKey) ? String(object.btcPublicKey) : "",
+      zkOracleAddress: isSet(object.zkOracleAddress) ? String(object.zkOracleAddress) : "",
     };
   },
 
@@ -78,6 +86,7 @@ export const MsgSetDelegateAddresses = {
     message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
     message.btcPublicKey !== undefined && (obj.btcPublicKey = message.btcPublicKey);
+    message.zkOracleAddress !== undefined && (obj.zkOracleAddress = message.zkOracleAddress);
     return obj;
   },
 
@@ -86,6 +95,7 @@ export const MsgSetDelegateAddresses = {
     message.validatorAddress = object.validatorAddress ?? "";
     message.btcOracleAddress = object.btcOracleAddress ?? "";
     message.btcPublicKey = object.btcPublicKey ?? "";
+    message.zkOracleAddress = object.zkOracleAddress ?? "";
     return message;
   },
 };

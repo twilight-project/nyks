@@ -15,6 +15,8 @@ export interface BridgeMsgBroadcastTxRefund {
 
   /** @format uint64 */
   roundId?: string;
+
+  /** make txid yourself */
   signedRefundTx?: string;
   judgeAddress?: string;
 }
@@ -27,6 +29,8 @@ export interface BridgeMsgBroadcastTxSweep {
 
   /** @format uint64 */
   roundId?: string;
+
+  /** make txid yourself */
   signedSweepTx?: string;
   judgeAddress?: string;
 }
@@ -82,7 +86,10 @@ export interface BridgeMsgRegisterReserveAddressResponse {
 }
 
 export interface BridgeMsgSignRefund {
-  /** @format uint64 */
+  /**
+   * add txid
+   * @format uint64
+   */
   reserveId?: string;
 
   /** @format uint64 */
@@ -95,7 +102,10 @@ export interface BridgeMsgSignRefund {
 export type BridgeMsgSignRefundResponse = object;
 
 export interface BridgeMsgSignSweep {
-  /** @format uint64 */
+  /**
+   * add txid
+   * @format uint64
+   */
   reserveId?: string;
 
   /** @format uint64 */
@@ -115,6 +125,8 @@ export interface BridgeMsgUnsignedTxRefund {
 
   /** @format uint64 */
   roundId?: string;
+
+  /** make txid yourself */
   btcUnsignedRefundTx?: string;
   judgeAddress?: string;
 }
@@ -122,7 +134,10 @@ export interface BridgeMsgUnsignedTxRefund {
 export type BridgeMsgUnsignedTxRefundResponse = object;
 
 export interface BridgeMsgUnsignedTxSweep {
+  /** remove txid from here */
   txId?: string;
+
+  /** make txid yourself */
   btcUnsignedSweepTx?: string;
 
   /** @format uint64 */
@@ -143,11 +158,6 @@ export interface BridgeMsgWithdrawBtcRequestResponse {
 export type BridgeMsgWithdrawTxFinalResponse = object;
 
 export type BridgeMsgWithdrawTxSignedResponse = object;
-
-/**
- * Params defines the parameters for the module.
- */
-export type BridgeParams = object;
 
 export interface BridgeQueryBroadcastTxRefundAllResponse {
   BroadcastTxRefundMsg?: BridgeMsgBroadcastTxRefund[];
@@ -170,7 +180,7 @@ export interface BridgeQueryBroadcastTxSweepResponse {
  */
 export interface BridgeQueryParamsResponse {
   /** params holds all the parameters of this module. */
-  params?: BridgeParams;
+  params?: NyksbridgeParams;
 }
 
 export interface BridgeQueryProposeRefundHashAllResponse {
@@ -248,6 +258,11 @@ export interface BridgeQueryUnsignedTxSweepResponse {
 export interface BridgeQueryWithdrawBtcRequestAllResponse {
   withdrawRequest?: VoltBtcWithdrawRequestInternal[];
 }
+
+/**
+ * Params defines the parameters for the module.
+ */
+export type NyksbridgeParams = object;
 
 export interface ProtobufAny {
   "@type"?: string;

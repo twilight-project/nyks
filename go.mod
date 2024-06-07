@@ -13,13 +13,11 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2
 	github.com/ignite-hq/cli v0.20.3
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/prometheus/client_golang v1.14.0
-	github.com/regen-network/cosmos-proto v0.3.1 // indirect
 	github.com/rs/zerolog v1.29.1 // indirect
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1
@@ -27,10 +25,12 @@ require (
 	github.com/tendermint/spn v0.1.1-0.20220407154406-5cfd1bf28150
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.6
-	golang.org/x/net v0.20.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe // indirect
-	google.golang.org/grpc v1.61.0
+	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
+	google.golang.org/genproto v0.0.0-20240116215550-a9fa1716bcac // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240513163218-0867130af1f8
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240513163218-0867130af1f8 // indirect
+	google.golang.org/grpc v1.64.0
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools/v3 v3.4.0 // indirect
 )

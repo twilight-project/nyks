@@ -9,18 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-export interface ProtobufAny {
-  "@type"?: string;
-}
-
-export interface RpcStatus {
-  /** @format int32 */
-  code?: number;
-  message?: string;
-  details?: ProtobufAny[];
-}
-
-export interface VoltBtcReserve {
+export interface NyksvoltBtcReserve {
   /** @format uint64 */
   ReserveId?: string;
   ReserveAddress?: string;
@@ -48,6 +37,79 @@ export interface VoltBtcReserve {
   RoundId?: string;
 }
 
+export interface NyksvoltClearingAccount {
+  TwilightAddress?: string;
+  BtcDepositAddress?: string;
+
+  /** @format int64 */
+  BtcDepositAddressIdentifier?: number;
+  BtcWithdrawAddress?: string;
+
+  /** @format int64 */
+  BtcWithdrawAddressIdentifier?: number;
+  ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
+}
+
+/**
+ * Params defines the parameters for the module.
+ */
+export type NyksvoltParams = object;
+
+export interface NyksvoltRefundTxSnapshot {
+  /** @format uint64 */
+  ReserveId?: string;
+
+  /** @format uint64 */
+  RoundId?: string;
+  refundAccounts?: VoltRefundTxAccountSnap[];
+
+  /** @format int64 */
+  EndBlockerHeightTwilight?: string;
+}
+
+export interface NyksvoltReserveWithdrawPool {
+  /** @format uint64 */
+  ReserveID?: string;
+
+  /** @format uint64 */
+  RoundID?: string;
+
+  /** Currently being processed */
+  processingWithdrawIdentifiers?: number[];
+
+  /** Waiting to be processed */
+  queuedWithdrawIdentifiers?: number[];
+
+  /**
+   * Index of the last processed withdraw
+   * @format int64
+   */
+  currentProcessingIndex?: number;
+}
+
+export interface NyksvoltReserveWithdrawSnapshot {
+  /** @format uint64 */
+  ReserveId?: string;
+
+  /** @format uint64 */
+  RoundId?: string;
+  withdrawRequests?: VoltWithdrawRequestSnap[];
+
+  /** @format int64 */
+  EndBlockerHeightTwilight?: string;
+}
+
+export interface ProtobufAny {
+  "@type"?: string;
+}
+
+export interface RpcStatus {
+  /** @format int32 */
+  code?: number;
+  message?: string;
+  details?: ProtobufAny[];
+}
+
 export interface VoltBtcWithdrawRequestInternal {
   /** @format int64 */
   withdrawIdentifier?: number;
@@ -68,19 +130,6 @@ export interface VoltBtcWithdrawRequestInternal {
   CreationTwilightBlockHeight?: string;
 }
 
-export interface VoltClearingAccount {
-  TwilightAddress?: string;
-  BtcDepositAddress?: string;
-
-  /** @format int64 */
-  BtcDepositAddressIdentifier?: number;
-  BtcWithdrawAddress?: string;
-
-  /** @format int64 */
-  BtcWithdrawAddressIdentifier?: number;
-  ReserveAccountBalances?: VoltIndividualTwilightReserveAccountBalance[];
-}
-
 export interface VoltIndividualTwilightReserveAccountBalance {
   /** @format uint64 */
   ReserveId?: string;
@@ -89,13 +138,8 @@ export interface VoltIndividualTwilightReserveAccountBalance {
   Amount?: string;
 }
 
-/**
- * Params defines the parameters for the module.
- */
-export type VoltParams = object;
-
 export interface VoltQueryBtcReserveResponse {
-  BtcReserves?: VoltBtcReserve[];
+  BtcReserves?: NyksvoltBtcReserve[];
 }
 
 export interface VoltQueryBtcWithdrawRequestResponse {
@@ -103,7 +147,7 @@ export interface VoltQueryBtcWithdrawRequestResponse {
 }
 
 export interface VoltQueryClearingAccountResponse {
-  ClearingAccount?: VoltClearingAccount;
+  ClearingAccount?: NyksvoltClearingAccount;
 }
 
 /**
@@ -111,23 +155,23 @@ export interface VoltQueryClearingAccountResponse {
  */
 export interface VoltQueryParamsResponse {
   /** params holds all the parameters of this module. */
-  params?: VoltParams;
+  params?: NyksvoltParams;
 }
 
 export interface VoltQueryRefundTxSnapshotResponse {
-  RefundTxSnapshot?: VoltRefundTxSnapshot;
+  RefundTxSnapshot?: NyksvoltRefundTxSnapshot;
 }
 
 export interface VoltQueryReserveClearingAccountsAllResponse {
-  ReserveClearingAccountsAll?: VoltClearingAccount[];
+  ReserveClearingAccountsAll?: NyksvoltClearingAccount[];
 }
 
 export interface VoltQueryReserveWithdrawPoolResponse {
-  ReserveWithdrawPool?: VoltReserveWithdrawPool;
+  ReserveWithdrawPool?: NyksvoltReserveWithdrawPool;
 }
 
 export interface VoltQueryReserveWithdrawSnapshotResponse {
-  ReserveWithdrawSnapshot?: VoltReserveWithdrawSnapshot;
+  ReserveWithdrawSnapshot?: NyksvoltReserveWithdrawSnapshot;
 }
 
 export interface VoltRefundTxAccountSnap {
@@ -137,50 +181,6 @@ export interface VoltRefundTxAccountSnap {
 
   /** @format int64 */
   BtcDepositAddressIdentifier?: number;
-}
-
-export interface VoltRefundTxSnapshot {
-  /** @format uint64 */
-  ReserveId?: string;
-
-  /** @format uint64 */
-  RoundId?: string;
-  refundAccounts?: VoltRefundTxAccountSnap[];
-
-  /** @format int64 */
-  EndBlockerHeightTwilight?: string;
-}
-
-export interface VoltReserveWithdrawPool {
-  /** @format uint64 */
-  ReserveID?: string;
-
-  /** @format uint64 */
-  RoundID?: string;
-
-  /** Currently being processed */
-  processingWithdrawIdentifiers?: number[];
-
-  /** Waiting to be processed */
-  queuedWithdrawIdentifiers?: number[];
-
-  /**
-   * Index of the last processed withdraw
-   * @format int64
-   */
-  currentProcessingIndex?: number;
-}
-
-export interface VoltReserveWithdrawSnapshot {
-  /** @format uint64 */
-  ReserveId?: string;
-
-  /** @format uint64 */
-  RoundId?: string;
-  withdrawRequests?: VoltWithdrawRequestSnap[];
-
-  /** @format int64 */
-  EndBlockerHeightTwilight?: string;
 }
 
 export interface VoltWithdrawRequestSnap {

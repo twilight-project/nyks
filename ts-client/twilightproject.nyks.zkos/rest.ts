@@ -9,6 +9,11 @@
  * ---------------------------------------------------------------
  */
 
+/**
+ * Params defines the parameters for the module.
+ */
+export type NykszkosParams = object;
+
 export interface ProtobufAny {
   "@type"?: string;
 }
@@ -43,11 +48,6 @@ export interface ZkosMsgTransferTx {
 
 export type ZkosMsgTransferTxResponse = object;
 
-/**
- * Params defines the parameters for the module.
- */
-export type ZkosParams = object;
-
 export interface ZkosQueryMintOrBurnTradingBtcResponse {
   MintOrBurnTradingBtc?: ZkosMsgMintBurnTradingBtc[];
 }
@@ -57,7 +57,7 @@ export interface ZkosQueryMintOrBurnTradingBtcResponse {
  */
 export interface ZkosQueryParamsResponse {
   /** params holds all the parameters of this module. */
-  params?: ZkosParams;
+  params?: NykszkosParams;
 }
 
 export interface ZkosQueryTransferTxResponse {

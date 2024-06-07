@@ -1,36 +1,21 @@
 syntax = "proto3";
+
 package twilightproject.nyks.fragment;
 
 option go_package = "github.com/twilight-project/nyks/x/fragment/types";
 
 // Msg defines the Msg service.
-service Msg {}
-
-
-// Existing Messages
-message MsgRegisterReserveAddress {
-    string reserveScript  = 1;
-    string reserveAddress = 2;
-    string judgeAddress   = 3;
-}
-  
-message MsgRegisterJudge {
-    string creator          = 1;
-    string judgeAddress     = 2;
-    string validatorAddress = 3;
+service Msg {
+  rpc SignerApplication (MsgSignerApplication) returns (MsgSignerApplicationResponse);
 }
 
-message MsgSetDelegateAddresses {
-   string validatorAddress = 2;
-   string btcOracleAddress = 3;
-   string btcPublicKey = 4;
+message MsgSignerApplication {
+  string creator        = 1;
+  int32  fragmentId     = 2;
+  int32  applicationFee = 3;
+  string btcPubKey      = 4;
+  string signerAddress  = 5;
 }
 
-// Combined Oracles
-message RegisterOracleAddresses {
-    string creator          = 1;
-    string zkOracleAddress     = 2;
-    string validatorAddress = 3;
-    string btcOracleAddress = 4;
-    string btcPublicKey = 5;
-}
+message MsgSignerApplicationResponse {}
+

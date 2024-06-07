@@ -24,7 +24,11 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgSignerApplication = "op_weight_msg_signer_application"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgSignerApplication int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +61,17 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgSignerApplication int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgSignerApplication, &weightMsgSignerApplication, nil,
+		func(_ *rand.Rand) {
+			weightMsgSignerApplication = defaultWeightMsgSignerApplication
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgSignerApplication,
+		fragmentsimulation.SimulateMsgSignerApplication(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
