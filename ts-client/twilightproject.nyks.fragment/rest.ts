@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+export type FragmentMsgAcceptSignersResponse = object;
+
 export type FragmentMsgSignerApplicationResponse = object;
 
 /**

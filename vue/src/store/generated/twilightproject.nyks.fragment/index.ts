@@ -1,13 +1,9 @@
 import { Client, registry, MissingWalletError } from 'twilight-project-nyks-client-ts'
 
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
-import { MsgRegisterReserveAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
-import { MsgRegisterJudge } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
-import { MsgSetDelegateAddresses } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
-import { RegisterOracleAddresses } from "twilight-project-nyks-client-ts/twilightproject.nyks.fragment/types"
 
 
-export { Params, MsgRegisterReserveAddress, MsgRegisterJudge, MsgSetDelegateAddresses, RegisterOracleAddresses };
+export { Params };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -42,10 +38,6 @@ const getDefaultState = () => {
 				
 				_Structure: {
 						Params: getStructure(Params.fromPartial({})),
-						MsgRegisterReserveAddress: getStructure(MsgRegisterReserveAddress.fromPartial({})),
-						MsgRegisterJudge: getStructure(MsgRegisterJudge.fromPartial({})),
-						MsgSetDelegateAddresses: getStructure(MsgSetDelegateAddresses.fromPartial({})),
-						RegisterOracleAddresses: getStructure(RegisterOracleAddresses.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -136,6 +128,20 @@ export default {
 		},
 		
 		
+		async sendMsgAcceptSigners({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksFragment.tx.sendMsgAcceptSigners({ value, fee: fullFee, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgAcceptSigners:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgAcceptSigners:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgSignerApplication({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -151,6 +157,19 @@ export default {
 			}
 		},
 		
+		async MsgAcceptSigners({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksFragment.tx.msgAcceptSigners({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgAcceptSigners:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgAcceptSigners:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		async MsgSignerApplication({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)

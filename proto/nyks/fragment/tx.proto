@@ -2,13 +2,15 @@ syntax = "proto3";
 
 package twilightproject.nyks.fragment;
 
+import "nyks/volt/reserve.proto";
+
 option go_package = "github.com/twilight-project/nyks/x/fragment/types";
 
 // Msg defines the Msg service.
 service Msg {
   rpc SignerApplication (MsgSignerApplication) returns (MsgSignerApplicationResponse);
+  rpc AcceptSigners     (MsgAcceptSigners    ) returns (MsgAcceptSignersResponse    );
 }
-
 message MsgSignerApplication {
   string creator        = 1;
   int32  fragmentId     = 2;
@@ -19,3 +21,28 @@ message MsgSignerApplication {
 
 message MsgSignerApplicationResponse {}
 
+message MsgAcceptSigners {
+  string creator         = 1;
+  int32  fragmentId      = 2;
+  string signerAddresses = 3;
+  string judgeAddress    = 4;
+}
+
+message MsgAcceptSignersResponse {}
+
+message Fragment {
+    string FragmentID = 1;
+    string JudgeAddress = 2;
+    string JudgeStatus = 3;
+    repeated fragmentSigners Signers = 4;
+    uint64 FeePool = 5;
+    repeated twilightproject.nyks.volt.BtcReserve Reserves = 6;
+}
+
+message fragmentSigners {
+    string fragmentID = 1;
+    string signerAddress = 2;
+	string signerStatus = 3;
+    string signerBTCPublicKey = 4;
+    uint32 signerApplicationFee = 5;
+}

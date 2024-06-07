@@ -3,34 +3,6 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "twilightproject.nyks.fragment";
 
-/** Existing Messages */
-export interface MsgRegisterReserveAddress {
-  reserveScript: string;
-  reserveAddress: string;
-  judgeAddress: string;
-}
-
-export interface MsgRegisterJudge {
-  creator: string;
-  judgeAddress: string;
-  validatorAddress: string;
-}
-
-export interface MsgSetDelegateAddresses {
-  validatorAddress: string;
-  btcOracleAddress: string;
-  btcPublicKey: string;
-}
-
-/** Combined Oracles */
-export interface RegisterOracleAddresses {
-  creator: string;
-  zkOracleAddress: string;
-  validatorAddress: string;
-  btcOracleAddress: string;
-  btcPublicKey: string;
-}
-
 export interface MsgSignerApplication {
   creator: string;
   fragmentId: number;
@@ -42,291 +14,15 @@ export interface MsgSignerApplication {
 export interface MsgSignerApplicationResponse {
 }
 
-function createBaseMsgRegisterReserveAddress(): MsgRegisterReserveAddress {
-  return { reserveScript: "", reserveAddress: "", judgeAddress: "" };
+export interface MsgAcceptSigners {
+  creator: string;
+  fragmentId: number;
+  signerAddresses: string;
+  judgeAddress: string;
 }
 
-export const MsgRegisterReserveAddress = {
-  encode(message: MsgRegisterReserveAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.reserveScript !== "") {
-      writer.uint32(10).string(message.reserveScript);
-    }
-    if (message.reserveAddress !== "") {
-      writer.uint32(18).string(message.reserveAddress);
-    }
-    if (message.judgeAddress !== "") {
-      writer.uint32(26).string(message.judgeAddress);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterReserveAddress {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgRegisterReserveAddress();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.reserveScript = reader.string();
-          break;
-        case 2:
-          message.reserveAddress = reader.string();
-          break;
-        case 3:
-          message.judgeAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgRegisterReserveAddress {
-    return {
-      reserveScript: isSet(object.reserveScript) ? String(object.reserveScript) : "",
-      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
-      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
-    };
-  },
-
-  toJSON(message: MsgRegisterReserveAddress): unknown {
-    const obj: any = {};
-    message.reserveScript !== undefined && (obj.reserveScript = message.reserveScript);
-    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
-    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MsgRegisterReserveAddress>, I>>(object: I): MsgRegisterReserveAddress {
-    const message = createBaseMsgRegisterReserveAddress();
-    message.reserveScript = object.reserveScript ?? "";
-    message.reserveAddress = object.reserveAddress ?? "";
-    message.judgeAddress = object.judgeAddress ?? "";
-    return message;
-  },
-};
-
-function createBaseMsgRegisterJudge(): MsgRegisterJudge {
-  return { creator: "", judgeAddress: "", validatorAddress: "" };
+export interface MsgAcceptSignersResponse {
 }
-
-export const MsgRegisterJudge = {
-  encode(message: MsgRegisterJudge, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.judgeAddress !== "") {
-      writer.uint32(18).string(message.judgeAddress);
-    }
-    if (message.validatorAddress !== "") {
-      writer.uint32(26).string(message.validatorAddress);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterJudge {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgRegisterJudge();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.judgeAddress = reader.string();
-          break;
-        case 3:
-          message.validatorAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgRegisterJudge {
-    return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
-      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
-    };
-  },
-
-  toJSON(message: MsgRegisterJudge): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
-    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MsgRegisterJudge>, I>>(object: I): MsgRegisterJudge {
-    const message = createBaseMsgRegisterJudge();
-    message.creator = object.creator ?? "";
-    message.judgeAddress = object.judgeAddress ?? "";
-    message.validatorAddress = object.validatorAddress ?? "";
-    return message;
-  },
-};
-
-function createBaseMsgSetDelegateAddresses(): MsgSetDelegateAddresses {
-  return { validatorAddress: "", btcOracleAddress: "", btcPublicKey: "" };
-}
-
-export const MsgSetDelegateAddresses = {
-  encode(message: MsgSetDelegateAddresses, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.validatorAddress !== "") {
-      writer.uint32(18).string(message.validatorAddress);
-    }
-    if (message.btcOracleAddress !== "") {
-      writer.uint32(26).string(message.btcOracleAddress);
-    }
-    if (message.btcPublicKey !== "") {
-      writer.uint32(34).string(message.btcPublicKey);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetDelegateAddresses {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgSetDelegateAddresses();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 2:
-          message.validatorAddress = reader.string();
-          break;
-        case 3:
-          message.btcOracleAddress = reader.string();
-          break;
-        case 4:
-          message.btcPublicKey = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgSetDelegateAddresses {
-    return {
-      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
-      btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
-      btcPublicKey: isSet(object.btcPublicKey) ? String(object.btcPublicKey) : "",
-    };
-  },
-
-  toJSON(message: MsgSetDelegateAddresses): unknown {
-    const obj: any = {};
-    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
-    message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
-    message.btcPublicKey !== undefined && (obj.btcPublicKey = message.btcPublicKey);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MsgSetDelegateAddresses>, I>>(object: I): MsgSetDelegateAddresses {
-    const message = createBaseMsgSetDelegateAddresses();
-    message.validatorAddress = object.validatorAddress ?? "";
-    message.btcOracleAddress = object.btcOracleAddress ?? "";
-    message.btcPublicKey = object.btcPublicKey ?? "";
-    return message;
-  },
-};
-
-function createBaseRegisterOracleAddresses(): RegisterOracleAddresses {
-  return { creator: "", zkOracleAddress: "", validatorAddress: "", btcOracleAddress: "", btcPublicKey: "" };
-}
-
-export const RegisterOracleAddresses = {
-  encode(message: RegisterOracleAddresses, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.zkOracleAddress !== "") {
-      writer.uint32(18).string(message.zkOracleAddress);
-    }
-    if (message.validatorAddress !== "") {
-      writer.uint32(26).string(message.validatorAddress);
-    }
-    if (message.btcOracleAddress !== "") {
-      writer.uint32(34).string(message.btcOracleAddress);
-    }
-    if (message.btcPublicKey !== "") {
-      writer.uint32(42).string(message.btcPublicKey);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterOracleAddresses {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRegisterOracleAddresses();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.zkOracleAddress = reader.string();
-          break;
-        case 3:
-          message.validatorAddress = reader.string();
-          break;
-        case 4:
-          message.btcOracleAddress = reader.string();
-          break;
-        case 5:
-          message.btcPublicKey = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): RegisterOracleAddresses {
-    return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      zkOracleAddress: isSet(object.zkOracleAddress) ? String(object.zkOracleAddress) : "",
-      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
-      btcOracleAddress: isSet(object.btcOracleAddress) ? String(object.btcOracleAddress) : "",
-      btcPublicKey: isSet(object.btcPublicKey) ? String(object.btcPublicKey) : "",
-    };
-  },
-
-  toJSON(message: RegisterOracleAddresses): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.zkOracleAddress !== undefined && (obj.zkOracleAddress = message.zkOracleAddress);
-    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
-    message.btcOracleAddress !== undefined && (obj.btcOracleAddress = message.btcOracleAddress);
-    message.btcPublicKey !== undefined && (obj.btcPublicKey = message.btcPublicKey);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<RegisterOracleAddresses>, I>>(object: I): RegisterOracleAddresses {
-    const message = createBaseRegisterOracleAddresses();
-    message.creator = object.creator ?? "";
-    message.zkOracleAddress = object.zkOracleAddress ?? "";
-    message.validatorAddress = object.validatorAddress ?? "";
-    message.btcOracleAddress = object.btcOracleAddress ?? "";
-    message.btcPublicKey = object.btcPublicKey ?? "";
-    return message;
-  },
-};
 
 function createBaseMsgSignerApplication(): MsgSignerApplication {
   return { creator: "", fragmentId: 0, applicationFee: 0, btcPubKey: "", signerAddress: "" };
@@ -452,9 +148,125 @@ export const MsgSignerApplicationResponse = {
   },
 };
 
+function createBaseMsgAcceptSigners(): MsgAcceptSigners {
+  return { creator: "", fragmentId: 0, signerAddresses: "", judgeAddress: "" };
+}
+
+export const MsgAcceptSigners = {
+  encode(message: MsgAcceptSigners, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.fragmentId !== 0) {
+      writer.uint32(16).int32(message.fragmentId);
+    }
+    if (message.signerAddresses !== "") {
+      writer.uint32(26).string(message.signerAddresses);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(34).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAcceptSigners {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAcceptSigners();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.fragmentId = reader.int32();
+          break;
+        case 3:
+          message.signerAddresses = reader.string();
+          break;
+        case 4:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAcceptSigners {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
+      signerAddresses: isSet(object.signerAddresses) ? String(object.signerAddresses) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: MsgAcceptSigners): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
+    message.signerAddresses !== undefined && (obj.signerAddresses = message.signerAddresses);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgAcceptSigners>, I>>(object: I): MsgAcceptSigners {
+    const message = createBaseMsgAcceptSigners();
+    message.creator = object.creator ?? "";
+    message.fragmentId = object.fragmentId ?? 0;
+    message.signerAddresses = object.signerAddresses ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgAcceptSignersResponse(): MsgAcceptSignersResponse {
+  return {};
+}
+
+export const MsgAcceptSignersResponse = {
+  encode(_: MsgAcceptSignersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAcceptSignersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAcceptSignersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAcceptSignersResponse {
+    return {};
+  },
+
+  toJSON(_: MsgAcceptSignersResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgAcceptSignersResponse>, I>>(_: I): MsgAcceptSignersResponse {
+    const message = createBaseMsgAcceptSignersResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   SignerApplication(request: MsgSignerApplication): Promise<MsgSignerApplicationResponse>;
+  AcceptSigners(request: MsgAcceptSigners): Promise<MsgAcceptSignersResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -462,11 +274,18 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.SignerApplication = this.SignerApplication.bind(this);
+    this.AcceptSigners = this.AcceptSigners.bind(this);
   }
   SignerApplication(request: MsgSignerApplication): Promise<MsgSignerApplicationResponse> {
     const data = MsgSignerApplication.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.fragment.Msg", "SignerApplication", data);
     return promise.then((data) => MsgSignerApplicationResponse.decode(new _m0.Reader(data)));
+  }
+
+  AcceptSigners(request: MsgAcceptSigners): Promise<MsgAcceptSignersResponse> {
+    const data = MsgAcceptSigners.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.fragment.Msg", "AcceptSigners", data);
+    return promise.then((data) => MsgAcceptSignersResponse.decode(new _m0.Reader(data)));
   }
 }
 

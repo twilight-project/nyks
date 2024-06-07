@@ -50055,6 +50055,8 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  twilightproject.nyks.fragment.MsgAcceptSignersResponse:
+    type: object
   twilightproject.nyks.fragment.MsgSignerApplicationResponse:
     type: object
   twilightproject.nyks.fragment.Params:

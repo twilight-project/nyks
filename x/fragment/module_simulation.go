@@ -28,6 +28,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgSignerApplication int = 100
 
+	opWeightMsgAcceptSigners = "op_weight_msg_accept_signers"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgAcceptSigners int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -71,6 +75,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgSignerApplication,
 		fragmentsimulation.SimulateMsgSignerApplication(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgAcceptSigners int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAcceptSigners, &weightMsgAcceptSigners, nil,
+		func(_ *rand.Rand) {
+			weightMsgAcceptSigners = defaultWeightMsgAcceptSigners
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgAcceptSigners,
+		fragmentsimulation.SimulateMsgAcceptSigners(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
