@@ -12,15 +12,12 @@ func (k msgServer) RegisterJudge(goCtx context.Context, msg *types.MsgRegisterJu
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check the following, all should be validated in validate basic
-	creatorAddr, e1 := sdk.AccAddressFromBech32(msg.Creator)
-	judgeAddr, e2 := sdk.AccAddressFromBech32(msg.JudgeAddress)
-	valAddr, e3 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	judgeAddr, e1 := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	valAddr, e2 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
-	} else if e3 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
 	}
 
 	// return an error if the validator isn't in the active set
@@ -38,7 +35,7 @@ func (k msgServer) RegisterJudge(goCtx context.Context, msg *types.MsgRegisterJu
 		return nil, sdkerrors.Wrapf(types.ErrInvalid, "validator already has judge address %s or there is an error %s", address.String(), err.Error())
 	}
 
-	errSetting := k.SetJudgeAddressForValidatorAddress(ctx, creatorAddr, valAddr, judgeAddr)
+	errSetting := k.SetJudgeAddressForValidatorAddress(ctx, judgeAddr, msg.NumOfSigners, msg.Threshold, msg.SignerApplicationFee, msg.ArbitraryData, valAddr)
 	if errSetting != nil {
 		return nil, errSetting
 	}

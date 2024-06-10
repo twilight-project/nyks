@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -30,15 +31,23 @@ func (k Keeper) RegisteredJudgeAddressByValidatorAddress(goCtx context.Context, 
 		return nil, err
 	}
 	for _, key := range registeredJudges {
+		// This should be impossible due to the validate basic on the set deposit address message
 		keyValidatorAddress, err := sdk.ValAddressFromBech32(key.ValidatorAddress)
-		// this should be impossible due to the validate basic on the set deposit address message
 		if err != nil {
-			panic("Invalid validator addr in store!")
-		}
-		if reqValAddress.String() == keyValidatorAddress.String() {
-			return &types.QueryRegisteredJudgeAddressByValidatorAddressResponse{Creator: key.Creator, JudgeAddress: key.JudgeAddress, ValidatorAddress: key.ValidatorAddress}, nil
+			panic(fmt.Sprintf("Invalid validator address in store: %s", err))
 		}
 
+		if reqValAddress.String() == keyValidatorAddress.String() {
+			response := &types.QueryRegisteredJudgeAddressByValidatorAddressResponse{
+				JudgeAddress:         key.JudgeAddress,
+				NumOfSigners:         key.NumOfSigners,
+				Threshold:            key.Threshold,
+				SignerApplicationFee: key.SignerApplicationFee,
+				ArbitraryData:        key.ArbitraryData,
+				ValidatorAddress:     key.ValidatorAddress,
+			}
+			return response, nil
+		}
 	}
 
 	return nil, sdkerrors.Wrap(types.ErrInvalid, "Given validator address doesn't have a mapping with a judge address.")

@@ -9,11 +9,14 @@ const TypeMsgRegisterJudge = "register_judge"
 
 var _ sdk.Msg = &MsgRegisterJudge{}
 
-func NewMsgRegisterJudge(creator string, judgeAddress string, validatorAddress string) *MsgRegisterJudge {
+func NewMsgRegisterJudge(judgeAddress string, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, arbitraryData string, validatorAddress string) *MsgRegisterJudge {
 	return &MsgRegisterJudge{
-		Creator:          creator,
-		JudgeAddress:     judgeAddress,
-		ValidatorAddress: validatorAddress,
+		JudgeAddress:         judgeAddress,
+		NumOfSigners:         numOfSigners,
+		Threshold:            threshold,
+		SignerApplicationFee: signerApplicationFee,
+		ArbitraryData:        arbitraryData,
+		ValidatorAddress:     validatorAddress,
 	}
 }
 
@@ -26,7 +29,7 @@ func (msg *MsgRegisterJudge) Type() string {
 }
 
 func (msg *MsgRegisterJudge) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +42,7 @@ func (msg *MsgRegisterJudge) GetSignBytes() []byte {
 }
 
 func (msg *MsgRegisterJudge) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}

@@ -53,15 +53,18 @@ func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, type
 }
 
 // SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
-func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, creator sdk.AccAddress, validatorAddress sdk.ValAddress, judgeAddress sdk.AccAddress) error {
+func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress sdk.AccAddress, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, arbitraryData string, validatorAddress sdk.ValAddress) error {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
 	regJudge := &types.MsgRegisterJudge{
-		Creator:          creator.String(),
-		ValidatorAddress: validatorAddress.String(),
-		JudgeAddress:     judgeAddress.String(),
+		JudgeAddress:         judgeAddress.String(),
+		NumOfSigners:         numOfSigners,
+		Threshold:            threshold,
+		SignerApplicationFee: signerApplicationFee,
+		ArbitraryData:        arbitraryData,
+		ValidatorAddress:     validatorAddress.String(),
 	}
 	store := ctx.KVStore(k.storeKey)
 	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
@@ -83,9 +86,12 @@ func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAdd
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
+			JudgeAddress:         "",
+			NumOfSigners:         0,
+			Threshold:            0,
+			SignerApplicationFee: 0,
+			ArbitraryData:        "",
+			ValidatorAddress:     "",
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -116,9 +122,12 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
+			JudgeAddress:         "",
+			NumOfSigners:         0,
+			Threshold:            0,
+			SignerApplicationFee: 0,
+			ArbitraryData:        "",
+			ValidatorAddress:     "",
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)
@@ -166,9 +175,12 @@ func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.M
 
 	for ; iter.Valid(); iter.Next() {
 		res := types.MsgRegisterJudge{
-			Creator:          "",
-			ValidatorAddress: "",
-			JudgeAddress:     "",
+			JudgeAddress:         "",
+			NumOfSigners:         0,
+			Threshold:            0,
+			SignerApplicationFee: 0,
+			ArbitraryData:        "",
+			ValidatorAddress:     "",
 		}
 
 		k.cdc.MustUnmarshal(iter.Value(), &res)

@@ -27836,9 +27836,18 @@ paths:
           schema:
             type: object
             properties:
-              creator:
-                type: string
               judgeAddress:
+                type: string
+              numOfSigners:
+                type: integer
+                format: int64
+              threshold:
+                type: integer
+                format: int64
+              signerApplicationFee:
+                type: string
+                format: uint64
+              arbitraryData:
                 type: string
               validatorAddress:
                 type: string
@@ -27882,9 +27891,18 @@ paths:
                 items:
                   type: object
                   properties:
-                    creator:
-                      type: string
                     judgeAddress:
+                      type: string
+                    numOfSigners:
+                      type: integer
+                      format: int64
+                    threshold:
+                      type: integer
+                      format: int64
+                    signerApplicationFee:
+                      type: string
+                      format: uint64
+                    arbitraryData:
                       type: string
                     validatorAddress:
                       type: string
@@ -49012,9 +49030,18 @@ definitions:
   twilightproject.nyks.bridge.MsgRegisterJudge:
     type: object
     properties:
-      creator:
-        type: string
       judgeAddress:
+        type: string
+      numOfSigners:
+        type: integer
+        format: int64
+      threshold:
+        type: integer
+        format: int64
+      signerApplicationFee:
+        type: string
+        format: uint64
+      arbitraryData:
         type: string
       validatorAddress:
         type: string
@@ -49310,9 +49337,18 @@ definitions:
   twilightproject.nyks.bridge.QueryRegisteredJudgeAddressByValidatorAddressResponse:
     type: object
     properties:
-      creator:
-        type: string
       judgeAddress:
+        type: string
+      numOfSigners:
+        type: integer
+        format: int64
+      threshold:
+        type: integer
+        format: int64
+      signerApplicationFee:
+        type: string
+        format: uint64
+      arbitraryData:
         type: string
       validatorAddress:
         type: string
@@ -49324,9 +49360,18 @@ definitions:
         items:
           type: object
           properties:
-            creator:
-              type: string
             judgeAddress:
+              type: string
+            numOfSigners:
+              type: integer
+              format: int64
+            threshold:
+              type: integer
+              format: int64
+            signerApplicationFee:
+              type: string
+              format: uint64
+            arbitraryData:
               type: string
             validatorAddress:
               type: string

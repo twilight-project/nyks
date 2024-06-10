@@ -64,7 +64,6 @@ message MsgRegisterReserveAddressResponse {
 }
 
 message MsgRegisterJudge {
-  string creator          = 1;
   string judgeAddress     = 2;
   uint32 numOfSigners     = 3;
   uint32 threshold       = 4;
