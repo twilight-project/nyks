@@ -15,9 +15,9 @@ var _ = strconv.Itoa(0)
 
 func CmdSignerApplication() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "signer-application [fragment-id] [application-fee] [btc-pub-key] [signer-address]",
+		Use:   "signer-application [fragment-id] [application-fee] [btc-pub-key]",
 		Short: "Broadcast message signerApplication",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argFragmentId, err := cast.ToInt32E(args[0])
 			if err != nil {
@@ -28,7 +28,6 @@ func CmdSignerApplication() *cobra.Command {
 				return err
 			}
 			argBtcPubKey := args[2]
-			argSignerAddress := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -36,11 +35,10 @@ func CmdSignerApplication() *cobra.Command {
 			}
 
 			msg := types.NewMsgSignerApplication(
-				clientCtx.GetFromAddress().String(),
 				argFragmentId,
 				argApplicationFee,
 				argBtcPubKey,
-				argSignerAddress,
+				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

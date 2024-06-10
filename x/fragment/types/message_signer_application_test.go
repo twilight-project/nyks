@@ -17,13 +17,13 @@ func TestMsgSignerApplication_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSignerApplication{
-				Creator: "invalid_address",
+				SignerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSignerApplication{
-				Creator: sample.AccAddress(),
+				SignerAddress: sample.AccAddress(),
 			},
 		},
 	}

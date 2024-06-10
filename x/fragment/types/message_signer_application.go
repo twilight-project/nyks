@@ -9,9 +9,8 @@ const TypeMsgSignerApplication = "signer_application"
 
 var _ sdk.Msg = &MsgSignerApplication{}
 
-func NewMsgSignerApplication(creator string, fragmentId int32, applicationFee int32, btcPubKey string, signerAddress string) *MsgSignerApplication {
+func NewMsgSignerApplication(fragmentId int32, applicationFee int32, btcPubKey string, signerAddress string) *MsgSignerApplication {
 	return &MsgSignerApplication{
-		Creator:        creator,
 		FragmentId:     fragmentId,
 		ApplicationFee: applicationFee,
 		BtcPubKey:      btcPubKey,
@@ -28,7 +27,7 @@ func (msg *MsgSignerApplication) Type() string {
 }
 
 func (msg *MsgSignerApplication) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.SignerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -40,10 +39,33 @@ func (msg *MsgSignerApplication) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
+// ValidateBasic performs basic validation of the MsgSignerApplication fields.
 func (msg *MsgSignerApplication) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	// Check if fragmentId is positive
+	if msg.FragmentId <= 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fragmentId must be positive")
 	}
+
+	// Check if applicationFee is positive
+	if msg.ApplicationFee <= 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "applicationFee must be positive")
+	}
+
+	// Check if btcPubKey is not empty
+	if len(msg.BtcPubKey) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "btcPubKey cannot be empty")
+	}
+
+	// Check if btcPubKey has a valid length (this is just an example, adjust as needed)
+	if len(msg.BtcPubKey) != 66 { // Example length for compressed BTC public key
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "btcPubKey has an invalid length")
+	}
+
+	// Validate signerAddress
+	_, err := sdk.AccAddressFromBech32(msg.SignerAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer address (%s)", err)
+	}
+
 	return nil
 }

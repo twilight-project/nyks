@@ -19,7 +19,7 @@ func SimulateMsgAcceptSigners(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgAcceptSigners{
-			Creator: simAccount.Address.String(),
+			JudgeAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the AcceptSigners simulation

@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 
 func CmdRegisterJudge() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-judge [judge-address] [validator-address]",
+		Use:   "register-judge [judge-address] [num-of-signers] [threshold] [signer-application-fee] [arbitrary-data] [validator-address]",
 		Short: "Broadcast message RegisterJudge",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

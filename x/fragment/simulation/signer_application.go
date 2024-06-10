@@ -19,7 +19,7 @@ func SimulateMsgSignerApplication(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgSignerApplication{
-			Creator: simAccount.Address.String(),
+			SignerAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the SignerApplication simulation

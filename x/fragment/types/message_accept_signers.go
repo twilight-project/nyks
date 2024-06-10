@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -9,9 +11,8 @@ const TypeMsgAcceptSigners = "accept_signers"
 
 var _ sdk.Msg = &MsgAcceptSigners{}
 
-func NewMsgAcceptSigners(creator string, fragmentId int32, signerAddresses string, judgeAddress string) *MsgAcceptSigners {
+func NewMsgAcceptSigners(fragmentId int32, signerAddresses string, judgeAddress string) *MsgAcceptSigners {
 	return &MsgAcceptSigners{
-		Creator:         creator,
 		FragmentId:      fragmentId,
 		SignerAddresses: signerAddresses,
 		JudgeAddress:    judgeAddress,
@@ -27,7 +28,7 @@ func (msg *MsgAcceptSigners) Type() string {
 }
 
 func (msg *MsgAcceptSigners) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -39,10 +40,30 @@ func (msg *MsgAcceptSigners) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
+// ValidateBasic performs basic validation of the MsgAcceptSigners fields.
 func (msg *MsgAcceptSigners) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	// Check if fragmentId is positive
+	if msg.FragmentId <= 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fragmentId must be positive")
 	}
+
+	// Validate judgeAddress
+	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
+	}
+
+	// Validate signerAddresses
+	signerAddresses := strings.Split(msg.SignerAddresses, ",")
+	if len(signerAddresses) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "signerAddresses cannot be empty")
+	}
+
+	for _, address := range signerAddresses {
+		if _, err := sdk.AccAddressFromBech32(strings.TrimSpace(address)); err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer address (%s)", err)
+		}
+	}
+
 	return nil
 }
