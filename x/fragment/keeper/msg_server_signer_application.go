@@ -10,8 +10,7 @@ import (
 func (k msgServer) SignerApplication(goCtx context.Context, msg *types.MsgSignerApplication) (*types.MsgSignerApplicationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
-	_ = ctx
+	k.SetSignerApplication(ctx, msg)
 
 	return &types.MsgSignerApplicationResponse{}, nil
 }

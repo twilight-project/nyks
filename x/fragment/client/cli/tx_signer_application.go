@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/twilight-project/nyks/x/fragment/types"
 )
@@ -19,11 +18,11 @@ func CmdSignerApplication() *cobra.Command {
 		Short: "Broadcast message signerApplication",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argFragmentId, err := cast.ToInt32E(args[0])
+			argFragmentId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
-			argApplicationFee, err := cast.ToInt32E(args[1])
+			argApplicationFee, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
 			}

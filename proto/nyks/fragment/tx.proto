@@ -12,8 +12,8 @@ service Msg {
   rpc AcceptSigners     (MsgAcceptSigners    ) returns (MsgAcceptSignersResponse    );
 }
 message MsgSignerApplication {
-  int32  fragmentId     = 2;
-  int32  applicationFee = 3;
+  uint64  fragmentId     = 2;
+  uint64  applicationFee = 3;
   string btcPubKey      = 4;
   string signerAddress  = 5;
 }

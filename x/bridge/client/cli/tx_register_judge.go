@@ -16,7 +16,7 @@ func CmdRegisterJudge() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-judge [judge-address] [num-of-signers] [threshold] [signer-application-fee] [arbitrary-data]",
 		Short: "Broadcast message RegisterJudge",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argJudgeAddress := args[0]
 			argNumOfSigners, err := strconv.ParseUint(args[1], 10, 32)
@@ -24,12 +24,12 @@ func CmdRegisterJudge() *cobra.Command {
 				return err
 			}
 			numOfSigners := uint32(argNumOfSigners)
-			argThreshold, err := strconv.ParseUint(args[1], 10, 32)
+			argThreshold, err := strconv.ParseUint(args[2], 10, 32)
 			if err != nil {
 				return err
 			}
 			threshold := uint32(argThreshold)
-			argSignerApplicationFee, err := strconv.ParseUint(args[1], 10, 64)
+			argSignerApplicationFee, err := strconv.ParseUint(args[3], 10, 64)
 			if err != nil {
 				return err
 			}

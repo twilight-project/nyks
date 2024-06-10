@@ -9,7 +9,7 @@ const TypeMsgSignerApplication = "signer_application"
 
 var _ sdk.Msg = &MsgSignerApplication{}
 
-func NewMsgSignerApplication(fragmentId int32, applicationFee int32, btcPubKey string, signerAddress string) *MsgSignerApplication {
+func NewMsgSignerApplication(fragmentId uint64, applicationFee uint64, btcPubKey string, signerAddress string) *MsgSignerApplication {
 	return &MsgSignerApplication{
 		FragmentId:     fragmentId,
 		ApplicationFee: applicationFee,
