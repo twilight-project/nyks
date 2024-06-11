@@ -53,7 +53,7 @@ func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, type
 }
 
 // SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
-func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress sdk.AccAddress, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, arbitraryData string, validatorAddress sdk.ValAddress) error {
+func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress sdk.AccAddress, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, reserveAddress string, reserveScript string, arbitraryData string, validatorAddress sdk.ValAddress) error {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
@@ -63,6 +63,8 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress
 		NumOfSigners:         numOfSigners,
 		Threshold:            threshold,
 		SignerApplicationFee: signerApplicationFee,
+		ReserveAddress:       reserveAddress,
+		ReserveScript:        reserveScript,
 		ArbitraryData:        arbitraryData,
 		ValidatorAddress:     validatorAddress.String(),
 	}
@@ -90,6 +92,8 @@ func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAdd
 			NumOfSigners:         0,
 			Threshold:            0,
 			SignerApplicationFee: 0,
+			ReserveAddress:       "",
+			ReserveScript:        "",
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}
@@ -126,6 +130,8 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 			NumOfSigners:         0,
 			Threshold:            0,
 			SignerApplicationFee: 0,
+			ReserveAddress:       "",
+			ReserveScript:        "",
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}
@@ -179,6 +185,8 @@ func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.M
 			NumOfSigners:         0,
 			Threshold:            0,
 			SignerApplicationFee: 0,
+			ReserveAddress:       "",
+			ReserveScript:        "",
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}

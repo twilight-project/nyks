@@ -35,7 +35,7 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 		return nil, sdkerrors.Wrapf(types.ErrInvalid, "validator already has judge address %s or there is an error %s", address.String(), err.Error())
 	}
 
-	errSetting := k.SetJudgeAddressForValidatorAddress(ctx, judgeAddr, msg.NumOfSigners, msg.Threshold, msg.SignerApplicationFee, msg.ArbitraryData, valAddr)
+	errSetting := k.SetJudgeAddressForValidatorAddress(ctx, judgeAddr, msg.NumOfSigners, msg.Threshold, msg.SignerApplicationFee, msg.ReserveAddress, msg.ReserveScript, msg.ArbitraryData, valAddr)
 	if errSetting != nil {
 		return nil, errSetting
 	}

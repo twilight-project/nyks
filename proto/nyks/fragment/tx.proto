@@ -30,11 +30,12 @@ message MsgAcceptSignersResponse {}
 
 message Fragment {
     string FragmentID = 1;
-    string JudgeAddress = 2;
-    string JudgeStatus = 3;
-    repeated fragmentSigners Signers = 4;
-    uint64 FeePool = 5;
-    repeated twilightproject.nyks.volt.BtcReserve Reserves = 6;
+    bool FragmentStatus = 2;
+    string JudgeAddress = 3;
+    string JudgeStatus = 4;
+    repeated fragmentSigners Signers = 5;
+    uint64 FeePool = 6;
+    repeated twilightproject.nyks.volt.BtcReserve Reserves = 7;
 }
 
 message fragmentSigners {
