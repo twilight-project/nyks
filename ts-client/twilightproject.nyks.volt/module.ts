@@ -7,6 +7,8 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
+import { MsgSignerApplication } from "./types/nyks/volt/tx";
+import { MsgAcceptSigners } from "./types/nyks/volt/tx";
 
 import { IndividualTwilightReserveAccountBalance as typeIndividualTwilightReserveAccountBalance} from "./types"
 import { ClearingAccount as typeClearingAccount} from "./types"
@@ -23,8 +25,28 @@ import { WithdrawRequestSnap as typeWithdrawRequestSnap} from "./types"
 import { ReserveWithdrawSnapshot as typeReserveWithdrawSnapshot} from "./types"
 import { NewSweepProposalReceivedInternal as typeNewSweepProposalReceivedInternal} from "./types"
 
-export {  };
+export { MsgSignerApplication, MsgAcceptSigners };
 
+type sendMsgSignerApplicationParams = {
+  value: MsgSignerApplication,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgAcceptSignersParams = {
+  value: MsgAcceptSigners,
+  fee?: StdFee,
+  memo?: string
+};
+
+
+type msgSignerApplicationParams = {
+  value: MsgSignerApplication,
+};
+
+type msgAcceptSignersParams = {
+  value: MsgAcceptSigners,
+};
 
 
 export const registry = new Registry(msgTypes);
@@ -56,6 +78,50 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
+		async sendMsgSignerApplication({ value, fee, memo }: sendMsgSignerApplicationParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgSignerApplication: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgSignerApplication({ value: MsgSignerApplication.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgSignerApplication: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgAcceptSigners({ value, fee, memo }: sendMsgAcceptSignersParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgAcceptSigners: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgAcceptSigners({ value: MsgAcceptSigners.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgAcceptSigners: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		
+		msgSignerApplication({ value }: msgSignerApplicationParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.volt.MsgSignerApplication", value: MsgSignerApplication.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgSignerApplication: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgAcceptSigners({ value }: msgAcceptSignersParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.volt.MsgAcceptSigners", value: MsgAcceptSigners.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgAcceptSigners: Could not create message: ' + e.message)
+			}
+		},
 		
 	}
 };

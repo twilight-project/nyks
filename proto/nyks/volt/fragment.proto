@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package twilightproject.nyks.volt;
+import "nyks/volt/reserve.proto";
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/twilight-project/nyks/x/volt/types";
+
+// Msg defines the Msg service.
+service Msg {
+  
+  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc SignerApplication (MsgSignerApplication) returns (MsgSignerApplicationResponse);
+  rpc AcceptSigners     (MsgAcceptSigners    ) returns (MsgAcceptSignersResponse    );
+}
+
+// this line is used by starport scaffolding # proto/tx/message
+
+message MsgSignerApplication {
+  uint64  fragmentId     = 1;
+  uint64  applicationFee = 2;
+  string btcPubKey      = 3;
+  string signerAddress  = 4;
+}
+
+message MsgSignerApplicationResponse {}
+
+message MsgAcceptSigners {
+  uint64  fragmentId      = 1;
+  string signerAddresses = 2;
+  string judgeAddress    = 3;
+}
+
+message MsgAcceptSignersResponse {}
+
+message Fragment {
+  string FragmentID = 1;
+  bool FragmentStatus = 2;
+  string JudgeAddress = 3;
+  string JudgeStatus = 4;
+  repeated fragmentSigners Signers = 5;
+  uint64 FeePool = 6;
+  repeated twilightproject.nyks.volt.BtcReserve Reserves = 7;
+}
+
+message fragmentSigners {
+  string fragmentID = 1;
+  string signerAddress = 2;
+  string signerStatus = 3;
+  string signerBtcPublicKey = 4;
+  uint32 signerApplicationFee = 5;
+}

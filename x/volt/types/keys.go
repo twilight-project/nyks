@@ -59,6 +59,9 @@ var (
 
 	// RefundTxSnapshotKey is the key for the last refund tx snapshot
 	RefundTxSnapshotKey = forkstypes.HashString("LastRefundTxSnapshotKey")
+
+	// SignerApplicationFeeKey defines the key to store the value of SignerApplicationFee
+	SignerApplicationFeeKey = KeyPrefix("SignerApplicationFeeKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -180,4 +183,12 @@ func GetRefundTxSnapshotKey(reserveId uint64, roundId uint64) []byte {
 	return forkstypes.AppendBytes(RefundTxSnapshotKey, reserveBufBytes.Bytes(), roundBufBytes.Bytes())
 }
 
-// GetNewSweepProposalReceivedKey
+// GetSignerApplicationFeeKey returns the key for the value of SignerApplicationFee
+func GetSignerApplicationFeeKey(fragmentId uint64, signerAddress sdk.AccAddress) []byte {
+	fragmentIdBuf := new(bytes.Buffer)
+	err := binary.Write(fragmentIdBuf, binary.LittleEndian, fragmentId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes(), signerAddress.Bytes())
+}

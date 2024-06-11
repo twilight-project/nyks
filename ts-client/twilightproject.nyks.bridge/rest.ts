@@ -9,6 +9,25 @@
  * ---------------------------------------------------------------
  */
 
+export interface BridgeMsgBootstrapFragment {
+  judgeAddress?: string;
+
+  /** @format int64 */
+  numOfSigners?: number;
+
+  /** @format int64 */
+  threshold?: number;
+
+  /** @format uint64 */
+  signerApplicationFee?: string;
+  reserveAddress?: string;
+  reserveScript?: string;
+  arbitraryData?: string;
+  validatorAddress?: string;
+}
+
+export type BridgeMsgBootstrapFragmentResponse = object;
+
 export interface BridgeMsgBroadcastTxRefund {
   /** @format uint64 */
   reserveId?: string;
@@ -65,14 +84,6 @@ export interface BridgeMsgProposeSweepAddress {
 export type BridgeMsgProposeSweepAddressResponse = object;
 
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
-
-export interface BridgeMsgRegisterJudge {
-  creator?: string;
-  judgeAddress?: string;
-  validatorAddress?: string;
-}
-
-export type BridgeMsgRegisterJudgeResponse = object;
 
 export interface BridgeMsgRegisterReserveAddress {
   reserveScript?: string;
@@ -210,13 +221,22 @@ export interface BridgeQueryRegisteredBtcDepositAddressesResponse {
 }
 
 export interface BridgeQueryRegisteredJudgeAddressByValidatorAddressResponse {
-  creator?: string;
   judgeAddress?: string;
+
+  /** @format int64 */
+  numOfSigners?: number;
+
+  /** @format int64 */
+  threshold?: number;
+
+  /** @format uint64 */
+  signerApplicationFee?: string;
+  arbitraryData?: string;
   validatorAddress?: string;
 }
 
 export interface BridgeQueryRegisteredJudgesResponse {
-  Judges?: BridgeMsgRegisterJudge[];
+  Judges?: BridgeMsgBootstrapFragment[];
 }
 
 export interface BridgeQueryRegisteredReserveAddressesResponse {

@@ -7,18 +7,14 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgAcceptSigners } from "./types/nyks/fragment/tx";
 import { MsgSignerApplication } from "./types/nyks/fragment/tx";
+import { MsgAcceptSigners } from "./types/nyks/fragment/tx";
 
 import { Params as typeParams} from "./types"
+import { Fragment as typeFragment} from "./types"
+import { fragmentSigners as typefragmentSigners} from "./types"
 
-export { MsgAcceptSigners, MsgSignerApplication };
-
-type sendMsgAcceptSignersParams = {
-  value: MsgAcceptSigners,
-  fee?: StdFee,
-  memo?: string
-};
+export { MsgSignerApplication, MsgAcceptSigners };
 
 type sendMsgSignerApplicationParams = {
   value: MsgSignerApplication,
@@ -26,13 +22,19 @@ type sendMsgSignerApplicationParams = {
   memo?: string
 };
 
-
-type msgAcceptSignersParams = {
+type sendMsgAcceptSignersParams = {
   value: MsgAcceptSigners,
+  fee?: StdFee,
+  memo?: string
 };
+
 
 type msgSignerApplicationParams = {
   value: MsgSignerApplication,
+};
+
+type msgAcceptSignersParams = {
+  value: MsgAcceptSigners,
 };
 
 
@@ -65,20 +67,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
-		async sendMsgAcceptSigners({ value, fee, memo }: sendMsgAcceptSignersParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgAcceptSigners: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgAcceptSigners({ value: MsgAcceptSigners.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgAcceptSigners: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgSignerApplication({ value, fee, memo }: sendMsgSignerApplicationParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgSignerApplication: Unable to sign Tx. Signer is not present.')
@@ -93,20 +81,34 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		
-		msgAcceptSigners({ value }: msgAcceptSignersParams): EncodeObject {
-			try {
-				return { typeUrl: "/twilightproject.nyks.fragment.MsgAcceptSigners", value: MsgAcceptSigners.fromPartial( value ) }  
+		async sendMsgAcceptSigners({ value, fee, memo }: sendMsgAcceptSignersParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgAcceptSigners: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgAcceptSigners({ value: MsgAcceptSigners.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
 			} catch (e: any) {
-				throw new Error('TxClient:MsgAcceptSigners: Could not create message: ' + e.message)
+				throw new Error('TxClient:sendMsgAcceptSigners: Could not broadcast Tx: '+ e.message)
 			}
 		},
+		
 		
 		msgSignerApplication({ value }: msgSignerApplicationParams): EncodeObject {
 			try {
 				return { typeUrl: "/twilightproject.nyks.fragment.MsgSignerApplication", value: MsgSignerApplication.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgSignerApplication: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgAcceptSigners({ value }: msgAcceptSignersParams): EncodeObject {
+			try {
+				return { typeUrl: "/twilightproject.nyks.fragment.MsgAcceptSigners", value: MsgAcceptSigners.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgAcceptSigners: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -133,6 +135,8 @@ class SDKModule {
 		this.updateTX(client);
 		this.structure =  {
 						Params: getStructure(typeParams.fromPartial({})),
+						Fragment: getStructure(typeFragment.fromPartial({})),
+						fragmentSigners: getStructure(typefragmentSigners.fromPartial({})),
 						
 		};
 		client.on('signer-changed',(signer) => {			

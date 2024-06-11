@@ -6,8 +6,8 @@ package twilightproject.nyks.volt;
 option go_package = "github.com/twilight-project/nyks/x/volt/types";
 
 // Msg defines the Msg service.
-service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
-}
+// service Msg {
+//     // this line is used by starport scaffolding # proto/tx/rpc
+// }
 
 // this line is used by starport scaffolding # proto/tx/message

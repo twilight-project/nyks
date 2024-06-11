@@ -14,7 +14,7 @@ export interface EventRegisterReserveAddress {
   reserveScript: string;
 }
 
-export interface EventRegisterJudgeAddress {
+export interface EventBootstrapFragmentAddress {
   message: string;
   judgeAddress: string;
   validatorAddress: string;
@@ -211,12 +211,12 @@ export const EventRegisterReserveAddress = {
   },
 };
 
-function createBaseEventRegisterJudgeAddress(): EventRegisterJudgeAddress {
+function createBaseEventBootstrapFragmentAddress(): EventBootstrapFragmentAddress {
   return { message: "", judgeAddress: "", validatorAddress: "" };
 }
 
-export const EventRegisterJudgeAddress = {
-  encode(message: EventRegisterJudgeAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const EventBootstrapFragmentAddress = {
+  encode(message: EventBootstrapFragmentAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.message !== "") {
       writer.uint32(10).string(message.message);
     }
@@ -229,10 +229,10 @@ export const EventRegisterJudgeAddress = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): EventRegisterJudgeAddress {
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventBootstrapFragmentAddress {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseEventRegisterJudgeAddress();
+    const message = createBaseEventBootstrapFragmentAddress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -253,7 +253,7 @@ export const EventRegisterJudgeAddress = {
     return message;
   },
 
-  fromJSON(object: any): EventRegisterJudgeAddress {
+  fromJSON(object: any): EventBootstrapFragmentAddress {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
@@ -261,7 +261,7 @@ export const EventRegisterJudgeAddress = {
     };
   },
 
-  toJSON(message: EventRegisterJudgeAddress): unknown {
+  toJSON(message: EventBootstrapFragmentAddress): unknown {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
@@ -269,8 +269,10 @@ export const EventRegisterJudgeAddress = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<EventRegisterJudgeAddress>, I>>(object: I): EventRegisterJudgeAddress {
-    const message = createBaseEventRegisterJudgeAddress();
+  fromPartial<I extends Exact<DeepPartial<EventBootstrapFragmentAddress>, I>>(
+    object: I,
+  ): EventBootstrapFragmentAddress {
+    const message = createBaseEventBootstrapFragmentAddress();
     message.message = object.message ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";

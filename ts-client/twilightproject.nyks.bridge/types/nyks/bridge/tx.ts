@@ -38,13 +38,18 @@ export interface MsgRegisterReserveAddressResponse {
   reserveAddress: string;
 }
 
-export interface MsgRegisterJudge {
-  creator: string;
+export interface MsgBootstrapFragment {
   judgeAddress: string;
+  numOfSigners: number;
+  threshold: number;
+  signerApplicationFee: number;
+  reserveAddress: string;
+  reserveScript: string;
+  arbitraryData: string;
   validatorAddress: string;
 }
 
-export interface MsgRegisterJudgeResponse {
+export interface MsgBootstrapFragmentResponse {
 }
 
 export interface MsgProposeRefundHash {
@@ -596,38 +601,77 @@ export const MsgRegisterReserveAddressResponse = {
   },
 };
 
-function createBaseMsgRegisterJudge(): MsgRegisterJudge {
-  return { creator: "", judgeAddress: "", validatorAddress: "" };
+function createBaseMsgBootstrapFragment(): MsgBootstrapFragment {
+  return {
+    judgeAddress: "",
+    numOfSigners: 0,
+    threshold: 0,
+    signerApplicationFee: 0,
+    reserveAddress: "",
+    reserveScript: "",
+    arbitraryData: "",
+    validatorAddress: "",
+  };
 }
 
-export const MsgRegisterJudge = {
-  encode(message: MsgRegisterJudge, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
+export const MsgBootstrapFragment = {
+  encode(message: MsgBootstrapFragment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.judgeAddress !== "") {
-      writer.uint32(18).string(message.judgeAddress);
+      writer.uint32(10).string(message.judgeAddress);
+    }
+    if (message.numOfSigners !== 0) {
+      writer.uint32(16).uint32(message.numOfSigners);
+    }
+    if (message.threshold !== 0) {
+      writer.uint32(24).uint32(message.threshold);
+    }
+    if (message.signerApplicationFee !== 0) {
+      writer.uint32(32).uint64(message.signerApplicationFee);
+    }
+    if (message.reserveAddress !== "") {
+      writer.uint32(42).string(message.reserveAddress);
+    }
+    if (message.reserveScript !== "") {
+      writer.uint32(50).string(message.reserveScript);
+    }
+    if (message.arbitraryData !== "") {
+      writer.uint32(58).string(message.arbitraryData);
     }
     if (message.validatorAddress !== "") {
-      writer.uint32(26).string(message.validatorAddress);
+      writer.uint32(66).string(message.validatorAddress);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterJudge {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBootstrapFragment {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgRegisterJudge();
+    const message = createBaseMsgBootstrapFragment();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.judgeAddress = reader.string();
           break;
+        case 2:
+          message.numOfSigners = reader.uint32();
+          break;
         case 3:
+          message.threshold = reader.uint32();
+          break;
+        case 4:
+          message.signerApplicationFee = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.reserveAddress = reader.string();
+          break;
+        case 6:
+          message.reserveScript = reader.string();
+          break;
+        case 7:
+          message.arbitraryData = reader.string();
+          break;
+        case 8:
           message.validatorAddress = reader.string();
           break;
         default:
@@ -638,44 +682,59 @@ export const MsgRegisterJudge = {
     return message;
   },
 
-  fromJSON(object: any): MsgRegisterJudge {
+  fromJSON(object: any): MsgBootstrapFragment {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      numOfSigners: isSet(object.numOfSigners) ? Number(object.numOfSigners) : 0,
+      threshold: isSet(object.threshold) ? Number(object.threshold) : 0,
+      signerApplicationFee: isSet(object.signerApplicationFee) ? Number(object.signerApplicationFee) : 0,
+      reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
+      reserveScript: isSet(object.reserveScript) ? String(object.reserveScript) : "",
+      arbitraryData: isSet(object.arbitraryData) ? String(object.arbitraryData) : "",
       validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
     };
   },
 
-  toJSON(message: MsgRegisterJudge): unknown {
+  toJSON(message: MsgBootstrapFragment): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.numOfSigners !== undefined && (obj.numOfSigners = Math.round(message.numOfSigners));
+    message.threshold !== undefined && (obj.threshold = Math.round(message.threshold));
+    message.signerApplicationFee !== undefined && (obj.signerApplicationFee = Math.round(message.signerApplicationFee));
+    message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
+    message.reserveScript !== undefined && (obj.reserveScript = message.reserveScript);
+    message.arbitraryData !== undefined && (obj.arbitraryData = message.arbitraryData);
     message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRegisterJudge>, I>>(object: I): MsgRegisterJudge {
-    const message = createBaseMsgRegisterJudge();
-    message.creator = object.creator ?? "";
+  fromPartial<I extends Exact<DeepPartial<MsgBootstrapFragment>, I>>(object: I): MsgBootstrapFragment {
+    const message = createBaseMsgBootstrapFragment();
     message.judgeAddress = object.judgeAddress ?? "";
+    message.numOfSigners = object.numOfSigners ?? 0;
+    message.threshold = object.threshold ?? 0;
+    message.signerApplicationFee = object.signerApplicationFee ?? 0;
+    message.reserveAddress = object.reserveAddress ?? "";
+    message.reserveScript = object.reserveScript ?? "";
+    message.arbitraryData = object.arbitraryData ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
 
-function createBaseMsgRegisterJudgeResponse(): MsgRegisterJudgeResponse {
+function createBaseMsgBootstrapFragmentResponse(): MsgBootstrapFragmentResponse {
   return {};
 }
 
-export const MsgRegisterJudgeResponse = {
-  encode(_: MsgRegisterJudgeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgBootstrapFragmentResponse = {
+  encode(_: MsgBootstrapFragmentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterJudgeResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBootstrapFragmentResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgRegisterJudgeResponse();
+    const message = createBaseMsgBootstrapFragmentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -687,17 +746,17 @@ export const MsgRegisterJudgeResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterJudgeResponse {
+  fromJSON(_: any): MsgBootstrapFragmentResponse {
     return {};
   },
 
-  toJSON(_: MsgRegisterJudgeResponse): unknown {
+  toJSON(_: MsgBootstrapFragmentResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgRegisterJudgeResponse>, I>>(_: I): MsgRegisterJudgeResponse {
-    const message = createBaseMsgRegisterJudgeResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgBootstrapFragmentResponse>, I>>(_: I): MsgBootstrapFragmentResponse {
+    const message = createBaseMsgBootstrapFragmentResponse();
     return message;
   },
 };
@@ -2266,7 +2325,7 @@ export interface Msg {
   ConfirmBtcDeposit(request: MsgConfirmBtcDeposit): Promise<MsgConfirmBtcDepositResponse>;
   RegisterBtcDepositAddress(request: MsgRegisterBtcDepositAddress): Promise<MsgRegisterBtcDepositAddressResponse>;
   RegisterReserveAddress(request: MsgRegisterReserveAddress): Promise<MsgRegisterReserveAddressResponse>;
-  RegisterJudge(request: MsgRegisterJudge): Promise<MsgRegisterJudgeResponse>;
+  BootstrapFragment(request: MsgBootstrapFragment): Promise<MsgBootstrapFragmentResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
   WithdrawBtcRequest(request: MsgWithdrawBtcRequest): Promise<MsgWithdrawBtcRequestResponse>;
   SweepProposal(request: MsgSweepProposal): Promise<MsgSweepProposalResponse>;
@@ -2290,7 +2349,7 @@ export class MsgClientImpl implements Msg {
     this.ConfirmBtcDeposit = this.ConfirmBtcDeposit.bind(this);
     this.RegisterBtcDepositAddress = this.RegisterBtcDepositAddress.bind(this);
     this.RegisterReserveAddress = this.RegisterReserveAddress.bind(this);
-    this.RegisterJudge = this.RegisterJudge.bind(this);
+    this.BootstrapFragment = this.BootstrapFragment.bind(this);
     this.WithdrawBtcRequest = this.WithdrawBtcRequest.bind(this);
     this.SweepProposal = this.SweepProposal.bind(this);
     this.WithdrawTxSigned = this.WithdrawTxSigned.bind(this);
@@ -2323,10 +2382,10 @@ export class MsgClientImpl implements Msg {
     return promise.then((data) => MsgRegisterReserveAddressResponse.decode(new _m0.Reader(data)));
   }
 
-  RegisterJudge(request: MsgRegisterJudge): Promise<MsgRegisterJudgeResponse> {
-    const data = MsgRegisterJudge.encode(request).finish();
-    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "RegisterJudge", data);
-    return promise.then((data) => MsgRegisterJudgeResponse.decode(new _m0.Reader(data)));
+  BootstrapFragment(request: MsgBootstrapFragment): Promise<MsgBootstrapFragmentResponse> {
+    const data = MsgBootstrapFragment.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.bridge.Msg", "BootstrapFragment", data);
+    return promise.then((data) => MsgBootstrapFragmentResponse.decode(new _m0.Reader(data)));
   }
 
   WithdrawBtcRequest(request: MsgWithdrawBtcRequest): Promise<MsgWithdrawBtcRequestResponse> {

@@ -50202,6 +50202,10 @@ definitions:
       Amount:
         type: string
         format: uint64
+  twilightproject.nyks.volt.MsgAcceptSignersResponse:
+    type: object
+  twilightproject.nyks.volt.MsgSignerApplicationResponse:
+    type: object
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.

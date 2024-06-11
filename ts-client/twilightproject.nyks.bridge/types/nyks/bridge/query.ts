@@ -5,11 +5,11 @@ import { BtcDepositAddress } from "../volt/deposit";
 import { BtcWithdrawRequestInternal } from "../volt/withdraw";
 import { Params } from "./params";
 import {
+  MsgBootstrapFragment,
   MsgBroadcastTxRefund,
   MsgBroadcastTxSweep,
   MsgProposeRefundHash,
   MsgProposeSweepAddress,
-  MsgRegisterJudge,
   MsgRegisterReserveAddress,
   MsgSignRefund,
   MsgSignSweep,
@@ -67,8 +67,11 @@ export interface QueryRegisteredJudgeAddressByValidatorAddressRequest {
 }
 
 export interface QueryRegisteredJudgeAddressByValidatorAddressResponse {
-  creator: string;
   judgeAddress: string;
+  numOfSigners: number;
+  threshold: number;
+  signerApplicationFee: number;
+  arbitraryData: string;
   validatorAddress: string;
 }
 
@@ -76,7 +79,7 @@ export interface QueryRegisteredJudgesRequest {
 }
 
 export interface QueryRegisteredJudgesResponse {
-  Judges: MsgRegisterJudge[];
+  Judges: MsgBootstrapFragment[];
 }
 
 export interface QueryWithdrawBtcRequestAllRequest {
@@ -781,7 +784,14 @@ export const QueryRegisteredJudgeAddressByValidatorAddressRequest = {
 };
 
 function createBaseQueryRegisteredJudgeAddressByValidatorAddressResponse(): QueryRegisteredJudgeAddressByValidatorAddressResponse {
-  return { creator: "", judgeAddress: "", validatorAddress: "" };
+  return {
+    judgeAddress: "",
+    numOfSigners: 0,
+    threshold: 0,
+    signerApplicationFee: 0,
+    arbitraryData: "",
+    validatorAddress: "",
+  };
 }
 
 export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
@@ -789,14 +799,23 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
     message: QueryRegisteredJudgeAddressByValidatorAddressResponse,
     writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.judgeAddress !== "") {
-      writer.uint32(18).string(message.judgeAddress);
+      writer.uint32(10).string(message.judgeAddress);
+    }
+    if (message.numOfSigners !== 0) {
+      writer.uint32(16).uint32(message.numOfSigners);
+    }
+    if (message.threshold !== 0) {
+      writer.uint32(24).uint32(message.threshold);
+    }
+    if (message.signerApplicationFee !== 0) {
+      writer.uint32(32).uint64(message.signerApplicationFee);
+    }
+    if (message.arbitraryData !== "") {
+      writer.uint32(42).string(message.arbitraryData);
     }
     if (message.validatorAddress !== "") {
-      writer.uint32(26).string(message.validatorAddress);
+      writer.uint32(50).string(message.validatorAddress);
     }
     return writer;
   },
@@ -809,12 +828,21 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.judgeAddress = reader.string();
           break;
+        case 2:
+          message.numOfSigners = reader.uint32();
+          break;
         case 3:
+          message.threshold = reader.uint32();
+          break;
+        case 4:
+          message.signerApplicationFee = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.arbitraryData = reader.string();
+          break;
+        case 6:
           message.validatorAddress = reader.string();
           break;
         default:
@@ -827,16 +855,22 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
 
   fromJSON(object: any): QueryRegisteredJudgeAddressByValidatorAddressResponse {
     return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      numOfSigners: isSet(object.numOfSigners) ? Number(object.numOfSigners) : 0,
+      threshold: isSet(object.threshold) ? Number(object.threshold) : 0,
+      signerApplicationFee: isSet(object.signerApplicationFee) ? Number(object.signerApplicationFee) : 0,
+      arbitraryData: isSet(object.arbitraryData) ? String(object.arbitraryData) : "",
       validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
     };
   },
 
   toJSON(message: QueryRegisteredJudgeAddressByValidatorAddressResponse): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.numOfSigners !== undefined && (obj.numOfSigners = Math.round(message.numOfSigners));
+    message.threshold !== undefined && (obj.threshold = Math.round(message.threshold));
+    message.signerApplicationFee !== undefined && (obj.signerApplicationFee = Math.round(message.signerApplicationFee));
+    message.arbitraryData !== undefined && (obj.arbitraryData = message.arbitraryData);
     message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
@@ -845,8 +879,11 @@ export const QueryRegisteredJudgeAddressByValidatorAddressResponse = {
     object: I,
   ): QueryRegisteredJudgeAddressByValidatorAddressResponse {
     const message = createBaseQueryRegisteredJudgeAddressByValidatorAddressResponse();
-    message.creator = object.creator ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
+    message.numOfSigners = object.numOfSigners ?? 0;
+    message.threshold = object.threshold ?? 0;
+    message.signerApplicationFee = object.signerApplicationFee ?? 0;
+    message.arbitraryData = object.arbitraryData ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
@@ -898,7 +935,7 @@ function createBaseQueryRegisteredJudgesResponse(): QueryRegisteredJudgesRespons
 export const QueryRegisteredJudgesResponse = {
   encode(message: QueryRegisteredJudgesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.Judges) {
-      MsgRegisterJudge.encode(v!, writer.uint32(10).fork()).ldelim();
+      MsgBootstrapFragment.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -911,7 +948,7 @@ export const QueryRegisteredJudgesResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Judges.push(MsgRegisterJudge.decode(reader, reader.uint32()));
+          message.Judges.push(MsgBootstrapFragment.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -922,13 +959,15 @@ export const QueryRegisteredJudgesResponse = {
   },
 
   fromJSON(object: any): QueryRegisteredJudgesResponse {
-    return { Judges: Array.isArray(object?.Judges) ? object.Judges.map((e: any) => MsgRegisterJudge.fromJSON(e)) : [] };
+    return {
+      Judges: Array.isArray(object?.Judges) ? object.Judges.map((e: any) => MsgBootstrapFragment.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: QueryRegisteredJudgesResponse): unknown {
     const obj: any = {};
     if (message.Judges) {
-      obj.Judges = message.Judges.map((e) => e ? MsgRegisterJudge.toJSON(e) : undefined);
+      obj.Judges = message.Judges.map((e) => e ? MsgBootstrapFragment.toJSON(e) : undefined);
     } else {
       obj.Judges = [];
     }
@@ -939,7 +978,7 @@ export const QueryRegisteredJudgesResponse = {
     object: I,
   ): QueryRegisteredJudgesResponse {
     const message = createBaseQueryRegisteredJudgesResponse();
-    message.Judges = object.Judges?.map((e) => MsgRegisterJudge.fromPartial(e)) || [];
+    message.Judges = object.Judges?.map((e) => MsgBootstrapFragment.fromPartial(e)) || [];
     return message;
   },
 };

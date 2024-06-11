@@ -138,6 +138,10 @@ export interface VoltIndividualTwilightReserveAccountBalance {
   Amount?: string;
 }
 
+export type VoltMsgAcceptSignersResponse = object;
+
+export type VoltMsgSignerApplicationResponse = object;
+
 export interface VoltQueryBtcReserveResponse {
   BtcReserves?: NyksvoltBtcReserve[];
 }
