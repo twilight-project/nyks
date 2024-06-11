@@ -23,6 +23,7 @@ func CmdAcceptSigners() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			argSignerAddresses := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)

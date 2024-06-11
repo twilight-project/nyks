@@ -12,10 +12,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdRegisterJudge() *cobra.Command {
+func CmdBootstrapFragment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-judge [judge-address] [num-of-signers] [threshold] [signer-application-fee] [arbitrary-data]",
-		Short: "Broadcast message RegisterJudge",
+		Short: "Broadcast message BootstrapFragment",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argJudgeAddress := args[0]
@@ -40,7 +40,7 @@ func CmdRegisterJudge() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgRegisterJudge(
+			msg := types.NewMsgBootstrapFragment(
 				argJudgeAddress,
 				numOfSigners,
 				threshold,

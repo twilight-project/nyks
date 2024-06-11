@@ -26,8 +26,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgRegisterReserveAddress:
 			res, err := msgServer.RegisterReserveAddress(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRegisterJudge:
-			res, err := msgServer.RegisterJudge(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgBootstrapFragment:
+			res, err := msgServer.BootstrapFragment(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgWithdrawBtcRequest:
 			res, err := msgServer.WithdrawBtcRequest(sdk.WrapSDKContext(ctx), msg)

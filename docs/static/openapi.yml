@@ -27902,6 +27902,10 @@ paths:
                     signerApplicationFee:
                       type: string
                       format: uint64
+                    reserveAddress:
+                      type: string
+                    reserveScript:
+                      type: string
                     arbitraryData:
                       type: string
                     validatorAddress:
@@ -48955,6 +48959,30 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  twilightproject.nyks.bridge.MsgBootstrapFragment:
+    type: object
+    properties:
+      judgeAddress:
+        type: string
+      numOfSigners:
+        type: integer
+        format: int64
+      threshold:
+        type: integer
+        format: int64
+      signerApplicationFee:
+        type: string
+        format: uint64
+      reserveAddress:
+        type: string
+      reserveScript:
+        type: string
+      arbitraryData:
+        type: string
+      validatorAddress:
+        type: string
+  twilightproject.nyks.bridge.MsgBootstrapFragmentResponse:
+    type: object
   twilightproject.nyks.bridge.MsgBroadcastTxRefund:
     type: object
     properties:
@@ -49026,26 +49054,6 @@ definitions:
   twilightproject.nyks.bridge.MsgProposeSweepAddressResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterBtcDepositAddressResponse:
-    type: object
-  twilightproject.nyks.bridge.MsgRegisterJudge:
-    type: object
-    properties:
-      judgeAddress:
-        type: string
-      numOfSigners:
-        type: integer
-        format: int64
-      threshold:
-        type: integer
-        format: int64
-      signerApplicationFee:
-        type: string
-        format: uint64
-      arbitraryData:
-        type: string
-      validatorAddress:
-        type: string
-  twilightproject.nyks.bridge.MsgRegisterJudgeResponse:
     type: object
   twilightproject.nyks.bridge.MsgRegisterReserveAddress:
     type: object
@@ -49371,6 +49379,10 @@ definitions:
             signerApplicationFee:
               type: string
               format: uint64
+            reserveAddress:
+              type: string
+            reserveScript:
+              type: string
             arbitraryData:
               type: string
             validatorAddress:

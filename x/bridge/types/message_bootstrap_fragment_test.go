@@ -8,21 +8,21 @@ import (
 	"github.com/twilight-project/nyks/testutil/sample"
 )
 
-func TestMsgRegisterJudge_ValidateBasic(t *testing.T) {
+func TestMsgBootstrapFragment_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgRegisterJudge
+		msg  MsgBootstrapFragment
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgRegisterJudge{
+			msg: MsgBootstrapFragment{
 				ValidatorAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgRegisterJudge{
+			msg: MsgBootstrapFragment{
 				ValidatorAddress: sample.AccAddress(),
 			},
 		},

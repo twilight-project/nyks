@@ -58,7 +58,7 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}
 
-	regJudge := &types.MsgRegisterJudge{
+	regJudge := &types.MsgBootstrapFragment{
 		JudgeAddress:         judgeAddress.String(),
 		NumOfSigners:         numOfSigners,
 		Threshold:            threshold,
@@ -67,7 +67,7 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress
 		ValidatorAddress:     validatorAddress.String(),
 	}
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetRegisterJudgeAddressKey(validatorAddress)
+	aKey := types.GetBootstrapFragmentAddressKey(validatorAddress)
 	store.Set(aKey, k.cdc.MustMarshal(regJudge))
 
 	return nil
@@ -85,7 +85,7 @@ func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAdd
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
+		res := types.MsgBootstrapFragment{
 			JudgeAddress:         "",
 			NumOfSigners:         0,
 			Threshold:            0,
@@ -121,7 +121,7 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
+		res := types.MsgBootstrapFragment{
 			JudgeAddress:         "",
 			NumOfSigners:         0,
 			Threshold:            0,
@@ -167,14 +167,14 @@ func (k Keeper) GetJudgeValidator(ctx sdk.Context, judgeAddress sdk.AccAddress) 
 }
 
 // IterateRegisteredJudges iterates through all of the registered judge addresses
-func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.MsgRegisterJudge) bool) {
+func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.MsgBootstrapFragment) bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.JudgeAddressKey
 	iter := store.Iterator(prefixRange(prefix))
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		res := types.MsgRegisterJudge{
+		res := types.MsgBootstrapFragment{
 			JudgeAddress:         "",
 			NumOfSigners:         0,
 			Threshold:            0,

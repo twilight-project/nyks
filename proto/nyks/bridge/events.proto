@@ -15,7 +15,7 @@ message EventRegisterReserveAddress {
     string reserveScript = 2;
 }
 
-message EventRegisterJudgeAddress {
+message EventBootstrapFragmentAddress {
     string message = 1;
     string judgeAddress = 2;
     string validatorAddress = 3;

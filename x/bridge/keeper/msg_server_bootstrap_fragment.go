@@ -8,7 +8,7 @@ import (
 	"github.com/twilight-project/nyks/x/bridge/types"
 )
 
-func (k msgServer) RegisterJudge(goCtx context.Context, msg *types.MsgRegisterJudge) (*types.MsgRegisterJudgeResponse, error) {
+func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootstrapFragment) (*types.MsgBootstrapFragmentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check the following, all should be validated in validate basic
@@ -40,12 +40,12 @@ func (k msgServer) RegisterJudge(goCtx context.Context, msg *types.MsgRegisterJu
 		return nil, errSetting
 	}
 	ctx.EventManager().EmitTypedEvent(
-		&types.EventRegisterJudgeAddress{
+		&types.EventBootstrapFragmentAddress{
 			Message:          msg.Type(),
 			JudgeAddress:     judgeAddr.String(),
 			ValidatorAddress: valAddr.String(),
 		},
 	)
 
-	return &types.MsgRegisterJudgeResponse{}, nil
+	return &types.MsgBootstrapFragmentResponse{}, nil
 }

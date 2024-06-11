@@ -13,7 +13,7 @@ service Msg {
   rpc ConfirmBtcDeposit         (MsgConfirmBtcDeposit        ) returns (MsgConfirmBtcDepositResponse        );
   rpc RegisterBtcDepositAddress (MsgRegisterBtcDepositAddress) returns (MsgRegisterBtcDepositAddressResponse);
   rpc RegisterReserveAddress    (MsgRegisterReserveAddress   ) returns (MsgRegisterReserveAddressResponse   );
-  rpc RegisterJudge             (MsgRegisterJudge            ) returns (MsgRegisterJudgeResponse            );
+  rpc BootstrapFragment             (MsgBootstrapFragment            ) returns (MsgBootstrapFragmentResponse            );
   
   // this line is used by starport scaffolding # proto/tx/rpc
   rpc WithdrawBtcRequest  (MsgWithdrawBtcRequest ) returns (MsgWithdrawBtcRequestResponse );
@@ -63,16 +63,18 @@ message MsgRegisterReserveAddressResponse {
   string reserveAddress = 2;
 }
 
-message MsgRegisterJudge {
-  string judgeAddress     = 2;
-  uint32 numOfSigners     = 3;
-  uint32 threshold       = 4;
-  uint64 signerApplicationFee = 5;
-  string arbitraryData    = 6;
-  string validatorAddress = 7;
+message MsgBootstrapFragment {
+  string judgeAddress     = 1;
+  uint32 numOfSigners     = 2;
+  uint32 threshold       = 3;
+  uint64 signerApplicationFee = 4;
+  string reserveAddress = 5;
+  string reserveScript = 6;
+  string arbitraryData    = 7;
+  string validatorAddress = 8;
 }
 
-message MsgRegisterJudgeResponse {}
+message MsgBootstrapFragmentResponse {}
 
 message MsgProposeRefundHash {
   string refundHash   = 1;

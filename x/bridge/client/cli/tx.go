@@ -33,7 +33,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdMsgConfirmBtcDeposit())
 	cmd.AddCommand(CmdRegisterDepositAddress())
 	cmd.AddCommand(CmdRegisterReserveAddress())
-	cmd.AddCommand(CmdRegisterJudge())
+	cmd.AddCommand(CmdBootstrapFragment())
 	cmd.AddCommand(CmdWithdrawRequest())
 	cmd.AddCommand(CmdSweepProposal())
 	cmd.AddCommand(CmdWithdrawTxSigned())

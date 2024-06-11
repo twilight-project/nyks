@@ -36,9 +36,9 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgRegisterReserveAddress int = 100
 
-	opWeightMsgRegisterJudge = "op_weight_msg_register_judge"
+	opWeightMsgBootstrapFragment = "op_weight_msg_register_judge"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgRegisterJudge int = 100
+	defaultWeightMsgBootstrapFragment int = 100
 
 	opWeightMsgWithdrawBtcRequest = "op_weight_msg_withdraw_request"
 	// TODO: Determine the simulation weight value
@@ -159,15 +159,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		bridgesimulation.SimulateMsgRegisterReserveAddress(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgRegisterJudge int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterJudge, &weightMsgRegisterJudge, nil,
+	var weightMsgBootstrapFragment int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgBootstrapFragment, &weightMsgBootstrapFragment, nil,
 		func(_ *rand.Rand) {
-			weightMsgRegisterJudge = defaultWeightMsgRegisterJudge
+			weightMsgBootstrapFragment = defaultWeightMsgBootstrapFragment
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgRegisterJudge,
-		bridgesimulation.SimulateMsgRegisterJudge(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgBootstrapFragment,
+		bridgesimulation.SimulateMsgBootstrapFragment(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgWithdrawBtcRequest int

@@ -91,9 +91,9 @@ func GetBtcRegisterReserveScriptKey(judgeAddress sdk.AccAddress, reserveAddress 
 	return forkstypes.AppendBytes(BtcReserveScriptKey, judgeAddress.Bytes(), []byte(reserveAddress.BtcAddress))
 }
 
-// GetRegisterJudgeAddressKey returns the following key format
+// GetBootstrapFragmentAddressKey returns the following key format
 // [HashString("JudgeAddressKey")][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm][twilight1ahx7f8wyertuus9r20284ej0asrs085ceqtfnm]
-func GetRegisterJudgeAddressKey(validatorAddress sdk.ValAddress) []byte {
+func GetBootstrapFragmentAddressKey(validatorAddress sdk.ValAddress) []byte {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}

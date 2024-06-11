@@ -5,12 +5,12 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgRegisterJudge = "register_judge"
+const TypeMsgBootstrapFragment = "bootstrap_fragment"
 
-var _ sdk.Msg = &MsgRegisterJudge{}
+var _ sdk.Msg = &MsgBootstrapFragment{}
 
-func NewMsgRegisterJudge(judgeAddress string, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, arbitraryData string, validatorAddress string) *MsgRegisterJudge {
-	return &MsgRegisterJudge{
+func NewMsgBootstrapFragment(judgeAddress string, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, arbitraryData string, validatorAddress string) *MsgBootstrapFragment {
+	return &MsgBootstrapFragment{
 		JudgeAddress:         judgeAddress,
 		NumOfSigners:         numOfSigners,
 		Threshold:            threshold,
@@ -20,15 +20,15 @@ func NewMsgRegisterJudge(judgeAddress string, numOfSigners uint32, threshold uin
 	}
 }
 
-func (msg *MsgRegisterJudge) Route() string {
+func (msg *MsgBootstrapFragment) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgRegisterJudge) Type() string {
-	return TypeMsgRegisterJudge
+func (msg *MsgBootstrapFragment) Type() string {
+	return TypeMsgBootstrapFragment
 }
 
-func (msg *MsgRegisterJudge) GetSigners() []sdk.AccAddress {
+func (msg *MsgBootstrapFragment) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		panic(err)
@@ -36,12 +36,12 @@ func (msg *MsgRegisterJudge) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgRegisterJudge) GetSignBytes() []byte {
+func (msg *MsgBootstrapFragment) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgRegisterJudge) ValidateBasic() error {
+func (msg *MsgBootstrapFragment) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

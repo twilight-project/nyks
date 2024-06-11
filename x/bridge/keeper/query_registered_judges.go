@@ -17,10 +17,10 @@ func (k Keeper) RegisteredJudges(goCtx context.Context, req *types.QueryRegister
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var (
-		registeredJudges []types.MsgRegisterJudge
+		registeredJudges []types.MsgBootstrapFragment
 	)
 
-	k.IterateRegisteredJudges(ctx, func(_ []byte, res types.MsgRegisterJudge) (abort bool) {
+	k.IterateRegisteredJudges(ctx, func(_ []byte, res types.MsgBootstrapFragment) (abort bool) {
 		registeredJudges = append(registeredJudges, res)
 		return false
 	})

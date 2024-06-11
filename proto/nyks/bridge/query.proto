@@ -214,7 +214,7 @@ message QueryRegisteredJudgeAddressByValidatorAddressResponse {
 message QueryRegisteredJudgesRequest {}
 
 message QueryRegisteredJudgesResponse {
-  repeated MsgRegisterJudge Judges = 1 [(gogoproto.nullable) = false];
+  repeated MsgBootstrapFragment Judges = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryWithdrawBtcRequestAllRequest {}
