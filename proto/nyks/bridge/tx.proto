@@ -74,7 +74,11 @@ message MsgBootstrapFragment {
   string validatorAddress = 8;
 }
 
-message MsgBootstrapFragmentResponse {}
+message MsgBootstrapFragmentResponse {
+  string fragmentId      = 1;
+  string reserveId      = 2;
+  string judgeAddress   = 3;
+}
 
 message MsgProposeRefundHash {
   string refundHash   = 1;

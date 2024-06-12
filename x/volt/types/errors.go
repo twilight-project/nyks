@@ -22,4 +22,6 @@ var (
 	ErrInsufficientBalanceInReserve   = sdkerrors.Register(ModuleName, 12, "Insufficient balance in reserve")
 	ErrSnapshotNotFound               = sdkerrors.Register(ModuleName, 13, "Snapshot not found")
 	ErrInvalid                        = sdkerrors.Register(ModuleName, 14, "Invalid")
+	ErrCouldNotSetFragment            = sdkerrors.Register(ModuleName, 15, "Could not set fragment")
+	ErrFragmentMaxLimitReached        = sdkerrors.Register(ModuleName, 16, "Fragment max limit reached")
 )

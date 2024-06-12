@@ -62,6 +62,12 @@ var (
 
 	// SignerApplicationFeeKey defines the key to store the value of SignerApplicationFee
 	SignerApplicationFeeKey = KeyPrefix("SignerApplicationFeeKey")
+
+	// FragmentKey indexes the fragment FragmentKey
+	FragmentKey = forkstypes.HashString("FragmentKey")
+
+	// LastRegisteredFragmentKey indexes the fragment LastRegisteredFragmentKey
+	LastRegisteredFragmentKey = forkstypes.HashString("LastRegisteredFragmentKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -191,4 +197,15 @@ func GetSignerApplicationFeeKey(fragmentId uint64, signerAddress sdk.AccAddress)
 		panic("Failed to convert uint64 to bytes")
 	}
 	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes(), signerAddress.Bytes())
+}
+
+// GetFragmentKey returns the following key format
+// prefix [LastRegisteredFragmentKey][1]
+func GetFragmentKey(fragmentId uint64) []byte {
+	fragmentBufBytes := new(bytes.Buffer)
+	err := binary.Write(fragmentBufBytes, binary.LittleEndian, fragmentId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(FragmentKey, fragmentBufBytes.Bytes())
 }

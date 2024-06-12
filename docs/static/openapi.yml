@@ -48983,6 +48983,13 @@ definitions:
         type: string
   twilightproject.nyks.bridge.MsgBootstrapFragmentResponse:
     type: object
+    properties:
+      fragmentId:
+        type: string
+      reserveId:
+        type: string
+      judgeAddress:
+        type: string
   twilightproject.nyks.bridge.MsgBroadcastTxRefund:
     type: object
     properties:

@@ -18,7 +18,9 @@ message EventRegisterReserveAddress {
 message EventBootstrapFragmentAddress {
     string message = 1;
     string judgeAddress = 2;
-    string validatorAddress = 3;
+    uint64 fragmentId = 3;
+    uint64 reserveId = 4;
+    string validatorAddress = 5;
 }
 
 message EventWithdrawBtcRequest {

@@ -1,6 +1,9 @@
 package types
 
 const (
+	// FragmentMaxLimit is the total number of fragments
+	FragmentMaxLimit = 25
+
 	// BtcReserveMaxLimit is the total number of reserves
 	BtcReserveMaxLimit = 25
 

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -14,10 +15,16 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	// check the following, all should be validated in validate basic
 	judgeAddr, e1 := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	valAddr, e2 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	reserveAddr, e3 := types.NewBtcAddress(msg.ReserveAddress)
+	reserveScript, e4 := types.NewBtcScript(msg.ReserveScript)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
 	} else if e2 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
+	} else if e3 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
+	} else if e4 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e4.Error())
 	}
 
 	// return an error if the validator isn't in the active set
@@ -39,13 +46,30 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	if errSetting != nil {
 		return nil, errSetting
 	}
+
+	// set an new frament mapping for the judge address
+	fragmentId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr)
+	if errSettingRes != nil {
+		return nil, errSettingRes
+	}
+
+	k.SetReserveAddressForJudge(ctx, judgeAddr, *reserveScript, *reserveAddr)
+
+	// set an empty reserve mapping for the judge address
+	reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddr, reserveAddr.BtcAddress)
+	if errSettingRes != nil {
+		return nil, errSettingRes
+	}
+
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventBootstrapFragmentAddress{
 			Message:          msg.Type(),
 			JudgeAddress:     judgeAddr.String(),
+			FragmentId:       fragmentId,
+			ReserveId:        reserveId,
 			ValidatorAddress: valAddr.String(),
 		},
 	)
 
-	return &types.MsgBootstrapFragmentResponse{}, nil
+	return &types.MsgBootstrapFragmentResponse{FragmentId: strconv.FormatUint(fragmentId, 10), ReserveId: strconv.FormatUint(reserveId, 10), JudgeAddress: msg.JudgeAddress}, nil
 }
