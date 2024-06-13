@@ -14,10 +14,14 @@ var _ = strconv.Itoa(0)
 
 func CmdRegisterReserveAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-reserve-address [reserve-script] [reserve-address] [judge-address]",
+		Use:   "register-reserve-address [fragment-id] [reserve-script] [reserve-address] [judge-address]",
 		Short: "Broadcast message RegisterReserveAddress",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argFragmentId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
 			argReserveScript := args[0]
 			argReserveAddress := args[1]
 
@@ -27,6 +31,7 @@ func CmdRegisterReserveAddress() *cobra.Command {
 			}
 
 			msg := types.NewMsgRegisterReserveAddress(
+				argFragmentId,
 				argReserveScript,
 				argReserveAddress,
 				clientCtx.GetFromAddress().String(),

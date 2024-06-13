@@ -53,9 +53,10 @@ message MsgRegisterBtcDepositAddress {
 message MsgRegisterBtcDepositAddressResponse {}
 
 message MsgRegisterReserveAddress {
-  string reserveScript  = 1;
-  string reserveAddress = 2;
-  string judgeAddress   = 3;
+  uint64 fragmentId    = 1;
+  string reserveScript  = 2;
+  string reserveAddress = 3;
+  string judgeAddress   = 4;
 }
 
 message MsgRegisterReserveAddressResponse {

@@ -19,7 +19,7 @@ func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.MsgSignerApp
 }
 
 // RegisterNewFragment sets a new fragment in the store
-func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress) (uint64, error) {
+func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, uint64, error) {
 
 	// Get the latest fragment id
 	// We keep fragment ids in a separate store and keep track of it as a counter
@@ -28,7 +28,13 @@ func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress
 
 	// Check if the fragment limit has been reached
 	if (fragmentId) > types.FragmentMaxLimit {
-		return 0, sdkerrors.Wrapf(types.ErrFragmentMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
+		return 0, 0, sdkerrors.Wrapf(types.ErrFragmentMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
+	}
+
+	// Create a new BtcReserve
+	reserveId, err := k.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress)
+	if err != nil {
+		return 0, 0, err
 	}
 
 	// Create a new fragment
@@ -40,18 +46,18 @@ func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress
 		Signers:        []*types.FragmentSigners{},
 		FeePool:        0,
 		FeeBips:        0,
-		Reserves:       []*types.BtcReserve{},
+		ReserveIds:     []uint64{reserveId},
 	}
 
 	// Set the fragment
-	err := k.SetFragment(ctx, fragment)
-	if err != nil {
-		return 0, sdkerrors.Wrapf(types.ErrCouldNotSetFragment, fmt.Sprint(fragmentId))
+	errSet := k.SetFragment(ctx, fragment)
+	if errSet != nil {
+		return 0, 0, sdkerrors.Wrapf(types.ErrCouldNotSetFragment, fmt.Sprint(fragmentId))
 	} else {
 		k.setLastRegisteredFragment(ctx, fragmentId)
 	}
 
-	return fragmentId, nil
+	return fragmentId, reserveId, nil
 }
 
 // SetFragment sets a fragment in the store
@@ -80,4 +86,40 @@ func (k Keeper) GetLastRegisteredFragment(ctx sdk.Context) uint64 {
 		return 0
 	}
 	return forkstypes.UInt64FromBytes(bytes)
+}
+
+// GetFragment retrieves a fragment from the store
+func (k Keeper) GetFragment(ctx sdk.Context, fragmentId uint64) (*types.Fragment, bool) {
+	store := ctx.KVStore(k.storeKey)
+	fragmentKey := types.GetFragmentKey(fragmentId)
+	bz := store.Get(fragmentKey)
+	if bz == nil {
+		return nil, false
+	}
+
+	var fragment types.Fragment
+	k.cdc.MustUnmarshal(bz, &fragment)
+	return &fragment, true
+}
+
+// UpdateFragmentReserves adds a reserve ID to the fragment's ReserveIds mapping
+func (k Keeper) UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reserveId uint64) error {
+	// Retrieve the fragment from the store
+	fragment, found := k.GetFragment(ctx, fragmentId)
+	if !found {
+		return sdkerrors.Wrap(types.ErrFragmentNotFound, fmt.Sprintf("fragment ID %d not found", fragmentId))
+	}
+
+	// Check if the reserve ID is already in the fragment's ReserveIds mapping
+	for _, id := range fragment.ReserveIds {
+		if id == reserveId {
+			return sdkerrors.Wrap(types.ErrReserveAlreadyExists, fmt.Sprintf("reserve ID %d already exists in fragment ID %d", reserveId, fragmentId))
+		}
+	}
+
+	// Add the new reserve ID to the fragment's ReserveIds mapping
+	fragment.ReserveIds = append(fragment.ReserveIds, reserveId)
+
+	// Save the updated fragment back to the store
+	return k.SetFragment(ctx, fragment)
 }

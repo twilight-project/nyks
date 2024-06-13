@@ -27945,6 +27945,9 @@ paths:
                 items:
                   type: object
                   properties:
+                    fragmentId:
+                      type: string
+                      format: uint64
                     reserveScript:
                       type: string
                     reserveAddress:
@@ -49065,6 +49068,9 @@ definitions:
   twilightproject.nyks.bridge.MsgRegisterReserveAddress:
     type: object
     properties:
+      fragmentId:
+        type: string
+        format: uint64
       reserveScript:
         type: string
       reserveAddress:
@@ -49402,6 +49408,9 @@ definitions:
         items:
           type: object
           properties:
+            fragmentId:
+              type: string
+              format: uint64
             reserveScript:
               type: string
             reserveAddress:

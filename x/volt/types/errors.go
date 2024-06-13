@@ -24,4 +24,6 @@ var (
 	ErrInvalid                        = sdkerrors.Register(ModuleName, 14, "Invalid")
 	ErrCouldNotSetFragment            = sdkerrors.Register(ModuleName, 15, "Could not set fragment")
 	ErrFragmentMaxLimitReached        = sdkerrors.Register(ModuleName, 16, "Fragment max limit reached")
+	ErrFragmentNotFound               = sdkerrors.Register(ModuleName, 17, "Fragment not found")
+	ErrReserveAlreadyExists           = sdkerrors.Register(ModuleName, 17, "This reserve id already exists in the passed fragment id")
 )

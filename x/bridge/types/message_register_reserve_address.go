@@ -9,8 +9,9 @@ const TypeMsgRegisterReserveAddress = "register_reserve_address"
 
 var _ sdk.Msg = &MsgRegisterReserveAddress{}
 
-func NewMsgRegisterReserveAddress(reserveScript string, reserveAddress string, judgeAddress string) *MsgRegisterReserveAddress {
+func NewMsgRegisterReserveAddress(fragmentId uint64, reserveScript string, reserveAddress string, judgeAddress string) *MsgRegisterReserveAddress {
 	return &MsgRegisterReserveAddress{
+		FragmentId:     fragmentId,
 		ReserveScript:  reserveScript,
 		ReserveAddress: reserveAddress,
 		JudgeAddress:   judgeAddress,
@@ -26,11 +27,11 @@ func (msg *MsgRegisterReserveAddress) Type() string {
 }
 
 func (msg *MsgRegisterReserveAddress) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{judgeAddress}
 }
 
 func (msg *MsgRegisterReserveAddress) GetSignBytes() []byte {
@@ -39,9 +40,13 @@ func (msg *MsgRegisterReserveAddress) GetSignBytes() []byte {
 }
 
 func (msg *MsgRegisterReserveAddress) ValidateBasic() error {
+	if msg.FragmentId == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fragment ID cannot be zero")
+	}
 	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
 	}
+
 	return nil
 }

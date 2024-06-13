@@ -45,5 +45,7 @@ type VoltKeeper interface {
 	CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
 	CheckRefundTxSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error)
 	CheckBtcReserveExists(ctx sdk.Context, reserveId uint64) bool
-	RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress) (uint64, error)
+	RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, uint64, error)
+	GetFragment(ctx sdk.Context, fragmentId uint64) (*volttypes.Fragment, bool)
+	UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reserveId uint64) error
 }

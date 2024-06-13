@@ -48,7 +48,7 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	}
 
 	// set an new frament mapping for the judge address
-	fragmentId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr)
+	fragmentId, reserveId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr, reserveAddr.BtcAddress)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}
@@ -56,10 +56,10 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	k.SetReserveAddressForJudge(ctx, judgeAddr, *reserveScript, *reserveAddr)
 
 	// set an empty reserve mapping for the judge address
-	reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddr, reserveAddr.BtcAddress)
-	if errSettingRes != nil {
-		return nil, errSettingRes
-	}
+	// reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddr, reserveAddr.BtcAddress)
+	// if errSettingRes != nil {
+	// 	return nil, errSettingRes
+	// }
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventBootstrapFragmentAddress{

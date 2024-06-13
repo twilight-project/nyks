@@ -42,7 +42,7 @@ message Fragment {
   repeated fragmentSigners Signers = 5;
   uint64 FeePool = 6;
   uint64 FeeBips = 7;
-  repeated twilightproject.nyks.volt.BtcReserve Reserves = 8;
+  repeated uint64 ReserveIds = 8;
 }
 
 message fragmentSigners {
@@ -51,4 +51,5 @@ message fragmentSigners {
   string signerStatus = 3;
   string signerBtcPublicKey = 4;
   uint32 signerApplicationFee = 5;
+  uint32 signerFeeShare = 6;
 }
