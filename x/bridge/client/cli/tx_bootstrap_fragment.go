@@ -14,9 +14,9 @@ var _ = strconv.Itoa(0)
 
 func CmdBootstrapFragment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "bootstrap-fragment [judge-address] [num-of-signers] [threshold] [signer-application-fee] [reserve-address] [reserve-script] [arbitrary-data]",
+		Use:   "bootstrap-fragment [judge-address] [num-of-signers] [threshold] [signer-application-fee] [reserve-address] [reserve-script] [fragment-fee-bips] [arbitrary-data]",
 		Short: "Broadcast message BootstrapFragment",
-		Args:  cobra.ExactArgs(7),
+		Args:  cobra.ExactArgs(8),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argJudgeAddress := args[0]
 			argNumOfSigners, err := strconv.ParseUint(args[1], 10, 32)
@@ -35,7 +35,12 @@ func CmdBootstrapFragment() *cobra.Command {
 			}
 			argReserveAddress := args[4]
 			argReserveScript := args[5]
-			argArbitraryData := args[6]
+			argFragmentFeeBips, err := strconv.ParseUint(args[6], 10, 32)
+			if err != nil {
+				return err
+			}
+			fragmentFeeBips := uint32(argFragmentFeeBips)
+			argArbitraryData := args[7]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -49,6 +54,7 @@ func CmdBootstrapFragment() *cobra.Command {
 				argSignerApplicationFee,
 				argReserveAddress,
 				argReserveScript,
+				fragmentFeeBips,
 				argArbitraryData,
 				clientCtx.GetFromAddress().String(),
 			)

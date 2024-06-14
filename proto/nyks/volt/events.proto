@@ -2,6 +2,7 @@ syntax = "proto3";
 package twilightproject.nyks.volt;
 
 //import "gogoproto/gogo.proto";
+import "nyks/volt/fragment.proto";
 
 option go_package = "github.com/twilight-project/nyks/x/volt/types";
 
@@ -15,4 +16,10 @@ message EventRefundTxSnapshot {
     string message = 1;
     uint64 reserveId = 2;
     uint64 roundId = 3;
+}
+
+message EventAcceptSigners {
+    string message = 1;
+    uint64 fragmentId = 2;
+    string judgeAddress = 4;
 }

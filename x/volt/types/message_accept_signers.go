@@ -1,8 +1,6 @@
 package types
 
 import (
-	"strings"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -11,11 +9,11 @@ const TypeMsgAcceptSigners = "accept_signers"
 
 var _ sdk.Msg = &MsgAcceptSigners{}
 
-func NewMsgAcceptSigners(fragmentId uint64, signerAddresses string, judgeAddress string) *MsgAcceptSigners {
+func NewMsgAcceptSigners(fragmentId uint64, signerInfos []*SignerInfo, judgeAddress string) *MsgAcceptSigners {
 	return &MsgAcceptSigners{
-		FragmentId:      fragmentId,
-		SignerAddresses: signerAddresses,
-		JudgeAddress:    judgeAddress,
+		FragmentId:   fragmentId,
+		SignerInfos:  signerInfos,
+		JudgeAddress: judgeAddress,
 	}
 }
 
@@ -53,15 +51,14 @@ func (msg *MsgAcceptSigners) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
 	}
 
-	// Validate signerAddresses
-	signerAddresses := strings.Split(msg.SignerAddresses, ",")
-	if len(signerAddresses) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "signerAddresses cannot be empty")
-	}
-
-	for _, address := range signerAddresses {
-		if _, err := sdk.AccAddressFromBech32(strings.TrimSpace(address)); err != nil {
+	// Validate the signer infos
+	for _, signerInfo := range msg.SignerInfos {
+		_, err := sdk.AccAddressFromBech32(signerInfo.SignerAddress)
+		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer address (%s)", err)
+		}
+		if signerInfo.SignerFeeBips > 10000 { // Assuming feeBips is in basis points and max value is 100%
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "feeBips cannot be more than 10000")
 		}
 	}
 

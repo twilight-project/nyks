@@ -5,10 +5,10 @@ const (
 	FragmentMaxLimit = 8
 
 	// FragmentSignersMaxLimit is the total number of signers in a fragment
-	FragmentSignersMaxLimit = 6
+	MaxSignersPerFragment = 6
 
 	// FragmentSignersMinLimit is the minimum number of signers in a fragment
-	FragmentSignersMinLimit = 3
+	MinSignersPerFragment = 3
 
 	// FragmentSignersMinThreshold is the minimum number of signers that needs to sign
 	FragmentSignersMinThreshold = 2

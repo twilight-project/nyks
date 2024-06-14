@@ -48,7 +48,7 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	}
 
 	// set an new frament mapping for the judge address
-	fragmentId, reserveId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr, reserveAddr.BtcAddress)
+	fragmentId, reserveId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr, reserveAddr.BtcAddress, msg.Threshold, msg.SignerApplicationFee, msg.NumOfSigners, msg.FragmentFeeBips, msg.ArbitraryData)
 	if errSettingRes != nil {
 		return nil, errSettingRes
 	}

@@ -18,38 +18,47 @@ service Msg {
 // this line is used by starport scaffolding # proto/tx/message
 
 message MsgSignerApplication {
-  uint64  fragmentId     = 1;
-  uint64  applicationFee = 2;
-  string btcPubKey      = 3;
-  string signerAddress  = 4;
+  uint64 fragmentId     = 1;
+  uint64 applicationFee = 2;
+  uint64 feeBips        = 3;
+  string btcPubKey      = 4;
+  string signerAddress  = 5;
 }
 
 message MsgSignerApplicationResponse {}
 
 message MsgAcceptSigners {
-  uint64  fragmentId      = 1;
-  string signerAddresses = 2;
+  uint64 fragmentId      = 1;
+  repeated SignerInfo signerInfos = 2;
   string judgeAddress    = 3;
 }
-
+  
 message MsgAcceptSignersResponse {}
+  
+message SignerInfo {
+  string signerAddress = 1;
+  uint32 SignerFeeBips = 2;
+}
 
 message Fragment {
   uint64 FragmentId = 1;
   bool FragmentStatus = 2;
   string JudgeAddress = 3;
-  string JudgeStatus = 4;
-  repeated fragmentSigners Signers = 5;
-  uint64 FeePool = 6;
-  uint64 FeeBips = 7;
-  repeated uint64 ReserveIds = 8;
+  bool JudgeStatus = 4;
+  repeated FragmentSigners Signers = 5;
+  uint64 SignerApplicationFee = 6;
+  uint32 Threshold = 7;
+  uint64 FeePool = 8;
+  uint32 FragmentFeeBips = 9;
+  string arbitraryData = 10;
+  repeated uint64 ReserveIds = 11;
 }
 
-message fragmentSigners {
-  string fragmentID = 1;
-  string signerAddress = 2;
-  string signerStatus = 3;
-  string signerBtcPublicKey = 4;
-  uint32 signerApplicationFee = 5;
-  uint32 signerFeeShare = 6;
+message FragmentSigners {
+  uint64 FragmentID = 1;
+  string SignerAddress = 2;
+  bool SignerStatus = 3;
+  string SignerBtcPublicKey = 4;
+  uint32 SignerApplicationFee = 5;
+  uint32 SignerFeeBips = 6;
 }

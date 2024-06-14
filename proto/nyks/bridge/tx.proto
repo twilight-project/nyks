@@ -71,8 +71,9 @@ message MsgBootstrapFragment {
   uint64 signerApplicationFee = 4;
   string reserveAddress = 5;
   string reserveScript = 6;
-  string arbitraryData    = 7;
-  string validatorAddress = 8;
+  uint32 fragmentFeeBips = 7;
+  string arbitraryData    = 8;
+  string validatorAddress = 9;
 }
 
 message MsgBootstrapFragmentResponse {

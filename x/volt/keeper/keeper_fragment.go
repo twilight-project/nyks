@@ -19,7 +19,7 @@ func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.MsgSignerApp
 }
 
 // RegisterNewFragment sets a new fragment in the store
-func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string) (uint64, uint64, error) {
+func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string, threshold uint32, applicationFee uint64, numOfSigners uint32, fragmentFeeBips uint32, arbitraryData string) (uint64, uint64, error) {
 
 	// Get the latest fragment id
 	// We keep fragment ids in a separate store and keep track of it as a counter
@@ -39,14 +39,17 @@ func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress
 
 	// Create a new fragment
 	fragment := &types.Fragment{
-		FragmentId:     fragmentId,
-		FragmentStatus: false, // Initial status can be set to false or as needed
-		JudgeAddress:   judgeAddress.String(),
-		JudgeStatus:    "init", // Initial judge status can be set as needed
-		Signers:        []*types.FragmentSigners{},
-		FeePool:        0,
-		FeeBips:        0,
-		ReserveIds:     []uint64{reserveId},
+		FragmentId:           fragmentId,
+		FragmentStatus:       false, // Initial status can be set to false or as needed
+		JudgeAddress:         judgeAddress.String(),
+		JudgeStatus:          true,
+		Signers:              []*types.FragmentSigners{},
+		SignerApplicationFee: applicationFee,
+		Threshold:            threshold,
+		FeePool:              0,
+		FragmentFeeBips:      fragmentFeeBips,
+		ArbitraryData:        arbitraryData,
+		ReserveIds:           []uint64{reserveId},
 	}
 
 	// Set the fragment
@@ -107,13 +110,13 @@ func (k Keeper) UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reser
 	// Retrieve the fragment from the store
 	fragment, found := k.GetFragment(ctx, fragmentId)
 	if !found {
-		return sdkerrors.Wrap(types.ErrFragmentNotFound, fmt.Sprintf("fragment ID %d not found", fragmentId))
+		return sdkerrors.Wrapf(types.ErrFragmentNotFound, fmt.Sprintf("fragment ID %d not found", fragmentId))
 	}
 
 	// Check if the reserve ID is already in the fragment's ReserveIds mapping
 	for _, id := range fragment.ReserveIds {
 		if id == reserveId {
-			return sdkerrors.Wrap(types.ErrReserveAlreadyExists, fmt.Sprintf("reserve ID %d already exists in fragment ID %d", reserveId, fragmentId))
+			return sdkerrors.Wrapf(types.ErrReserveAlreadyExists, fmt.Sprintf("reserve ID %d already exists in fragment ID %d", reserveId, fragmentId))
 		}
 	}
 
@@ -122,4 +125,62 @@ func (k Keeper) UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reser
 
 	// Save the updated fragment back to the store
 	return k.SetFragment(ctx, fragment)
+}
+
+// AddSignersToFragment adds signers to a fragment
+func (k Keeper) AddSignersToFragment(ctx sdk.Context, fragmentId uint64, signerAddress string, feeBips uint32) error {
+	// Retrieve the fragment from the store
+	fragment, found := k.GetFragment(ctx, fragmentId)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrFragmentNotFound, "fragment %d not found", fragmentId)
+	}
+
+	// Check if the fragment already has the maximum number of signers
+	if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
+		return sdkerrors.Wrapf(types.ErrMaxSignersReached, "fragment %d already has the maximum number of signers", fragmentId)
+	}
+
+	// Create a new signer info
+	newSigner := &types.FragmentSigners{
+		FragmentID:           fragmentId,
+		SignerAddress:        signerAddress,
+		SignerStatus:         true,
+		SignerBtcPublicKey:   "",
+		SignerApplicationFee: feeBips,
+	}
+
+	// Add the new signer to the fragment
+	fragment.Signers = append(fragment.Signers, newSigner)
+
+	// Save the updated fragment back to the store
+	k.SetFragment(ctx, fragment)
+
+	return nil
+}
+
+// ChangeFragmentStatus changes the status of a fragment - 0 for inactive, 1 for active
+func (k Keeper) ChangeFragmentStatus(ctx sdk.Context, fragmentId uint64, newStatus bool) error {
+	// Retrieve the fragment from the store
+	fragment, found := k.GetFragment(ctx, fragmentId)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrFragmentNotFound, "fragment %d not found", fragmentId)
+	}
+
+	// Check if the fragment has the minimum required signers
+	if len(fragment.Signers) < int(types.MinSignersPerFragment) {
+		return sdkerrors.Wrapf(types.ErrMinSignersNotMet, "fragment %d does not have the minimum required signers", fragmentId)
+	}
+
+	// Set the new status
+	fragment.FragmentStatus = newStatus
+
+	// Calculate the threshold
+	if newStatus {
+		fragment.Threshold = uint32((len(fragment.Signers) * 2 / 3) + 1)
+	}
+
+	// Save the updated fragment back to the store
+	k.SetFragment(ctx, fragment)
+
+	return nil
 }

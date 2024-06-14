@@ -27906,6 +27906,9 @@ paths:
                       type: string
                     reserveScript:
                       type: string
+                    fragmentFeeBips:
+                      type: integer
+                      format: int64
                     arbitraryData:
                       type: string
                     validatorAddress:
@@ -48980,6 +48983,9 @@ definitions:
         type: string
       reserveScript:
         type: string
+      fragmentFeeBips:
+        type: integer
+        format: int64
       arbitraryData:
         type: string
       validatorAddress:
@@ -49396,6 +49402,9 @@ definitions:
               type: string
             reserveScript:
               type: string
+            fragmentFeeBips:
+              type: integer
+              format: int64
             arbitraryData:
               type: string
             validatorAddress:
@@ -50558,6 +50567,14 @@ definitions:
     title: >-
       ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in
       sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.SignerInfo:
+    type: object
+    properties:
+      signerAddress:
+        type: string
+      SignerFeeBips:
+        type: integer
+        format: int64
   twilightproject.nyks.volt.WithdrawRequestSnap:
     type: object
     properties:

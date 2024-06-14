@@ -30,8 +30,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSignerApplication struct {
 	FragmentId     uint64 `protobuf:"varint,1,opt,name=fragmentId,proto3" json:"fragmentId,omitempty"`
 	ApplicationFee uint64 `protobuf:"varint,2,opt,name=applicationFee,proto3" json:"applicationFee,omitempty"`
-	BtcPubKey      string `protobuf:"bytes,3,opt,name=btcPubKey,proto3" json:"btcPubKey,omitempty"`
-	SignerAddress  string `protobuf:"bytes,4,opt,name=signerAddress,proto3" json:"signerAddress,omitempty"`
+	FeeBips        uint64 `protobuf:"varint,3,opt,name=feeBips,proto3" json:"feeBips,omitempty"`
+	BtcPubKey      string `protobuf:"bytes,4,opt,name=btcPubKey,proto3" json:"btcPubKey,omitempty"`
+	SignerAddress  string `protobuf:"bytes,5,opt,name=signerAddress,proto3" json:"signerAddress,omitempty"`
 }
 
 func (m *MsgSignerApplication) Reset()         { *m = MsgSignerApplication{} }
@@ -77,6 +78,13 @@ func (m *MsgSignerApplication) GetFragmentId() uint64 {
 func (m *MsgSignerApplication) GetApplicationFee() uint64 {
 	if m != nil {
 		return m.ApplicationFee
+	}
+	return 0
+}
+
+func (m *MsgSignerApplication) GetFeeBips() uint64 {
+	if m != nil {
+		return m.FeeBips
 	}
 	return 0
 }
@@ -132,9 +140,9 @@ func (m *MsgSignerApplicationResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSignerApplicationResponse proto.InternalMessageInfo
 
 type MsgAcceptSigners struct {
-	FragmentId      uint64 `protobuf:"varint,1,opt,name=fragmentId,proto3" json:"fragmentId,omitempty"`
-	SignerAddresses string `protobuf:"bytes,2,opt,name=signerAddresses,proto3" json:"signerAddresses,omitempty"`
-	JudgeAddress    string `protobuf:"bytes,3,opt,name=judgeAddress,proto3" json:"judgeAddress,omitempty"`
+	FragmentId   uint64        `protobuf:"varint,1,opt,name=fragmentId,proto3" json:"fragmentId,omitempty"`
+	SignerInfos  []*SignerInfo `protobuf:"bytes,2,rep,name=signerInfos,proto3" json:"signerInfos,omitempty"`
+	JudgeAddress string        `protobuf:"bytes,3,opt,name=judgeAddress,proto3" json:"judgeAddress,omitempty"`
 }
 
 func (m *MsgAcceptSigners) Reset()         { *m = MsgAcceptSigners{} }
@@ -177,11 +185,11 @@ func (m *MsgAcceptSigners) GetFragmentId() uint64 {
 	return 0
 }
 
-func (m *MsgAcceptSigners) GetSignerAddresses() string {
+func (m *MsgAcceptSigners) GetSignerInfos() []*SignerInfo {
 	if m != nil {
-		return m.SignerAddresses
+		return m.SignerInfos
 	}
-	return ""
+	return nil
 }
 
 func (m *MsgAcceptSigners) GetJudgeAddress() string {
@@ -227,22 +235,77 @@ func (m *MsgAcceptSignersResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAcceptSignersResponse proto.InternalMessageInfo
 
+type SignerInfo struct {
+	SignerAddress string `protobuf:"bytes,1,opt,name=signerAddress,proto3" json:"signerAddress,omitempty"`
+	SignerFeeBips uint32 `protobuf:"varint,2,opt,name=SignerFeeBips,proto3" json:"SignerFeeBips,omitempty"`
+}
+
+func (m *SignerInfo) Reset()         { *m = SignerInfo{} }
+func (m *SignerInfo) String() string { return proto.CompactTextString(m) }
+func (*SignerInfo) ProtoMessage()    {}
+func (*SignerInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_777b331120baeeb4, []int{4}
+}
+func (m *SignerInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SignerInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SignerInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SignerInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignerInfo.Merge(m, src)
+}
+func (m *SignerInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *SignerInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignerInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SignerInfo proto.InternalMessageInfo
+
+func (m *SignerInfo) GetSignerAddress() string {
+	if m != nil {
+		return m.SignerAddress
+	}
+	return ""
+}
+
+func (m *SignerInfo) GetSignerFeeBips() uint32 {
+	if m != nil {
+		return m.SignerFeeBips
+	}
+	return 0
+}
+
 type Fragment struct {
-	FragmentId     uint64             `protobuf:"varint,1,opt,name=FragmentId,proto3" json:"FragmentId,omitempty"`
-	FragmentStatus bool               `protobuf:"varint,2,opt,name=FragmentStatus,proto3" json:"FragmentStatus,omitempty"`
-	JudgeAddress   string             `protobuf:"bytes,3,opt,name=JudgeAddress,proto3" json:"JudgeAddress,omitempty"`
-	JudgeStatus    string             `protobuf:"bytes,4,opt,name=JudgeStatus,proto3" json:"JudgeStatus,omitempty"`
-	Signers        []*FragmentSigners `protobuf:"bytes,5,rep,name=Signers,proto3" json:"Signers,omitempty"`
-	FeePool        uint64             `protobuf:"varint,6,opt,name=FeePool,proto3" json:"FeePool,omitempty"`
-	FeeBips        uint64             `protobuf:"varint,7,opt,name=FeeBips,proto3" json:"FeeBips,omitempty"`
-	ReserveIds     []uint64           `protobuf:"varint,8,rep,packed,name=ReserveIds,proto3" json:"ReserveIds,omitempty"`
+	FragmentId           uint64             `protobuf:"varint,1,opt,name=FragmentId,proto3" json:"FragmentId,omitempty"`
+	FragmentStatus       bool               `protobuf:"varint,2,opt,name=FragmentStatus,proto3" json:"FragmentStatus,omitempty"`
+	JudgeAddress         string             `protobuf:"bytes,3,opt,name=JudgeAddress,proto3" json:"JudgeAddress,omitempty"`
+	JudgeStatus          bool               `protobuf:"varint,4,opt,name=JudgeStatus,proto3" json:"JudgeStatus,omitempty"`
+	Signers              []*FragmentSigners `protobuf:"bytes,5,rep,name=Signers,proto3" json:"Signers,omitempty"`
+	SignerApplicationFee uint64             `protobuf:"varint,6,opt,name=SignerApplicationFee,proto3" json:"SignerApplicationFee,omitempty"`
+	Threshold            uint32             `protobuf:"varint,7,opt,name=Threshold,proto3" json:"Threshold,omitempty"`
+	FeePool              uint64             `protobuf:"varint,8,opt,name=FeePool,proto3" json:"FeePool,omitempty"`
+	FragmentFeeBips      uint32             `protobuf:"varint,9,opt,name=FragmentFeeBips,proto3" json:"FragmentFeeBips,omitempty"`
+	ArbitraryData        string             `protobuf:"bytes,10,opt,name=arbitraryData,proto3" json:"arbitraryData,omitempty"`
+	ReserveIds           []uint64           `protobuf:"varint,11,rep,packed,name=ReserveIds,proto3" json:"ReserveIds,omitempty"`
 }
 
 func (m *Fragment) Reset()         { *m = Fragment{} }
 func (m *Fragment) String() string { return proto.CompactTextString(m) }
 func (*Fragment) ProtoMessage()    {}
 func (*Fragment) Descriptor() ([]byte, []int) {
-	return fileDescriptor_777b331120baeeb4, []int{4}
+	return fileDescriptor_777b331120baeeb4, []int{5}
 }
 func (m *Fragment) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -292,11 +355,11 @@ func (m *Fragment) GetJudgeAddress() string {
 	return ""
 }
 
-func (m *Fragment) GetJudgeStatus() string {
+func (m *Fragment) GetJudgeStatus() bool {
 	if m != nil {
 		return m.JudgeStatus
 	}
-	return ""
+	return false
 }
 
 func (m *Fragment) GetSigners() []*FragmentSigners {
@@ -306,6 +369,20 @@ func (m *Fragment) GetSigners() []*FragmentSigners {
 	return nil
 }
 
+func (m *Fragment) GetSignerApplicationFee() uint64 {
+	if m != nil {
+		return m.SignerApplicationFee
+	}
+	return 0
+}
+
+func (m *Fragment) GetThreshold() uint32 {
+	if m != nil {
+		return m.Threshold
+	}
+	return 0
+}
+
 func (m *Fragment) GetFeePool() uint64 {
 	if m != nil {
 		return m.FeePool
@@ -313,11 +390,18 @@ func (m *Fragment) GetFeePool() uint64 {
 	return 0
 }
 
-func (m *Fragment) GetFeeBips() uint64 {
+func (m *Fragment) GetFragmentFeeBips() uint32 {
 	if m != nil {
-		return m.FeeBips
+		return m.FragmentFeeBips
 	}
 	return 0
+}
+
+func (m *Fragment) GetArbitraryData() string {
+	if m != nil {
+		return m.ArbitraryData
+	}
+	return ""
 }
 
 func (m *Fragment) GetReserveIds() []uint64 {
@@ -328,19 +412,19 @@ func (m *Fragment) GetReserveIds() []uint64 {
 }
 
 type FragmentSigners struct {
-	FragmentID           string `protobuf:"bytes,1,opt,name=fragmentID,proto3" json:"fragmentID,omitempty"`
-	SignerAddress        string `protobuf:"bytes,2,opt,name=signerAddress,proto3" json:"signerAddress,omitempty"`
-	SignerStatus         string `protobuf:"bytes,3,opt,name=signerStatus,proto3" json:"signerStatus,omitempty"`
-	SignerBtcPublicKey   string `protobuf:"bytes,4,opt,name=signerBtcPublicKey,proto3" json:"signerBtcPublicKey,omitempty"`
-	SignerApplicationFee uint32 `protobuf:"varint,5,opt,name=signerApplicationFee,proto3" json:"signerApplicationFee,omitempty"`
-	SignerFeeShare       uint32 `protobuf:"varint,6,opt,name=signerFeeShare,proto3" json:"signerFeeShare,omitempty"`
+	FragmentID           uint64 `protobuf:"varint,1,opt,name=FragmentID,proto3" json:"FragmentID,omitempty"`
+	SignerAddress        string `protobuf:"bytes,2,opt,name=SignerAddress,proto3" json:"SignerAddress,omitempty"`
+	SignerStatus         bool   `protobuf:"varint,3,opt,name=SignerStatus,proto3" json:"SignerStatus,omitempty"`
+	SignerBtcPublicKey   string `protobuf:"bytes,4,opt,name=SignerBtcPublicKey,proto3" json:"SignerBtcPublicKey,omitempty"`
+	SignerApplicationFee uint32 `protobuf:"varint,5,opt,name=SignerApplicationFee,proto3" json:"SignerApplicationFee,omitempty"`
+	SignerFeeBips        uint32 `protobuf:"varint,6,opt,name=SignerFeeBips,proto3" json:"SignerFeeBips,omitempty"`
 }
 
 func (m *FragmentSigners) Reset()         { *m = FragmentSigners{} }
 func (m *FragmentSigners) String() string { return proto.CompactTextString(m) }
 func (*FragmentSigners) ProtoMessage()    {}
 func (*FragmentSigners) Descriptor() ([]byte, []int) {
-	return fileDescriptor_777b331120baeeb4, []int{5}
+	return fileDescriptor_777b331120baeeb4, []int{6}
 }
 func (m *FragmentSigners) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -369,11 +453,11 @@ func (m *FragmentSigners) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FragmentSigners proto.InternalMessageInfo
 
-func (m *FragmentSigners) GetFragmentID() string {
+func (m *FragmentSigners) GetFragmentID() uint64 {
 	if m != nil {
 		return m.FragmentID
 	}
-	return ""
+	return 0
 }
 
 func (m *FragmentSigners) GetSignerAddress() string {
@@ -383,11 +467,11 @@ func (m *FragmentSigners) GetSignerAddress() string {
 	return ""
 }
 
-func (m *FragmentSigners) GetSignerStatus() string {
+func (m *FragmentSigners) GetSignerStatus() bool {
 	if m != nil {
 		return m.SignerStatus
 	}
-	return ""
+	return false
 }
 
 func (m *FragmentSigners) GetSignerBtcPublicKey() string {
@@ -404,9 +488,9 @@ func (m *FragmentSigners) GetSignerApplicationFee() uint32 {
 	return 0
 }
 
-func (m *FragmentSigners) GetSignerFeeShare() uint32 {
+func (m *FragmentSigners) GetSignerFeeBips() uint32 {
 	if m != nil {
-		return m.SignerFeeShare
+		return m.SignerFeeBips
 	}
 	return 0
 }
@@ -416,49 +500,55 @@ func init() {
 	proto.RegisterType((*MsgSignerApplicationResponse)(nil), "twilightproject.nyks.volt.MsgSignerApplicationResponse")
 	proto.RegisterType((*MsgAcceptSigners)(nil), "twilightproject.nyks.volt.MsgAcceptSigners")
 	proto.RegisterType((*MsgAcceptSignersResponse)(nil), "twilightproject.nyks.volt.MsgAcceptSignersResponse")
+	proto.RegisterType((*SignerInfo)(nil), "twilightproject.nyks.volt.SignerInfo")
 	proto.RegisterType((*Fragment)(nil), "twilightproject.nyks.volt.Fragment")
-	proto.RegisterType((*FragmentSigners)(nil), "twilightproject.nyks.volt.fragmentSigners")
+	proto.RegisterType((*FragmentSigners)(nil), "twilightproject.nyks.volt.FragmentSigners")
 }
 
 func init() { proto.RegisterFile("nyks/volt/fragment.proto", fileDescriptor_777b331120baeeb4) }
 
 var fileDescriptor_777b331120baeeb4 = []byte{
-	// 553 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x8d, 0x93, 0xb6, 0x49, 0xa6, 0x84, 0xc2, 0xaa, 0x12, 0x4b, 0x54, 0x59, 0x96, 0x85, 0x50,
-	0x04, 0xaa, 0x23, 0xa5, 0x07, 0xce, 0x8d, 0x22, 0xa3, 0x82, 0x22, 0x55, 0xce, 0x8d, 0x5b, 0xe2,
-	0x0c, 0x8e, 0x4b, 0x1a, 0x1b, 0xef, 0xa6, 0x90, 0x03, 0x12, 0x37, 0xae, 0x7c, 0x03, 0x9f, 0xc0,
-	0x57, 0x70, 0xec, 0x91, 0x23, 0x4a, 0x3e, 0x82, 0x2b, 0xda, 0x5d, 0x6f, 0x13, 0x3b, 0xa6, 0x55,
-	0x8f, 0xf3, 0x76, 0x76, 0xe6, 0xcd, 0xdb, 0x37, 0x0b, 0x74, 0xb6, 0xf8, 0xc0, 0xda, 0x57, 0xd1,
-	0x94, 0xb7, 0xdf, 0x27, 0xc3, 0xe0, 0x12, 0x67, 0xdc, 0x89, 0x93, 0x88, 0x47, 0xe4, 0x29, 0xff,
-	0x14, 0x4e, 0xc3, 0x60, 0xc2, 0xe3, 0x24, 0xba, 0x40, 0x9f, 0x3b, 0x22, 0xd3, 0x11, 0x99, 0xcd,
-	0x27, 0xeb, 0x4b, 0x09, 0x32, 0x4c, 0xae, 0x50, 0xdd, 0xb1, 0x7f, 0x18, 0x70, 0xd8, 0x67, 0xc1,
-	0x20, 0x0c, 0x66, 0x98, 0x9c, 0xc6, 0xf1, 0x34, 0xf4, 0x87, 0x3c, 0x8c, 0x66, 0xc4, 0x04, 0xd0,
-	0xe5, 0xcf, 0xc6, 0xd4, 0xb0, 0x8c, 0xd6, 0x8e, 0xb7, 0x81, 0x90, 0xe7, 0xf0, 0x70, 0xb8, 0x4e,
-	0x77, 0x11, 0x69, 0x59, 0xe6, 0xe4, 0x50, 0x72, 0x04, 0xf5, 0x11, 0xf7, 0xcf, 0xe7, 0xa3, 0xb7,
-	0xb8, 0xa0, 0x15, 0xcb, 0x68, 0xd5, 0xbd, 0x35, 0x40, 0x9e, 0x41, 0x83, 0xa9, 0xd6, 0xe3, 0x71,
-	0x82, 0x8c, 0xd1, 0x1d, 0x99, 0x91, 0x05, 0x6d, 0x13, 0x8e, 0x8a, 0x38, 0x7a, 0xc8, 0xe2, 0x68,
-	0xc6, 0xd0, 0xfe, 0x6a, 0xc0, 0xa3, 0x3e, 0x0b, 0x4e, 0x7d, 0x1f, 0x63, 0xae, 0xd2, 0xd8, 0x9d,
-	0x03, 0xb4, 0xe0, 0x20, 0xd3, 0x05, 0x99, 0x9c, 0xa0, 0xee, 0xe5, 0x61, 0x62, 0xc3, 0x83, 0x8b,
-	0xf9, 0x38, 0x40, 0xcd, 0x51, 0x4d, 0x91, 0xc1, 0xec, 0x26, 0xd0, 0x3c, 0x83, 0x1b, 0x7a, 0x3f,
-	0xcb, 0x50, 0x73, 0xd3, 0xc6, 0x82, 0x96, 0xbb, 0x45, 0xcb, 0xcd, 0xe8, 0xaa, 0xa3, 0x01, 0x1f,
-	0xf2, 0xb9, 0x62, 0x55, 0xf3, 0x72, 0xa8, 0x20, 0xf5, 0xa6, 0x80, 0xd4, 0x26, 0x46, 0x2c, 0xd8,
-	0x97, 0x71, 0x5a, 0x48, 0x69, 0xbb, 0x09, 0x91, 0x1e, 0x54, 0x53, 0xb6, 0x74, 0xd7, 0xaa, 0xb4,
-	0xf6, 0x3b, 0x2f, 0x9c, 0xff, 0x9a, 0xc8, 0xd1, 0xe2, 0xe9, 0xf9, 0xf4, 0x55, 0x42, 0xa1, 0xea,
-	0x22, 0x9e, 0x47, 0xd1, 0x94, 0xee, 0xc9, 0x81, 0x74, 0x98, 0x9e, 0x74, 0xc3, 0x98, 0xd1, 0xea,
-	0xcd, 0x89, 0x08, 0x85, 0x0e, 0x9e, 0x72, 0xe2, 0xd9, 0x98, 0xd1, 0x9a, 0x55, 0x11, 0x3a, 0xac,
-	0x11, 0xfb, 0x5b, 0x19, 0x0e, 0x72, 0x0d, 0x33, 0x4f, 0xda, 0x93, 0xda, 0xd5, 0x37, 0x9e, 0xb4,
-	0xb7, 0xed, 0xa6, 0x72, 0x81, 0x9b, 0x84, 0x72, 0x0a, 0x48, 0x65, 0x49, 0x95, 0xdb, 0xc4, 0x88,
-	0x03, 0x44, 0xc5, 0x5d, 0x69, 0xd5, 0x69, 0xe8, 0x0b, 0xfb, 0x2a, 0x01, 0x0b, 0x4e, 0x48, 0x07,
-	0x0e, 0x59, 0xde, 0x9e, 0x62, 0x27, 0x76, 0x2d, 0xa3, 0xd5, 0xf0, 0x0a, 0xcf, 0xc4, 0x4b, 0x2b,
-	0xdc, 0x45, 0x1c, 0x4c, 0x86, 0x09, 0x4a, 0xf1, 0x1a, 0x5e, 0x0e, 0xed, 0xfc, 0x35, 0xa0, 0xd2,
-	0x67, 0x01, 0xf9, 0x02, 0x8f, 0xb7, 0xd7, 0xb4, 0x7d, 0xcb, 0x7b, 0x15, 0xed, 0x4c, 0xf3, 0xd5,
-	0x3d, 0x2f, 0x68, 0x17, 0x93, 0x8f, 0xd0, 0xc8, 0x2e, 0xd8, 0xcb, 0xdb, 0x2b, 0x65, 0x92, 0x9b,
-	0x27, 0xf7, 0x48, 0xd6, 0x2d, 0xbb, 0xaf, 0x7f, 0x2d, 0x4d, 0xe3, 0x7a, 0x69, 0x1a, 0x7f, 0x96,
-	0xa6, 0xf1, 0x7d, 0x65, 0x96, 0xae, 0x57, 0x66, 0xe9, 0xf7, 0xca, 0x2c, 0xbd, 0x3b, 0x0e, 0x42,
-	0x3e, 0x99, 0x8f, 0x1c, 0x3f, 0xba, 0x6c, 0xeb, 0xc2, 0xc7, 0x69, 0xe5, 0xb6, 0xfc, 0xeb, 0x3e,
-	0xab, 0xdf, 0x8e, 0x2f, 0x62, 0x64, 0xa3, 0x3d, 0xf9, 0xd9, 0x9d, 0xfc, 0x0b, 0x00, 0x00, 0xff,
-	0xff, 0x7e, 0xa7, 0xcc, 0xaa, 0x3c, 0x05, 0x00, 0x00,
+	// 630 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xae, 0xe3, 0xfe, 0x4e, 0x28, 0x3f, 0xab, 0x4a, 0x2c, 0x51, 0x65, 0x45, 0x16, 0xa0, 0x08,
+	0x54, 0x47, 0x4a, 0x0f, 0x9c, 0x1b, 0x45, 0xae, 0x02, 0x8a, 0x54, 0x39, 0x1c, 0x10, 0x37, 0xc7,
+	0xde, 0x38, 0x2e, 0xae, 0x6d, 0xbc, 0x9b, 0x42, 0x0e, 0x1c, 0xb9, 0xf3, 0x06, 0xbc, 0x07, 0xe2,
+	0x01, 0x38, 0xf6, 0xc8, 0x11, 0x25, 0x0f, 0xc1, 0x15, 0xed, 0xae, 0x1d, 0xc7, 0xb1, 0x1b, 0xd4,
+	0xe3, 0x7c, 0xfe, 0x66, 0x76, 0xe6, 0xfb, 0x66, 0xbd, 0x80, 0xc3, 0xd9, 0x07, 0xda, 0xbe, 0x8e,
+	0x02, 0xd6, 0x1e, 0x27, 0xb6, 0x77, 0x45, 0x42, 0x66, 0xc4, 0x49, 0xc4, 0x22, 0xf4, 0x84, 0x7d,
+	0xf2, 0x03, 0xdf, 0x9b, 0xb0, 0x38, 0x89, 0x2e, 0x89, 0xc3, 0x0c, 0xce, 0x34, 0x38, 0xb3, 0xf1,
+	0x38, 0x4f, 0x4a, 0x08, 0x25, 0xc9, 0x35, 0x91, 0x39, 0xfa, 0x4f, 0x05, 0x8e, 0x06, 0xd4, 0x1b,
+	0xfa, 0x5e, 0x48, 0x92, 0xb3, 0x38, 0x0e, 0x7c, 0xc7, 0x66, 0x7e, 0x14, 0x22, 0x0d, 0x20, 0x2b,
+	0xdf, 0x77, 0xb1, 0xd2, 0x54, 0x5a, 0xdb, 0xd6, 0x0a, 0x82, 0x9e, 0xc3, 0x7d, 0x3b, 0xa7, 0x9b,
+	0x84, 0xe0, 0x9a, 0xe0, 0xac, 0xa1, 0x08, 0xc3, 0xde, 0x98, 0x90, 0xae, 0x1f, 0x53, 0xac, 0x0a,
+	0x42, 0x16, 0xa2, 0x63, 0x38, 0x18, 0x31, 0xe7, 0x62, 0x3a, 0x7a, 0x43, 0x66, 0x78, 0xbb, 0xa9,
+	0xb4, 0x0e, 0xac, 0x1c, 0x40, 0x4f, 0xe1, 0x90, 0xca, 0xa6, 0x5c, 0x37, 0x21, 0x94, 0xe2, 0x1d,
+	0xc1, 0x28, 0x82, 0xba, 0x06, 0xc7, 0x55, 0xdd, 0x5b, 0x84, 0xc6, 0x51, 0x48, 0x89, 0xfe, 0x5d,
+	0x81, 0x87, 0x03, 0xea, 0x9d, 0x39, 0x0e, 0x89, 0x99, 0xa4, 0xd1, 0xff, 0x8e, 0x76, 0x0e, 0x75,
+	0x79, 0x4a, 0x3f, 0x1c, 0x47, 0x14, 0xd7, 0x9a, 0x6a, 0xab, 0xde, 0x79, 0x66, 0xdc, 0xaa, 0xae,
+	0x31, 0x5c, 0xb2, 0xad, 0xd5, 0x4c, 0xa4, 0xc3, 0xbd, 0xcb, 0xa9, 0xeb, 0x91, 0x6c, 0x04, 0x55,
+	0x8c, 0x50, 0xc0, 0xf4, 0x06, 0xe0, 0xf5, 0x06, 0x97, 0xdd, 0xbf, 0x03, 0xc8, 0x4b, 0x97, 0x15,
+	0x51, 0x2a, 0x14, 0xe1, 0x2c, 0x99, 0x63, 0xa6, 0xaa, 0x73, 0x5b, 0x0e, 0xad, 0x22, 0xa8, 0xff,
+	0x50, 0x61, 0xdf, 0x4c, 0x27, 0xe6, 0x7a, 0x98, 0x25, 0x3d, 0xcc, 0x82, 0xd5, 0x59, 0x34, 0x64,
+	0x36, 0x9b, 0xca, 0x9a, 0xfb, 0xd6, 0x1a, 0xca, 0xc7, 0x7d, 0x5d, 0x31, 0xee, 0x2a, 0x86, 0x9a,
+	0x50, 0x17, 0x71, 0x5a, 0x68, 0x5b, 0x14, 0x5a, 0x85, 0x50, 0x0f, 0xf6, 0x52, 0x1d, 0xf0, 0x8e,
+	0x50, 0xfe, 0xc5, 0x06, 0xe5, 0x97, 0x1d, 0xa4, 0xca, 0x65, 0xa9, 0xa8, 0x03, 0x47, 0xa5, 0xad,
+	0xe0, 0x4b, 0xba, 0x2b, 0xa6, 0xab, 0xfc, 0xc6, 0x17, 0xf2, 0xed, 0x24, 0x21, 0x74, 0x12, 0x05,
+	0x2e, 0xde, 0x13, 0xb2, 0xe5, 0x00, 0x5f, 0x64, 0x93, 0x90, 0x8b, 0x28, 0x0a, 0xf0, 0xbe, 0x5c,
+	0xe4, 0x34, 0x44, 0x2d, 0x78, 0x90, 0xf5, 0x91, 0x89, 0x7e, 0x20, 0xb2, 0xd7, 0x61, 0x6e, 0x8e,
+	0x9d, 0x8c, 0x7c, 0x96, 0xd8, 0xc9, 0xac, 0x67, 0x33, 0x1b, 0x83, 0xb4, 0xb0, 0x00, 0x72, 0x3f,
+	0x2c, 0x79, 0x49, 0xfb, 0x2e, 0xc5, 0xf5, 0xa6, 0xca, 0xfd, 0xc8, 0x11, 0xfd, 0x6b, 0x2d, 0x3f,
+	0x70, 0x65, 0xa7, 0x97, 0x8e, 0xf5, 0x4a, 0x1e, 0xf6, 0xf2, 0xb5, 0xc8, 0xcc, 0xa9, 0xc9, 0x93,
+	0x0b, 0x20, 0x77, 0x50, 0x02, 0xa9, 0x3d, 0xaa, 0xb0, 0xa7, 0x80, 0x21, 0x03, 0x90, 0x8c, 0xbb,
+	0xe2, 0xae, 0x06, 0xbe, 0x93, 0xdf, 0xdf, 0x8a, 0x2f, 0xb7, 0x3a, 0xb1, 0x23, 0x24, 0xaa, 0x76,
+	0xa2, 0xb4, 0xc4, 0xbb, 0x15, 0x4b, 0xdc, 0xf9, 0xab, 0x80, 0x3a, 0xa0, 0x1e, 0xfa, 0x02, 0x8f,
+	0xca, 0xff, 0xaf, 0xf6, 0x86, 0xad, 0xa9, 0xfa, 0x65, 0x34, 0x5e, 0xdd, 0x31, 0x21, 0xbb, 0xa5,
+	0xe8, 0x23, 0x1c, 0x16, 0xff, 0x2f, 0x2f, 0x37, 0x57, 0x2a, 0x90, 0x1b, 0xa7, 0x77, 0x20, 0x67,
+	0x47, 0x76, 0xcf, 0x7f, 0xcd, 0x35, 0xe5, 0x66, 0xae, 0x29, 0x7f, 0xe6, 0x9a, 0xf2, 0x6d, 0xa1,
+	0x6d, 0xdd, 0x2c, 0xb4, 0xad, 0xdf, 0x0b, 0x6d, 0xeb, 0xfd, 0x89, 0xe7, 0xb3, 0xc9, 0x74, 0x64,
+	0x38, 0xd1, 0x55, 0x3b, 0x2b, 0x7c, 0x92, 0x56, 0x6e, 0x8b, 0x47, 0xe0, 0xb3, 0x7c, 0x06, 0xd8,
+	0x2c, 0x26, 0x74, 0xb4, 0x2b, 0x5e, 0x81, 0xd3, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x35, 0x9b,
+	0xd5, 0xd0, 0x55, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -604,14 +694,19 @@ func (m *MsgSignerApplication) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.SignerAddress)
 		i = encodeVarintFragment(dAtA, i, uint64(len(m.SignerAddress)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x2a
 	}
 	if len(m.BtcPubKey) > 0 {
 		i -= len(m.BtcPubKey)
 		copy(dAtA[i:], m.BtcPubKey)
 		i = encodeVarintFragment(dAtA, i, uint64(len(m.BtcPubKey)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
+	}
+	if m.FeeBips != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.FeeBips))
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.ApplicationFee != 0 {
 		i = encodeVarintFragment(dAtA, i, uint64(m.ApplicationFee))
@@ -676,12 +771,19 @@ func (m *MsgAcceptSigners) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.SignerAddresses) > 0 {
-		i -= len(m.SignerAddresses)
-		copy(dAtA[i:], m.SignerAddresses)
-		i = encodeVarintFragment(dAtA, i, uint64(len(m.SignerAddresses)))
-		i--
-		dAtA[i] = 0x12
+	if len(m.SignerInfos) > 0 {
+		for iNdEx := len(m.SignerInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.SignerInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFragment(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
 	}
 	if m.FragmentId != 0 {
 		i = encodeVarintFragment(dAtA, i, uint64(m.FragmentId))
@@ -711,6 +813,41 @@ func (m *MsgAcceptSignersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *SignerInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SignerInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SignerInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.SignerFeeBips != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.SignerFeeBips))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.SignerAddress) > 0 {
+		i -= len(m.SignerAddress)
+		copy(dAtA[i:], m.SignerAddress)
+		i = encodeVarintFragment(dAtA, i, uint64(len(m.SignerAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -750,15 +887,32 @@ func (m *Fragment) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintFragment(dAtA, i, uint64(j1))
 		i--
-		dAtA[i] = 0x42
+		dAtA[i] = 0x5a
 	}
-	if m.FeeBips != 0 {
-		i = encodeVarintFragment(dAtA, i, uint64(m.FeeBips))
+	if len(m.ArbitraryData) > 0 {
+		i -= len(m.ArbitraryData)
+		copy(dAtA[i:], m.ArbitraryData)
+		i = encodeVarintFragment(dAtA, i, uint64(len(m.ArbitraryData)))
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x52
+	}
+	if m.FragmentFeeBips != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.FragmentFeeBips))
+		i--
+		dAtA[i] = 0x48
 	}
 	if m.FeePool != 0 {
 		i = encodeVarintFragment(dAtA, i, uint64(m.FeePool))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Threshold != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.Threshold))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.SignerApplicationFee != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.SignerApplicationFee))
 		i--
 		dAtA[i] = 0x30
 	}
@@ -776,12 +930,15 @@ func (m *Fragment) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x2a
 		}
 	}
-	if len(m.JudgeStatus) > 0 {
-		i -= len(m.JudgeStatus)
-		copy(dAtA[i:], m.JudgeStatus)
-		i = encodeVarintFragment(dAtA, i, uint64(len(m.JudgeStatus)))
+	if m.JudgeStatus {
 		i--
-		dAtA[i] = 0x22
+		if m.JudgeStatus {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
 	}
 	if len(m.JudgeAddress) > 0 {
 		i -= len(m.JudgeAddress)
@@ -828,8 +985,8 @@ func (m *FragmentSigners) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.SignerFeeShare != 0 {
-		i = encodeVarintFragment(dAtA, i, uint64(m.SignerFeeShare))
+	if m.SignerFeeBips != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.SignerFeeBips))
 		i--
 		dAtA[i] = 0x30
 	}
@@ -845,12 +1002,15 @@ func (m *FragmentSigners) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.SignerStatus) > 0 {
-		i -= len(m.SignerStatus)
-		copy(dAtA[i:], m.SignerStatus)
-		i = encodeVarintFragment(dAtA, i, uint64(len(m.SignerStatus)))
+	if m.SignerStatus {
 		i--
-		dAtA[i] = 0x1a
+		if m.SignerStatus {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
 	}
 	if len(m.SignerAddress) > 0 {
 		i -= len(m.SignerAddress)
@@ -859,12 +1019,10 @@ func (m *FragmentSigners) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.FragmentID) > 0 {
-		i -= len(m.FragmentID)
-		copy(dAtA[i:], m.FragmentID)
-		i = encodeVarintFragment(dAtA, i, uint64(len(m.FragmentID)))
+	if m.FragmentID != 0 {
+		i = encodeVarintFragment(dAtA, i, uint64(m.FragmentID))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -891,6 +1049,9 @@ func (m *MsgSignerApplication) Size() (n int) {
 	}
 	if m.ApplicationFee != 0 {
 		n += 1 + sovFragment(uint64(m.ApplicationFee))
+	}
+	if m.FeeBips != 0 {
+		n += 1 + sovFragment(uint64(m.FeeBips))
 	}
 	l = len(m.BtcPubKey)
 	if l > 0 {
@@ -921,9 +1082,11 @@ func (m *MsgAcceptSigners) Size() (n int) {
 	if m.FragmentId != 0 {
 		n += 1 + sovFragment(uint64(m.FragmentId))
 	}
-	l = len(m.SignerAddresses)
-	if l > 0 {
-		n += 1 + l + sovFragment(uint64(l))
+	if len(m.SignerInfos) > 0 {
+		for _, e := range m.SignerInfos {
+			l = e.Size()
+			n += 1 + l + sovFragment(uint64(l))
+		}
 	}
 	l = len(m.JudgeAddress)
 	if l > 0 {
@@ -938,6 +1101,22 @@ func (m *MsgAcceptSignersResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *SignerInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SignerAddress)
+	if l > 0 {
+		n += 1 + l + sovFragment(uint64(l))
+	}
+	if m.SignerFeeBips != 0 {
+		n += 1 + sovFragment(uint64(m.SignerFeeBips))
+	}
 	return n
 }
 
@@ -957,9 +1136,8 @@ func (m *Fragment) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovFragment(uint64(l))
 	}
-	l = len(m.JudgeStatus)
-	if l > 0 {
-		n += 1 + l + sovFragment(uint64(l))
+	if m.JudgeStatus {
+		n += 2
 	}
 	if len(m.Signers) > 0 {
 		for _, e := range m.Signers {
@@ -967,11 +1145,21 @@ func (m *Fragment) Size() (n int) {
 			n += 1 + l + sovFragment(uint64(l))
 		}
 	}
+	if m.SignerApplicationFee != 0 {
+		n += 1 + sovFragment(uint64(m.SignerApplicationFee))
+	}
+	if m.Threshold != 0 {
+		n += 1 + sovFragment(uint64(m.Threshold))
+	}
 	if m.FeePool != 0 {
 		n += 1 + sovFragment(uint64(m.FeePool))
 	}
-	if m.FeeBips != 0 {
-		n += 1 + sovFragment(uint64(m.FeeBips))
+	if m.FragmentFeeBips != 0 {
+		n += 1 + sovFragment(uint64(m.FragmentFeeBips))
+	}
+	l = len(m.ArbitraryData)
+	if l > 0 {
+		n += 1 + l + sovFragment(uint64(l))
 	}
 	if len(m.ReserveIds) > 0 {
 		l = 0
@@ -989,17 +1177,15 @@ func (m *FragmentSigners) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.FragmentID)
-	if l > 0 {
-		n += 1 + l + sovFragment(uint64(l))
+	if m.FragmentID != 0 {
+		n += 1 + sovFragment(uint64(m.FragmentID))
 	}
 	l = len(m.SignerAddress)
 	if l > 0 {
 		n += 1 + l + sovFragment(uint64(l))
 	}
-	l = len(m.SignerStatus)
-	if l > 0 {
-		n += 1 + l + sovFragment(uint64(l))
+	if m.SignerStatus {
+		n += 2
 	}
 	l = len(m.SignerBtcPublicKey)
 	if l > 0 {
@@ -1008,8 +1194,8 @@ func (m *FragmentSigners) Size() (n int) {
 	if m.SignerApplicationFee != 0 {
 		n += 1 + sovFragment(uint64(m.SignerApplicationFee))
 	}
-	if m.SignerFeeShare != 0 {
-		n += 1 + sovFragment(uint64(m.SignerFeeShare))
+	if m.SignerFeeBips != 0 {
+		n += 1 + sovFragment(uint64(m.SignerFeeBips))
 	}
 	return n
 }
@@ -1088,6 +1274,25 @@ func (m *MsgSignerApplication) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeeBips", wireType)
+			}
+			m.FeeBips = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FeeBips |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BtcPubKey", wireType)
 			}
@@ -1119,7 +1324,7 @@ func (m *MsgSignerApplication) Unmarshal(dAtA []byte) error {
 			}
 			m.BtcPubKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SignerAddress", wireType)
 			}
@@ -1272,9 +1477,9 @@ func (m *MsgAcceptSigners) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SignerAddresses", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SignerInfos", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1284,23 +1489,25 @@ func (m *MsgAcceptSigners) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthFragment
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthFragment
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SignerAddresses = string(dAtA[iNdEx:postIndex])
+			m.SignerInfos = append(m.SignerInfos, &SignerInfo{})
+			if err := m.SignerInfos[len(m.SignerInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -1384,6 +1591,107 @@ func (m *MsgAcceptSignersResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgAcceptSignersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipFragment(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthFragment
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SignerInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowFragment
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SignerInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SignerInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SignerAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFragment
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFragment
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SignerAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SignerFeeBips", wireType)
+			}
+			m.SignerFeeBips = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SignerFeeBips |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipFragment(dAtA[iNdEx:])
@@ -1506,10 +1814,10 @@ func (m *Fragment) Unmarshal(dAtA []byte) error {
 			m.JudgeAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field JudgeStatus", wireType)
 			}
-			var stringLen uint64
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1519,24 +1827,12 @@ func (m *Fragment) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthFragment
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthFragment
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.JudgeStatus = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
+			m.JudgeStatus = bool(v != 0)
 		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signers", wireType)
@@ -1573,6 +1869,44 @@ func (m *Fragment) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 6:
 			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SignerApplicationFee", wireType)
+			}
+			m.SignerApplicationFee = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SignerApplicationFee |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Threshold", wireType)
+			}
+			m.Threshold = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Threshold |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FeePool", wireType)
 			}
 			m.FeePool = 0
@@ -1590,11 +1924,11 @@ func (m *Fragment) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
+		case 9:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FeeBips", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FragmentFeeBips", wireType)
 			}
-			m.FeeBips = 0
+			m.FragmentFeeBips = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1604,12 +1938,44 @@ func (m *Fragment) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.FeeBips |= uint64(b&0x7F) << shift
+				m.FragmentFeeBips |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 8:
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ArbitraryData", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowFragment
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthFragment
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthFragment
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ArbitraryData = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
 			if wireType == 0 {
 				var v uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1729,17 +2095,17 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: fragmentSigners: wiretype end group for non-group")
+			return fmt.Errorf("proto: FragmentSigners: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: fragmentSigners: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: FragmentSigners: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FragmentID", wireType)
 			}
-			var stringLen uint64
+			m.FragmentID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1749,24 +2115,11 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.FragmentID |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthFragment
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthFragment
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.FragmentID = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SignerAddress", wireType)
@@ -1800,10 +2153,10 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 			m.SignerAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SignerStatus", wireType)
 			}
-			var stringLen uint64
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1813,24 +2166,12 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthFragment
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthFragment
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SignerStatus = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
+			m.SignerStatus = bool(v != 0)
 		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SignerBtcPublicKey", wireType)
@@ -1884,9 +2225,9 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 			}
 		case 6:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SignerFeeShare", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SignerFeeBips", wireType)
 			}
-			m.SignerFeeShare = 0
+			m.SignerFeeBips = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowFragment
@@ -1896,7 +2237,7 @@ func (m *FragmentSigners) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.SignerFeeShare |= uint32(b&0x7F) << shift
+				m.SignerFeeBips |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

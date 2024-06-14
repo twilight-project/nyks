@@ -29,7 +29,7 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		return nil, sdkerrors.Wrap(types.ErrJudgeValidatorNotFound, "Could not check judge validator inset")
 	}
 
-	// FOLLOWING DOES NOT CONTAIN ANY VALIDATION CHECK FOR THE SCRIPT - ITS KIND OF A PLACEHOLDER
+	// FOLLOWING DOES NOT CONTAIN ANY VALIDATION CHECK FOR THE SCRIPT - ITS A PLACEHOLDER
 	reserveScript, e2 := types.NewBtcScript(msg.ReserveScript)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
@@ -50,11 +50,11 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 	// get the given fragment Id and check if the fragment limit has been reached
 	fragment, found := k.VoltKeeper.GetFragment(ctx, msg.FragmentId)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrFragmentNotFound, fmt.Sprintf("fragment ID %d not found", msg.FragmentId))
+		return nil, sdkerrors.Wrapf(types.ErrFragmentNotFound, fmt.Sprintf("fragment ID %d not found", msg.FragmentId))
 	}
 
 	if len(fragment.ReserveIds) >= volttypes.MaxReservesPerFragment {
-		return nil, sdkerrors.Wrap(types.ErrMaxReservesPerFragmentExceeded, fmt.Sprintf("maximum reserves per fragment %d exceeded", volttypes.MaxReservesPerFragment))
+		return nil, sdkerrors.Wrapf(types.ErrMaxReservesPerFragmentExceeded, fmt.Sprintf("maximum reserves per fragment %d exceeded", volttypes.MaxReservesPerFragment))
 	}
 
 	// set an empty reserve mapping for the judge address
