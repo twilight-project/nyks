@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	volttypes "github.com/twilight-project/nyks/x/volt/types"
 )
 
 const TypeMsgBootstrapFragment = "bootstrap_fragment"
@@ -59,7 +60,7 @@ func (msg *MsgBootstrapFragment) ValidateBasic() error {
 	}
 
 	// Validate numOfSigners is greater than two
-	if msg.NumOfSigners == 2 {
+	if msg.NumOfSigners == volttypes.MinSignersPerFragment {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "number of signers must be greater than zero")
 	}
 

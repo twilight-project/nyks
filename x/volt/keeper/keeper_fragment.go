@@ -184,3 +184,27 @@ func (k Keeper) ChangeFragmentStatus(ctx sdk.Context, fragmentId uint64, newStat
 
 	return nil
 }
+
+// GetFragmentForJudgeAddress retrieves all fragments associated with a given judge address
+func (k Keeper) GetFragmentForJudgeAddress(ctx sdk.Context, judgeAddress string) ([]types.Fragment, error) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.FragmentKey))
+	defer iterator.Close()
+
+	var fragments []types.Fragment
+
+	for ; iterator.Valid(); iterator.Next() {
+		var fragment types.Fragment
+		k.cdc.MustUnmarshal(iterator.Value(), &fragment)
+
+		if fragment.JudgeAddress == judgeAddress {
+			fragments = append(fragments, fragment)
+		}
+	}
+
+	if len(fragments) == 0 {
+		return nil, sdkerrors.Wrapf(types.ErrFragmentNotFound, "no fragments found for judge address %s", judgeAddress)
+	}
+
+	return fragments, nil
+}

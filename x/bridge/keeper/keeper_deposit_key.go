@@ -65,6 +65,7 @@ func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress
 		SignerApplicationFee: signerApplicationFee,
 		ReserveAddress:       reserveAddress,
 		ReserveScript:        reserveScript,
+		FragmentFeeBips:      0,
 		ArbitraryData:        arbitraryData,
 		ValidatorAddress:     validatorAddress.String(),
 	}
@@ -94,6 +95,7 @@ func (k Keeper) GetJudgeAddressForValidatorAddress(ctx sdk.Context, validatorAdd
 			SignerApplicationFee: 0,
 			ReserveAddress:       "",
 			ReserveScript:        "",
+			FragmentFeeBips:      0,
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}
@@ -132,6 +134,7 @@ func (k Keeper) GetValidatorAddressForJudgeAddress(ctx sdk.Context, judgeAddress
 			SignerApplicationFee: 0,
 			ReserveAddress:       "",
 			ReserveScript:        "",
+			FragmentFeeBips:      0,
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}
