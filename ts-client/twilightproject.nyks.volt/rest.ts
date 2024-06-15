@@ -154,6 +154,8 @@ export interface VoltQueryClearingAccountResponse {
   ClearingAccount?: NyksvoltClearingAccount;
 }
 
+export type VoltQueryFragmentByIdResponse = object;
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
@@ -185,6 +187,13 @@ export interface VoltRefundTxAccountSnap {
 
   /** @format int64 */
   BtcDepositAddressIdentifier?: number;
+}
+
+export interface VoltSignerInfo {
+  signerAddress?: string;
+
+  /** @format int64 */
+  SignerFeeBips?: number;
 }
 
 export interface VoltWithdrawRequestSnap {
@@ -369,6 +378,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryClearingAccount = (twilightAddress: string, params: RequestParams = {}) =>
     this.request<VoltQueryClearingAccountResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/clearing_account/${twilightAddress}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryFragmentById
+   * @summary Queries a list of FragmentById items.
+   * @request GET:/twilight-project/nyks/volt/fragment_by_id/{fragmentId}
+   */
+  queryFragmentById = (fragmentId: number, params: RequestParams = {}) =>
+    this.request<VoltQueryFragmentByIdResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/fragment_by_id/${fragmentId}`,
       method: "GET",
       format: "json",
       ...params,

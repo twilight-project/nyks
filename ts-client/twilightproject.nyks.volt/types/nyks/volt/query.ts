@@ -79,6 +79,13 @@ export interface QueryReserveWithdrawPoolResponse {
   ReserveWithdrawPool: ReserveWithdrawPool | undefined;
 }
 
+export interface QueryFragmentByIdRequest {
+  fragmentId: number;
+}
+
+export interface QueryFragmentByIdResponse {
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -939,6 +946,92 @@ export const QueryReserveWithdrawPoolResponse = {
   },
 };
 
+function createBaseQueryFragmentByIdRequest(): QueryFragmentByIdRequest {
+  return { fragmentId: 0 };
+}
+
+export const QueryFragmentByIdRequest = {
+  encode(message: QueryFragmentByIdRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fragmentId !== 0) {
+      writer.uint32(8).int32(message.fragmentId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryFragmentByIdRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryFragmentByIdRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fragmentId = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryFragmentByIdRequest {
+    return { fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0 };
+  },
+
+  toJSON(message: QueryFragmentByIdRequest): unknown {
+    const obj: any = {};
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryFragmentByIdRequest>, I>>(object: I): QueryFragmentByIdRequest {
+    const message = createBaseQueryFragmentByIdRequest();
+    message.fragmentId = object.fragmentId ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryFragmentByIdResponse(): QueryFragmentByIdResponse {
+  return {};
+}
+
+export const QueryFragmentByIdResponse = {
+  encode(_: QueryFragmentByIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryFragmentByIdResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryFragmentByIdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryFragmentByIdResponse {
+    return {};
+  },
+
+  toJSON(_: QueryFragmentByIdResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryFragmentByIdResponse>, I>>(_: I): QueryFragmentByIdResponse {
+    const message = createBaseQueryFragmentByIdResponse();
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -959,6 +1052,8 @@ export interface Query {
   BtcWithdrawRequest(request: QueryBtcWithdrawRequestRequest): Promise<QueryBtcWithdrawRequestResponse>;
   /** Queries a list of ReserveWithdrawPool items. */
   ReserveWithdrawPool(request: QueryReserveWithdrawPoolRequest): Promise<QueryReserveWithdrawPoolResponse>;
+  /** Queries a list of FragmentById items. */
+  FragmentById(request: QueryFragmentByIdRequest): Promise<QueryFragmentByIdResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -973,6 +1068,7 @@ export class QueryClientImpl implements Query {
     this.RefundTxSnapshot = this.RefundTxSnapshot.bind(this);
     this.BtcWithdrawRequest = this.BtcWithdrawRequest.bind(this);
     this.ReserveWithdrawPool = this.ReserveWithdrawPool.bind(this);
+    this.FragmentById = this.FragmentById.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1022,6 +1118,12 @@ export class QueryClientImpl implements Query {
     const data = QueryReserveWithdrawPoolRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.volt.Query", "ReserveWithdrawPool", data);
     return promise.then((data) => QueryReserveWithdrawPoolResponse.decode(new _m0.Reader(data)));
+  }
+
+  FragmentById(request: QueryFragmentByIdRequest): Promise<QueryFragmentByIdResponse> {
+    const data = QueryFragmentByIdRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "FragmentById", data);
+    return promise.then((data) => QueryFragmentByIdResponse.decode(new _m0.Reader(data)));
   }
 }
 

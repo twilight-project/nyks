@@ -17,6 +17,8 @@ export interface EventRegisterReserveAddress {
 export interface EventBootstrapFragmentAddress {
   message: string;
   judgeAddress: string;
+  fragmentId: number;
+  reserveId: number;
   validatorAddress: string;
 }
 
@@ -212,7 +214,7 @@ export const EventRegisterReserveAddress = {
 };
 
 function createBaseEventBootstrapFragmentAddress(): EventBootstrapFragmentAddress {
-  return { message: "", judgeAddress: "", validatorAddress: "" };
+  return { message: "", judgeAddress: "", fragmentId: 0, reserveId: 0, validatorAddress: "" };
 }
 
 export const EventBootstrapFragmentAddress = {
@@ -223,8 +225,14 @@ export const EventBootstrapFragmentAddress = {
     if (message.judgeAddress !== "") {
       writer.uint32(18).string(message.judgeAddress);
     }
+    if (message.fragmentId !== 0) {
+      writer.uint32(24).uint64(message.fragmentId);
+    }
+    if (message.reserveId !== 0) {
+      writer.uint32(32).uint64(message.reserveId);
+    }
     if (message.validatorAddress !== "") {
-      writer.uint32(26).string(message.validatorAddress);
+      writer.uint32(42).string(message.validatorAddress);
     }
     return writer;
   },
@@ -243,6 +251,12 @@ export const EventBootstrapFragmentAddress = {
           message.judgeAddress = reader.string();
           break;
         case 3:
+          message.fragmentId = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.reserveId = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
           message.validatorAddress = reader.string();
           break;
         default:
@@ -257,6 +271,8 @@ export const EventBootstrapFragmentAddress = {
     return {
       message: isSet(object.message) ? String(object.message) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+      fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
+      reserveId: isSet(object.reserveId) ? Number(object.reserveId) : 0,
       validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
     };
   },
@@ -265,6 +281,8 @@ export const EventBootstrapFragmentAddress = {
     const obj: any = {};
     message.message !== undefined && (obj.message = message.message);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
+    message.reserveId !== undefined && (obj.reserveId = Math.round(message.reserveId));
     message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
@@ -275,6 +293,8 @@ export const EventBootstrapFragmentAddress = {
     const message = createBaseEventBootstrapFragmentAddress();
     message.message = object.message ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
+    message.fragmentId = object.fragmentId ?? 0;
+    message.reserveId = object.reserveId ?? 0;
     message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },

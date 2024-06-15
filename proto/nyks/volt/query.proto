@@ -4,11 +4,13 @@ package twilightproject.nyks.volt;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+
 //import "cosmos/base/query/v1beta1/pagination.proto";
 import "nyks/volt/params.proto";
 import "nyks/volt/clearing.proto";
 import "nyks/volt/reserve.proto";
 import "nyks/volt/withdraw.proto";
+import "nyks/volt/fragment.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -66,6 +68,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/reserve_withdraw_pool/{reserveId}";
   
   }
+  
+  // Queries a list of FragmentById items.
+  rpc FragmentById (QueryFragmentByIdRequest) returns (QueryFragmentByIdResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/fragment_by_id/{fragmentId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -120,9 +128,9 @@ message QueryRefundTxSnapshotResponse {
 
 message QueryBtcWithdrawRequestRequest {
   string twilightAddress = 1;
-  uint64 reserveId      = 2;
-  string btcAddress     = 3;
-  uint64 withdrawAmount = 4;
+  uint64 reserveId       = 2;
+  string btcAddress      = 3;
+  uint64 withdrawAmount  = 4;
 }
 
 message QueryBtcWithdrawRequestResponse {
@@ -135,5 +143,13 @@ message QueryReserveWithdrawPoolRequest {
 
 message QueryReserveWithdrawPoolResponse {
   ReserveWithdrawPool ReserveWithdrawPool = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryFragmentByIdRequest {
+  uint64 fragmentId = 1;
+}
+
+message QueryFragmentByIdResponse {
+  Fragment Fragment = 1 [(gogoproto.nullable) = false];
 }
 

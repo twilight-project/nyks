@@ -7,8 +7,8 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
-import { MsgSignerApplication } from "./types/nyks/volt/tx";
-import { MsgAcceptSigners } from "./types/nyks/volt/tx";
+import { MsgSignerApplication } from "./types/nyks/volt/fragment";
+import { MsgAcceptSigners } from "./types/nyks/volt/fragment";
 
 import { IndividualTwilightReserveAccountBalance as typeIndividualTwilightReserveAccountBalance} from "./types"
 import { ClearingAccount as typeClearingAccount} from "./types"
@@ -17,6 +17,10 @@ import { RefundTxSnapshot as typeRefundTxSnapshot} from "./types"
 import { BtcDepositAddress as typeBtcDepositAddress} from "./types"
 import { EventReserveWithdrawSnapshot as typeEventReserveWithdrawSnapshot} from "./types"
 import { EventRefundTxSnapshot as typeEventRefundTxSnapshot} from "./types"
+import { EventAcceptSigners as typeEventAcceptSigners} from "./types"
+import { SignerInfo as typeSignerInfo} from "./types"
+import { Fragment as typeFragment} from "./types"
+import { FragmentSigners as typeFragmentSigners} from "./types"
 import { Params as typeParams} from "./types"
 import { BtcReserve as typeBtcReserve} from "./types"
 import { BtcWithdrawRequestInternal as typeBtcWithdrawRequestInternal} from "./types"
@@ -152,6 +156,10 @@ class SDKModule {
 						BtcDepositAddress: getStructure(typeBtcDepositAddress.fromPartial({})),
 						EventReserveWithdrawSnapshot: getStructure(typeEventReserveWithdrawSnapshot.fromPartial({})),
 						EventRefundTxSnapshot: getStructure(typeEventRefundTxSnapshot.fromPartial({})),
+						EventAcceptSigners: getStructure(typeEventAcceptSigners.fromPartial({})),
+						SignerInfo: getStructure(typeSignerInfo.fromPartial({})),
+						Fragment: getStructure(typeFragment.fromPartial({})),
+						FragmentSigners: getStructure(typeFragmentSigners.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						BtcReserve: getStructure(typeBtcReserve.fromPartial({})),
 						BtcWithdrawRequestInternal: getStructure(typeBtcWithdrawRequestInternal.fromPartial({})),

@@ -7,6 +7,10 @@ import { RefundTxSnapshot } from "twilight-project-nyks-client-ts/twilightprojec
 import { BtcDepositAddress } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { EventReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { EventRefundTxSnapshot } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { EventAcceptSigners } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { SignerInfo } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { Fragment } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
+import { FragmentSigners } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { Params } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { BtcReserve } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 import { BtcWithdrawRequestInternal } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
@@ -16,7 +20,7 @@ import { ReserveWithdrawSnapshot } from "twilight-project-nyks-client-ts/twiligh
 import { NewSweepProposalReceivedInternal } from "twilight-project-nyks-client-ts/twilightproject.nyks.volt/types"
 
 
-export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, RefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, ReserveWithdrawSnapshot, NewSweepProposalReceivedInternal };
+export { IndividualTwilightReserveAccountBalance, ClearingAccount, RefundTxAccountSnap, RefundTxSnapshot, BtcDepositAddress, EventReserveWithdrawSnapshot, EventRefundTxSnapshot, EventAcceptSigners, SignerInfo, Fragment, FragmentSigners, Params, BtcReserve, BtcWithdrawRequestInternal, ReserveWithdrawPool, WithdrawRequestSnap, ReserveWithdrawSnapshot, NewSweepProposalReceivedInternal };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -55,6 +59,7 @@ const getDefaultState = () => {
 				RefundTxSnapshot: {},
 				BtcWithdrawRequest: {},
 				ReserveWithdrawPool: {},
+				FragmentById: {},
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
@@ -64,6 +69,10 @@ const getDefaultState = () => {
 						BtcDepositAddress: getStructure(BtcDepositAddress.fromPartial({})),
 						EventReserveWithdrawSnapshot: getStructure(EventReserveWithdrawSnapshot.fromPartial({})),
 						EventRefundTxSnapshot: getStructure(EventRefundTxSnapshot.fromPartial({})),
+						EventAcceptSigners: getStructure(EventAcceptSigners.fromPartial({})),
+						SignerInfo: getStructure(SignerInfo.fromPartial({})),
+						Fragment: getStructure(Fragment.fromPartial({})),
+						FragmentSigners: getStructure(FragmentSigners.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						BtcReserve: getStructure(BtcReserve.fromPartial({})),
 						BtcWithdrawRequestInternal: getStructure(BtcWithdrawRequestInternal.fromPartial({})),
@@ -146,6 +155,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.ReserveWithdrawPool[JSON.stringify(params)] ?? {}
+		},
+				getFragmentById: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.FragmentById[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -356,6 +371,28 @@ export default {
 				return getters['getReserveWithdrawPool']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryReserveWithdrawPool API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryFragmentById({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.queryFragmentById( key.fragmentId)).data
+				
+					
+				commit('QUERY', { query: 'FragmentById', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryFragmentById', payload: { options: { all }, params: {...key},query }})
+				return getters['getFragmentById']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryFragmentById API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

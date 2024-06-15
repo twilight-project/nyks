@@ -208,3 +208,38 @@ func (k Keeper) GetFragmentForJudgeAddress(ctx sdk.Context, judgeAddress string)
 
 	return fragments, nil
 }
+
+// GetFragmentById retrieves a fragment from the store by its ID
+func (k Keeper) GetFragmentById(ctx sdk.Context, fragmentId uint64) (*types.Fragment, bool) {
+	store := ctx.KVStore(k.storeKey)
+	fragmentKey := types.GetFragmentKey(fragmentId)
+	bz := store.Get(fragmentKey)
+	if bz == nil {
+		return nil, true
+	}
+
+	var fragment types.Fragment
+	k.cdc.MustUnmarshal(bz, &fragment)
+	return &fragment, false
+}
+
+// GetAllFragments returns all fragments in the store
+func (k Keeper) GetAllFragments(ctx sdk.Context) ([]types.Fragment, error) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.FragmentKey))
+	defer iterator.Close()
+
+	var fragments []types.Fragment
+
+	for ; iterator.Valid(); iterator.Next() {
+		var fragment types.Fragment
+		k.cdc.MustUnmarshal(iterator.Value(), &fragment)
+		fragments = append(fragments, fragment)
+	}
+
+	if len(fragments) == 0 {
+		return nil, sdkerrors.Wrap(types.ErrFragmentNotFound, "no fragments found")
+	}
+
+	return fragments, nil
+}

@@ -190,6 +190,7 @@ func (k Keeper) IterateRegisteredJudges(ctx sdk.Context, cb func([]byte, types.M
 			SignerApplicationFee: 0,
 			ReserveAddress:       "",
 			ReserveScript:        "",
+			FragmentFeeBips:      0,
 			ArbitraryData:        "",
 			ValidatorAddress:     "",
 		}

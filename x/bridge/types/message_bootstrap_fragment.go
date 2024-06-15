@@ -55,12 +55,12 @@ func (msg *MsgBootstrapFragment) ValidateBasic() error {
 	}
 
 	// Validate validator address
-	if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address (%s)", err)
-	}
+	// if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
+	// 	return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address (%s)", err)
+	// }
 
 	// Validate numOfSigners is greater than two
-	if msg.NumOfSigners == volttypes.MinSignersPerFragment {
+	if msg.NumOfSigners < volttypes.MinSignersPerFragment {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "number of signers must be greater than zero")
 	}
 

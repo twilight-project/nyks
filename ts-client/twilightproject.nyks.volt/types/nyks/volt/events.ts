@@ -16,6 +16,12 @@ export interface EventRefundTxSnapshot {
   roundId: number;
 }
 
+export interface EventAcceptSigners {
+  message: string;
+  fragmentId: number;
+  judgeAddress: string;
+}
+
 function createBaseEventReserveWithdrawSnapshot(): EventReserveWithdrawSnapshot {
   return { message: "", reserveId: 0, roundId: 0 };
 }
@@ -146,6 +152,73 @@ export const EventRefundTxSnapshot = {
     message.message = object.message ?? "";
     message.reserveId = object.reserveId ?? 0;
     message.roundId = object.roundId ?? 0;
+    return message;
+  },
+};
+
+function createBaseEventAcceptSigners(): EventAcceptSigners {
+  return { message: "", fragmentId: 0, judgeAddress: "" };
+}
+
+export const EventAcceptSigners = {
+  encode(message: EventAcceptSigners, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.message !== "") {
+      writer.uint32(10).string(message.message);
+    }
+    if (message.fragmentId !== 0) {
+      writer.uint32(16).uint64(message.fragmentId);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(34).string(message.judgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventAcceptSigners {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventAcceptSigners();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.message = reader.string();
+          break;
+        case 2:
+          message.fragmentId = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.judgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EventAcceptSigners {
+    return {
+      message: isSet(object.message) ? String(object.message) : "",
+      fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
+  },
+
+  toJSON(message: EventAcceptSigners): unknown {
+    const obj: any = {};
+    message.message !== undefined && (obj.message = message.message);
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EventAcceptSigners>, I>>(object: I): EventAcceptSigners {
+    const message = createBaseEventAcceptSigners();
+    message.message = object.message ?? "";
+    message.fragmentId = object.fragmentId ?? 0;
+    message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
 };

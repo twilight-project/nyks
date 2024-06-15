@@ -29797,6 +29797,93 @@ paths:
           type: string
       tags:
         - Query
+  /twilight-project/nyks/volt/fragment_by_id/{fragmentId}:
+    get:
+      summary: Queries a list of FragmentById items.
+      operationId: TwilightprojectNyksVoltFragmentById
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Fragment:
+                type: object
+                properties:
+                  FragmentId:
+                    type: string
+                    format: uint64
+                  FragmentStatus:
+                    type: boolean
+                  JudgeAddress:
+                    type: string
+                  JudgeStatus:
+                    type: boolean
+                  Signers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        FragmentID:
+                          type: string
+                          format: uint64
+                        SignerAddress:
+                          type: string
+                        SignerStatus:
+                          type: boolean
+                        SignerBtcPublicKey:
+                          type: string
+                        SignerApplicationFee:
+                          type: integer
+                          format: int64
+                        SignerFeeBips:
+                          type: integer
+                          format: int64
+                  SignerApplicationFee:
+                    type: string
+                    format: uint64
+                  Threshold:
+                    type: integer
+                    format: int64
+                  FeePool:
+                    type: string
+                    format: uint64
+                  FragmentFeeBips:
+                    type: integer
+                    format: int64
+                  arbitraryData:
+                    type: string
+                  ReserveIds:
+                    type: array
+                    items:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: fragmentId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /twilight-project/nyks/volt/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -50218,6 +50305,75 @@ definitions:
     title: >-
       ClearingAccount is used to keep a mapping of how a user's addresses and
       its reserve account balances
+  twilightproject.nyks.volt.Fragment:
+    type: object
+    properties:
+      FragmentId:
+        type: string
+        format: uint64
+      FragmentStatus:
+        type: boolean
+      JudgeAddress:
+        type: string
+      JudgeStatus:
+        type: boolean
+      Signers:
+        type: array
+        items:
+          type: object
+          properties:
+            FragmentID:
+              type: string
+              format: uint64
+            SignerAddress:
+              type: string
+            SignerStatus:
+              type: boolean
+            SignerBtcPublicKey:
+              type: string
+            SignerApplicationFee:
+              type: integer
+              format: int64
+            SignerFeeBips:
+              type: integer
+              format: int64
+      SignerApplicationFee:
+        type: string
+        format: uint64
+      Threshold:
+        type: integer
+        format: int64
+      FeePool:
+        type: string
+        format: uint64
+      FragmentFeeBips:
+        type: integer
+        format: int64
+      arbitraryData:
+        type: string
+      ReserveIds:
+        type: array
+        items:
+          type: string
+          format: uint64
+  twilightproject.nyks.volt.FragmentSigners:
+    type: object
+    properties:
+      FragmentID:
+        type: string
+        format: uint64
+      SignerAddress:
+        type: string
+      SignerStatus:
+        type: boolean
+      SignerBtcPublicKey:
+        type: string
+      SignerApplicationFee:
+        type: integer
+        format: int64
+      SignerFeeBips:
+        type: integer
+        format: int64
   twilightproject.nyks.volt.IndividualTwilightReserveAccountBalance:
     type: object
     properties:
@@ -50335,6 +50491,60 @@ definitions:
         title: >-
           ClearingAccount is used to keep a mapping of how a user's addresses
           and its reserve account balances
+  twilightproject.nyks.volt.QueryFragmentByIdResponse:
+    type: object
+    properties:
+      Fragment:
+        type: object
+        properties:
+          FragmentId:
+            type: string
+            format: uint64
+          FragmentStatus:
+            type: boolean
+          JudgeAddress:
+            type: string
+          JudgeStatus:
+            type: boolean
+          Signers:
+            type: array
+            items:
+              type: object
+              properties:
+                FragmentID:
+                  type: string
+                  format: uint64
+                SignerAddress:
+                  type: string
+                SignerStatus:
+                  type: boolean
+                SignerBtcPublicKey:
+                  type: string
+                SignerApplicationFee:
+                  type: integer
+                  format: int64
+                SignerFeeBips:
+                  type: integer
+                  format: int64
+          SignerApplicationFee:
+            type: string
+            format: uint64
+          Threshold:
+            type: integer
+            format: int64
+          FeePool:
+            type: string
+            format: uint64
+          FragmentFeeBips:
+            type: integer
+            format: int64
+          arbitraryData:
+            type: string
+          ReserveIds:
+            type: array
+            items:
+              type: string
+              format: uint64
   twilightproject.nyks.volt.QueryParamsResponse:
     type: object
     properties:

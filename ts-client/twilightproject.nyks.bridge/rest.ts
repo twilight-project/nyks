@@ -22,11 +22,18 @@ export interface BridgeMsgBootstrapFragment {
   signerApplicationFee?: string;
   reserveAddress?: string;
   reserveScript?: string;
+
+  /** @format int64 */
+  fragmentFeeBips?: number;
   arbitraryData?: string;
   validatorAddress?: string;
 }
 
-export type BridgeMsgBootstrapFragmentResponse = object;
+export interface BridgeMsgBootstrapFragmentResponse {
+  fragmentId?: string;
+  reserveId?: string;
+  judgeAddress?: string;
+}
 
 export interface BridgeMsgBroadcastTxRefund {
   /** @format uint64 */
@@ -86,6 +93,8 @@ export type BridgeMsgProposeSweepAddressResponse = object;
 export type BridgeMsgRegisterBtcDepositAddressResponse = object;
 
 export interface BridgeMsgRegisterReserveAddress {
+  /** @format uint64 */
+  fragmentId?: string;
   reserveScript?: string;
   reserveAddress?: string;
   judgeAddress?: string;

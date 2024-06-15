@@ -1,13 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { BtcReserve } from "../volt/reserve";
 
-export const protobufPackage = "twilightproject.nyks.fragment";
+export const protobufPackage = "twilightproject.nyks.volt";
 
 export interface MsgSignerApplication {
   fragmentId: number;
   applicationFee: number;
+  feeBips: number;
   btcPubKey: string;
   signerAddress: string;
 }
@@ -17,43 +17,55 @@ export interface MsgSignerApplicationResponse {
 
 export interface MsgAcceptSigners {
   fragmentId: number;
-  signerAddresses: string;
+  signerInfos: SignerInfo[];
   judgeAddress: string;
 }
 
 export interface MsgAcceptSignersResponse {
 }
 
-export interface Fragment {
-  FragmentID: string;
-  FragmentStatus: boolean;
-  JudgeAddress: string;
-  JudgeStatus: string;
-  Signers: fragmentSigners[];
-  FeePool: number;
-  FeeBips: number;
-  Reserves: BtcReserve[];
+export interface SignerInfo {
+  signerAddress: string;
+  SignerFeeBips: number;
 }
 
-export interface fragmentSigners {
-  fragmentID: string;
-  signerAddress: string;
-  signerStatus: string;
-  signerBtcPublicKey: string;
-  signerApplicationFee: number;
+export interface Fragment {
+  FragmentId: number;
+  FragmentStatus: boolean;
+  JudgeAddress: string;
+  JudgeStatus: boolean;
+  Signers: FragmentSigners[];
+  SignerApplicationFee: number;
+  Threshold: number;
+  FeePool: number;
+  FragmentFeeBips: number;
+  arbitraryData: string;
+  ReserveIds: number[];
+}
+
+export interface FragmentSigners {
+  FragmentID: number;
+  SignerAddress: string;
+  SignerStatus: boolean;
+  SignerBtcPublicKey: string;
+  SignerApplicationFee: number;
+  SignerFeeBips: number;
 }
 
 function createBaseMsgSignerApplication(): MsgSignerApplication {
-  return { fragmentId: 0, applicationFee: 0, btcPubKey: "", signerAddress: "" };
+  return { fragmentId: 0, applicationFee: 0, feeBips: 0, btcPubKey: "", signerAddress: "" };
 }
 
 export const MsgSignerApplication = {
   encode(message: MsgSignerApplication, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.fragmentId !== 0) {
-      writer.uint32(16).uint64(message.fragmentId);
+      writer.uint32(8).uint64(message.fragmentId);
     }
     if (message.applicationFee !== 0) {
-      writer.uint32(24).uint64(message.applicationFee);
+      writer.uint32(16).uint64(message.applicationFee);
+    }
+    if (message.feeBips !== 0) {
+      writer.uint32(24).uint64(message.feeBips);
     }
     if (message.btcPubKey !== "") {
       writer.uint32(34).string(message.btcPubKey);
@@ -71,11 +83,14 @@ export const MsgSignerApplication = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 2:
+        case 1:
           message.fragmentId = longToNumber(reader.uint64() as Long);
           break;
-        case 3:
+        case 2:
           message.applicationFee = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.feeBips = longToNumber(reader.uint64() as Long);
           break;
         case 4:
           message.btcPubKey = reader.string();
@@ -95,6 +110,7 @@ export const MsgSignerApplication = {
     return {
       fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
       applicationFee: isSet(object.applicationFee) ? Number(object.applicationFee) : 0,
+      feeBips: isSet(object.feeBips) ? Number(object.feeBips) : 0,
       btcPubKey: isSet(object.btcPubKey) ? String(object.btcPubKey) : "",
       signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
     };
@@ -104,6 +120,7 @@ export const MsgSignerApplication = {
     const obj: any = {};
     message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
     message.applicationFee !== undefined && (obj.applicationFee = Math.round(message.applicationFee));
+    message.feeBips !== undefined && (obj.feeBips = Math.round(message.feeBips));
     message.btcPubKey !== undefined && (obj.btcPubKey = message.btcPubKey);
     message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
     return obj;
@@ -113,6 +130,7 @@ export const MsgSignerApplication = {
     const message = createBaseMsgSignerApplication();
     message.fragmentId = object.fragmentId ?? 0;
     message.applicationFee = object.applicationFee ?? 0;
+    message.feeBips = object.feeBips ?? 0;
     message.btcPubKey = object.btcPubKey ?? "";
     message.signerAddress = object.signerAddress ?? "";
     return message;
@@ -159,19 +177,19 @@ export const MsgSignerApplicationResponse = {
 };
 
 function createBaseMsgAcceptSigners(): MsgAcceptSigners {
-  return { fragmentId: 0, signerAddresses: "", judgeAddress: "" };
+  return { fragmentId: 0, signerInfos: [], judgeAddress: "" };
 }
 
 export const MsgAcceptSigners = {
   encode(message: MsgAcceptSigners, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.fragmentId !== 0) {
-      writer.uint32(16).int32(message.fragmentId);
+      writer.uint32(8).uint64(message.fragmentId);
     }
-    if (message.signerAddresses !== "") {
-      writer.uint32(26).string(message.signerAddresses);
+    for (const v of message.signerInfos) {
+      SignerInfo.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(34).string(message.judgeAddress);
+      writer.uint32(26).string(message.judgeAddress);
     }
     return writer;
   },
@@ -183,13 +201,13 @@ export const MsgAcceptSigners = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.fragmentId = longToNumber(reader.uint64() as Long);
+          break;
         case 2:
-          message.fragmentId = reader.int32();
+          message.signerInfos.push(SignerInfo.decode(reader, reader.uint32()));
           break;
         case 3:
-          message.signerAddresses = reader.string();
-          break;
-        case 4:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -203,7 +221,7 @@ export const MsgAcceptSigners = {
   fromJSON(object: any): MsgAcceptSigners {
     return {
       fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
-      signerAddresses: isSet(object.signerAddresses) ? String(object.signerAddresses) : "",
+      signerInfos: Array.isArray(object?.signerInfos) ? object.signerInfos.map((e: any) => SignerInfo.fromJSON(e)) : [],
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
     };
   },
@@ -211,7 +229,11 @@ export const MsgAcceptSigners = {
   toJSON(message: MsgAcceptSigners): unknown {
     const obj: any = {};
     message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
-    message.signerAddresses !== undefined && (obj.signerAddresses = message.signerAddresses);
+    if (message.signerInfos) {
+      obj.signerInfos = message.signerInfos.map((e) => e ? SignerInfo.toJSON(e) : undefined);
+    } else {
+      obj.signerInfos = [];
+    }
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
   },
@@ -219,7 +241,7 @@ export const MsgAcceptSigners = {
   fromPartial<I extends Exact<DeepPartial<MsgAcceptSigners>, I>>(object: I): MsgAcceptSigners {
     const message = createBaseMsgAcceptSigners();
     message.fragmentId = object.fragmentId ?? 0;
-    message.signerAddresses = object.signerAddresses ?? "";
+    message.signerInfos = object.signerInfos?.map((e) => SignerInfo.fromPartial(e)) || [];
     message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
@@ -264,23 +286,84 @@ export const MsgAcceptSignersResponse = {
   },
 };
 
+function createBaseSignerInfo(): SignerInfo {
+  return { signerAddress: "", SignerFeeBips: 0 };
+}
+
+export const SignerInfo = {
+  encode(message: SignerInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.signerAddress !== "") {
+      writer.uint32(10).string(message.signerAddress);
+    }
+    if (message.SignerFeeBips !== 0) {
+      writer.uint32(16).uint32(message.SignerFeeBips);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SignerInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSignerInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signerAddress = reader.string();
+          break;
+        case 2:
+          message.SignerFeeBips = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SignerInfo {
+    return {
+      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
+      SignerFeeBips: isSet(object.SignerFeeBips) ? Number(object.SignerFeeBips) : 0,
+    };
+  },
+
+  toJSON(message: SignerInfo): unknown {
+    const obj: any = {};
+    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
+    message.SignerFeeBips !== undefined && (obj.SignerFeeBips = Math.round(message.SignerFeeBips));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SignerInfo>, I>>(object: I): SignerInfo {
+    const message = createBaseSignerInfo();
+    message.signerAddress = object.signerAddress ?? "";
+    message.SignerFeeBips = object.SignerFeeBips ?? 0;
+    return message;
+  },
+};
+
 function createBaseFragment(): Fragment {
   return {
-    FragmentID: "",
+    FragmentId: 0,
     FragmentStatus: false,
     JudgeAddress: "",
-    JudgeStatus: "",
+    JudgeStatus: false,
     Signers: [],
+    SignerApplicationFee: 0,
+    Threshold: 0,
     FeePool: 0,
-    FeeBips: 0,
-    Reserves: [],
+    FragmentFeeBips: 0,
+    arbitraryData: "",
+    ReserveIds: [],
   };
 }
 
 export const Fragment = {
   encode(message: Fragment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.FragmentID !== "") {
-      writer.uint32(10).string(message.FragmentID);
+    if (message.FragmentId !== 0) {
+      writer.uint32(8).uint64(message.FragmentId);
     }
     if (message.FragmentStatus === true) {
       writer.uint32(16).bool(message.FragmentStatus);
@@ -288,21 +371,32 @@ export const Fragment = {
     if (message.JudgeAddress !== "") {
       writer.uint32(26).string(message.JudgeAddress);
     }
-    if (message.JudgeStatus !== "") {
-      writer.uint32(34).string(message.JudgeStatus);
+    if (message.JudgeStatus === true) {
+      writer.uint32(32).bool(message.JudgeStatus);
     }
     for (const v of message.Signers) {
-      fragmentSigners.encode(v!, writer.uint32(42).fork()).ldelim();
+      FragmentSigners.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.SignerApplicationFee !== 0) {
+      writer.uint32(48).uint64(message.SignerApplicationFee);
+    }
+    if (message.Threshold !== 0) {
+      writer.uint32(56).uint32(message.Threshold);
     }
     if (message.FeePool !== 0) {
-      writer.uint32(48).uint64(message.FeePool);
+      writer.uint32(64).uint64(message.FeePool);
     }
-    if (message.FeeBips !== 0) {
-      writer.uint32(56).uint64(message.FeeBips);
+    if (message.FragmentFeeBips !== 0) {
+      writer.uint32(72).uint32(message.FragmentFeeBips);
     }
-    for (const v of message.Reserves) {
-      BtcReserve.encode(v!, writer.uint32(66).fork()).ldelim();
+    if (message.arbitraryData !== "") {
+      writer.uint32(82).string(message.arbitraryData);
     }
+    writer.uint32(90).fork();
+    for (const v of message.ReserveIds) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -314,7 +408,7 @@ export const Fragment = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.FragmentID = reader.string();
+          message.FragmentId = longToNumber(reader.uint64() as Long);
           break;
         case 2:
           message.FragmentStatus = reader.bool();
@@ -323,19 +417,35 @@ export const Fragment = {
           message.JudgeAddress = reader.string();
           break;
         case 4:
-          message.JudgeStatus = reader.string();
+          message.JudgeStatus = reader.bool();
           break;
         case 5:
-          message.Signers.push(fragmentSigners.decode(reader, reader.uint32()));
+          message.Signers.push(FragmentSigners.decode(reader, reader.uint32()));
           break;
         case 6:
-          message.FeePool = longToNumber(reader.uint64() as Long);
+          message.SignerApplicationFee = longToNumber(reader.uint64() as Long);
           break;
         case 7:
-          message.FeeBips = longToNumber(reader.uint64() as Long);
+          message.Threshold = reader.uint32();
           break;
         case 8:
-          message.Reserves.push(BtcReserve.decode(reader, reader.uint32()));
+          message.FeePool = longToNumber(reader.uint64() as Long);
+          break;
+        case 9:
+          message.FragmentFeeBips = reader.uint32();
+          break;
+        case 10:
+          message.arbitraryData = reader.string();
+          break;
+        case 11:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.ReserveIds.push(longToNumber(reader.uint64() as Long));
+            }
+          } else {
+            message.ReserveIds.push(longToNumber(reader.uint64() as Long));
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -347,97 +457,119 @@ export const Fragment = {
 
   fromJSON(object: any): Fragment {
     return {
-      FragmentID: isSet(object.FragmentID) ? String(object.FragmentID) : "",
+      FragmentId: isSet(object.FragmentId) ? Number(object.FragmentId) : 0,
       FragmentStatus: isSet(object.FragmentStatus) ? Boolean(object.FragmentStatus) : false,
       JudgeAddress: isSet(object.JudgeAddress) ? String(object.JudgeAddress) : "",
-      JudgeStatus: isSet(object.JudgeStatus) ? String(object.JudgeStatus) : "",
-      Signers: Array.isArray(object?.Signers) ? object.Signers.map((e: any) => fragmentSigners.fromJSON(e)) : [],
+      JudgeStatus: isSet(object.JudgeStatus) ? Boolean(object.JudgeStatus) : false,
+      Signers: Array.isArray(object?.Signers) ? object.Signers.map((e: any) => FragmentSigners.fromJSON(e)) : [],
+      SignerApplicationFee: isSet(object.SignerApplicationFee) ? Number(object.SignerApplicationFee) : 0,
+      Threshold: isSet(object.Threshold) ? Number(object.Threshold) : 0,
       FeePool: isSet(object.FeePool) ? Number(object.FeePool) : 0,
-      FeeBips: isSet(object.FeeBips) ? Number(object.FeeBips) : 0,
-      Reserves: Array.isArray(object?.Reserves) ? object.Reserves.map((e: any) => BtcReserve.fromJSON(e)) : [],
+      FragmentFeeBips: isSet(object.FragmentFeeBips) ? Number(object.FragmentFeeBips) : 0,
+      arbitraryData: isSet(object.arbitraryData) ? String(object.arbitraryData) : "",
+      ReserveIds: Array.isArray(object?.ReserveIds) ? object.ReserveIds.map((e: any) => Number(e)) : [],
     };
   },
 
   toJSON(message: Fragment): unknown {
     const obj: any = {};
-    message.FragmentID !== undefined && (obj.FragmentID = message.FragmentID);
+    message.FragmentId !== undefined && (obj.FragmentId = Math.round(message.FragmentId));
     message.FragmentStatus !== undefined && (obj.FragmentStatus = message.FragmentStatus);
     message.JudgeAddress !== undefined && (obj.JudgeAddress = message.JudgeAddress);
     message.JudgeStatus !== undefined && (obj.JudgeStatus = message.JudgeStatus);
     if (message.Signers) {
-      obj.Signers = message.Signers.map((e) => e ? fragmentSigners.toJSON(e) : undefined);
+      obj.Signers = message.Signers.map((e) => e ? FragmentSigners.toJSON(e) : undefined);
     } else {
       obj.Signers = [];
     }
+    message.SignerApplicationFee !== undefined && (obj.SignerApplicationFee = Math.round(message.SignerApplicationFee));
+    message.Threshold !== undefined && (obj.Threshold = Math.round(message.Threshold));
     message.FeePool !== undefined && (obj.FeePool = Math.round(message.FeePool));
-    message.FeeBips !== undefined && (obj.FeeBips = Math.round(message.FeeBips));
-    if (message.Reserves) {
-      obj.Reserves = message.Reserves.map((e) => e ? BtcReserve.toJSON(e) : undefined);
+    message.FragmentFeeBips !== undefined && (obj.FragmentFeeBips = Math.round(message.FragmentFeeBips));
+    message.arbitraryData !== undefined && (obj.arbitraryData = message.arbitraryData);
+    if (message.ReserveIds) {
+      obj.ReserveIds = message.ReserveIds.map((e) => Math.round(e));
     } else {
-      obj.Reserves = [];
+      obj.ReserveIds = [];
     }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Fragment>, I>>(object: I): Fragment {
     const message = createBaseFragment();
-    message.FragmentID = object.FragmentID ?? "";
+    message.FragmentId = object.FragmentId ?? 0;
     message.FragmentStatus = object.FragmentStatus ?? false;
     message.JudgeAddress = object.JudgeAddress ?? "";
-    message.JudgeStatus = object.JudgeStatus ?? "";
-    message.Signers = object.Signers?.map((e) => fragmentSigners.fromPartial(e)) || [];
+    message.JudgeStatus = object.JudgeStatus ?? false;
+    message.Signers = object.Signers?.map((e) => FragmentSigners.fromPartial(e)) || [];
+    message.SignerApplicationFee = object.SignerApplicationFee ?? 0;
+    message.Threshold = object.Threshold ?? 0;
     message.FeePool = object.FeePool ?? 0;
-    message.FeeBips = object.FeeBips ?? 0;
-    message.Reserves = object.Reserves?.map((e) => BtcReserve.fromPartial(e)) || [];
+    message.FragmentFeeBips = object.FragmentFeeBips ?? 0;
+    message.arbitraryData = object.arbitraryData ?? "";
+    message.ReserveIds = object.ReserveIds?.map((e) => e) || [];
     return message;
   },
 };
 
-function createBasefragmentSigners(): fragmentSigners {
-  return { fragmentID: "", signerAddress: "", signerStatus: "", signerBtcPublicKey: "", signerApplicationFee: 0 };
+function createBaseFragmentSigners(): FragmentSigners {
+  return {
+    FragmentID: 0,
+    SignerAddress: "",
+    SignerStatus: false,
+    SignerBtcPublicKey: "",
+    SignerApplicationFee: 0,
+    SignerFeeBips: 0,
+  };
 }
 
-export const fragmentSigners = {
-  encode(message: fragmentSigners, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.fragmentID !== "") {
-      writer.uint32(10).string(message.fragmentID);
+export const FragmentSigners = {
+  encode(message: FragmentSigners, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.FragmentID !== 0) {
+      writer.uint32(8).uint64(message.FragmentID);
     }
-    if (message.signerAddress !== "") {
-      writer.uint32(18).string(message.signerAddress);
+    if (message.SignerAddress !== "") {
+      writer.uint32(18).string(message.SignerAddress);
     }
-    if (message.signerStatus !== "") {
-      writer.uint32(26).string(message.signerStatus);
+    if (message.SignerStatus === true) {
+      writer.uint32(24).bool(message.SignerStatus);
     }
-    if (message.signerBtcPublicKey !== "") {
-      writer.uint32(34).string(message.signerBtcPublicKey);
+    if (message.SignerBtcPublicKey !== "") {
+      writer.uint32(34).string(message.SignerBtcPublicKey);
     }
-    if (message.signerApplicationFee !== 0) {
-      writer.uint32(40).uint32(message.signerApplicationFee);
+    if (message.SignerApplicationFee !== 0) {
+      writer.uint32(40).uint32(message.SignerApplicationFee);
+    }
+    if (message.SignerFeeBips !== 0) {
+      writer.uint32(48).uint32(message.SignerFeeBips);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): fragmentSigners {
+  decode(input: _m0.Reader | Uint8Array, length?: number): FragmentSigners {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasefragmentSigners();
+    const message = createBaseFragmentSigners();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.fragmentID = reader.string();
+          message.FragmentID = longToNumber(reader.uint64() as Long);
           break;
         case 2:
-          message.signerAddress = reader.string();
+          message.SignerAddress = reader.string();
           break;
         case 3:
-          message.signerStatus = reader.string();
+          message.SignerStatus = reader.bool();
           break;
         case 4:
-          message.signerBtcPublicKey = reader.string();
+          message.SignerBtcPublicKey = reader.string();
           break;
         case 5:
-          message.signerApplicationFee = reader.uint32();
+          message.SignerApplicationFee = reader.uint32();
+          break;
+        case 6:
+          message.SignerFeeBips = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -447,39 +579,43 @@ export const fragmentSigners = {
     return message;
   },
 
-  fromJSON(object: any): fragmentSigners {
+  fromJSON(object: any): FragmentSigners {
     return {
-      fragmentID: isSet(object.fragmentID) ? String(object.fragmentID) : "",
-      signerAddress: isSet(object.signerAddress) ? String(object.signerAddress) : "",
-      signerStatus: isSet(object.signerStatus) ? String(object.signerStatus) : "",
-      signerBtcPublicKey: isSet(object.signerBtcPublicKey) ? String(object.signerBtcPublicKey) : "",
-      signerApplicationFee: isSet(object.signerApplicationFee) ? Number(object.signerApplicationFee) : 0,
+      FragmentID: isSet(object.FragmentID) ? Number(object.FragmentID) : 0,
+      SignerAddress: isSet(object.SignerAddress) ? String(object.SignerAddress) : "",
+      SignerStatus: isSet(object.SignerStatus) ? Boolean(object.SignerStatus) : false,
+      SignerBtcPublicKey: isSet(object.SignerBtcPublicKey) ? String(object.SignerBtcPublicKey) : "",
+      SignerApplicationFee: isSet(object.SignerApplicationFee) ? Number(object.SignerApplicationFee) : 0,
+      SignerFeeBips: isSet(object.SignerFeeBips) ? Number(object.SignerFeeBips) : 0,
     };
   },
 
-  toJSON(message: fragmentSigners): unknown {
+  toJSON(message: FragmentSigners): unknown {
     const obj: any = {};
-    message.fragmentID !== undefined && (obj.fragmentID = message.fragmentID);
-    message.signerAddress !== undefined && (obj.signerAddress = message.signerAddress);
-    message.signerStatus !== undefined && (obj.signerStatus = message.signerStatus);
-    message.signerBtcPublicKey !== undefined && (obj.signerBtcPublicKey = message.signerBtcPublicKey);
-    message.signerApplicationFee !== undefined && (obj.signerApplicationFee = Math.round(message.signerApplicationFee));
+    message.FragmentID !== undefined && (obj.FragmentID = Math.round(message.FragmentID));
+    message.SignerAddress !== undefined && (obj.SignerAddress = message.SignerAddress);
+    message.SignerStatus !== undefined && (obj.SignerStatus = message.SignerStatus);
+    message.SignerBtcPublicKey !== undefined && (obj.SignerBtcPublicKey = message.SignerBtcPublicKey);
+    message.SignerApplicationFee !== undefined && (obj.SignerApplicationFee = Math.round(message.SignerApplicationFee));
+    message.SignerFeeBips !== undefined && (obj.SignerFeeBips = Math.round(message.SignerFeeBips));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<fragmentSigners>, I>>(object: I): fragmentSigners {
-    const message = createBasefragmentSigners();
-    message.fragmentID = object.fragmentID ?? "";
-    message.signerAddress = object.signerAddress ?? "";
-    message.signerStatus = object.signerStatus ?? "";
-    message.signerBtcPublicKey = object.signerBtcPublicKey ?? "";
-    message.signerApplicationFee = object.signerApplicationFee ?? 0;
+  fromPartial<I extends Exact<DeepPartial<FragmentSigners>, I>>(object: I): FragmentSigners {
+    const message = createBaseFragmentSigners();
+    message.FragmentID = object.FragmentID ?? 0;
+    message.SignerAddress = object.SignerAddress ?? "";
+    message.SignerStatus = object.SignerStatus ?? false;
+    message.SignerBtcPublicKey = object.SignerBtcPublicKey ?? "";
+    message.SignerApplicationFee = object.SignerApplicationFee ?? 0;
+    message.SignerFeeBips = object.SignerFeeBips ?? 0;
     return message;
   },
 };
 
 /** Msg defines the Msg service. */
 export interface Msg {
+  /** this line is used by starport scaffolding # proto/tx/rpc */
   SignerApplication(request: MsgSignerApplication): Promise<MsgSignerApplicationResponse>;
   AcceptSigners(request: MsgAcceptSigners): Promise<MsgAcceptSignersResponse>;
 }
@@ -493,13 +629,13 @@ export class MsgClientImpl implements Msg {
   }
   SignerApplication(request: MsgSignerApplication): Promise<MsgSignerApplicationResponse> {
     const data = MsgSignerApplication.encode(request).finish();
-    const promise = this.rpc.request("twilightproject.nyks.fragment.Msg", "SignerApplication", data);
+    const promise = this.rpc.request("twilightproject.nyks.volt.Msg", "SignerApplication", data);
     return promise.then((data) => MsgSignerApplicationResponse.decode(new _m0.Reader(data)));
   }
 
   AcceptSigners(request: MsgAcceptSigners): Promise<MsgAcceptSignersResponse> {
     const data = MsgAcceptSigners.encode(request).finish();
-    const promise = this.rpc.request("twilightproject.nyks.fragment.Msg", "AcceptSigners", data);
+    const promise = this.rpc.request("twilightproject.nyks.volt.Msg", "AcceptSigners", data);
     return promise.then((data) => MsgAcceptSignersResponse.decode(new _m0.Reader(data)));
   }
 }

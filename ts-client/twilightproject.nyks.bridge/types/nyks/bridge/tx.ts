@@ -28,6 +28,7 @@ export interface MsgRegisterBtcDepositAddressResponse {
 }
 
 export interface MsgRegisterReserveAddress {
+  fragmentId: number;
   reserveScript: string;
   reserveAddress: string;
   judgeAddress: string;
@@ -45,11 +46,15 @@ export interface MsgBootstrapFragment {
   signerApplicationFee: number;
   reserveAddress: string;
   reserveScript: string;
+  fragmentFeeBips: number;
   arbitraryData: string;
   validatorAddress: string;
 }
 
 export interface MsgBootstrapFragmentResponse {
+  fragmentId: string;
+  reserveId: string;
+  judgeAddress: string;
 }
 
 export interface MsgProposeRefundHash {
@@ -475,19 +480,22 @@ export const MsgRegisterBtcDepositAddressResponse = {
 };
 
 function createBaseMsgRegisterReserveAddress(): MsgRegisterReserveAddress {
-  return { reserveScript: "", reserveAddress: "", judgeAddress: "" };
+  return { fragmentId: 0, reserveScript: "", reserveAddress: "", judgeAddress: "" };
 }
 
 export const MsgRegisterReserveAddress = {
   encode(message: MsgRegisterReserveAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fragmentId !== 0) {
+      writer.uint32(8).uint64(message.fragmentId);
+    }
     if (message.reserveScript !== "") {
-      writer.uint32(10).string(message.reserveScript);
+      writer.uint32(18).string(message.reserveScript);
     }
     if (message.reserveAddress !== "") {
-      writer.uint32(18).string(message.reserveAddress);
+      writer.uint32(26).string(message.reserveAddress);
     }
     if (message.judgeAddress !== "") {
-      writer.uint32(26).string(message.judgeAddress);
+      writer.uint32(34).string(message.judgeAddress);
     }
     return writer;
   },
@@ -500,12 +508,15 @@ export const MsgRegisterReserveAddress = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.reserveScript = reader.string();
+          message.fragmentId = longToNumber(reader.uint64() as Long);
           break;
         case 2:
-          message.reserveAddress = reader.string();
+          message.reserveScript = reader.string();
           break;
         case 3:
+          message.reserveAddress = reader.string();
+          break;
+        case 4:
           message.judgeAddress = reader.string();
           break;
         default:
@@ -518,6 +529,7 @@ export const MsgRegisterReserveAddress = {
 
   fromJSON(object: any): MsgRegisterReserveAddress {
     return {
+      fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0,
       reserveScript: isSet(object.reserveScript) ? String(object.reserveScript) : "",
       reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
       judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
@@ -526,6 +538,7 @@ export const MsgRegisterReserveAddress = {
 
   toJSON(message: MsgRegisterReserveAddress): unknown {
     const obj: any = {};
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
     message.reserveScript !== undefined && (obj.reserveScript = message.reserveScript);
     message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
     message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
@@ -534,6 +547,7 @@ export const MsgRegisterReserveAddress = {
 
   fromPartial<I extends Exact<DeepPartial<MsgRegisterReserveAddress>, I>>(object: I): MsgRegisterReserveAddress {
     const message = createBaseMsgRegisterReserveAddress();
+    message.fragmentId = object.fragmentId ?? 0;
     message.reserveScript = object.reserveScript ?? "";
     message.reserveAddress = object.reserveAddress ?? "";
     message.judgeAddress = object.judgeAddress ?? "";
@@ -609,6 +623,7 @@ function createBaseMsgBootstrapFragment(): MsgBootstrapFragment {
     signerApplicationFee: 0,
     reserveAddress: "",
     reserveScript: "",
+    fragmentFeeBips: 0,
     arbitraryData: "",
     validatorAddress: "",
   };
@@ -634,11 +649,14 @@ export const MsgBootstrapFragment = {
     if (message.reserveScript !== "") {
       writer.uint32(50).string(message.reserveScript);
     }
+    if (message.fragmentFeeBips !== 0) {
+      writer.uint32(56).uint32(message.fragmentFeeBips);
+    }
     if (message.arbitraryData !== "") {
-      writer.uint32(58).string(message.arbitraryData);
+      writer.uint32(66).string(message.arbitraryData);
     }
     if (message.validatorAddress !== "") {
-      writer.uint32(66).string(message.validatorAddress);
+      writer.uint32(74).string(message.validatorAddress);
     }
     return writer;
   },
@@ -669,9 +687,12 @@ export const MsgBootstrapFragment = {
           message.reserveScript = reader.string();
           break;
         case 7:
-          message.arbitraryData = reader.string();
+          message.fragmentFeeBips = reader.uint32();
           break;
         case 8:
+          message.arbitraryData = reader.string();
+          break;
+        case 9:
           message.validatorAddress = reader.string();
           break;
         default:
@@ -690,6 +711,7 @@ export const MsgBootstrapFragment = {
       signerApplicationFee: isSet(object.signerApplicationFee) ? Number(object.signerApplicationFee) : 0,
       reserveAddress: isSet(object.reserveAddress) ? String(object.reserveAddress) : "",
       reserveScript: isSet(object.reserveScript) ? String(object.reserveScript) : "",
+      fragmentFeeBips: isSet(object.fragmentFeeBips) ? Number(object.fragmentFeeBips) : 0,
       arbitraryData: isSet(object.arbitraryData) ? String(object.arbitraryData) : "",
       validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
     };
@@ -703,6 +725,7 @@ export const MsgBootstrapFragment = {
     message.signerApplicationFee !== undefined && (obj.signerApplicationFee = Math.round(message.signerApplicationFee));
     message.reserveAddress !== undefined && (obj.reserveAddress = message.reserveAddress);
     message.reserveScript !== undefined && (obj.reserveScript = message.reserveScript);
+    message.fragmentFeeBips !== undefined && (obj.fragmentFeeBips = Math.round(message.fragmentFeeBips));
     message.arbitraryData !== undefined && (obj.arbitraryData = message.arbitraryData);
     message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
@@ -716,6 +739,7 @@ export const MsgBootstrapFragment = {
     message.signerApplicationFee = object.signerApplicationFee ?? 0;
     message.reserveAddress = object.reserveAddress ?? "";
     message.reserveScript = object.reserveScript ?? "";
+    message.fragmentFeeBips = object.fragmentFeeBips ?? 0;
     message.arbitraryData = object.arbitraryData ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     return message;
@@ -723,11 +747,20 @@ export const MsgBootstrapFragment = {
 };
 
 function createBaseMsgBootstrapFragmentResponse(): MsgBootstrapFragmentResponse {
-  return {};
+  return { fragmentId: "", reserveId: "", judgeAddress: "" };
 }
 
 export const MsgBootstrapFragmentResponse = {
-  encode(_: MsgBootstrapFragmentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: MsgBootstrapFragmentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fragmentId !== "") {
+      writer.uint32(10).string(message.fragmentId);
+    }
+    if (message.reserveId !== "") {
+      writer.uint32(18).string(message.reserveId);
+    }
+    if (message.judgeAddress !== "") {
+      writer.uint32(26).string(message.judgeAddress);
+    }
     return writer;
   },
 
@@ -738,6 +771,15 @@ export const MsgBootstrapFragmentResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.fragmentId = reader.string();
+          break;
+        case 2:
+          message.reserveId = reader.string();
+          break;
+        case 3:
+          message.judgeAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -746,17 +788,27 @@ export const MsgBootstrapFragmentResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgBootstrapFragmentResponse {
-    return {};
+  fromJSON(object: any): MsgBootstrapFragmentResponse {
+    return {
+      fragmentId: isSet(object.fragmentId) ? String(object.fragmentId) : "",
+      reserveId: isSet(object.reserveId) ? String(object.reserveId) : "",
+      judgeAddress: isSet(object.judgeAddress) ? String(object.judgeAddress) : "",
+    };
   },
 
-  toJSON(_: MsgBootstrapFragmentResponse): unknown {
+  toJSON(message: MsgBootstrapFragmentResponse): unknown {
     const obj: any = {};
+    message.fragmentId !== undefined && (obj.fragmentId = message.fragmentId);
+    message.reserveId !== undefined && (obj.reserveId = message.reserveId);
+    message.judgeAddress !== undefined && (obj.judgeAddress = message.judgeAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgBootstrapFragmentResponse>, I>>(_: I): MsgBootstrapFragmentResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgBootstrapFragmentResponse>, I>>(object: I): MsgBootstrapFragmentResponse {
     const message = createBaseMsgBootstrapFragmentResponse();
+    message.fragmentId = object.fragmentId ?? "";
+    message.reserveId = object.reserveId ?? "";
+    message.judgeAddress = object.judgeAddress ?? "";
     return message;
   },
 };

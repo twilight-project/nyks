@@ -5,6 +5,10 @@ import { RefundTxSnapshot } from "./types/nyks/volt/clearing"
 import { BtcDepositAddress } from "./types/nyks/volt/deposit"
 import { EventReserveWithdrawSnapshot } from "./types/nyks/volt/events"
 import { EventRefundTxSnapshot } from "./types/nyks/volt/events"
+import { EventAcceptSigners } from "./types/nyks/volt/events"
+import { SignerInfo } from "./types/nyks/volt/fragment"
+import { Fragment } from "./types/nyks/volt/fragment"
+import { FragmentSigners } from "./types/nyks/volt/fragment"
 import { Params } from "./types/nyks/volt/params"
 import { BtcReserve } from "./types/nyks/volt/reserve"
 import { BtcWithdrawRequestInternal } from "./types/nyks/volt/withdraw"
@@ -22,6 +26,10 @@ export {
     BtcDepositAddress,
     EventReserveWithdrawSnapshot,
     EventRefundTxSnapshot,
+    EventAcceptSigners,
+    SignerInfo,
+    Fragment,
+    FragmentSigners,
     Params,
     BtcReserve,
     BtcWithdrawRequestInternal,
