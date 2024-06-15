@@ -29884,6 +29884,35 @@ paths:
           format: uint64
       tags:
         - Query
+  /twilight-project/nyks/volt/get_all_fragments:
+    get:
+      summary: Queries a list of GetAllFragments items.
+      operationId: TwilightprojectNyksVoltGetAllFragments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /twilight-project/nyks/volt/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -50545,6 +50574,8 @@ definitions:
             items:
               type: string
               format: uint64
+  twilightproject.nyks.volt.QueryGetAllFragmentsResponse:
+    type: object
   twilightproject.nyks.volt.QueryParamsResponse:
     type: object
     properties:

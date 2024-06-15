@@ -132,20 +132,6 @@ export default {
 		},
 		
 		
-		async sendMsgAcceptSigners({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
-			try {
-				const client=await initClient(rootGetters)
-				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
-				const result = await client.TwilightprojectNyksFragment.tx.sendMsgAcceptSigners({ value, fee: fullFee, memo })
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgAcceptSigners:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgAcceptSigners:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		async sendMsgSignerApplication({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -160,20 +146,21 @@ export default {
 				}
 			}
 		},
-		
-		async MsgAcceptSigners({ rootGetters }, { value }) {
+		async sendMsgAcceptSigners({ rootGetters }, { value, fee = {amount: [], gas: "200000"}, memo = '' }) {
 			try {
-				const client=initClient(rootGetters)
-				const msg = await client.TwilightprojectNyksFragment.tx.msgAcceptSigners({value})
-				return msg
+				const client=await initClient(rootGetters)
+				const fullFee = Array.isArray(fee)  ? {amount: fee, gas: "200000"} :fee;
+				const result = await client.TwilightprojectNyksFragment.tx.sendMsgAcceptSigners({ value, fee: fullFee, memo })
+				return result
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgAcceptSigners:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgAcceptSigners:Create Could not create message: ' + e.message)
+				}else{
+					throw new Error('TxClient:MsgAcceptSigners:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
+		
 		async MsgSignerApplication({ rootGetters }, { value }) {
 			try {
 				const client=initClient(rootGetters)
@@ -184,6 +171,19 @@ export default {
 					throw new Error('TxClient:MsgSignerApplication:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgSignerApplication:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgAcceptSigners({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.TwilightprojectNyksFragment.tx.msgAcceptSigners({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgAcceptSigners:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgAcceptSigners:Create Could not create message: ' + e.message)
 				}
 			}
 		},

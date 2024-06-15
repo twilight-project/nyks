@@ -74,6 +74,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/fragment_by_id/{fragmentId}";
   
   }
+  
+  // Queries a list of GetAllFragments items.
+  rpc GetAllFragments (QueryGetAllFragmentsRequest) returns (QueryGetAllFragmentsResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/get_all_fragments";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -151,5 +157,11 @@ message QueryFragmentByIdRequest {
 
 message QueryFragmentByIdResponse {
   Fragment Fragment = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetAllFragmentsRequest {}
+
+message QueryGetAllFragmentsResponse {
+  repeated Fragment Fragments = 1 [(gogoproto.nullable) = false];
 }
 

@@ -60,6 +60,7 @@ const getDefaultState = () => {
 				BtcWithdrawRequest: {},
 				ReserveWithdrawPool: {},
 				FragmentById: {},
+				GetAllFragments: {},
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
@@ -161,6 +162,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.FragmentById[JSON.stringify(params)] ?? {}
+		},
+				getGetAllFragments: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.GetAllFragments[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -393,6 +400,28 @@ export default {
 				return getters['getFragmentById']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryFragmentById API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryGetAllFragments({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.queryGetAllFragments()).data
+				
+					
+				commit('QUERY', { query: 'GetAllFragments', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryGetAllFragments', payload: { options: { all }, params: {...key},query }})
+				return getters['getGetAllFragments']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryGetAllFragments API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

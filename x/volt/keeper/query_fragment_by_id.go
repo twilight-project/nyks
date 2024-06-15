@@ -17,7 +17,7 @@ func (k Keeper) FragmentById(goCtx context.Context, req *types.QueryFragmentById
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	fragment, found := k.GetFragmentById(ctx, req.FragmentId)
+	fragment, found := k.GetFragment(ctx, req.FragmentId)
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrFragmentNotFound, "No fragment found with the given ID")
 	}

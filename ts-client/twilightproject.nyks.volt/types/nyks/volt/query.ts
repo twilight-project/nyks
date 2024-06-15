@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ClearingAccount, RefundTxSnapshot } from "./clearing";
+import { Fragment } from "./fragment";
 import { Params } from "./params";
 import { BtcReserve } from "./reserve";
 import { BtcWithdrawRequestInternal, ReserveWithdrawPool, ReserveWithdrawSnapshot } from "./withdraw";
@@ -84,6 +85,13 @@ export interface QueryFragmentByIdRequest {
 }
 
 export interface QueryFragmentByIdResponse {
+  Fragment: Fragment | undefined;
+}
+
+export interface QueryGetAllFragmentsRequest {
+}
+
+export interface QueryGetAllFragmentsResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -953,7 +961,7 @@ function createBaseQueryFragmentByIdRequest(): QueryFragmentByIdRequest {
 export const QueryFragmentByIdRequest = {
   encode(message: QueryFragmentByIdRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.fragmentId !== 0) {
-      writer.uint32(8).int32(message.fragmentId);
+      writer.uint32(8).uint64(message.fragmentId);
     }
     return writer;
   },
@@ -966,7 +974,7 @@ export const QueryFragmentByIdRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.fragmentId = reader.int32();
+          message.fragmentId = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -994,11 +1002,14 @@ export const QueryFragmentByIdRequest = {
 };
 
 function createBaseQueryFragmentByIdResponse(): QueryFragmentByIdResponse {
-  return {};
+  return { Fragment: undefined };
 }
 
 export const QueryFragmentByIdResponse = {
-  encode(_: QueryFragmentByIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryFragmentByIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.Fragment !== undefined) {
+      Fragment.encode(message.Fragment, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1006,6 +1017,52 @@ export const QueryFragmentByIdResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryFragmentByIdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.Fragment = Fragment.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryFragmentByIdResponse {
+    return { Fragment: isSet(object.Fragment) ? Fragment.fromJSON(object.Fragment) : undefined };
+  },
+
+  toJSON(message: QueryFragmentByIdResponse): unknown {
+    const obj: any = {};
+    message.Fragment !== undefined && (obj.Fragment = message.Fragment ? Fragment.toJSON(message.Fragment) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryFragmentByIdResponse>, I>>(object: I): QueryFragmentByIdResponse {
+    const message = createBaseQueryFragmentByIdResponse();
+    message.Fragment = (object.Fragment !== undefined && object.Fragment !== null)
+      ? Fragment.fromPartial(object.Fragment)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryGetAllFragmentsRequest(): QueryGetAllFragmentsRequest {
+  return {};
+}
+
+export const QueryGetAllFragmentsRequest = {
+  encode(_: QueryGetAllFragmentsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetAllFragmentsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetAllFragmentsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1017,17 +1074,56 @@ export const QueryFragmentByIdResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryFragmentByIdResponse {
+  fromJSON(_: any): QueryGetAllFragmentsRequest {
     return {};
   },
 
-  toJSON(_: QueryFragmentByIdResponse): unknown {
+  toJSON(_: QueryGetAllFragmentsRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryFragmentByIdResponse>, I>>(_: I): QueryFragmentByIdResponse {
-    const message = createBaseQueryFragmentByIdResponse();
+  fromPartial<I extends Exact<DeepPartial<QueryGetAllFragmentsRequest>, I>>(_: I): QueryGetAllFragmentsRequest {
+    const message = createBaseQueryGetAllFragmentsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryGetAllFragmentsResponse(): QueryGetAllFragmentsResponse {
+  return {};
+}
+
+export const QueryGetAllFragmentsResponse = {
+  encode(_: QueryGetAllFragmentsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetAllFragmentsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetAllFragmentsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryGetAllFragmentsResponse {
+    return {};
+  },
+
+  toJSON(_: QueryGetAllFragmentsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetAllFragmentsResponse>, I>>(_: I): QueryGetAllFragmentsResponse {
+    const message = createBaseQueryGetAllFragmentsResponse();
     return message;
   },
 };
@@ -1054,6 +1150,8 @@ export interface Query {
   ReserveWithdrawPool(request: QueryReserveWithdrawPoolRequest): Promise<QueryReserveWithdrawPoolResponse>;
   /** Queries a list of FragmentById items. */
   FragmentById(request: QueryFragmentByIdRequest): Promise<QueryFragmentByIdResponse>;
+  /** Queries a list of GetAllFragments items. */
+  GetAllFragments(request: QueryGetAllFragmentsRequest): Promise<QueryGetAllFragmentsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1069,6 +1167,7 @@ export class QueryClientImpl implements Query {
     this.BtcWithdrawRequest = this.BtcWithdrawRequest.bind(this);
     this.ReserveWithdrawPool = this.ReserveWithdrawPool.bind(this);
     this.FragmentById = this.FragmentById.bind(this);
+    this.GetAllFragments = this.GetAllFragments.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1124,6 +1223,12 @@ export class QueryClientImpl implements Query {
     const data = QueryFragmentByIdRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.volt.Query", "FragmentById", data);
     return promise.then((data) => QueryFragmentByIdResponse.decode(new _m0.Reader(data)));
+  }
+
+  GetAllFragments(request: QueryGetAllFragmentsRequest): Promise<QueryGetAllFragmentsResponse> {
+    const data = QueryGetAllFragmentsRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "GetAllFragments", data);
+    return promise.then((data) => QueryGetAllFragmentsResponse.decode(new _m0.Reader(data)));
   }
 }
 

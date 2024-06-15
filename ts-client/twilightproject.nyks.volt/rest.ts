@@ -130,6 +130,43 @@ export interface VoltBtcWithdrawRequestInternal {
   CreationTwilightBlockHeight?: string;
 }
 
+export interface VoltFragment {
+  /** @format uint64 */
+  FragmentId?: string;
+  FragmentStatus?: boolean;
+  JudgeAddress?: string;
+  JudgeStatus?: boolean;
+  Signers?: VoltFragmentSigners[];
+
+  /** @format uint64 */
+  SignerApplicationFee?: string;
+
+  /** @format int64 */
+  Threshold?: number;
+
+  /** @format uint64 */
+  FeePool?: string;
+
+  /** @format int64 */
+  FragmentFeeBips?: number;
+  arbitraryData?: string;
+  ReserveIds?: string[];
+}
+
+export interface VoltFragmentSigners {
+  /** @format uint64 */
+  FragmentID?: string;
+  SignerAddress?: string;
+  SignerStatus?: boolean;
+  SignerBtcPublicKey?: string;
+
+  /** @format int64 */
+  SignerApplicationFee?: number;
+
+  /** @format int64 */
+  SignerFeeBips?: number;
+}
+
 export interface VoltIndividualTwilightReserveAccountBalance {
   /** @format uint64 */
   ReserveId?: string;
@@ -154,7 +191,11 @@ export interface VoltQueryClearingAccountResponse {
   ClearingAccount?: NyksvoltClearingAccount;
 }
 
-export type VoltQueryFragmentByIdResponse = object;
+export interface VoltQueryFragmentByIdResponse {
+  Fragment?: VoltFragment;
+}
+
+export type VoltQueryGetAllFragmentsResponse = object;
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -391,9 +432,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * @summary Queries a list of FragmentById items.
    * @request GET:/twilight-project/nyks/volt/fragment_by_id/{fragmentId}
    */
-  queryFragmentById = (fragmentId: number, params: RequestParams = {}) =>
+  queryFragmentById = (fragmentId: string, params: RequestParams = {}) =>
     this.request<VoltQueryFragmentByIdResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/fragment_by_id/${fragmentId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryGetAllFragments
+   * @summary Queries a list of GetAllFragments items.
+   * @request GET:/twilight-project/nyks/volt/get_all_fragments
+   */
+  queryGetAllFragments = (params: RequestParams = {}) =>
+    this.request<VoltQueryGetAllFragmentsResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/get_all_fragments`,
       method: "GET",
       format: "json",
       ...params,
