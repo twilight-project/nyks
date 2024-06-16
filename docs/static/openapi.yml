@@ -29893,6 +29893,60 @@ paths:
           description: A successful response.
           schema:
             type: object
+            properties:
+              Fragments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    FragmentId:
+                      type: string
+                      format: uint64
+                    FragmentStatus:
+                      type: boolean
+                    JudgeAddress:
+                      type: string
+                    JudgeStatus:
+                      type: boolean
+                    Signers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          FragmentID:
+                            type: string
+                            format: uint64
+                          SignerAddress:
+                            type: string
+                          SignerStatus:
+                            type: boolean
+                          SignerBtcPublicKey:
+                            type: string
+                          SignerApplicationFee:
+                            type: integer
+                            format: int64
+                          SignerFeeBips:
+                            type: integer
+                            format: int64
+                    SignerApplicationFee:
+                      type: string
+                      format: uint64
+                    Threshold:
+                      type: integer
+                      format: int64
+                    FeePool:
+                      type: string
+                      format: uint64
+                    FragmentFeeBips:
+                      type: integer
+                      format: int64
+                    arbitraryData:
+                      type: string
+                    ReserveIds:
+                      type: array
+                      items:
+                        type: string
+                        format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -30216,6 +30270,60 @@ paths:
           type: string
           format: uint64
         - name: roundId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /twilight-project/nyks/volt/signer_applications/{fragmentId}:
+    get:
+      summary: Queries a list of SignerApplications items.
+      operationId: TwilightprojectNyksVoltSignerApplications
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              SignerApplications:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fragmentId:
+                      type: string
+                      format: uint64
+                    applicationFee:
+                      type: string
+                      format: uint64
+                    feeBips:
+                      type: string
+                      format: uint64
+                    btcPubKey:
+                      type: string
+                    signerAddress:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: fragmentId
           in: path
           required: true
           type: string
@@ -50414,6 +50522,22 @@ definitions:
         format: uint64
   twilightproject.nyks.volt.MsgAcceptSignersResponse:
     type: object
+  twilightproject.nyks.volt.MsgSignerApplication:
+    type: object
+    properties:
+      fragmentId:
+        type: string
+        format: uint64
+      applicationFee:
+        type: string
+        format: uint64
+      feeBips:
+        type: string
+        format: uint64
+      btcPubKey:
+        type: string
+      signerAddress:
+        type: string
   twilightproject.nyks.volt.MsgSignerApplicationResponse:
     type: object
   twilightproject.nyks.volt.Params:
@@ -50576,6 +50700,60 @@ definitions:
               format: uint64
   twilightproject.nyks.volt.QueryGetAllFragmentsResponse:
     type: object
+    properties:
+      Fragments:
+        type: array
+        items:
+          type: object
+          properties:
+            FragmentId:
+              type: string
+              format: uint64
+            FragmentStatus:
+              type: boolean
+            JudgeAddress:
+              type: string
+            JudgeStatus:
+              type: boolean
+            Signers:
+              type: array
+              items:
+                type: object
+                properties:
+                  FragmentID:
+                    type: string
+                    format: uint64
+                  SignerAddress:
+                    type: string
+                  SignerStatus:
+                    type: boolean
+                  SignerBtcPublicKey:
+                    type: string
+                  SignerApplicationFee:
+                    type: integer
+                    format: int64
+                  SignerFeeBips:
+                    type: integer
+                    format: int64
+            SignerApplicationFee:
+              type: string
+              format: uint64
+            Threshold:
+              type: integer
+              format: int64
+            FeePool:
+              type: string
+              format: uint64
+            FragmentFeeBips:
+              type: integer
+              format: int64
+            arbitraryData:
+              type: string
+            ReserveIds:
+              type: array
+              items:
+                type: string
+                format: uint64
   twilightproject.nyks.volt.QueryParamsResponse:
     type: object
     properties:
@@ -50711,6 +50889,27 @@ definitions:
         title: >-
           ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its
           used in sweep to know which withdraws are currently being processed
+  twilightproject.nyks.volt.QuerySignerApplicationsResponse:
+    type: object
+    properties:
+      SignerApplications:
+        type: array
+        items:
+          type: object
+          properties:
+            fragmentId:
+              type: string
+              format: uint64
+            applicationFee:
+              type: string
+              format: uint64
+            feeBips:
+              type: string
+              format: uint64
+            btcPubKey:
+              type: string
+            signerAddress:
+              type: string
   twilightproject.nyks.volt.RefundTxAccountSnap:
     type: object
     properties:

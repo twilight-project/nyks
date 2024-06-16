@@ -190,13 +190,13 @@ func GetRefundTxSnapshotKey(reserveId uint64, roundId uint64) []byte {
 }
 
 // GetSignerApplicationFeeKey returns the key for the value of SignerApplicationFee
-func GetSignerApplicationFeeKey(fragmentId uint64, signerAddress sdk.AccAddress) []byte {
+func GetSignerApplicationFeeKey(fragmentId uint64) []byte {
 	fragmentIdBuf := new(bytes.Buffer)
 	err := binary.Write(fragmentIdBuf, binary.LittleEndian, fragmentId)
 	if err != nil {
 		panic("Failed to convert uint64 to bytes")
 	}
-	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes(), signerAddress.Bytes())
+	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes())
 }
 
 // GetFragmentKey returns the following key format

@@ -61,6 +61,7 @@ const getDefaultState = () => {
 				ReserveWithdrawPool: {},
 				FragmentById: {},
 				GetAllFragments: {},
+				SignerApplications: {},
 				
 				_Structure: {
 						IndividualTwilightReserveAccountBalance: getStructure(IndividualTwilightReserveAccountBalance.fromPartial({})),
@@ -168,6 +169,12 @@ export default {
 						(<any> params).query=null
 					}
 			return state.GetAllFragments[JSON.stringify(params)] ?? {}
+		},
+				getSignerApplications: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.SignerApplications[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -422,6 +429,28 @@ export default {
 				return getters['getGetAllFragments']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryGetAllFragments API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QuerySignerApplications({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.TwilightprojectNyksVolt.query.querySignerApplications( key.fragmentId)).data
+				
+					
+				commit('QUERY', { query: 'SignerApplications', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QuerySignerApplications', payload: { options: { all }, params: {...key},query }})
+				return getters['getSignerApplications']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QuerySignerApplications API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

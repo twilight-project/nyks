@@ -92,6 +92,14 @@ export interface QueryGetAllFragmentsRequest {
 }
 
 export interface QueryGetAllFragmentsResponse {
+  Fragments: Fragment[];
+}
+
+export interface QuerySignerApplicationsRequest {
+  fragmentId: number;
+}
+
+export interface QuerySignerApplicationsResponse {
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -1090,11 +1098,14 @@ export const QueryGetAllFragmentsRequest = {
 };
 
 function createBaseQueryGetAllFragmentsResponse(): QueryGetAllFragmentsResponse {
-  return {};
+  return { Fragments: [] };
 }
 
 export const QueryGetAllFragmentsResponse = {
-  encode(_: QueryGetAllFragmentsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: QueryGetAllFragmentsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.Fragments) {
+      Fragment.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1102,6 +1113,105 @@ export const QueryGetAllFragmentsResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryGetAllFragmentsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.Fragments.push(Fragment.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetAllFragmentsResponse {
+    return {
+      Fragments: Array.isArray(object?.Fragments) ? object.Fragments.map((e: any) => Fragment.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: QueryGetAllFragmentsResponse): unknown {
+    const obj: any = {};
+    if (message.Fragments) {
+      obj.Fragments = message.Fragments.map((e) => e ? Fragment.toJSON(e) : undefined);
+    } else {
+      obj.Fragments = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryGetAllFragmentsResponse>, I>>(object: I): QueryGetAllFragmentsResponse {
+    const message = createBaseQueryGetAllFragmentsResponse();
+    message.Fragments = object.Fragments?.map((e) => Fragment.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQuerySignerApplicationsRequest(): QuerySignerApplicationsRequest {
+  return { fragmentId: 0 };
+}
+
+export const QuerySignerApplicationsRequest = {
+  encode(message: QuerySignerApplicationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fragmentId !== 0) {
+      writer.uint32(8).int32(message.fragmentId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignerApplicationsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignerApplicationsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fragmentId = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySignerApplicationsRequest {
+    return { fragmentId: isSet(object.fragmentId) ? Number(object.fragmentId) : 0 };
+  },
+
+  toJSON(message: QuerySignerApplicationsRequest): unknown {
+    const obj: any = {};
+    message.fragmentId !== undefined && (obj.fragmentId = Math.round(message.fragmentId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuerySignerApplicationsRequest>, I>>(
+    object: I,
+  ): QuerySignerApplicationsRequest {
+    const message = createBaseQuerySignerApplicationsRequest();
+    message.fragmentId = object.fragmentId ?? 0;
+    return message;
+  },
+};
+
+function createBaseQuerySignerApplicationsResponse(): QuerySignerApplicationsResponse {
+  return {};
+}
+
+export const QuerySignerApplicationsResponse = {
+  encode(_: QuerySignerApplicationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySignerApplicationsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySignerApplicationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1113,17 +1223,17 @@ export const QueryGetAllFragmentsResponse = {
     return message;
   },
 
-  fromJSON(_: any): QueryGetAllFragmentsResponse {
+  fromJSON(_: any): QuerySignerApplicationsResponse {
     return {};
   },
 
-  toJSON(_: QueryGetAllFragmentsResponse): unknown {
+  toJSON(_: QuerySignerApplicationsResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryGetAllFragmentsResponse>, I>>(_: I): QueryGetAllFragmentsResponse {
-    const message = createBaseQueryGetAllFragmentsResponse();
+  fromPartial<I extends Exact<DeepPartial<QuerySignerApplicationsResponse>, I>>(_: I): QuerySignerApplicationsResponse {
+    const message = createBaseQuerySignerApplicationsResponse();
     return message;
   },
 };
@@ -1152,6 +1262,8 @@ export interface Query {
   FragmentById(request: QueryFragmentByIdRequest): Promise<QueryFragmentByIdResponse>;
   /** Queries a list of GetAllFragments items. */
   GetAllFragments(request: QueryGetAllFragmentsRequest): Promise<QueryGetAllFragmentsResponse>;
+  /** Queries a list of SignerApplications items. */
+  SignerApplications(request: QuerySignerApplicationsRequest): Promise<QuerySignerApplicationsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1168,6 +1280,7 @@ export class QueryClientImpl implements Query {
     this.ReserveWithdrawPool = this.ReserveWithdrawPool.bind(this);
     this.FragmentById = this.FragmentById.bind(this);
     this.GetAllFragments = this.GetAllFragments.bind(this);
+    this.SignerApplications = this.SignerApplications.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1229,6 +1342,12 @@ export class QueryClientImpl implements Query {
     const data = QueryGetAllFragmentsRequest.encode(request).finish();
     const promise = this.rpc.request("twilightproject.nyks.volt.Query", "GetAllFragments", data);
     return promise.then((data) => QueryGetAllFragmentsResponse.decode(new _m0.Reader(data)));
+  }
+
+  SignerApplications(request: QuerySignerApplicationsRequest): Promise<QuerySignerApplicationsResponse> {
+    const data = QuerySignerApplicationsRequest.encode(request).finish();
+    const promise = this.rpc.request("twilightproject.nyks.volt.Query", "SignerApplications", data);
+    return promise.then((data) => QuerySignerApplicationsResponse.decode(new _m0.Reader(data)));
   }
 }
 

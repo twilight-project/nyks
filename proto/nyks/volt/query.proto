@@ -80,6 +80,12 @@ service Query {
     option (google.api.http).get = "/twilight-project/nyks/volt/get_all_fragments";
   
   }
+  
+  // Queries a list of SignerApplications items.
+  rpc SignerApplications (QuerySignerApplicationsRequest) returns (QuerySignerApplicationsResponse) {
+    option (google.api.http).get = "/twilight-project/nyks/volt/signer_applications/{fragmentId}";
+  
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -163,5 +169,13 @@ message QueryGetAllFragmentsRequest {}
 
 message QueryGetAllFragmentsResponse {
   repeated Fragment Fragments = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySignerApplicationsRequest {
+  uint64 fragmentId = 1;
+}
+
+message QuerySignerApplicationsResponse {
+  repeated MsgSignerApplication SignerApplications = 1 [(gogoproto.nullable) = false];
 }
 

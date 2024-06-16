@@ -195,7 +195,9 @@ export interface VoltQueryFragmentByIdResponse {
   Fragment?: VoltFragment;
 }
 
-export type VoltQueryGetAllFragmentsResponse = object;
+export interface VoltQueryGetAllFragmentsResponse {
+  Fragments?: VoltFragment[];
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -220,6 +222,8 @@ export interface VoltQueryReserveWithdrawPoolResponse {
 export interface VoltQueryReserveWithdrawSnapshotResponse {
   ReserveWithdrawSnapshot?: NyksvoltReserveWithdrawSnapshot;
 }
+
+export type VoltQuerySignerApplicationsResponse = object;
 
 export interface VoltRefundTxAccountSnap {
   /** @format uint64 */
@@ -531,6 +535,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryReserveWithdrawSnapshot = (reserveId: string, roundId: string, params: RequestParams = {}) =>
     this.request<VoltQueryReserveWithdrawSnapshotResponse, RpcStatus>({
       path: `/twilight-project/nyks/volt/reserve_withdraw_snapshot/${reserveId}/${roundId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySignerApplications
+   * @summary Queries a list of SignerApplications items.
+   * @request GET:/twilight-project/nyks/volt/signer_applications/{fragmentId}
+   */
+  querySignerApplications = (fragmentId: number, params: RequestParams = {}) =>
+    this.request<VoltQuerySignerApplicationsResponse, RpcStatus>({
+      path: `/twilight-project/nyks/volt/signer_applications/${fragmentId}`,
       method: "GET",
       format: "json",
       ...params,

@@ -14,7 +14,7 @@ import (
 func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.MsgSignerApplication) {
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetSignerApplicationFeeKey(msg.FragmentId, sdk.AccAddress(msg.SignerAddress))
+	aKey := types.GetSignerApplicationFeeKey(msg.FragmentId)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
 }
 
@@ -223,4 +223,26 @@ func (k Keeper) IterateFragments(ctx sdk.Context, cb func([]byte, types.Fragment
 			return
 		}
 	}
+}
+
+// GetSignerApplications retrieves all signer applications for a given fragment ID
+func (k Keeper) GetSignerApplications(ctx sdk.Context, fragmentId uint64) ([]types.MsgSignerApplication, bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetSignerApplicationFeeKey(fragmentId))
+	defer iterator.Close()
+
+	var applications []types.MsgSignerApplication
+
+	for ; iterator.Valid(); iterator.Next() {
+		var application types.MsgSignerApplication
+		k.cdc.MustUnmarshal(iterator.Value(), &application)
+
+		applications = append(applications, application)
+	}
+
+	if len(applications) == 0 {
+		return nil, false
+	}
+
+	return applications, true
 }
