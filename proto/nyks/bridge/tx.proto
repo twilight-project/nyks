@@ -66,12 +66,12 @@ message MsgRegisterReserveAddressResponse {
 
 message MsgBootstrapFragment {
   string judgeAddress     = 1;
-  uint32 numOfSigners     = 2;
-  uint32 threshold       = 3;
+  uint64 numOfSigners     = 2;
+  uint64 threshold       = 3;
   uint64 signerApplicationFee = 4;
   string reserveAddress = 5;
   string reserveScript = 6;
-  uint32 fragmentFeeBips = 7;
+  uint64 fragmentFeeBips = 7;
   string arbitraryData    = 8;
   string validatorAddress = 9;
 }

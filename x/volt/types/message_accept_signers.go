@@ -9,11 +9,11 @@ const TypeMsgAcceptSigners = "accept_signers"
 
 var _ sdk.Msg = &MsgAcceptSigners{}
 
-func NewMsgAcceptSigners(fragmentId uint64, signerInfos []*SignerInfo, judgeAddress string) *MsgAcceptSigners {
+func NewMsgAcceptSigners(fragmentId uint64, applicationIds []uint64, judgeAddress string) *MsgAcceptSigners {
 	return &MsgAcceptSigners{
-		FragmentId:   fragmentId,
-		SignerInfos:  signerInfos,
-		JudgeAddress: judgeAddress,
+		FragmentId:           fragmentId,
+		SignerApplicationIds: applicationIds,
+		JudgeAddress:         judgeAddress,
 	}
 }
 
@@ -46,21 +46,21 @@ func (msg *MsgAcceptSigners) ValidateBasic() error {
 	}
 
 	// Validate judgeAddress
-	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
-	}
+	// _, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	// if err != nil {
+	// 	return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
+	// }
 
 	// Validate the signer infos
-	for _, signerInfo := range msg.SignerInfos {
-		_, err := sdk.AccAddressFromBech32(signerInfo.SignerAddress)
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer address (%s)", err)
-		}
-		if signerInfo.SignerFeeBips > 10000 { // Assuming feeBips is in basis points and max value is 100%
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "feeBips cannot be more than 10000")
-		}
-	}
+	// for _, signerInfo := range msg.SignerInfos {
+	// 	_, err := sdk.AccAddressFromBech32(signerInfo.SignerAddress)
+	// 	if err != nil {
+	// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer address (%s)", err)
+	// 	}
+	// 	if signerInfo.SignerFeeBips > 10000 { // Assuming feeBips is in basis points and max value is 100%
+	// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "feeBips cannot be more than 10000")
+	// 	}
+	// }
 
 	return nil
 }

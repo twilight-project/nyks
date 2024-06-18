@@ -204,8 +204,8 @@ message QueryRegisteredJudgeAddressByValidatorAddressRequest {
 
 message QueryRegisteredJudgeAddressByValidatorAddressResponse {
   string judgeAddress     = 1;
-  uint32 numOfSigners     = 2;
-  uint32 threshold       = 3;
+  uint64 numOfSigners     = 2;
+  uint64 threshold       = 3;
   uint64 signerApplicationFee = 4;
   string arbitraryData    = 5;
   string validatorAddress = 6;

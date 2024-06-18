@@ -19,26 +19,18 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	}
 
 	valAddr := sdk.ValAddress(accAddr)
-	ctx.Logger().Error(accAddr.String())
-
-	ctx.Logger().Error(valAddr.String())
 
 	// check the following, all should be validated in validate basic
 	judgeAddr, e1 := sdk.AccAddressFromBech32(msg.JudgeAddress)
-	//valAddr, e2 := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	reserveAddr, e3 := types.NewBtcAddress(msg.ReserveAddress)
-	reserveScript, e4 := types.NewBtcScript(msg.ReserveScript)
+	reserveAddr, e2 := types.NewBtcAddress(msg.ReserveAddress)
+	reserveScript, e3 := types.NewBtcScript(msg.ReserveScript)
 	if e1 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e1.Error())
-		// } else if e2 != nil {
-		// 	return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
-		// }
+	} else if e2 != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, e2.Error())
 	} else if e3 != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalid, e3.Error())
-	} else if e4 != nil {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, e4.Error())
 	}
-	ctx.Logger().Error("reached so far 0")
 
 	// return an error if the validator isn't in the active set
 	validator, found := k.StakingKeeper.GetValidator(ctx, valAddr)
@@ -50,8 +42,6 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 		return nil, sdkerrors.Wrap(sdkerrors.ErrorInvalidSigner, "validator not in active set")
 	}
 
-	ctx.Logger().Error(validator.GetOperator().String())
-
 	address, err := k.GetJudgeAddressForValidatorAddress(ctx, valAddr)
 	if address != nil {
 		return nil, sdkerrors.Wrapf(types.ErrInvalid, "validator already has judge address %s or there is an error %s", address.String(), err.Error())
@@ -61,7 +51,6 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	if errSetting != nil {
 		return nil, errSetting
 	}
-	ctx.Logger().Error("reached so far 1")
 
 	// set an new frament mapping for the judge address
 	fragmentId, reserveId, errSettingRes := k.VoltKeeper.RegisterNewFragment(ctx, judgeAddr, reserveAddr.BtcAddress, msg.Threshold, msg.SignerApplicationFee, msg.NumOfSigners, msg.FragmentFeeBips, msg.ArbitraryData)
@@ -69,10 +58,7 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 		return nil, errSettingRes
 	}
 
-	ctx.Logger().Error("reached so far 2")
 	k.SetReserveAddressForJudge(ctx, judgeAddr, *reserveScript, *reserveAddr)
-
-	ctx.Logger().Error("reached so far 3")
 
 	// set an empty reserve mapping for the judge address
 	// reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddr, reserveAddr.BtcAddress)

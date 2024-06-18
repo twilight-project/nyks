@@ -27839,11 +27839,11 @@ paths:
               judgeAddress:
                 type: string
               numOfSigners:
-                type: integer
-                format: int64
+                type: string
+                format: uint64
               threshold:
-                type: integer
-                format: int64
+                type: string
+                format: uint64
               signerApplicationFee:
                 type: string
                 format: uint64
@@ -27894,11 +27894,11 @@ paths:
                     judgeAddress:
                       type: string
                     numOfSigners:
-                      type: integer
-                      format: int64
+                      type: string
+                      format: uint64
                     threshold:
-                      type: integer
-                      format: int64
+                      type: string
+                      format: uint64
                     signerApplicationFee:
                       type: string
                       format: uint64
@@ -27907,8 +27907,8 @@ paths:
                     reserveScript:
                       type: string
                     fragmentFeeBips:
-                      type: integer
-                      format: int64
+                      type: string
+                      format: uint64
                     arbitraryData:
                       type: string
                     validatorAddress:
@@ -29834,23 +29834,23 @@ paths:
                         SignerBtcPublicKey:
                           type: string
                         SignerApplicationFee:
-                          type: integer
-                          format: int64
+                          type: string
+                          format: uint64
                         SignerFeeBips:
-                          type: integer
-                          format: int64
+                          type: string
+                          format: uint64
                   SignerApplicationFee:
                     type: string
                     format: uint64
                   Threshold:
-                    type: integer
-                    format: int64
+                    type: string
+                    format: uint64
                   FeePool:
                     type: string
                     format: uint64
                   FragmentFeeBips:
-                    type: integer
-                    format: int64
+                    type: string
+                    format: uint64
                   arbitraryData:
                     type: string
                   ReserveIds:
@@ -29923,23 +29923,23 @@ paths:
                           SignerBtcPublicKey:
                             type: string
                           SignerApplicationFee:
-                            type: integer
-                            format: int64
+                            type: string
+                            format: uint64
                           SignerFeeBips:
-                            type: integer
-                            format: int64
+                            type: string
+                            format: uint64
                     SignerApplicationFee:
                       type: string
                       format: uint64
                     Threshold:
-                      type: integer
-                      format: int64
+                      type: string
+                      format: uint64
                     FeePool:
                       type: string
                       format: uint64
                     FragmentFeeBips:
-                      type: integer
-                      format: int64
+                      type: string
+                      format: uint64
                     arbitraryData:
                       type: string
                     ReserveIds:
@@ -30291,6 +30291,9 @@ paths:
                 items:
                   type: object
                   properties:
+                    applicationId:
+                      type: string
+                      format: uint64
                     fragmentId:
                       type: string
                       format: uint64
@@ -49195,11 +49198,11 @@ definitions:
       judgeAddress:
         type: string
       numOfSigners:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       threshold:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       signerApplicationFee:
         type: string
         format: uint64
@@ -49208,8 +49211,8 @@ definitions:
       reserveScript:
         type: string
       fragmentFeeBips:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       arbitraryData:
         type: string
       validatorAddress:
@@ -49591,11 +49594,11 @@ definitions:
       judgeAddress:
         type: string
       numOfSigners:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       threshold:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       signerApplicationFee:
         type: string
         format: uint64
@@ -49614,11 +49617,11 @@ definitions:
             judgeAddress:
               type: string
             numOfSigners:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             threshold:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             signerApplicationFee:
               type: string
               format: uint64
@@ -49627,8 +49630,8 @@ definitions:
             reserveScript:
               type: string
             fragmentFeeBips:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             arbitraryData:
               type: string
             validatorAddress:
@@ -50469,23 +50472,23 @@ definitions:
             SignerBtcPublicKey:
               type: string
             SignerApplicationFee:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             SignerFeeBips:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
       SignerApplicationFee:
         type: string
         format: uint64
       Threshold:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       FeePool:
         type: string
         format: uint64
       FragmentFeeBips:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       arbitraryData:
         type: string
       ReserveIds:
@@ -50506,11 +50509,11 @@ definitions:
       SignerBtcPublicKey:
         type: string
       SignerApplicationFee:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
       SignerFeeBips:
-        type: integer
-        format: int64
+        type: string
+        format: uint64
   twilightproject.nyks.volt.IndividualTwilightReserveAccountBalance:
     type: object
     properties:
@@ -50522,24 +50525,12 @@ definitions:
         format: uint64
   twilightproject.nyks.volt.MsgAcceptSignersResponse:
     type: object
-  twilightproject.nyks.volt.MsgSignerApplication:
-    type: object
-    properties:
-      fragmentId:
-        type: string
-        format: uint64
-      applicationFee:
-        type: string
-        format: uint64
-      feeBips:
-        type: string
-        format: uint64
-      btcPubKey:
-        type: string
-      signerAddress:
-        type: string
   twilightproject.nyks.volt.MsgSignerApplicationResponse:
     type: object
+    properties:
+      applicationId:
+        type: string
+        format: uint64
   twilightproject.nyks.volt.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -50674,23 +50665,23 @@ definitions:
                 SignerBtcPublicKey:
                   type: string
                 SignerApplicationFee:
-                  type: integer
-                  format: int64
+                  type: string
+                  format: uint64
                 SignerFeeBips:
-                  type: integer
-                  format: int64
+                  type: string
+                  format: uint64
           SignerApplicationFee:
             type: string
             format: uint64
           Threshold:
-            type: integer
-            format: int64
+            type: string
+            format: uint64
           FeePool:
             type: string
             format: uint64
           FragmentFeeBips:
-            type: integer
-            format: int64
+            type: string
+            format: uint64
           arbitraryData:
             type: string
           ReserveIds:
@@ -50730,23 +50721,23 @@ definitions:
                   SignerBtcPublicKey:
                     type: string
                   SignerApplicationFee:
-                    type: integer
-                    format: int64
+                    type: string
+                    format: uint64
                   SignerFeeBips:
-                    type: integer
-                    format: int64
+                    type: string
+                    format: uint64
             SignerApplicationFee:
               type: string
               format: uint64
             Threshold:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             FeePool:
               type: string
               format: uint64
             FragmentFeeBips:
-              type: integer
-              format: int64
+              type: string
+              format: uint64
             arbitraryData:
               type: string
             ReserveIds:
@@ -50897,6 +50888,9 @@ definitions:
         items:
           type: object
           properties:
+            applicationId:
+              type: string
+              format: uint64
             fragmentId:
               type: string
               format: uint64
@@ -51007,14 +51001,25 @@ definitions:
     title: >-
       ReserveWithdrawSnapshot is a snapshot of the reserve withdraw, its used in
       sweep to know which withdraws are currently being processed
-  twilightproject.nyks.volt.SignerInfo:
+  twilightproject.nyks.volt.SignerApplication:
     type: object
     properties:
+      applicationId:
+        type: string
+        format: uint64
+      fragmentId:
+        type: string
+        format: uint64
+      applicationFee:
+        type: string
+        format: uint64
+      feeBips:
+        type: string
+        format: uint64
+      btcPubKey:
+        type: string
       signerAddress:
         type: string
-      SignerFeeBips:
-        type: integer
-        format: int64
   twilightproject.nyks.volt.WithdrawRequestSnap:
     type: object
     properties:

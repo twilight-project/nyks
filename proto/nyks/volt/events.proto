@@ -18,6 +18,11 @@ message EventRefundTxSnapshot {
     uint64 roundId = 3;
 }
 
+message EventSignerApplication {
+    string message = 1;
+    uint64 applicationId = 2;
+}
+
 message EventAcceptSigners {
     string message = 1;
     uint64 fragmentId = 2;

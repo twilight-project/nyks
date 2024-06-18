@@ -68,6 +68,9 @@ var (
 
 	// LastRegisteredFragmentKey indexes the fragment LastRegisteredFragmentKey
 	LastRegisteredFragmentKey = forkstypes.HashString("LastRegisteredFragmentKey")
+
+	// LastRegisteredFragmentApplicationKey indexes the fragment LastRegisteredFragmentApplicationKey
+	LastRegisteredFragmentApplicationKey = forkstypes.HashString("LastRegisteredFragmentApplicationKey")
 )
 
 func KeyPrefix(p string) []byte {
@@ -190,13 +193,19 @@ func GetRefundTxSnapshotKey(reserveId uint64, roundId uint64) []byte {
 }
 
 // GetSignerApplicationFeeKey returns the key for the value of SignerApplicationFee
-func GetSignerApplicationFeeKey(fragmentId uint64) []byte {
+func GetSignerApplicationFeeKey(fragmentId uint64, applicationId uint64) []byte {
 	fragmentIdBuf := new(bytes.Buffer)
 	err := binary.Write(fragmentIdBuf, binary.LittleEndian, fragmentId)
 	if err != nil {
 		panic("Failed to convert uint64 to bytes")
 	}
-	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes())
+
+	appIdBuf := new(bytes.Buffer)
+	err1 := binary.Write(appIdBuf, binary.LittleEndian, applicationId)
+	if err1 != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes(), appIdBuf.Bytes())
 }
 
 // GetFragmentKey returns the following key format
@@ -208,4 +217,15 @@ func GetFragmentKey(fragmentId uint64) []byte {
 		panic("Failed to convert uint64 to bytes")
 	}
 	return forkstypes.AppendBytes(FragmentKey, fragmentBufBytes.Bytes())
+}
+
+// GetSignerApplicationFeePrefix returns the prefix for all applications for a given fragment ID.
+func GetSignerApplicationFeePrefix(fragmentId uint64) []byte {
+	fragmentIdBuf := new(bytes.Buffer)
+	err := binary.Write(fragmentIdBuf, binary.LittleEndian, fragmentId)
+	if err != nil {
+		panic("Failed to convert uint64 to bytes")
+	}
+
+	return forkstypes.AppendBytes(SignerApplicationFeeKey, fragmentIdBuf.Bytes())
 }

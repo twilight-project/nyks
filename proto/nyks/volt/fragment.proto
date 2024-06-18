@@ -25,20 +25,27 @@ message MsgSignerApplication {
   string signerAddress  = 5;
 }
 
-message MsgSignerApplicationResponse {}
+message SignerApplication {
+  uint64 applicationId = 1;
+  uint64 fragmentId = 2;
+  uint64 applicationFee = 3;
+  uint64 feeBips = 4;
+  string btcPubKey = 5;
+  string signerAddress = 6;
+}
+
+message MsgSignerApplicationResponse {
+    uint64 applicationId = 1;
+}
 
 message MsgAcceptSigners {
   uint64 fragmentId      = 1;
-  repeated SignerInfo signerInfos = 2;
+  repeated uint64 SignerApplicationIds = 2;
   string judgeAddress    = 3;
 }
   
 message MsgAcceptSignersResponse {}
   
-message SignerInfo {
-  string signerAddress = 1;
-  uint32 SignerFeeBips = 2;
-}
 
 message Fragment {
   uint64 FragmentId = 1;
@@ -47,9 +54,9 @@ message Fragment {
   bool JudgeStatus = 4;
   repeated FragmentSigners Signers = 5;
   uint64 SignerApplicationFee = 6;
-  uint32 Threshold = 7;
+  uint64 Threshold = 7;
   uint64 FeePool = 8;
-  uint32 FragmentFeeBips = 9;
+  uint64 FragmentFeeBips = 9;
   string arbitraryData = 10;
   repeated uint64 ReserveIds = 11;
 }
@@ -59,6 +66,6 @@ message FragmentSigners {
   string SignerAddress = 2;
   bool SignerStatus = 3;
   string SignerBtcPublicKey = 4;
-  uint32 SignerApplicationFee = 5;
-  uint32 SignerFeeBips = 6;
+  uint64 SignerApplicationFee = 5;
+  uint64 SignerFeeBips = 6;
 }

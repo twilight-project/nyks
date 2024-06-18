@@ -11,15 +11,15 @@ import (
 
 // SetSignerApplication set a specific signerApplication in the store from its index
 
-func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.MsgSignerApplication) {
+func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.SignerApplication) {
 
 	store := ctx.KVStore(k.storeKey)
-	aKey := types.GetSignerApplicationFeeKey(msg.FragmentId)
+	aKey := types.GetSignerApplicationFeeKey(msg.FragmentId, msg.ApplicationId)
 	store.Set(aKey, k.cdc.MustMarshal(msg))
 }
 
 // RegisterNewFragment sets a new fragment in the store
-func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string, threshold uint32, applicationFee uint64, numOfSigners uint32, fragmentFeeBips uint32, arbitraryData string) (uint64, uint64, error) {
+func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string, threshold uint64, applicationFee uint64, numOfSigners uint64, fragmentFeeBips uint64, arbitraryData string) (uint64, uint64, error) {
 
 	// Get the latest fragment id
 	// We keep fragment ids in a separate store and keep track of it as a counter
@@ -77,7 +77,7 @@ func (k Keeper) SetFragment(ctx sdk.Context, fragment *types.Fragment) error {
 func (k Keeper) setLastRegisteredFragment(ctx sdk.Context, fragmentId uint64) {
 	store := ctx.KVStore(k.storeKey)
 
-	store.Set(types.LastRegisteredReserveKey, forkstypes.UInt64Bytes(fragmentId))
+	store.Set(types.LastRegisteredFragmentKey, forkstypes.UInt64Bytes(fragmentId))
 }
 
 // GetLastRegisteredFragment returns the latest fragment id
@@ -127,37 +127,6 @@ func (k Keeper) UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reser
 	return k.SetFragment(ctx, fragment)
 }
 
-// AddSignersToFragment adds signers to a fragment
-func (k Keeper) AddSignersToFragment(ctx sdk.Context, fragmentId uint64, signerAddress string, feeBips uint32) error {
-	// Retrieve the fragment from the store
-	fragment, found := k.GetFragment(ctx, fragmentId)
-	if !found {
-		return sdkerrors.Wrapf(types.ErrFragmentNotFound, "fragment %d not found", fragmentId)
-	}
-
-	// Check if the fragment already has the maximum number of signers
-	if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
-		return sdkerrors.Wrapf(types.ErrMaxSignersReached, "fragment %d already has the maximum number of signers", fragmentId)
-	}
-
-	// Create a new signer info
-	newSigner := &types.FragmentSigners{
-		FragmentID:           fragmentId,
-		SignerAddress:        signerAddress,
-		SignerStatus:         true,
-		SignerBtcPublicKey:   "",
-		SignerApplicationFee: feeBips,
-	}
-
-	// Add the new signer to the fragment
-	fragment.Signers = append(fragment.Signers, newSigner)
-
-	// Save the updated fragment back to the store
-	k.SetFragment(ctx, fragment)
-
-	return nil
-}
-
 // ChangeFragmentStatus changes the status of a fragment - 0 for inactive, 1 for active
 func (k Keeper) ChangeFragmentStatus(ctx sdk.Context, fragmentId uint64, newStatus bool) error {
 	// Retrieve the fragment from the store
@@ -176,7 +145,7 @@ func (k Keeper) ChangeFragmentStatus(ctx sdk.Context, fragmentId uint64, newStat
 
 	// Calculate the threshold
 	if newStatus {
-		fragment.Threshold = uint32((len(fragment.Signers) * 2 / 3) + 1)
+		fragment.Threshold = uint64((len(fragment.Signers) * 2 / 3) + 1)
 	}
 
 	// Save the updated fragment back to the store
@@ -209,6 +178,27 @@ func (k Keeper) GetFragmentForJudgeAddress(ctx sdk.Context, judgeAddress string)
 	return fragments, nil
 }
 
+// GetExistingSignerInFragments retrieves all fragments associated with a given signer address
+func (k Keeper) GetExistingSignerInFragments(ctx sdk.Context, signerAddress string) bool {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.FragmentKey))
+	defer iterator.Close()
+
+	found := false
+
+	k.IterateFragments(ctx, func(_ []byte, res types.Fragment) (abort bool) {
+		for _, signer := range res.Signers {
+			if signer.SignerAddress == signerAddress {
+				found = true
+				return true // Abort iteration
+			}
+		}
+		return false
+	})
+
+	return found
+}
+
 // IterateFragments iterates over all fragments in the store and performs a callback function
 func (k Keeper) IterateFragments(ctx sdk.Context, cb func([]byte, types.Fragment) bool) {
 	store := ctx.KVStore(k.storeKey)
@@ -225,16 +215,16 @@ func (k Keeper) IterateFragments(ctx sdk.Context, cb func([]byte, types.Fragment
 	}
 }
 
-// GetSignerApplications retrieves all signer applications for a given fragment ID
-func (k Keeper) GetSignerApplications(ctx sdk.Context, fragmentId uint64) ([]types.MsgSignerApplication, bool) {
+func (k Keeper) GetSignerApplications(ctx sdk.Context, fragmentId uint64) ([]types.SignerApplication, bool) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetSignerApplicationFeeKey(fragmentId))
+	prefix := types.GetSignerApplicationFeePrefix(fragmentId)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
-	var applications []types.MsgSignerApplication
+	var applications []types.SignerApplication
 
 	for ; iterator.Valid(); iterator.Next() {
-		var application types.MsgSignerApplication
+		var application types.SignerApplication
 		k.cdc.MustUnmarshal(iterator.Value(), &application)
 
 		applications = append(applications, application)
@@ -245,4 +235,36 @@ func (k Keeper) GetSignerApplications(ctx sdk.Context, fragmentId uint64) ([]typ
 	}
 
 	return applications, true
+}
+
+// GetSignerApplication retrieves a signer application from the store
+func (k Keeper) GetSignerApplication(ctx sdk.Context, fragmentId uint64, applicationId uint64) (*types.SignerApplication, bool) {
+	store := ctx.KVStore(k.storeKey)
+	aKey := types.GetSignerApplicationFeeKey(fragmentId, applicationId)
+	bz := store.Get(aKey)
+	if bz == nil {
+		return nil, false
+	}
+
+	var application types.SignerApplication
+	k.cdc.MustUnmarshal(bz, &application)
+	return &application, true
+}
+
+// setLastRegisteredApplicationId sets the latest application id
+func (k Keeper) setLastRegisteredApplicationId(ctx sdk.Context, applicationId uint64) {
+	store := ctx.KVStore(k.storeKey)
+
+	store.Set(types.LastRegisteredFragmentApplicationKey, forkstypes.UInt64Bytes(applicationId))
+}
+
+// GetLastRegisteredApplicationId returns the latest application id
+func (k Keeper) GetLastRegisteredApplicationId(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	bytes := store.Get(types.LastRegisteredFragmentApplicationKey)
+
+	if len(bytes) == 0 {
+		return 0
+	}
+	return forkstypes.UInt64FromBytes(bytes)
 }

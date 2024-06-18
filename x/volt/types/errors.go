@@ -28,4 +28,7 @@ var (
 	ErrReserveAlreadyExists           = sdkerrors.Register(ModuleName, 18, "This reserve id already exists in the passed fragment id")
 	ErrMaxSignersReached              = sdkerrors.Register(ModuleName, 19, "Max signers reached")
 	ErrMinSignersNotMet               = sdkerrors.Register(ModuleName, 20, "Min signers not met")
+	ErrApplicationNotFound            = sdkerrors.Register(ModuleName, 21, "Application not found")
+	ErrSignerNotFound                 = sdkerrors.Register(ModuleName, 22, "Signer not found")
+	ErrSignerAlreadyExists            = sdkerrors.Register(ModuleName, 23, "Signer already exists")
 )

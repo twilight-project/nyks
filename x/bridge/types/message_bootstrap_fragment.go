@@ -12,7 +12,7 @@ const TypeMsgBootstrapFragment = "bootstrap_fragment"
 
 var _ sdk.Msg = &MsgBootstrapFragment{}
 
-func NewMsgBootstrapFragment(judgeAddress string, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, reserveAddress string, reserveScript string, fragmentFeeBips uint32, arbitraryData string, validatorAddress string) *MsgBootstrapFragment {
+func NewMsgBootstrapFragment(judgeAddress string, numOfSigners uint64, threshold uint64, signerApplicationFee uint64, reserveAddress string, reserveScript string, fragmentFeeBips uint64, arbitraryData string, validatorAddress string) *MsgBootstrapFragment {
 	return &MsgBootstrapFragment{
 		JudgeAddress:         judgeAddress,
 		NumOfSigners:         numOfSigners,

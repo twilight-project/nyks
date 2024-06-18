@@ -53,7 +53,7 @@ func (k Keeper) IterateBtcReserveAddresses(ctx sdk.Context, cb func([]byte, type
 }
 
 // SetJudgeAddressForValidatorAddress that will take judgeAddress and validatorAddress as input and store it in the store
-func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress sdk.AccAddress, numOfSigners uint32, threshold uint32, signerApplicationFee uint64, reserveAddress string, reserveScript string, arbitraryData string, validatorAddress sdk.ValAddress) error {
+func (k Keeper) SetJudgeAddressForValidatorAddress(ctx sdk.Context, judgeAddress sdk.AccAddress, numOfSigners uint64, threshold uint64, signerApplicationFee uint64, reserveAddress string, reserveScript string, arbitraryData string, validatorAddress sdk.ValAddress) error {
 	if err := sdk.VerifyAddressFormat(validatorAddress); err != nil {
 		panic(sdkerrors.Wrap(err, "invalid validator address"))
 	}

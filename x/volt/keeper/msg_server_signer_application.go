@@ -16,7 +16,29 @@ func (k msgServer) SignerApplication(goCtx context.Context, msg *types.MsgSigner
 		return nil, types.ErrFragmentNotFound
 	}
 
-	k.SetSignerApplication(ctx, msg)
+	// Generate a new application ID
+	lastApplicationID := k.Keeper.GetLastRegisteredApplicationId(ctx)
+	newApplicationID := lastApplicationID + 1
 
-	return &types.MsgSignerApplicationResponse{}, nil
+	// Save the application data in the store
+	signerApplication := types.SignerApplication{
+		ApplicationId:  newApplicationID,
+		FragmentId:     msg.FragmentId,
+		ApplicationFee: msg.ApplicationFee,
+		FeeBips:        msg.FeeBips,
+		BtcPubKey:      msg.BtcPubKey,
+		SignerAddress:  msg.SignerAddress,
+	}
+
+	k.SetSignerApplication(ctx, &signerApplication)
+	k.Keeper.setLastRegisteredApplicationId(ctx, newApplicationID)
+
+	// Emit event with the new application ID
+	ctx.EventManager().EmitTypedEvent(
+		&types.EventSignerApplication{
+			Message:       msg.Type(),
+			ApplicationId: newApplicationID,
+		},
+	)
+	return &types.MsgSignerApplicationResponse{ApplicationId: newApplicationID}, nil
 }
