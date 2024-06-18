@@ -103,9 +103,6 @@ import (
 	nyksmodule "github.com/twilight-project/nyks/x/forks"
 	nyksmodulekeeper "github.com/twilight-project/nyks/x/forks/keeper"
 	nyksmoduletypes "github.com/twilight-project/nyks/x/forks/types"
-	fragmentmodule "github.com/twilight-project/nyks/x/fragment"
-	fragmentmodulekeeper "github.com/twilight-project/nyks/x/fragment/keeper"
-	fragmentmoduletypes "github.com/twilight-project/nyks/x/fragment/types"
 	voltmodule "github.com/twilight-project/nyks/x/volt"
 	voltmodulekeeper "github.com/twilight-project/nyks/x/volt/keeper"
 	voltmoduletypes "github.com/twilight-project/nyks/x/volt/types"
@@ -169,7 +166,6 @@ var (
 		bridgemodule.AppModuleBasic{},
 		voltmodule.AppModuleBasic{},
 		zkosmodule.AppModuleBasic{},
-		fragmentmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -185,7 +181,6 @@ var (
 		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		bridgemoduletypes.ModuleName:   nil,
 		zkosmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
-		fragmentmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -253,7 +248,6 @@ type App struct {
 
 	ZkosKeeper zkosmodulekeeper.Keeper
 
-	FragmentKeeper fragmentmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -294,7 +288,6 @@ func New(
 		bridgemoduletypes.StoreKey,
 		voltmoduletypes.StoreKey,
 		zkosmoduletypes.StoreKey,
-		fragmentmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -462,20 +455,6 @@ func New(
 	)
 	zkosModule := zkosmodule.NewAppModule(appCodec, app.ZkosKeeper, app.AccountKeeper, app.BankKeeper, app.VoltKeeper)
 
-	app.FragmentKeeper = *fragmentmodulekeeper.NewKeeper(
-		appCodec,
-		keys[fragmentmoduletypes.StoreKey],
-		keys[fragmentmoduletypes.MemStoreKey],
-		app.GetSubspace(fragmentmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.GovKeeper,
-		app.StakingKeeper,
-		app.SlashingKeeper,
-		app.VoltKeeper,
-	)
-	fragmentModule := fragmentmodule.NewAppModule(appCodec, app.FragmentKeeper, app.AccountKeeper, app.BankKeeper)
-
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -520,7 +499,6 @@ func New(
 		bridgeModule,
 		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		zkosModule,
-		fragmentModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -551,7 +529,6 @@ func New(
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
-		fragmentmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -578,7 +555,6 @@ func New(
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
-		fragmentmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -610,7 +586,6 @@ func New(
 		bridgemoduletypes.ModuleName,
 		voltmoduletypes.ModuleName,
 		zkosmoduletypes.ModuleName,
-		fragmentmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -638,7 +613,6 @@ func New(
 		bridgeModule,
 		voltmodule.NewAppModule(appCodec, app.VoltKeeper, app.AccountKeeper, app.BankKeeper),
 		zkosModule,
-		fragmentModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -860,7 +834,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(bridgemoduletypes.ModuleName)
 	paramsKeeper.Subspace(voltmoduletypes.ModuleName)
 	paramsKeeper.Subspace(zkosmoduletypes.ModuleName)
-	paramsKeeper.Subspace(fragmentmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
