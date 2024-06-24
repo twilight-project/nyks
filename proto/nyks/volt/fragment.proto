@@ -40,7 +40,7 @@ message MsgSignerApplicationResponse {
 
 message MsgAcceptSigners {
   uint64 fragmentId      = 1;
-  repeated uint64 SignerApplicationIds = 2;
+  repeated uint64 signerApplicationIds = 2;
   string judgeAddress    = 3;
 }
   

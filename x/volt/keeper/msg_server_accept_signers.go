@@ -18,6 +18,11 @@ func (k msgServer) AcceptSigners(goCtx context.Context, msg *types.MsgAcceptSign
 		return nil, sdkerrors.Wrapf(types.ErrFragmentNotFound, "fragment %d not found", msg.FragmentId)
 	}
 
+	// Check if signer of the message is the judge of the fragment
+	if fragment.JudgeAddress != msg.JudgeAddress {
+		return nil, sdkerrors.Wrapf(types.ErrJudgeMismatch, "signer %s is not the judge of fragment %d", msg.JudgeAddress, msg.FragmentId)
+	}
+
 	// Check if the fragment already has the maximum number of signers
 	if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
 		return nil, sdkerrors.Wrapf(types.ErrMaxSignersReached, "fragment %d already has the maximum number of signers", msg.FragmentId)

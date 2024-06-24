@@ -31,4 +31,5 @@ var (
 	ErrApplicationNotFound            = sdkerrors.Register(ModuleName, 21, "Application not found")
 	ErrSignerNotFound                 = sdkerrors.Register(ModuleName, 22, "Signer not found")
 	ErrSignerAlreadyExists            = sdkerrors.Register(ModuleName, 23, "Signer already exists")
+	ErrJudgeMismatch                  = sdkerrors.Register(ModuleName, 24, "Judge mismatch")
 )
