@@ -69,11 +69,9 @@ message MsgBootstrapFragment {
   uint64 numOfSigners     = 2;
   uint64 threshold       = 3;
   uint64 signerApplicationFee = 4;
-  string reserveAddress = 5;
-  string reserveScript = 6;
-  uint64 fragmentFeeBips = 7;
-  string arbitraryData    = 8;
-  string validatorAddress = 9;
+  uint64 fragmentFeeBips = 5;
+  string arbitraryData    = 6;
+  string validatorAddress = 7;
 }
 
 message MsgBootstrapFragmentResponse {

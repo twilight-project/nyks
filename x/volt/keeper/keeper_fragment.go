@@ -19,7 +19,7 @@ func (k msgServer) SetSignerApplication(ctx sdk.Context, msg *types.SignerApplic
 }
 
 // RegisterNewFragment sets a new fragment in the store
-func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, reserveAddress string, threshold uint64, applicationFee uint64, numOfSigners uint64, fragmentFeeBips uint64, arbitraryData string) (uint64, uint64, error) {
+func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, threshold uint64, applicationFee uint64, numOfSigners uint64, fragmentFeeBips uint64, arbitraryData string) (uint64, error) {
 
 	// Get the latest fragment id
 	// We keep fragment ids in a separate store and keep track of it as a counter
@@ -28,13 +28,7 @@ func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress
 
 	// Check if the fragment limit has been reached
 	if (fragmentId) > types.FragmentMaxLimit {
-		return 0, 0, sdkerrors.Wrapf(types.ErrFragmentMaxLimitReached, fmt.Sprint(types.BtcReserveMaxLimit))
-	}
-
-	// Create a new BtcReserve
-	reserveId, err := k.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress)
-	if err != nil {
-		return 0, 0, err
+		return 0, sdkerrors.Wrapf(types.ErrFragmentMaxLimitReached, fmt.Sprint(types.FragmentMaxLimit))
 	}
 
 	// Create a new fragment
@@ -49,18 +43,18 @@ func (k Keeper) RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress
 		FeePool:              0,
 		FragmentFeeBips:      fragmentFeeBips,
 		ArbitraryData:        arbitraryData,
-		ReserveIds:           []uint64{reserveId},
+		ReserveIds:           []uint64{},
 	}
 
 	// Set the fragment
 	errSet := k.SetFragment(ctx, fragment)
 	if errSet != nil {
-		return 0, 0, sdkerrors.Wrapf(types.ErrCouldNotSetFragment, fmt.Sprint(fragmentId))
+		return 0, sdkerrors.Wrapf(types.ErrCouldNotSetFragment, fmt.Sprint(fragmentId))
 	} else {
 		k.setLastRegisteredFragment(ctx, fragmentId)
 	}
 
-	return fragmentId, reserveId, nil
+	return fragmentId, nil
 }
 
 // SetFragment sets a fragment in the store

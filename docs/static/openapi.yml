@@ -27902,10 +27902,6 @@ paths:
                     signerApplicationFee:
                       type: string
                       format: uint64
-                    reserveAddress:
-                      type: string
-                    reserveScript:
-                      type: string
                     fragmentFeeBips:
                       type: string
                       format: uint64
@@ -29550,42 +29546,6 @@ paths:
                           "@type": "type.googleapis.com/google.protobuf.Duration",
                           "value": "1.212s"
                         }
-      tags:
-        - Query
-  /twilight-project/nyks/fragment/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: TwilightprojectNyksFragmentParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
       tags:
         - Query
   /twilight-project/nyks/volt/btc_reserve:
@@ -49206,10 +49166,6 @@ definitions:
       signerApplicationFee:
         type: string
         format: uint64
-      reserveAddress:
-        type: string
-      reserveScript:
-        type: string
       fragmentFeeBips:
         type: string
         format: uint64
@@ -49625,10 +49581,6 @@ definitions:
             signerApplicationFee:
               type: string
               format: uint64
-            reserveAddress:
-              type: string
-            reserveScript:
-              type: string
             fragmentFeeBips:
               type: string
               format: uint64
@@ -50358,20 +50310,6 @@ definitions:
           zkOracleAddress:
             type: string
   twilightproject.nyks.forks.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
-  twilightproject.nyks.fragment.MsgAcceptSignersResponse:
-    type: object
-  twilightproject.nyks.fragment.MsgSignerApplicationResponse:
-    type: object
-  twilightproject.nyks.fragment.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  twilightproject.nyks.fragment.QueryParamsResponse:
     type: object
     properties:
       params:

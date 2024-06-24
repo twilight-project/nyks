@@ -16,7 +16,7 @@ func CmdRegisterReserveAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-reserve-address [fragment-id] [reserve-script] [reserve-address] [judge-address]",
 		Short: "Broadcast message RegisterReserveAddress",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argFragmentId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {

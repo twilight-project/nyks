@@ -2,7 +2,7 @@ package types
 
 const (
 	// FragmentMaxLimit is the total number of fragments
-	FragmentMaxLimit = 8
+	FragmentMaxLimit = 10
 
 	// FragmentSignersMaxLimit is the total number of signers in a fragment
 	MaxSignersPerFragment = 6
@@ -17,7 +17,7 @@ const (
 	MaxReservesPerFragment = 1
 
 	// BtcReserveMaxLimit is the total number of reserves
-	BtcReserveMaxLimit = 1
+	BtcReserveMaxLimit = 10
 
 	// MaxOutgoingBtcOutputs is the number of outputs we can create in a btc request
 	MaxOutgoingBtcOutputs = 2
