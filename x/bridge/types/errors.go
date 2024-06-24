@@ -23,4 +23,5 @@ var (
 	ErrProposeSweepAddressIsLocked    = sdkerrors.Register(ModuleName, 13, "propose sweep address is locked")
 	ErrFragmentNotFound               = sdkerrors.Register(ModuleName, 14, "fragment not found")
 	ErrMaxReservesPerFragmentExceeded = sdkerrors.Register(ModuleName, 15, "maximum reserves per fragment exceeded")
+	ErrJudgeMismatch                  = sdkerrors.Register(ModuleName, 16, "judge mismatch")
 )

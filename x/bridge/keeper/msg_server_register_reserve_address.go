@@ -57,6 +57,11 @@ func (k msgServer) RegisterReserveAddress(goCtx context.Context, msg *types.MsgR
 		return nil, sdkerrors.Wrapf(types.ErrMaxReservesPerFragmentExceeded, fmt.Sprintf("maximum reserves per fragment %d exceeded", volttypes.MaxReservesPerFragment))
 	}
 
+	// check if judgeAddress is the judge of the fragment
+	if fragment.JudgeAddress != judgeAddress.String() {
+		return nil, sdkerrors.Wrapf(types.ErrJudgeMismatch, fmt.Sprintf("judge %s is not the judge of fragment %d", judgeAddress.String(), msg.FragmentId))
+	}
+
 	// set an empty reserve mapping for the judge address
 	reserveId, errSettingRes := k.VoltKeeper.RegisterNewBtcReserve(ctx, judgeAddress, reserveAddress.BtcAddress)
 	if errSettingRes != nil {

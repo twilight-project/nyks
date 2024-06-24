@@ -23,13 +23,14 @@ func (k msgServer) AcceptSigners(goCtx context.Context, msg *types.MsgAcceptSign
 		return nil, sdkerrors.Wrapf(types.ErrJudgeMismatch, "signer %s is not the judge of fragment %d", msg.JudgeAddress, msg.FragmentId)
 	}
 
-	// Check if the fragment already has the maximum number of signers
-	if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
-		return nil, sdkerrors.Wrapf(types.ErrMaxSignersReached, "fragment %d already has the maximum number of signers", msg.FragmentId)
-	}
-
 	// Add each signer application to the fragment
 	for _, applicationId := range msg.SignerApplicationIds {
+
+		// Check if the fragment already has the maximum number of signers
+		if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
+			return nil, sdkerrors.Wrapf(types.ErrMaxSignersReached, "A fragment can not have more than %d signers", types.MaxSignersPerFragment)
+		}
+
 		application, found := k.Keeper.GetSignerApplication(ctx, msg.FragmentId, applicationId)
 		if !found {
 			return nil, sdkerrors.Wrapf(types.ErrApplicationNotFound, "signer application %d not found", applicationId)
@@ -55,7 +56,7 @@ func (k msgServer) AcceptSigners(goCtx context.Context, msg *types.MsgAcceptSign
 	}
 
 	// Check if the fragment now has the maximum number of signers and update the status
-	if len(fragment.Signers) >= int(types.MaxSignersPerFragment) {
+	if len(fragment.Signers) == int(types.MaxSignersPerFragment) {
 		fragment.FragmentStatus = true
 	}
 
