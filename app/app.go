@@ -181,6 +181,7 @@ var (
 		nyksmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		bridgemoduletypes.ModuleName:   nil,
 		zkosmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		voltmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -706,6 +707,9 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 
 	// Add the module account to the x/auth store
 	app.AccountKeeper.SetModuleAccount(ctx, bridgeModuleAcc)
+
+	// Initialize or normalize the volt module account
+	normalizeModuleAccount(ctx, app.AccountKeeper, voltmoduletypes.ModuleName)
 
 	return res
 }

@@ -53,6 +53,12 @@ func (k msgServer) AcceptSigners(goCtx context.Context, msg *types.MsgAcceptSign
 		}
 
 		fragment.Signers = append(fragment.Signers, newSigner)
+
+		// Return the signer application fee to the signer address from module account
+		err := k.ReturnSignerApplicationFee(ctx, application.SignerAddress, application.ApplicationFee)
+		if err != nil {
+			return nil, sdkerrors.Wrapf(types.ErrCouldNotReturnSignerApplicationFee, fmt.Sprint(application.SignerAddress))
+		}
 	}
 
 	// Check if the fragment now has the maximum number of signers and update the status

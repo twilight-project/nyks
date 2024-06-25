@@ -262,3 +262,53 @@ func (k Keeper) GetLastRegisteredApplicationId(ctx sdk.Context) uint64 {
 	}
 	return forkstypes.UInt64FromBytes(bytes)
 }
+
+// GetSignerApplication retrieves a signer application from the store by signer address and fragment Id
+func (k Keeper) GetSignerApplicationBySignerAndFragmentId(ctx sdk.Context, fragmentId uint64, signerAddress string, btcPubKey string) (*types.SignerApplication, bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.GetSignerApplicationFeePrefix(fragmentId))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var application types.SignerApplication
+		k.cdc.MustUnmarshal(iterator.Value(), &application)
+
+		if application.SignerAddress == signerAddress || application.BtcPubKey == btcPubKey {
+			return &application, true
+		}
+	}
+
+	return nil, false
+}
+
+// ReturnSignerApplicationFee returns the fee for a signer application
+func (k Keeper) ReturnSignerApplicationFee(ctx sdk.Context, aSignerAddress string, applicationFee uint64) error {
+
+	// Retrieve the signer's address
+	signerAddress, err := sdk.AccAddressFromBech32(aSignerAddress)
+	if err != nil {
+		return err
+	}
+
+	// Retrieve the application fee
+	feeAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(applicationFee))
+
+	voltModuleAcc := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
+	if voltModuleAcc == nil {
+		return types.ErrVoltModuleAccountNotFound
+	}
+
+	// Check if signer has enough balance to pay the application fee
+	balance := k.BankKeeper.GetBalance(ctx, voltModuleAcc.GetAddress(), "nyks")
+	if balance.Amount.LT(sdk.NewIntFromUint64(applicationFee)) {
+		return types.ErrInsufficientFunds
+	}
+
+	// Send the application fee back to the signer
+	err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, signerAddress, sdk.NewCoins(feeAmount))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

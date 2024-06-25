@@ -13,6 +13,7 @@ type BridgeKeeper interface {
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 	GetModuleAddress(name string) sdk.AccAddress
+	GetModuleAccount(ctx sdk.Context, name string) types.ModuleAccountI
 	// Methods imported from account should be defined here
 }
 
