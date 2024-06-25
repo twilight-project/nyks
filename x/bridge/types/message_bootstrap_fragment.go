@@ -52,19 +52,22 @@ func (msg *MsgBootstrapFragment) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
 	}
 
-	// Validate validator address
-	// if _, err := sdk.ValAddressFromBech32(msg.ValidatorAddress); err != nil {
-	// 	return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address (%s)", err)
-	// }
-
 	// Validate numOfSigners is greater than two
-	if msg.NumOfSigners < volttypes.MinSignersPerFragment {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "number of signers must be greater than zero")
+	if msg.NumOfSigners < volttypes.MaxSignersPerFragment {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "number of signers must be exactly %d", volttypes.MaxSignersPerFragment)
 	}
 
 	// Validate threshold is positive and not greater than numOfSigners
-	if msg.Threshold == 0 || msg.Threshold > msg.NumOfSigners {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "threshold must be positive and less than or equal to number of signers")
+	if msg.Threshold == 0 || msg.Threshold > msg.NumOfSigners || msg.Threshold < 4 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "threshold must be positive and less than or equal to number of signers and greater than 3")
+	}
+
+	if msg.SignerApplicationFee < 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "signer application fee must be positive")
+	}
+
+	if msg.FragmentFeeBips < 0 || msg.FragmentFeeBips > 10000 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "fragment fee bips must be between 0 and 100")
 	}
 
 	// Validate arbitrary data

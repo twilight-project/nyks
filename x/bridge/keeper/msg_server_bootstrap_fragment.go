@@ -15,7 +15,7 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 
 	accAddr, err := sdk.AccAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid validator address")
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid validator address")
 	}
 
 	valAddr := sdk.ValAddress(accAddr)
@@ -29,11 +29,11 @@ func (k msgServer) BootstrapFragment(goCtx context.Context, msg *types.MsgBootst
 	// return an error if the validator isn't in the active set
 	validator, found := k.StakingKeeper.GetValidator(ctx, valAddr)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrorInvalidSigner, "validator not found")
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrorInvalidSigner, "validator not found")
 	}
 	val := k.StakingKeeper.Validator(ctx, validator.GetOperator())
 	if val == nil || !val.IsBonded() {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrorInvalidSigner, "validator not in active set")
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrorInvalidSigner, "validator not in active set")
 	}
 
 	address, err := k.GetJudgeAddressForValidatorAddress(ctx, valAddr)

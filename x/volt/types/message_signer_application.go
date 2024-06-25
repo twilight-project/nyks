@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	forktypes "github.com/twilight-project/nyks/x/forks/types"
 )
 
 const TypeMsgSignerApplication = "signer_application"
@@ -52,14 +53,16 @@ func (msg *MsgSignerApplication) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "applicationFee must be positive")
 	}
 
-	// Check if btcPubKey is not empty
-	if len(msg.BtcPubKey) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "btcPubKey cannot be empty")
+	// Check FeeBips is less than 10000
+	if msg.FeeBips > 10000 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "feeBips must be less than 10000")
 	}
 
-	// Check if btcPubKey has a valid length (this is just an example, adjust as needed)
-	if len(msg.BtcPubKey) != 66 { // Example length for compressed BTC public key
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "btcPubKey has an invalid length")
+	// Validate BtcPubKey
+	if msg.BtcPubKey != "" {
+		if _, err := forktypes.NewBtcPublicKey(msg.BtcPubKey); err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "invalid BtcPublicKey (%s)", err)
+		}
 	}
 
 	// Validate signerAddress
