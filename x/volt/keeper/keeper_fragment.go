@@ -312,3 +312,39 @@ func (k Keeper) ReturnSignerApplicationFee(ctx sdk.Context, aSignerAddress strin
 
 	return nil
 }
+
+// GetFragementForReserveId retrieves the fragment associed with a reserveId, this could only be one fragment
+func (k Keeper) GetFragementForReserveId(ctx sdk.Context, reserveId uint64) (*types.Fragment, bool) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.FragmentKey))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var fragment types.Fragment
+		k.cdc.MustUnmarshal(iterator.Value(), &fragment)
+
+		for _, id := range fragment.ReserveIds {
+			if id == reserveId {
+				return &fragment, true
+			}
+		}
+	}
+
+	return nil, false
+}
+
+// CheckSignerInFragment takes a reserveId and a signer address and checks if the signer is in the fragment
+func (k Keeper) CheckSignerInFragment(ctx sdk.Context, reserveId uint64, signerAddress sdk.AccAddress) bool {
+	fragment, found := k.GetFragementForReserveId(ctx, reserveId)
+	if !found {
+		return false
+	}
+
+	for _, signer := range fragment.Signers {
+		if signer.SignerAddress == signerAddress.String() {
+			return true
+		}
+	}
+
+	return false
+}

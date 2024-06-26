@@ -48,4 +48,5 @@ type VoltKeeper interface {
 	RegisterNewFragment(ctx sdk.Context, judgeAddress sdk.AccAddress, threshold uint64, applicationFee uint64, numOfSigners uint64, fragmentFeeBips uint64, arbitraryData string) (uint64, error)
 	GetFragment(ctx sdk.Context, fragmentId uint64) (*volttypes.Fragment, bool)
 	UpdateFragmentReserves(ctx sdk.Context, fragmentId uint64, reserveId uint64) error
+	CheckSignerInFragment(ctx sdk.Context, reserveId uint64, signerAddress sdk.AccAddress) bool
 }

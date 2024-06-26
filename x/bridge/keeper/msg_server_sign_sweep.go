@@ -13,17 +13,11 @@ func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*t
 
 	signerAddress, e1 := sdk.AccAddressFromBech32(msg.SignerAddress)
 
-	// // Check if oracle is registered and active
-	// _, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
-	// if errOracle != nil {
-	// 	return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
-	// }
-
-	// Check registered reserve address
-	// _, errReserve := k.VoltKeeper.GetBtcReserveIdByAddress(ctx, msg.ReserveAddress)
-	// if errReserve != nil {
-	// 	return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveAddress))
-	// }
+	// Check if signerAddress is part of the fragment that reserveId belongs to
+	found := k.VoltKeeper.CheckSignerInFragment(ctx, msg.ReserveId, signerAddress)
+	if found == false {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "Signer address not part of fragment")
+	}
 
 	sweepSigValue := types.ValidateSignatures(msg.SweepSignature)
 	if e1 != nil {
@@ -33,7 +27,7 @@ func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*t
 	}
 
 	// check if this signed btc sweep msg is already registered
-	_, found := k.GetBtcSignSweepMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, signerAddress)
+	_, found = k.GetBtcSignSweepMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, signerAddress)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate sweep Request")
 	}
