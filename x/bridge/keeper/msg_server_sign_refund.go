@@ -11,13 +11,13 @@ import (
 func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (*types.MsgSignRefundResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	btcOracleAddress, e1 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	signerAddress, e1 := sdk.AccAddressFromBech32(msg.SignerAddress)
 
-	// Check if oracle is registered and active
-	_, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
-	if errOracle != nil {
-		return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
-	}
+	// // Check if oracle is registered and active
+	// _, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	// if errOracle != nil {
+	// 	return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
+	// }
 
 	// Check registered reserve address
 	// _, errReserve := k.VoltKeeper.GetBtcReserveIdByAddress(ctx, msg.ReserveAddress)
@@ -33,25 +33,25 @@ func (k msgServer) SignRefund(goCtx context.Context, msg *types.MsgSignRefund) (
 	}
 
 	// check if this signed btc refund msg is already registered
-	_, found := k.GetBtcSignRefundMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, btcOracleAddress)
+	_, found := k.GetBtcSignRefundMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, signerAddress)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate Refund Request")
 	}
 
 	// set signed btc refund msg
-	err := k.SetBtcSignRefundMsg(ctx, btcOracleAddress, msg.ReserveId, msg.RoundId, msg.SignerPublicKey, msg.RefundSignature)
+	err := k.SetBtcSignRefundMsg(ctx, signerAddress, msg.ReserveId, msg.RoundId, msg.SignerPublicKey, msg.RefundSignature)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventSignRefund{
-			Message:          msg.Type(),
-			ReserveId:        msg.ReserveId,
-			RoundId:          msg.RoundId,
-			SignerPublicKey:  msg.SignerPublicKey,
-			RefundSignature:  msg.RefundSignature,
-			BtcOracleAddress: msg.BtcOracleAddress,
+			Message:         msg.Type(),
+			ReserveId:       msg.ReserveId,
+			RoundId:         msg.RoundId,
+			SignerPublicKey: msg.SignerPublicKey,
+			RefundSignature: msg.RefundSignature,
+			SignerAddress:   msg.SignerAddress,
 		},
 	)
 

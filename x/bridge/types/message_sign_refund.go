@@ -12,13 +12,13 @@ const TypeMsgSignRefund = "sign_refund"
 
 var _ sdk.Msg = &MsgSignRefund{}
 
-func NewMsgSignRefund(reserveId uint64, roundId uint64, signerPublicKey string, refundSignature []string, btcOracleAddress string) *MsgSignRefund {
+func NewMsgSignRefund(reserveId uint64, roundId uint64, signerPublicKey string, refundSignature []string, signerAddress string) *MsgSignRefund {
 	return &MsgSignRefund{
-		ReserveId:        reserveId,
-		RoundId:          roundId,
-		SignerPublicKey:  signerPublicKey,
-		RefundSignature:  refundSignature,
-		BtcOracleAddress: btcOracleAddress,
+		ReserveId:       reserveId,
+		RoundId:         roundId,
+		SignerPublicKey: signerPublicKey,
+		RefundSignature: refundSignature,
+		SignerAddress:   signerAddress,
 	}
 }
 
@@ -31,7 +31,7 @@ func (msg *MsgSignRefund) Type() string {
 }
 
 func (msg *MsgSignRefund) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	creator, err := sdk.AccAddressFromBech32(msg.SignerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func (msg MsgSignRefund) ValidateBasic() error {
 	}
 
 	// Validate btcOracleAddress
-	if len(msg.BtcOracleAddress) == 0 {
+	if len(msg.SignerAddress) == 0 {
 		return sdkerrors.Wrapf(types.ErrInvalid, "BTC Oracle address cannot be empty")
 	}
 

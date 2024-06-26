@@ -19,7 +19,7 @@ func SimulateMsgSignSweep(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgSignSweep{
-			BtcOracleAddress: simAccount.Address.String(),
+			SignerAddress: simAccount.Address.String(),
 		}
 
 		// TODO: Handling the SignSweep simulation

@@ -28001,7 +28001,7 @@ paths:
                       type: array
                       items:
                         type: string
-                    btcOracleAddress:
+                    signerAddress:
                       type: string
                   title: 4. MsgSignRefund
         default:
@@ -28063,7 +28063,7 @@ paths:
                       type: array
                       items:
                         type: string
-                    btcOracleAddress:
+                    signerAddress:
                       type: string
                   title: 4. MsgSignRefund
         default:
@@ -28114,7 +28114,7 @@ paths:
                       type: array
                       items:
                         type: string
-                    btcOracleAddress:
+                    signerAddress:
                       type: string
                   title: 5. MsgSignSweep
         default:
@@ -28176,7 +28176,7 @@ paths:
                       type: array
                       items:
                         type: string
-                    btcOracleAddress:
+                    signerAddress:
                       type: string
                   title: 5. MsgSignSweep
         default:
@@ -49289,7 +49289,7 @@ definitions:
         type: array
         items:
           type: string
-      btcOracleAddress:
+      signerAddress:
         type: string
     title: 4. MsgSignRefund
   twilightproject.nyks.bridge.MsgSignRefundResponse:
@@ -49310,7 +49310,7 @@ definitions:
         type: array
         items:
           type: string
-      btcOracleAddress:
+      signerAddress:
         type: string
     title: 5. MsgSignSweep
   twilightproject.nyks.bridge.MsgSignSweepResponse:
@@ -49626,7 +49626,7 @@ definitions:
               type: array
               items:
                 type: string
-            btcOracleAddress:
+            signerAddress:
               type: string
           title: 4. MsgSignRefund
   twilightproject.nyks.bridge.QuerySignRefundResponse:
@@ -49650,7 +49650,7 @@ definitions:
               type: array
               items:
                 type: string
-            btcOracleAddress:
+            signerAddress:
               type: string
           title: 4. MsgSignRefund
   twilightproject.nyks.bridge.QuerySignSweepAllResponse:
@@ -49674,7 +49674,7 @@ definitions:
               type: array
               items:
                 type: string
-            btcOracleAddress:
+            signerAddress:
               type: string
           title: 5. MsgSignSweep
   twilightproject.nyks.bridge.QuerySignSweepResponse:
@@ -49698,7 +49698,7 @@ definitions:
               type: array
               items:
                 type: string
-            btcOracleAddress:
+            signerAddress:
               type: string
           title: 5. MsgSignSweep
   twilightproject.nyks.bridge.QueryUnsignedTxRefundAllResponse:

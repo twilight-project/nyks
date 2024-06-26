@@ -17,13 +17,13 @@ func TestMsgSignRefund_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSignRefund{
-				BtcOracleAddress: "invalid_address",
+				SignerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSignRefund{
-				BtcOracleAddress: sample.AccAddress(),
+				SignerAddress: sample.AccAddress(),
 			},
 		},
 	}

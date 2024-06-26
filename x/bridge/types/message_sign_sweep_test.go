@@ -17,13 +17,13 @@ func TestMsgSignSweep_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgSignSweep{
-				BtcOracleAddress: "invalid_address",
+				SignerAddress: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgSignSweep{
-				BtcOracleAddress: sample.AccAddress(),
+				SignerAddress: sample.AccAddress(),
 			},
 		},
 	}

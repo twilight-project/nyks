@@ -12,13 +12,13 @@ const TypeMsgSignSweep = "sign_sweep"
 
 var _ sdk.Msg = &MsgSignSweep{}
 
-func NewMsgSignSweep(reserveId uint64, roundId uint64, signerPublicKey string, sweepSignatures []string, btcOracleAddress string) *MsgSignSweep {
+func NewMsgSignSweep(reserveId uint64, roundId uint64, signerPublicKey string, sweepSignatures []string, signerAddress string) *MsgSignSweep {
 	return &MsgSignSweep{
-		ReserveId:        reserveId,
-		RoundId:          roundId,
-		SignerPublicKey:  signerPublicKey,
-		SweepSignature:   sweepSignatures,
-		BtcOracleAddress: btcOracleAddress,
+		ReserveId:       reserveId,
+		RoundId:         roundId,
+		SignerPublicKey: signerPublicKey,
+		SweepSignature:  sweepSignatures,
+		SignerAddress:   signerAddress,
 	}
 }
 
@@ -31,7 +31,7 @@ func (msg *MsgSignSweep) Type() string {
 }
 
 func (msg *MsgSignSweep) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	creator, err := sdk.AccAddressFromBech32(msg.SignerAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func (msg *MsgSignSweep) ValidateBasic() error {
 		return sdkerrors.Wrapf(types.ErrInvalid, "Round ID cannot be empty")
 	}
 
-	_, err := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	_, err := sdk.AccAddressFromBech32(msg.SignerAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid btcOracleAddress address (%s)", err)
 	}

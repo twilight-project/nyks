@@ -36,7 +36,7 @@ message EventSignRefund {
     uint64 roundId = 3;
     string signerPublicKey = 4;
     repeated string refundSignature = 5;
-    string btcOracleAddress = 6;
+    string signerAddress = 6;
 }
 
 message EventSignSweep {
@@ -45,7 +45,7 @@ message EventSignSweep {
     uint64 roundId = 3;
     string signerPublicKey = 4;
     repeated string sweepSignature = 5;
-    string btcOracleAddress = 6;
+    string signerAddress = 6;
 }
 
 message EventBroadcastTxSweep {

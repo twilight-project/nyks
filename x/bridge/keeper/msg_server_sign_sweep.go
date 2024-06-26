@@ -11,13 +11,13 @@ import (
 func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*types.MsgSignSweepResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	btcOracleAddress, e1 := sdk.AccAddressFromBech32(msg.BtcOracleAddress)
+	signerAddress, e1 := sdk.AccAddressFromBech32(msg.SignerAddress)
 
-	// Check if oracle is registered and active
-	_, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
-	if errOracle != nil {
-		return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
-	}
+	// // Check if oracle is registered and active
+	// _, errOracle := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.BtcOracleAddress)
+	// if errOracle != nil {
+	// 	return nil, sdkerrors.Wrap(errOracle, "Could not check orchstrator validator inset")
+	// }
 
 	// Check registered reserve address
 	// _, errReserve := k.VoltKeeper.GetBtcReserveIdByAddress(ctx, msg.ReserveAddress)
@@ -33,25 +33,25 @@ func (k msgServer) SignSweep(goCtx context.Context, msg *types.MsgSignSweep) (*t
 	}
 
 	// check if this signed btc sweep msg is already registered
-	_, found := k.GetBtcSignSweepMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, btcOracleAddress)
+	_, found := k.GetBtcSignSweepMsgWithOracleAddress(ctx, msg.ReserveId, msg.RoundId, signerAddress)
 	if found {
 		return nil, sdkerrors.Wrap(types.ErrDuplicate, "Duplicate sweep Request")
 	}
 
 	// set signed btc sweep msg
-	err := k.SetBtcSignSweepMsg(ctx, btcOracleAddress, msg.ReserveId, msg.RoundId, msg.SignerPublicKey, msg.SweepSignature)
+	err := k.SetBtcSignSweepMsg(ctx, signerAddress, msg.ReserveId, msg.RoundId, msg.SignerPublicKey, msg.SweepSignature)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitTypedEvent(
 		&types.EventSignSweep{
-			Message:          msg.Type(),
-			ReserveId:        msg.ReserveId,
-			RoundId:          msg.RoundId,
-			SignerPublicKey:  msg.SignerPublicKey,
-			SweepSignature:   msg.SweepSignature,
-			BtcOracleAddress: msg.BtcOracleAddress,
+			Message:         msg.Type(),
+			ReserveId:       msg.ReserveId,
+			RoundId:         msg.RoundId,
+			SignerPublicKey: msg.SignerPublicKey,
+			SweepSignature:  msg.SweepSignature,
+			SignerAddress:   msg.SignerAddress,
 		},
 	)
 
