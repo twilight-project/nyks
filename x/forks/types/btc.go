@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	fmt "fmt"
 
-	btcec "github.com/btcsuite/btcd/btcec"
+	btcec "github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -60,7 +60,7 @@ func ValidateBtcPublicKey(PublicKey string) error {
 		return fmt.Errorf("PublicKey(%s) is not encoded properly", PublicKey)
 	}
 
-	pk, err := btcec.ParsePubKey(pkBytes, btcec.S256())
+	pk, err := btcec.ParsePubKey(pkBytes)
 	if err != nil {
 		return fmt.Errorf("PublicKey(%s) doesn't pass btcec.ParsePubKey check", pk)
 	}

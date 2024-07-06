@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/armon/go-metrics v0.3.10
 	github.com/btcsuite/btcd v0.23.0
+	github.com/btcsuite/btcd/btcec/v2 v2.2.1
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1
 	github.com/cometbft/cometbft v0.37.2 // indirect
 	github.com/cosmos/cosmos-sdk v0.45.3
