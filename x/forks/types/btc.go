@@ -5,7 +5,8 @@ import (
 	"encoding/hex"
 	fmt "fmt"
 
-	btcec "github.com/btcsuite/btcd/btcec/v2"
+	"github.com/btcsuite/btcutil/hdkeychain"
+
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -46,23 +47,40 @@ func NewBtcPublicKey(PublicKey string) (*BtcPublicKey, error) {
 // Validates the input string as an Btc PublicKey
 // PublicKeyes must not be empty, have 64 character length, start with 0x and have 40 remaining characters in [0-9a-fA-F]
 func ValidateBtcPublicKey(PublicKey string) error {
+	// if PublicKey == "" {
+	// 	return fmt.Errorf("empty")
+	// }
+	// if len(PublicKey) != BtcPublicKeyLen {
+	// 	return fmt.Errorf("PublicKey (%s) of the wrong length exp(%d) actual(%d)", PublicKey, BtcPublicKeyLen, len(PublicKey))
+	// }
+
+	// // validate the public key first
+	// // checks for compressed key length, valid prefix and the public key point is a valid curve point
+	// pkBytes, err := hex.DecodeString(PublicKey)
+	// if err != nil {
+	// 	return fmt.Errorf("PublicKey(%s) is not encoded properly", PublicKey)
+	// }
+
+	// pk, err := btcec.ParsePubKey(pkBytes)
+	// if err != nil {
+	// 	return fmt.Errorf("PublicKey(%s) doesn't pass btcec.ParsePubKey check", pk)
+	// }
+
+	// return nil
+
 	if PublicKey == "" {
 		return fmt.Errorf("empty")
 	}
-	if len(PublicKey) != BtcPublicKeyLen {
-		return fmt.Errorf("PublicKey (%s) of the wrong length exp(%d) actual(%d)", PublicKey, BtcPublicKeyLen, len(PublicKey))
+
+	// validate the xpub
+	key, err := hdkeychain.NewKeyFromString(PublicKey)
+	if err != nil {
+		return fmt.Errorf("xpub(%s) is not encoded properly", PublicKey)
 	}
 
-	// validate the public key first
-	// checks for compressed key length, valid prefix and the public key point is a valid curve point
-	pkBytes, err := hex.DecodeString(PublicKey)
-	if err != nil {
-		return fmt.Errorf("PublicKey(%s) is not encoded properly", PublicKey)
-	}
-
-	pk, err := btcec.ParsePubKey(pkBytes)
-	if err != nil {
-		return fmt.Errorf("PublicKey(%s) doesn't pass btcec.ParsePubKey check", pk)
+	// Check if the key is actually a public key
+	if key.IsPrivate() {
+		return fmt.Errorf("xpub(%s) is a private key, not a public key", PublicKey)
 	}
 
 	return nil

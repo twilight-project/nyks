@@ -1,9 +1,11 @@
 package types
 
 import (
+	"bytes"
 	"encoding/hex"
 	fmt "fmt"
 
+	"github.com/btcsuite/btcutil/psbt"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -134,14 +136,27 @@ func ValidateBtcTransaction(tx string) error {
 }
 
 func IsValidBtcTxHash(txHash string) bool {
-	// Check if the hash string is a valid hexadecimal string
-	_, err := hex.DecodeString(txHash)
+	// // Check if the hash string is a valid hexadecimal string
+	// _, err := hex.DecodeString(txHash)
+	// if err != nil {
+	// 	return false
+	// }
+
+	// // Check if the hash string has the correct length (64 characters)
+	// if len(txHash) != 64 {
+	// 	return false
+	// }
+
+	// return true
+
+	decoded, err := hex.DecodeString(txHash)
 	if err != nil {
 		return false
 	}
-
-	// Check if the hash string has the correct length (64 characters)
-	if len(txHash) != 64 {
+	reader := bytes.NewReader(decoded)
+	// Parse the decoded bytes into a PSBT packet
+	_, err = psbt.NewFromRawBytes(reader, false)
+	if err != nil {
 		return false
 	}
 
