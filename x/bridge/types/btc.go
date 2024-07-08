@@ -135,19 +135,8 @@ func ValidateBtcTransaction(tx string) error {
 	return nil
 }
 
-func IsValidBtcTxHash(txHash string) bool {
-	// // Check if the hash string is a valid hexadecimal string
-	// _, err := hex.DecodeString(txHash)
-	// if err != nil {
-	// 	return false
-	// }
-
-	// // Check if the hash string has the correct length (64 characters)
-	// if len(txHash) != 64 {
-	// 	return false
-	// }
-
-	// return true
+// IsValidPsbt validates the input string as a PSBT
+func IsValidPsbt(txHash string) bool {
 
 	decoded, err := hex.DecodeString(txHash)
 	if err != nil {
@@ -157,6 +146,21 @@ func IsValidBtcTxHash(txHash string) bool {
 	// Parse the decoded bytes into a PSBT packet
 	_, err = psbt.NewFromRawBytes(reader, false)
 	if err != nil {
+		return false
+	}
+
+	return true
+}
+
+func IsValidBtcTxHash(txHash string) bool {
+	// Check if the hash string is a valid hexadecimal string
+	_, err := hex.DecodeString(txHash)
+	if err != nil {
+		return false
+	}
+
+	// Check if the hash string has the correct length (64 characters)
+	if len(txHash) != 64 {
 		return false
 	}
 

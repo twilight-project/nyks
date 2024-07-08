@@ -56,10 +56,10 @@ func (msg *MsgUnsignedTxRefund) ValidateBasic() error {
 		return sdkerrors.Wrapf(ErrInvalid, "invalid judgeAddress format")
 	}
 
-	// Validate BtcUnsignedRefundTx (Bitcoin transaction)
-	err := ValidateBtcTransaction(msg.BtcUnsignedRefundTx)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid unsigned refund tx (%s)", err)
+	// Validate BtcUnsignedRefundTx (PSBT)
+	valid := IsValidPsbt(msg.BtcUnsignedRefundTx)
+	if !valid {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid PSBT format")
 	}
 
 	return nil

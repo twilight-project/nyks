@@ -65,10 +65,10 @@ func (msg *MsgUnsignedTxSweep) ValidateBasic() error {
 		return errors.New("invalid judgeAddress format")
 	}
 
-	// Validate BtcUnsignedSweepTx (Bitcoin transaction)
-	err := ValidateBtcTransaction(msg.BtcUnsignedSweepTx)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid unsigned sweep tx (%s)", err)
+	// Validate BtcUnsignedSweepTx (PSBT)
+	valid := IsValidPsbt(msg.BtcUnsignedSweepTx)
+	if !valid {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid PSBT format")
 	}
 
 	return nil
