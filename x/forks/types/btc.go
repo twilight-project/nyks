@@ -5,8 +5,6 @@ import (
 	"encoding/hex"
 	fmt "fmt"
 
-	"github.com/btcsuite/btcutil/hdkeychain"
-
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -72,16 +70,16 @@ func ValidateBtcPublicKey(PublicKey string) error {
 		return fmt.Errorf("empty")
 	}
 
-	// validate the xpub
-	key, err := hdkeychain.NewKeyFromString(PublicKey)
-	if err != nil {
-		return fmt.Errorf("xpub(%s) is not encoded properly", PublicKey)
-	}
+	// // validate the xpub
+	// key, err := hdkeychain.NewKeyFromString(PublicKey)
+	// if err != nil {
+	// 	return fmt.Errorf("xpub(%s) is not encoded properly", PublicKey)
+	// }
 
-	// Check if the key is actually a public key
-	if key.IsPrivate() {
-		return fmt.Errorf("xpub(%s) is a private key, not a public key", PublicKey)
-	}
+	// // Check if the key is actually a public key
+	// if key.IsPrivate() {
+	// 	return fmt.Errorf("xpub(%s) is a private key, not a public key", PublicKey)
+	// }
 
 	return nil
 }
