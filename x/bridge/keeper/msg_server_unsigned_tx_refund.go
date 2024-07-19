@@ -34,15 +34,15 @@ func (k msgServer) UnsignedTxRefund(goCtx context.Context, msg *types.MsgUnsigne
 		return nil, sdkerrors.Wrapf(volttypes.ErrBtcReserveNotFound, fmt.Sprint(msg.ReserveId))
 	}
 
-	// Compare the refund tx outputs with the refund tx snapshot
-	check, err := k.VoltKeeper.CheckRefundTxSnapshot(ctx, msg.BtcUnsignedRefundTx, msg.ReserveId, msg.RoundId)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "Could not check refund tx snapshot")
-	}
+	// // Compare the refund tx outputs with the refund tx snapshot
+	// check, err := k.VoltKeeper.CheckRefundTxSnapshot(ctx, msg.BtcUnsignedRefundTx, msg.ReserveId, msg.RoundId)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrap(err, "Could not check refund tx snapshot")
+	// }
 
-	if check == false {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned refund transaction is not valid")
-	}
+	// if check == false {
+	// 	return nil, sdkerrors.Wrap(types.ErrInvalid, "The unsigned refund transaction is not valid")
+	// }
 
 	// set unsigned tx refund
 	errSet := k.SetUnsignedTxRefundMsg(ctx, msg.ReserveId, msg.RoundId, msg.BtcUnsignedRefundTx, judgeAddress)
