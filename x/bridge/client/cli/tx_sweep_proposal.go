@@ -13,29 +13,30 @@ import (
 func CmdSweepProposal() *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "sweep-proposal [reserve-id] [new-reserve-address] [btc-block-number] [btc-relay-capacity-value] [btc-tx-hash] [unlock-height] [round-id]",
+		Use:   "sweep-proposal [reserve-id] [new-reserve-address] [judge-address] [btc-block-number] [btc-relay-capacity-value] [btc-tx-hash] [unlock-height] [round-id]",
 		Short: "Broadcast message SweepProposal",
-		Args:  cobra.ExactArgs(7),
+		Args:  cobra.ExactArgs(8),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argReserveId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 			argNewReserveAddress := args[1]
-			argBtcBlockNumber, err := strconv.ParseUint(args[2], 10, 64)
+			argJudgeAdress := args[2]
+			argBtcBlockNumber, err := strconv.ParseUint(args[3], 10, 64)
 			if err != nil {
 				return err
 			}
-			argBtcRelayCapacityValue, err := strconv.ParseUint(args[3], 10, 64)
+			argBtcRelayCapacityValue, err := strconv.ParseUint(args[4], 10, 64)
 			if err != nil {
 				return err
 			}
-			argBtcTxHash := args[4]
-			argUnlockHeight, err := strconv.ParseUint(args[5], 10, 64)
+			argBtcTxHash := args[5]
+			argUnlockHeight, err := strconv.ParseUint(args[6], 10, 64)
 			if err != nil {
 				return err
 			}
-			argRoundId, err := strconv.ParseUint(args[6], 10, 64)
+			argRoundId, err := strconv.ParseUint(args[7], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -48,12 +49,13 @@ func CmdSweepProposal() *cobra.Command {
 			msg := types.NewMsgSweepProposal(
 				argReserveId,
 				argNewReserveAddress,
-				clientCtx.GetFromAddress().String(),
+				argJudgeAdress,
 				argBtcBlockNumber,
 				argBtcRelayCapacityValue,
 				argBtcTxHash,
 				argUnlockHeight,
 				argRoundId,
+				clientCtx.GetFromAddress().String(),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

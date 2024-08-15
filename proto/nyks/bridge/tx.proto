@@ -218,6 +218,7 @@ message MsgSweepProposal {
   string btcTxHash = 6; // rename to sweepTxId
   uint64 UnlockHeight = 7;
   uint64 roundId = 8;
+  string oracleAddress = 9;
 }
 
 message MsgSweepProposalResponse {}

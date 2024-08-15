@@ -13,7 +13,7 @@ const TypeMsgSweepProposal = "sweep_proposal"
 
 var _ sdk.Msg = &MsgSweepProposal{}
 
-func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64) *MsgSweepProposal {
+func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress string, btcBlockNumber uint64, btcRelayCapacityValue uint64, BtcTxHash string, unlockHeight uint64, roundId uint64, oracleAddress string) *MsgSweepProposal {
 	return &MsgSweepProposal{
 		ReserveId:             reserveId,
 		NewReserveAddress:     reserveAddress,
@@ -23,6 +23,7 @@ func NewMsgSweepProposal(reserveId uint64, reserveAddress string, judgeAddress s
 		BtcTxHash:             BtcTxHash,
 		UnlockHeight:          unlockHeight,
 		RoundId:               roundId,
+		OracleAddress:         oracleAddress,
 	}
 }
 

@@ -15,7 +15,8 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	judgeAddress, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	// NEED TO VERIFY JUDGE - ORACLE FRAGMENT ASSOCIATION?
+	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "Could not parse judge address")
 	}
@@ -25,10 +26,15 @@ func (k msgServer) SweepProposal(goCtx context.Context, msg *types.MsgSweepPropo
 		return nil, sdkerrors.Wrap(err, "Could not check Any value")
 	}
 
-	valAddr, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
+	valAddr, err := k.NyksKeeper.CheckOrchestratorValidatorInSet(ctx, msg.OracleAddress)
 	if err != nil {
-		panic("Could not find ValAddr for delegate key")
+		return nil, sdkerrors.Wrap(err, "Could not check orchstrator validator inset")
 	}
+
+	// valAddr, err := k.GetValidatorAddressForJudgeAddress(ctx, judgeAddress)
+	// if err != nil {
+	// 	panic("Could not find ValAddr for delegate key")
+	// }
 
 	if err := sdk.VerifyAddressFormat(valAddr); err != nil {
 		return nil, sdkerrors.Wrap(err, "invalid orchestrator validator address")
