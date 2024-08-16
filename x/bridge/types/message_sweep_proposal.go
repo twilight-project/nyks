@@ -36,7 +36,7 @@ func (msg *MsgSweepProposal) Type() string {
 }
 
 func (msg *MsgSweepProposal) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
+	creator, err := sdk.AccAddressFromBech32(msg.OracleAddress)
 	if err != nil {
 		panic(err)
 	}
