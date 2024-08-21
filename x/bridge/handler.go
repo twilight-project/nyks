@@ -49,6 +49,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgSweepProposal:
 			res, err := msgServer.SweepProposal(sdk.WrapSDKContext(ctx), msg)
+			fmt.Println("SweepProposal : got sweep proposal message")
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgConfirmBtcWithdraw:
 			res, err := msgServer.ConfirmBtcWithdraw(sdk.WrapSDKContext(ctx), msg)

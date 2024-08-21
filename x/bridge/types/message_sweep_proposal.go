@@ -38,6 +38,7 @@ func (msg *MsgSweepProposal) Type() string {
 func (msg *MsgSweepProposal) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
+		fmt.Println("Panic 1")
 		panic(err)
 	}
 	return []sdk.AccAddress{creator}
@@ -51,21 +52,25 @@ func (msg *MsgSweepProposal) GetSignBytes() []byte {
 func (msg *MsgSweepProposal) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
+		fmt.Println("Panic 2")
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid judge address (%s)", err)
 	}
 
 	err = ValidateBtcAddress(msg.NewReserveAddress)
 	if err != nil {
+		fmt.Println("Panic 3")
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid btc reserve address (%s)", err)
 	}
 
 	// check if the reserve id is valid
 	if msg.ReserveId == 0 {
+		fmt.Println("Panic 4")
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid reserve id (%d)", msg.ReserveId)
 	}
 
 	valid := IsValidBtcTxHash(msg.BtcTxHash)
 	if !valid {
+		fmt.Println("Panic 5")
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid btc refund tx (%s)", err)
 	}
 
@@ -80,6 +85,7 @@ func (msg MsgSweepProposal) GetProposarOrchestrator() sdk.AccAddress {
 
 	val, err := sdk.AccAddressFromBech32(msg.JudgeAddress)
 	if err != nil {
+		fmt.Println("Panic 6")
 		panic(err)
 	}
 
