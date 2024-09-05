@@ -207,13 +207,13 @@ func (k Keeper) ConfirmWithdrawRequestsAfterSweepConfirmation(ctx sdk.Context, r
 	// Retrieve the ReserveWithdrawSnapshot
 	snapshot, found := k.GetReserveWithdrawSnapshot(ctx, reserveId, roundId)
 	if !found {
-		return fmt.Errorf("reserve withdraw snapshot not found for reserveId %d, roundId %d", reserveId, roundId)
+		ctx.Logger().Error("reserve withdraw snapshot not found", "reserveId", reserveId, "roundId", roundId)
+		return nil // snapshot was not found so nothing to process, function should return from here
 	}
 
 	// Fetch the ReserveWithdrawPool for the specified reserveId
 	pool, found := k.GetReserveWithdrawPool(ctx, reserveId)
 	if !found {
-		ctx.Logger().Error("ReserveWithdrawPool not found", "reserveId", reserveId)
 		return fmt.Errorf("ReserveWithdrawPool not found for reserveId %d", reserveId)
 	}
 
@@ -374,6 +374,7 @@ func CheckBtcTxAgainstSnapshot(BtcTxHex string, snapshot map[string]int64) (bool
 	return true, nil
 }
 
+// THIS FUNCTION IS NOT FIT FOR PSBT TX VALIDATION, NEED TO UPGRADE IT
 func (k Keeper) CheckReserveWithdrawSnapshot(ctx sdk.Context, btcTxHex string, reserveId uint64, roundId uint64) (bool, error) {
 	// Decode the Bitcoin transaction
 	btcTx, err := forkstypes.CreateTxFromHex(btcTxHex)
