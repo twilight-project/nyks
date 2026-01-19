@@ -335,12 +335,12 @@ func (k Keeper) GetLastUnlockedReserve(ctx sdk.Context) uint64 {
 // GetNextUnlockingReserve returns the next reserve id to be unlocked
 func (k Keeper) GetNextUnlockingReserve(ctx sdk.Context) (*uint64, *types.BtcReserve, error) {
 	// Find the last unlocked reserve
-	reserveId := k.GetLastUnlockedReserve(ctx)
-
+	//reserveId := k.GetLastUnlockedReserve(ctx)
+	reserveId:= 1
 	nextReserveUnlockingId := uint64(0)
 	if reserveId < types.BtcReserveMaxLimit {
 		// n+1 to find next unlocking reserve
-		nextReserveUnlockingId = reserveId + 1
+		nextReserveUnlockingId = reserveId 
 	} else {
 		// reset to 1
 		nextReserveUnlockingId = 1
