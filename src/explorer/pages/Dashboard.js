@@ -44,28 +44,21 @@ function Dashboard() {
       const blockResults = await Promise.all(blockPromises);
       setBlocks(blockResults.filter(Boolean));
 
-      // Fetch recent transactions
-      const txPromises = [];
-      for (let i = 0; i < 5; i++) {
-        const height = latestHeight - i;
-        if (height > 0) {
-          txPromises.push(
-            twilightAPI.getBlockWithTxs(height)
-              .then(data => {
-                if (data.txs && data.tx_responses) {
-                  return data.txs.map((tx, idx) =>
-                    extractTransactionData(tx, data.tx_responses[idx])
-                  );
-                }
-                return [];
-              })
-              .catch(() => [])
+      // Fetch recent transactions using the global transactions API
+      try {
+        const txsResponse = await twilightAPI.getAllTransactions(1, 10);
+        if (txsResponse.txs && txsResponse.tx_responses) {
+          const allTxs = txsResponse.txs.map((tx, idx) =>
+            extractTransactionData(tx, txsResponse.tx_responses[idx])
           );
+          setTransactions(allTxs);
+        } else {
+          setTransactions([]);
         }
+      } catch (e) {
+        console.error('Failed to fetch transactions:', e);
+        setTransactions([]);
       }
-      const txResults = await Promise.all(txPromises);
-      const allTxs = txResults.flat().sort((a, b) => b.height - a.height).slice(0, 10);
-      setTransactions(allTxs);
 
       // Get network status
       let networkStatus = 'online';

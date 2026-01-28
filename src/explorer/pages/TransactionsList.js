@@ -47,43 +47,37 @@ function TransactionsList() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalTxs, setTotalTxs] = useState(0);
   const txsPerPage = 25;
 
   const fetchTransactions = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Get latest block height
-      const latestBlockResponse = await twilightAPI.getLatestBlock();
-      const latestHeight = parseInt(latestBlockResponse.block.header.height);
+      // Fetch all transactions with pagination
+      const txsResponse = await twilightAPI.getAllTransactions(page, txsPerPage);
 
-      // Fetch transactions from multiple blocks
-      const txs = [];
-      let currentHeight = latestHeight - (page - 1) * 10;
-      let blocksChecked = 0;
-      const maxBlocksToCheck = 50;
+      if (txsResponse.txs && txsResponse.tx_responses) {
+        const txs = txsResponse.txs.map((tx, idx) =>
+          extractTransactionData(tx, txsResponse.tx_responses[idx])
+        );
+        setTransactions(txs);
 
-      while (txs.length < txsPerPage && blocksChecked < maxBlocksToCheck && currentHeight > 0) {
-        try {
-          const txsResponse = await twilightAPI.getBlockWithTxs(currentHeight);
-          if (txsResponse.txs && txsResponse.tx_responses) {
-            for (let i = 0; i < txsResponse.txs.length && txs.length < txsPerPage; i++) {
-              const txData = extractTransactionData(txsResponse.txs[i], txsResponse.tx_responses[i]);
-              txs.push(txData);
-            }
-          }
-        } catch (e) {
-          // Block might not have transactions
-        }
-        currentHeight--;
-        blocksChecked++;
+        // Check if there are more transactions
+        const total = parseInt(txsResponse.pagination?.total || '0');
+        setTotalTxs(total);
+        setHasMore(page * txsPerPage < total);
+      } else {
+        setTransactions([]);
+        setTotalTxs(0);
+        setHasMore(false);
       }
-
-      setTransactions(txs);
-      setHasMore(currentHeight > 0 && txs.length >= txsPerPage);
 
     } catch (err) {
       console.error('Transactions fetch error:', err);
+      setTransactions([]);
+      setTotalTxs(0);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -109,6 +103,11 @@ function TransactionsList() {
             </svg>
             Transactions
           </h1>
+          {totalTxs > 0 && (
+            <span style={{ color: 'var(--text-secondary)' }}>
+              Total: {totalTxs.toLocaleString()} transactions
+            </span>
+          )}
         </div>
 
         <div className="explorer-card">
@@ -225,7 +224,7 @@ function TransactionsList() {
             Previous
           </button>
           <span style={{ padding: '0.5rem 1rem', color: 'var(--text-secondary)' }}>
-            Page {page}
+            Page {page} {totalTxs > 0 && `of ${Math.ceil(totalTxs / txsPerPage)}`}
           </span>
           <button
             onClick={() => setPage(p => p + 1)}

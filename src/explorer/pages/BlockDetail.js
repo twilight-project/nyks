@@ -44,6 +44,14 @@ function BlockDetail() {
       setLoading(true);
       setError(null);
 
+      // Check if heightOrHash is a valid block height (numeric)
+      const isHeight = /^\d+$/.test(heightOrHash);
+      if (!isHeight) {
+        setError('Block lookup by hash is not supported. Please use block height.');
+        setLoading(false);
+        return;
+      }
+
       // Get latest height for navigation
       const latestBlockResponse = await twilightAPI.getLatestBlock();
       const latest = parseInt(latestBlockResponse.block.header.height);

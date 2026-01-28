@@ -70,7 +70,8 @@ class TwilightAPI {
 
   async getBlockWithTxs(height) {
     // Use search endpoint which handles empty blocks gracefully
-    const result = await this.fetch(`/cosmos/tx/v1beta1/txs?events=tx.height=${height}&pagination.limit=100`);
+    // Note: The '=' in tx.height=X must be URL encoded as %3D
+    const result = await this.fetch(`/cosmos/tx/v1beta1/txs?events=tx.height%3D${height}&pagination.limit=100`);
     if (result.error) {
       return { txs: [], tx_responses: [] };
     }
@@ -83,13 +84,10 @@ class TwilightAPI {
   }
 
   async searchTxs(query, page = 1, limit = 20) {
-    const params = new URLSearchParams({
-      events: query,
-      'pagination.offset': ((page - 1) * limit).toString(),
-      'pagination.limit': limit.toString(),
-      order_by: 'ORDER_BY_DESC',
-    });
-    const result = await this.fetch(`/cosmos/tx/v1beta1/txs?${params}`);
+    // Manually encode the '=' in the query as %3D for Cosmos SDK compatibility
+    const encodedQuery = query.replace(/=/g, '%3D');
+    const offset = ((page - 1) * limit).toString();
+    const result = await this.fetch(`/cosmos/tx/v1beta1/txs?events=${encodedQuery}&pagination.offset=${offset}&pagination.limit=${limit}&order_by=ORDER_BY_DESC`);
     if (result.error) {
       return { txs: [], tx_responses: [], pagination: { total: '0' } };
     }
@@ -98,6 +96,18 @@ class TwilightAPI {
 
   async getTxsByHeight(height) {
     return this.searchTxs(`tx.height=${height}`);
+  }
+
+  async getAllTransactions(page = 1, limit = 25) {
+    // Fetch all transactions with pagination, ordered by newest first
+    // Note: Cosmos SDK requires at least one event filter
+    // Use tx.height>=1 to match all transactions (>= is %3E%3D URL encoded)
+    const offset = (page - 1) * limit;
+    const result = await this.fetch(`/cosmos/tx/v1beta1/txs?events=tx.height%3E%3D1&pagination.offset=${offset}&pagination.limit=${limit}&order_by=ORDER_BY_DESC`);
+    if (result.error) {
+      return { txs: [], tx_responses: [], pagination: { total: '0' } };
+    }
+    return result;
   }
 
   // Account endpoints

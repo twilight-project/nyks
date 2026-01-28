@@ -28,7 +28,14 @@ function BlocksList() {
   const [loading, setLoading] = useState(true);
   const [latestHeight, setLatestHeight] = useState(null);
   const [page, setPage] = useState(1);
+  const [copiedHash, setCopiedHash] = useState(null);
   const blocksPerPage = 25;
+
+  const copyToClipboard = (hash) => {
+    navigator.clipboard.writeText(hash);
+    setCopiedHash(hash);
+    setTimeout(() => setCopiedHash(null), 2000);
+  };
 
   const fetchBlocks = useCallback(async () => {
     try {
@@ -131,9 +138,47 @@ function BlocksList() {
                         </Link>
                       </td>
                       <td>
-                        <Link to={`/explorer/block/${block.hash}`} className="tx-hash">
-                          {truncateHash(block.hash, 12)}
-                        </Link>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', position: 'relative' }}>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.875rem', color: 'var(--text-secondary)' }} title={block.hash}>
+                            {truncateHash(block.hash, 12)}
+                          </span>
+                          <button
+                            onClick={() => copyToClipboard(block.hash)}
+                            title="Copy hash"
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              padding: '0.25rem',
+                              color: copiedHash === block.hash ? 'var(--accent-green)' : 'var(--text-muted)',
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            {copiedHash === block.hash ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M20 6L9 17l-5-5" />
+                              </svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" />
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                              </svg>
+                            )}
+                          </button>
+                          {copiedHash === block.hash && (
+                            <span style={{
+                              position: 'absolute',
+                              left: '100%',
+                              marginLeft: '0.5rem',
+                              fontSize: '0.75rem',
+                              color: 'var(--accent-green)',
+                              whiteSpace: 'nowrap',
+                            }}>
+                              Copied!
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td>
                         <span className="time-relative">{timeAgo(block.time)}</span>
