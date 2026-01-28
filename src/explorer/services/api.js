@@ -1,6 +1,6 @@
 // Twilight Block Explorer API Service
 const LCD_BASE_URL = 'https://lcd.twilight.org';
-const DECODE_API_URL = 'http://143.198.60.224:8449/api';
+const DECODE_API_URL = 'https://indexer.twilight.org/api';
 
 // CORS proxies to try in order
 const CORS_PROXIES = [

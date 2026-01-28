@@ -72,8 +72,14 @@ function InputItem({ input, index }) {
         </div>
       </div>
       <div className="io-amount">
-        <span className="io-amount-btc">{formatBTC(input.value)}</span>
-        <span className="io-amount-unit">BTC</span>
+        {input.value !== null ? (
+          <>
+            <span className="io-amount-btc">{formatBTC(input.value)}</span>
+            <span className="io-amount-unit">BTC</span>
+          </>
+        ) : (
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Encrypted</span>
+        )}
       </div>
       {(input.commitment || input.witnessIndex !== undefined) && (
         <button
@@ -127,8 +133,14 @@ function OutputItem({ output, index }) {
         </div>
       </div>
       <div className="io-amount">
-        <span className="io-amount-btc">{formatBTC(output.value)}</span>
-        <span className="io-amount-unit">BTC</span>
+        {output.value !== null ? (
+          <>
+            <span className="io-amount-btc">{formatBTC(output.value)}</span>
+            <span className="io-amount-unit">BTC</span>
+          </>
+        ) : (
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Encrypted</span>
+        )}
       </div>
       {(output.commitment || output.scriptAddress) && (
         <button
@@ -200,7 +212,7 @@ function InputsOutputs({ inputs = [], outputs = [], fee = null }) {
                 No outputs
               </div>
             )}
-            {outputs.length > 0 && (
+            {outputs.length > 0 && totalOutput > 0 && (
               <div className="io-total">
                 <span className="io-total-label">Total Output</span>
                 <span className="io-total-amount">{formatBTC(totalOutput)} BTC</span>

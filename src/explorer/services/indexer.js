@@ -13,14 +13,14 @@ const indexedData = {
   isIndexing: false,
 };
 
-// Transaction type constants
+// Transaction type constants (with leading slash as returned by Cosmos SDK)
 export const TX_TYPES = {
-  TRANSFER_TX: 'twilightproject.nyks.zkos.MsgTransferTx',
-  MINT_BURN_TX: 'twilightproject.nyks.zkos.MsgMintBurnTradingBtc',
-  REGISTER_CLEARING: 'twilightproject.nyks.volt.MsgRegisterClearingAccount',
-  DEPOSIT: 'twilightproject.nyks.volt.MsgConfirmBtcDeposit',
-  WITHDRAW: 'twilightproject.nyks.volt.MsgWithdrawBtcRequest',
-  SWEEP: 'twilightproject.nyks.volt.MsgSweepProposal',
+  TRANSFER_TX: '/twilightproject.nyks.zkos.MsgTransferTx',
+  MINT_BURN_TX: '/twilightproject.nyks.zkos.MsgMintBurnTradingBtc',
+  REGISTER_CLEARING: '/twilightproject.nyks.volt.MsgRegisterClearingAccount',
+  DEPOSIT: '/twilightproject.nyks.volt.MsgConfirmBtcDeposit',
+  WITHDRAW: '/twilightproject.nyks.volt.MsgWithdrawBtcRequest',
+  SWEEP: '/twilightproject.nyks.volt.MsgSweepProposal',
 };
 
 // Parse transaction type from @type field
@@ -64,6 +64,7 @@ export async function parseZkOSTransaction(msg) {
     outputs: [],
     fee: null,
     type: null,
+    rawDecoded: null, // Store full decoded JSON
   };
 
   if (msg.type.fullType === TX_TYPES.TRANSFER_TX) {
@@ -74,10 +75,48 @@ export async function parseZkOSTransaction(msg) {
         const decoded = await twilightAPI.decodeTransaction(
           msg.data.txByteCode || msg.data.tx_byte_code
         );
-        if (decoded) {
-          result.inputs = decoded.inputs || [];
-          result.outputs = decoded.outputs || [];
-          result.fee = decoded.fee;
+        if (decoded && decoded.success && decoded.data?.tx) {
+          // Store the full decoded response
+          result.rawDecoded = decoded.data;
+
+          const txData = decoded.data.tx.TransactionScript || decoded.data.tx;
+
+          // Parse fee
+          result.fee = txData.fee || 0;
+
+          // Parse inputs
+          if (txData.inputs) {
+            result.inputs = txData.inputs.map((inp, idx) => {
+              const input = inp.input?.Coin || inp.input || inp;
+              const utxo = input.utxo || {};
+              const outCoin = input.out_coin || {};
+              return {
+                utxoType: inp.in_type || 'Coin',
+                txid: utxo.txid ? bytesToHex(utxo.txid) : null,
+                outputIndex: utxo.output_index,
+                owner: outCoin.owner || null,
+                value: null, // Value is encrypted in zkOS
+                commitment: outCoin.encrypt?.c ? bytesToHex(outCoin.encrypt.c) : null,
+                witnessIndex: input.witness,
+              };
+            });
+          }
+
+          // Parse outputs
+          if (txData.outputs) {
+            result.outputs = txData.outputs.map((out, idx) => {
+              const output = out.output?.Memo || out.output?.Coin || out.output || out;
+              const commitment = output.commitment?.Closed || output.commitment;
+              return {
+                utxoType: out.out_type || 'Memo',
+                owner: output.owner || null,
+                scriptAddress: output.script_address || null,
+                value: null, // Value is encrypted in zkOS
+                commitment: commitment ? bytesToHex(commitment) : null,
+                timebounds: output.timebounds,
+              };
+            });
+          }
         }
       } catch (error) {
         console.error('Failed to decode zkOS transaction:', error);
@@ -90,6 +129,13 @@ export async function parseZkOSTransaction(msg) {
   }
 
   return result;
+}
+
+// Helper to convert byte array to hex string
+function bytesToHex(bytes) {
+  if (!bytes) return null;
+  if (typeof bytes === 'string') return bytes;
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // Index a single block

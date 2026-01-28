@@ -223,6 +223,11 @@ function TransactionDetail() {
           />
         )}
 
+        {/* Decoded zkOS Transaction */}
+        {isZkOS && zkosData?.rawDecoded && (
+          <DecodedZkOSTransaction data={zkosData.rawDecoded} />
+        )}
+
         {/* Messages */}
         <div className="explorer-card">
           <div className="explorer-card-header">
@@ -359,6 +364,54 @@ function MessageDisplay({ msg, index }) {
           {JSON.stringify(msg.data, null, 2)}
         </pre>
       )}
+    </div>
+  );
+}
+
+// Decoded zkOS Transaction display component
+function DecodedZkOSTransaction({ data }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="explorer-card">
+      <div className="explorer-card-header">
+        <h3 className="explorer-card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}>
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+          </svg>
+          Decoded zkOS Transaction
+        </h3>
+        <button
+          className="details-toggle"
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? 'Collapse' : 'Expand'}
+        </button>
+      </div>
+      <div className="explorer-card-body">
+        {expanded ? (
+          <pre style={{
+            backgroundColor: 'var(--bg-primary)',
+            padding: '1rem',
+            borderRadius: '8px',
+            overflow: 'auto',
+            fontSize: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+            maxHeight: '600px',
+            margin: 0,
+          }}>
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        ) : (
+          <div style={{
+            color: 'var(--text-secondary)',
+            fontSize: '0.875rem',
+          }}>
+            Full decoded transaction data available. Click "Expand" to view.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
