@@ -1,62 +1,39 @@
 // Twilight Block Explorer API Service
-const LCD_BASE_URL = 'https://lcd.twilight.org';
-const DECODE_API_URL = 'http://143.198.60.224:8449/api';
 
-// CORS proxies to try in order
-const CORS_PROXIES = [
-  '', // Try direct first (in case CORS is enabled)
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-];
+// Use relative paths - requests go through the proxy server
+// In development: setupProxy.js handles /cosmos and /twilight
+// In production: server/proxy.js handles the same paths
+const DECODE_API_URL = 'http://143.198.60.224:8449/api';
 
 class TwilightAPI {
   constructor() {
-    this.baseUrl = LCD_BASE_URL;
     this.decodeUrl = DECODE_API_URL;
-    this.workingProxyIndex = 0;
   }
 
   async fetch(endpoint, options = {}) {
-    const fullUrl = `${this.baseUrl}${endpoint}`;
-    let lastError = null;
+    try {
+      const response = await fetch(endpoint, {
+        ...options,
+        headers: {
+          'Accept': 'application/json',
+          ...options.headers,
+        },
+      });
 
-    // Try each proxy in order
-    for (let i = 0; i < CORS_PROXIES.length; i++) {
-      const proxyIndex = (this.workingProxyIndex + i) % CORS_PROXIES.length;
-      const proxy = CORS_PROXIES[proxyIndex];
-      const url = proxy ? `${proxy}${encodeURIComponent(fullUrl)}` : fullUrl;
-
-      try {
-        const response = await fetch(url, {
-          ...options,
-          headers: {
-            'Accept': 'application/json',
-            ...options.headers,
-          },
-        });
-
-        if (!response.ok) {
-          // Handle 400-level errors gracefully (often means empty results)
-          if (response.status >= 400 && response.status < 500) {
-            console.warn(`API ${response.status} for ${endpoint}`);
-            return { error: true, status: response.status };
-          }
-          throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        // Handle 400-level errors gracefully (often means empty results)
+        if (response.status >= 400 && response.status < 500) {
+          console.warn(`API ${response.status} for ${endpoint}`);
+          return { error: true, status: response.status };
         }
-
-        // This proxy worked, remember it
-        this.workingProxyIndex = proxyIndex;
-        return await response.json();
-      } catch (error) {
-        console.warn(`Proxy ${proxyIndex} failed:`, error.message);
-        lastError = error;
-        continue;
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    }
 
-    // All proxies failed
-    console.error(`All connection methods failed for: ${endpoint}`, lastError);
-    throw lastError || new Error(`Failed to fetch: ${endpoint}`);
+      return await response.json();
+    } catch (error) {
+      console.error(`API request failed for: ${endpoint}`, error);
+      throw error;
+    }
   }
 
   // Block endpoints
