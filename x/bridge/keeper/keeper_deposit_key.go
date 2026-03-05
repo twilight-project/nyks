@@ -605,7 +605,7 @@ func (k Keeper) GetUnsignedTxSweepMsg(ctx sdk.Context, reserveId uint64, roundId
 func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]types.MsgUnsignedTxSweep, error) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.UnsignedTxSweepMsgKey
-	iter := store.Iterator(prefixRange(prefix))
+	iter := store.ReverseIterator(prefixRange(prefix))
 	defer iter.Close()
 
 	var unsignedTxSweep []types.MsgUnsignedTxSweep
@@ -660,7 +660,7 @@ func (k Keeper) GetUnsignedTxRefundMsg(ctx sdk.Context, reserveId uint64, roundI
 func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]types.MsgUnsignedTxRefund, error) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.UnsignedTxRefundMsgKey
-	iter := store.Iterator(prefixRange(prefix))
+	iter := store.ReverseIterator(prefixRange(prefix))
 	defer iter.Close()
 
 	var unsignedTxRefund []types.MsgUnsignedTxRefund
@@ -734,11 +734,11 @@ func (k Keeper) IterateRegisteredProposeSweepAddressMsgs(ctx sdk.Context, cb fun
 	}
 }
 
-// GetAllProposedSweepAddresses returns all proposed sweep addresses for btc chain
+// GetAllProposedSweepAddresses returns the most recent proposed sweep addresses for btc chain
 func (k Keeper) GetAllProposedSweepAddresses(ctx sdk.Context, limit uint64) ([]types.MsgProposeSweepAddress, error) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := types.ProposeSweepAddressMsg
-	iter := store.Iterator(prefixRange(prefix))
+	iter := store.ReverseIterator(prefixRange(prefix))
 	defer iter.Close()
 
 	var proposeSweepAddress []types.MsgProposeSweepAddress
