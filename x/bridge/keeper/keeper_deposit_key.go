@@ -3,6 +3,7 @@ package keeper
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"sort"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -623,6 +624,14 @@ func (k Keeper) GetAllUnsignedTxSweepMsgs(ctx sdk.Context, limit uint64) ([]type
 		unsignedTxSweep = append(unsignedTxSweep, res)
 		count++
 	}
+
+	sort.Slice(unsignedTxSweep, func(i, j int) bool {
+		if unsignedTxSweep[i].ReserveId != unsignedTxSweep[j].ReserveId {
+			return unsignedTxSweep[i].ReserveId > unsignedTxSweep[j].ReserveId
+		}
+		return unsignedTxSweep[i].RoundId > unsignedTxSweep[j].RoundId
+	})
+
 	return unsignedTxSweep, nil
 }
 
@@ -676,6 +685,14 @@ func (k Keeper) GetAllUnsignedTxRefundMsgs(ctx sdk.Context, limit uint64) ([]typ
 		unsignedTxRefund = append(unsignedTxRefund, res)
 		count++
 	}
+
+	sort.Slice(unsignedTxRefund, func(i, j int) bool {
+		if unsignedTxRefund[i].ReserveId != unsignedTxRefund[j].ReserveId {
+			return unsignedTxRefund[i].ReserveId > unsignedTxRefund[j].ReserveId
+		}
+		return unsignedTxRefund[i].RoundId > unsignedTxRefund[j].RoundId
+	})
+
 	return unsignedTxRefund, nil
 }
 
@@ -755,6 +772,14 @@ func (k Keeper) GetAllProposedSweepAddresses(ctx sdk.Context, limit uint64) ([]t
 		proposeSweepAddress = append(proposeSweepAddress, res)
 		count++
 	}
+
+	sort.Slice(proposeSweepAddress, func(i, j int) bool {
+		if proposeSweepAddress[i].ReserveId != proposeSweepAddress[j].ReserveId {
+			return proposeSweepAddress[i].ReserveId > proposeSweepAddress[j].ReserveId
+		}
+		return proposeSweepAddress[i].RoundId > proposeSweepAddress[j].RoundId
+	})
+
 	return proposeSweepAddress, nil
 }
 
