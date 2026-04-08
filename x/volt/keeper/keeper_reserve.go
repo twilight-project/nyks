@@ -118,9 +118,11 @@ func (k Keeper) UpdateBtcReserveAfterMint(ctx sdk.Context, mintedValue uint64, t
 			return sdkerrors.Wrapf(types.ErrBtcSatoshiTestAmountNotEqual, fmt.Sprint(twilightAddress))
 		}
 
-		err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
-		if err != nil {
-			return err
+		if btcDeposit.TwilightStakingAmount > 0 {
+			err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, bridgetypes.ModuleName, twilightAddress, sdk.NewCoins(sdk.NewCoin("nyks", sdk.NewIntFromUint64(btcDeposit.TwilightStakingAmount))))
+			if err != nil {
+				return err
+			}
 		}
 
 		// SetBtcDepositConfirmed sets the deposit as confirmed

@@ -45,21 +45,19 @@ func (k msgServer) RegisterBtcDepositAddress(goCtx context.Context, msg *types.M
 		return nil, sdkerrors.Wrap(types.ErrBtcAddressAlreadyExists, btcAddr.GetBtcAddress())
 	}
 
-	// Convert msg.DepositAmount into sdk.Coins from uint64
-	depositAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(msg.TwilightStakingAmount))
+	// Transfer the staking amount from the user's account to a module account if amount > 0
+	if msg.TwilightStakingAmount > 0 {
+		depositAmount := sdk.NewCoin("nyks", sdk.NewIntFromUint64(msg.TwilightStakingAmount))
 
-	// Get the account's balance in nyks
-	balance := k.BankKeeper.GetBalance(ctx, twilightAddress, "nyks")
+		balance := k.BankKeeper.GetBalance(ctx, twilightAddress, "nyks")
+		if balance.IsLT(depositAmount) {
+			return nil, sdkerrors.Wrapf(types.ErrInsufficientBalanceInBank, "insufficient funds: %s < %s", balance, depositAmount)
+		}
 
-	// Check if the balance is sufficient
-	if balance.IsLT(depositAmount) {
-		return nil, sdkerrors.Wrapf(types.ErrInsufficientBalanceInBank, "insufficient funds: %s < %s", balance, depositAmount)
-	}
-
-	// Transfer the staking amount from the user's account to a module account
-	errTakeStake := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(depositAmount))
-	if errTakeStake != nil {
-		return nil, errTakeStake
+		errTakeStake := k.BankKeeper.SendCoinsFromAccountToModule(ctx, twilightAddress, types.ModuleName, sdk.NewCoins(depositAmount))
+		if errTakeStake != nil {
+			return nil, errTakeStake
+		}
 	}
 
 	errSetting := k.VoltKeeper.SetBtcDeposit(ctx, *btcAddr, twilightAddress, msg.TwilightStakingAmount, msg.BtcSatoshiTestAmount)
