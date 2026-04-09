@@ -29,6 +29,7 @@ service Msg {
   rpc UnsignedTxRefund    (MsgUnsignedTxRefund   ) returns (MsgUnsignedTxRefundResponse   );
   rpc BroadcastTxRefund   (MsgBroadcastTxRefund  ) returns (MsgBroadcastTxRefundResponse  );
   rpc ProposeSweepAddress (MsgProposeSweepAddress) returns (MsgProposeSweepAddressResponse);
+  rpc UpdateBtcDepositAddress (MsgUpdateBtcDepositAddress) returns (MsgUpdateBtcDepositAddressResponse);
 }
 message MsgConfirmBtcDeposit {
   string reserveAddress         = 1;
@@ -222,3 +223,13 @@ message MsgSweepProposal {
 }
 
 message MsgSweepProposalResponse {}
+
+message MsgUpdateBtcDepositAddress {
+  string btcDepositAddress    = 1;
+  uint64 btcSatoshiTestAmount = 2;
+  uint64 twilightStakingAmount = 3;
+  string twilightAddress      = 4;
+  string validatorAddress     = 5;
+}
+
+message MsgUpdateBtcDepositAddressResponse {}

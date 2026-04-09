@@ -56,9 +56,5 @@ func (msg *MsgRegisterBtcDepositAddress) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid satoshi test amount: must be greater than zero")
 	}
 
-	// Validate the twilight staking amount
-	if msg.TwilightStakingAmount <= 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid twilight staking amount: must be greater than zero")
-	}
 	return nil
 }

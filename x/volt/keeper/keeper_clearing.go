@@ -155,6 +155,11 @@ func (k Keeper) UpdateTransfersInClearing(ctx sdk.Context, from, to sdk.AccAddre
 		return nil
 	}
 
+	// Self-send: no clearing account update needed
+	if from.Equals(to) {
+		return nil
+	}
+
 	// If the sender's clearing account doesn't exist
 	if !fromExists {
 		return sdkerrors.Wrapf(types.ErrClearingAccountNotFound, fmt.Sprint(from))
